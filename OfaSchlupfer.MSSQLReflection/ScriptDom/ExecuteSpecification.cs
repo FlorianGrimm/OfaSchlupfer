@@ -21,7 +21,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._variable = value;
 			}
 		}
@@ -34,7 +34,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._linkedServer = value;
 			}
 		}
@@ -47,7 +47,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._executeContext = value;
 			}
 		}
@@ -60,7 +60,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._executableEntity = value;
 			}
 		}

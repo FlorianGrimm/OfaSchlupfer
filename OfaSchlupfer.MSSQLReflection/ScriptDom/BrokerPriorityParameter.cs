@@ -13,6 +13,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isDefaultOrAny;
             }
+
             set {
                 this._isDefaultOrAny = value;
             }
@@ -22,6 +23,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._parameterType;
             }
+
             set {
                 this._parameterType = value;
             }
@@ -31,8 +33,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._parameterValue;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._parameterValue = value;
             }
         }

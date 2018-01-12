@@ -13,6 +13,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._cryptoMechanismType;
             }
+
             set {
                 this._cryptoMechanismType = value;
             }
@@ -22,8 +23,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._identifier;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._identifier = value;
             }
         }
@@ -32,8 +34,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._passwordOrSignature;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._passwordOrSignature = value;
             }
         }

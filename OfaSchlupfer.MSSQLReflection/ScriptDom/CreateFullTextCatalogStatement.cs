@@ -21,7 +21,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._fileGroup = value;
 			}
 		}
@@ -34,7 +34,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._path = value;
 			}
 		}
@@ -59,7 +59,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._owner = value;
 			}
 		}

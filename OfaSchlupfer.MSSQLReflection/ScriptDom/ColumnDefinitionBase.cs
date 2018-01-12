@@ -11,8 +11,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._columnIdentifier;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._columnIdentifier = value;
             }
         }
@@ -21,8 +22,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._dataType;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._dataType = value;
             }
         }
@@ -31,8 +33,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._collation;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._collation = value;
             }
         }

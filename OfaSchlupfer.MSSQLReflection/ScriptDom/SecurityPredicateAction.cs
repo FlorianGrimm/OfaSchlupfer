@@ -17,6 +17,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._actionType;
             }
+
             set {
                 this._actionType = value;
             }
@@ -26,6 +27,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._securityPredicateType;
             }
+
             set {
                 this._securityPredicateType = value;
             }
@@ -35,8 +37,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._functionCall;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._functionCall = value;
             }
         }
@@ -45,8 +48,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._targetObjectName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._targetObjectName = value;
             }
         }
@@ -55,6 +59,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._securityPredicateOperation;
             }
+
             set {
                 this._securityPredicateOperation = value;
             }

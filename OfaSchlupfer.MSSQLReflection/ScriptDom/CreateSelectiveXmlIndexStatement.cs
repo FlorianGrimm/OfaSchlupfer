@@ -38,7 +38,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._xmlColumn = value;
 			}
 		}
@@ -59,7 +59,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._xmlNamespaces = value;
 			}
 		}
@@ -72,7 +72,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._usingXmlIndexName = value;
 			}
 		}
@@ -85,7 +85,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._pathName = value;
 			}
 		}

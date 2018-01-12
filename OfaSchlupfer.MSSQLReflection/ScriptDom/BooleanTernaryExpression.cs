@@ -15,6 +15,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._ternaryExpressionType;
             }
+
             set {
                 this._ternaryExpressionType = value;
             }
@@ -24,8 +25,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._firstExpression;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._firstExpression = value;
             }
         }
@@ -34,8 +36,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._secondExpression;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._secondExpression = value;
             }
         }
@@ -44,8 +47,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._thirdExpression;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._thirdExpression = value;
             }
         }

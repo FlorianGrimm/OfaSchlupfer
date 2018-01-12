@@ -11,8 +11,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._sequenceName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._sequenceName = value;
             }
         }
@@ -21,8 +22,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._overClause;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._overClause = value;
             }
         }

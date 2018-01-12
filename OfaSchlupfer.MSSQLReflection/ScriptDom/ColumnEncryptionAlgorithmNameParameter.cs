@@ -9,8 +9,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._algorithm;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._algorithm = value;
             }
         }

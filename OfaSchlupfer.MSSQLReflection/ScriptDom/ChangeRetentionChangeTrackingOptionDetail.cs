@@ -11,8 +11,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._retentionPeriod;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._retentionPeriod = value;
             }
         }
@@ -21,6 +22,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._unit;
             }
+
             set {
                 this._unit = value;
             }

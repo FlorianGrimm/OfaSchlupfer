@@ -11,8 +11,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._groupId;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._groupId = value;
             }
         }
@@ -21,8 +22,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._queue;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._queue = value;
             }
         }

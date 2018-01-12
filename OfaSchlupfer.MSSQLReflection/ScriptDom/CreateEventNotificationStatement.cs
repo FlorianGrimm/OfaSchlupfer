@@ -19,8 +19,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._name;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._name = value;
             }
         }
@@ -29,8 +30,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._scope;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._scope = value;
             }
         }
@@ -39,6 +41,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._withFanIn;
             }
+
             set {
                 this._withFanIn = value;
             }
@@ -54,8 +57,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._brokerService;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._brokerService = value;
             }
         }
@@ -64,8 +68,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._brokerInstanceSpecifier;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._brokerInstanceSpecifier = value;
             }
         }

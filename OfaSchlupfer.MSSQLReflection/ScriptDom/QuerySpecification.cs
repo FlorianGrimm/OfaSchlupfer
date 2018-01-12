@@ -20,8 +20,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._topRowFilter;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._topRowFilter = value;
             }
         }
@@ -32,8 +33,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._fromClause;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._fromClause = value;
             }
         }
@@ -42,8 +44,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._whereClause;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._whereClause = value;
             }
         }
@@ -52,8 +55,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._groupByClause;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._groupByClause = value;
             }
         }
@@ -62,8 +66,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._havingClause;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._havingClause = value;
             }
         }

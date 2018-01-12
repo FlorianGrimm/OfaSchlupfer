@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._secondary;
             }
+
             set {
                 this._secondary = value;
             }

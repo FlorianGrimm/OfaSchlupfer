@@ -32,7 +32,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._databaseName = value;
 			}
 		}
@@ -45,7 +45,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._containment = value;
 			}
 		}
@@ -94,7 +94,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._databaseSnapshot = value;
 			}
 		}
@@ -107,7 +107,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._copyOf = value;
 			}
 		}
@@ -120,7 +120,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._collation = value;
 			}
 		}

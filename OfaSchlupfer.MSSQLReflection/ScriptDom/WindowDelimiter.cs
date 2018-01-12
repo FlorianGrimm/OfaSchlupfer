@@ -11,6 +11,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._windowDelimiterType;
             }
+
             set {
                 this._windowDelimiterType = value;
             }
@@ -20,8 +21,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._offsetValue;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._offsetValue = value;
             }
         }

@@ -13,8 +13,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._fileGroup;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._fileGroup = value;
             }
         }
@@ -23,6 +24,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._containsFileStream;
             }
+
             set {
                 this._containsFileStream = value;
             }
@@ -32,6 +34,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._containsMemoryOptimizedData;
             }
+
             set {
                 this._containsMemoryOptimizedData = value;
             }

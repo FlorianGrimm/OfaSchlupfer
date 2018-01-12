@@ -21,8 +21,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._providerName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._providerName = value;
             }
         }
@@ -31,8 +32,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._dataSource;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._dataSource = value;
             }
         }
@@ -41,8 +43,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._userId;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._userId = value;
             }
         }
@@ -51,8 +54,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._password;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._password = value;
             }
         }
@@ -61,8 +65,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._providerString;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._providerString = value;
             }
         }
@@ -71,8 +76,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._query;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._query = value;
             }
         }
@@ -81,8 +87,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._object;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._object = value;
             }
         }

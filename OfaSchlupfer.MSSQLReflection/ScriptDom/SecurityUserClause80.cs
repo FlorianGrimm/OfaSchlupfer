@@ -18,6 +18,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._userType80;
             }
+
             set {
                 this._userType80 = value;
             }

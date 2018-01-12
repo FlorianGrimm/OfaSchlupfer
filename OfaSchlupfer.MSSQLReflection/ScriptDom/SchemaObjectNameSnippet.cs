@@ -7,6 +7,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._script;
             }
+
             set {
                 this._script = value;
             }

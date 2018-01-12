@@ -13,8 +13,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._firstQueryExpression;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._firstQueryExpression = value;
             }
         }
@@ -23,8 +24,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._secondQueryExpression;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._secondQueryExpression = value;
             }
         }

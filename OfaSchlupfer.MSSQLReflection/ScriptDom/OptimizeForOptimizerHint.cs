@@ -18,6 +18,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isForUnknown;
             }
+
             set {
                 this._isForUnknown = value;
             }

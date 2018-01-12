@@ -16,8 +16,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._name;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._name = value;
             }
         }
@@ -32,8 +33,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._poolName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._poolName = value;
             }
         }
@@ -42,8 +44,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._externalPoolName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._externalPoolName = value;
             }
         }

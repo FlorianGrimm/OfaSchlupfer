@@ -9,8 +9,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._level;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._level = value;
             }
         }

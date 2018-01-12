@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._level;
             }
+
             set {
                 this._level = value;
             }

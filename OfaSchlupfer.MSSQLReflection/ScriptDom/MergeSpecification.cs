@@ -16,8 +16,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._tableAlias;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._tableAlias = value;
             }
         }
@@ -26,8 +27,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._tableReference;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._tableReference = value;
             }
         }
@@ -36,8 +38,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._searchCondition;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._searchCondition = value;
             }
         }

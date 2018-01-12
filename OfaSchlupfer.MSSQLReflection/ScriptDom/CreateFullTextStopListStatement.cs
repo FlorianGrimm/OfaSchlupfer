@@ -23,7 +23,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._name = value;
 			}
 		}
@@ -48,7 +48,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._databaseName = value;
 			}
 		}
@@ -61,7 +61,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._sourceStopListName = value;
 			}
 		}
@@ -74,7 +74,7 @@ namespace OfaSchlupfer.ScriptDom
 			}
 			set
 			{
-				base.UpdateTokenInfo(value);
+				this.UpdateTokenInfo(value);
 				this._owner = value;
 			}
 		}

@@ -11,6 +11,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isEnable;
             }
+
             set {
                 this._isEnable = value;
             }
@@ -20,6 +21,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._trackColumnsUpdated;
             }
+
             set {
                 this._trackColumnsUpdated = value;
             }

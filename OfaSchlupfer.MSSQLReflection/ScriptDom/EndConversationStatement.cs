@@ -15,8 +15,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._conversation;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._conversation = value;
             }
         }
@@ -25,6 +26,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._withCleanup;
             }
+
             set {
                 this._withCleanup = value;
             }
@@ -34,8 +36,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._errorCode;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._errorCode = value;
             }
         }
@@ -44,8 +47,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._errorDescription;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._errorDescription = value;
             }
         }

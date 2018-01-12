@@ -13,8 +13,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._securityTargetObject;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._securityTargetObject = value;
             }
         }
@@ -23,6 +24,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._toSchemaOwner;
             }
+
             set {
                 this._toSchemaOwner = value;
             }
@@ -32,8 +34,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._principalName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._principalName = value;
             }
         }

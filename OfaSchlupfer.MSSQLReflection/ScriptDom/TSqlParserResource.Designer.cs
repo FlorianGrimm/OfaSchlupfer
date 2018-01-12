@@ -55,6 +55,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return resourceCulture;
             }
+
             set {
                 resourceCulture = value;
             }

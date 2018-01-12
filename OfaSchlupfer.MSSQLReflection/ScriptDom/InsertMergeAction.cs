@@ -18,8 +18,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._source;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._source = value;
             }
         }

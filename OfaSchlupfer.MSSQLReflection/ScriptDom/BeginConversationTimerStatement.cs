@@ -11,8 +11,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._handle;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._handle = value;
             }
         }
@@ -21,8 +22,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._timeout;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._timeout = value;
             }
         }

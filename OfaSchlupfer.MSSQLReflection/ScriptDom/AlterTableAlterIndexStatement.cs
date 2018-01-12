@@ -14,8 +14,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._indexIdentifier;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._indexIdentifier = value;
             }
         }
@@ -24,6 +25,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._alterIndexType;
             }
+
             set {
                 this._alterIndexType = value;
             }

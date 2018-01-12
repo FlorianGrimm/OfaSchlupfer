@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._delayedDurabilityOption;
             }
+
             set {
                 this._delayedDurabilityOption = value;
             }

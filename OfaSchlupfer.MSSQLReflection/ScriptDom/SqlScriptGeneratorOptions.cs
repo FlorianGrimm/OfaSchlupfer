@@ -114,6 +114,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.keywordCasing;
             }
+
             set {
                 this.keywordCasing = value;
             }
@@ -123,6 +124,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.sqlVersion;
             }
+
             set {
                 this.sqlVersion = value;
             }
@@ -132,6 +134,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.sqlEngineType;
             }
+
             set {
                 this.sqlEngineType = value;
             }
@@ -141,6 +144,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.indentationSize;
             }
+
             set {
                 if (value < 0) {
                     this.indentationSize = 0;
@@ -154,6 +158,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.includeSemicolons;
             }
+
             set {
                 this.includeSemicolons = value;
             }
@@ -163,6 +168,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.alignColumnDefinitionFields;
             }
+
             set {
                 this.alignColumnDefinitionFields = value;
             }
@@ -172,6 +178,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.newLineBeforeFromClause;
             }
+
             set {
                 this.newLineBeforeFromClause = value;
             }
@@ -181,6 +188,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.newLineBeforeWhereClause;
             }
+
             set {
                 this.newLineBeforeWhereClause = value;
             }
@@ -190,6 +198,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.newLineBeforeGroupByClause;
             }
+
             set {
                 this.newLineBeforeGroupByClause = value;
             }
@@ -199,6 +208,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.newLineBeforeOrderByClause;
             }
+
             set {
                 this.newLineBeforeOrderByClause = value;
             }
@@ -208,6 +218,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.newLineBeforeHavingClause;
             }
+
             set {
                 this.newLineBeforeHavingClause = value;
             }
@@ -217,6 +228,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.newLineBeforeJoinClause;
             }
+
             set {
                 this.newLineBeforeJoinClause = value;
             }
@@ -226,6 +238,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.newLineBeforeOffsetClause;
             }
+
             set {
                 this.newLineBeforeOffsetClause = value;
             }
@@ -235,6 +248,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.newLineBeforeOutputClause;
             }
+
             set {
                 this.newLineBeforeOutputClause = value;
             }
@@ -244,6 +258,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.alignClauseBodies;
             }
+
             set {
                 this.alignClauseBodies = value;
             }
@@ -253,6 +268,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.multilineSelectElementsList;
             }
+
             set {
                 this.multilineSelectElementsList = value;
             }
@@ -262,6 +278,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.multilineWherePredicatesList;
             }
+
             set {
                 this.multilineWherePredicatesList = value;
             }
@@ -271,6 +288,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.indentViewBody;
             }
+
             set {
                 this.indentViewBody = value;
             }
@@ -280,6 +298,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.multilineViewColumnsList;
             }
+
             set {
                 this.multilineViewColumnsList = value;
             }
@@ -289,6 +308,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.asKeywordOnOwnLine;
             }
+
             set {
                 this.asKeywordOnOwnLine = value;
             }
@@ -298,6 +318,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.indentSetClause;
             }
+
             set {
                 this.indentSetClause = value;
             }
@@ -307,6 +328,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.alignSetClauseItem;
             }
+
             set {
                 this.alignSetClauseItem = value;
             }
@@ -316,6 +338,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.multilineSetClauseItems;
             }
+
             set {
                 this.multilineSetClauseItems = value;
             }
@@ -325,6 +348,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.multilineInsertTargetsList;
             }
+
             set {
                 this.multilineInsertTargetsList = value;
             }
@@ -334,6 +358,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.multilineInsertSourcesList;
             }
+
             set {
                 this.multilineInsertSourcesList = value;
             }
@@ -343,6 +368,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.newLineBeforeOpenParenthesisInMultilineList;
             }
+
             set {
                 this.newLineBeforeOpenParenthesisInMultilineList = value;
             }
@@ -352,6 +378,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.newLineBeforeCloseParenthesisInMultilineList;
             }
+
             set {
                 this.newLineBeforeCloseParenthesisInMultilineList = value;
             }

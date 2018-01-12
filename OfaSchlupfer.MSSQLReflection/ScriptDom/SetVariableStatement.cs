@@ -24,8 +24,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._variable;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._variable = value;
             }
         }
@@ -34,6 +35,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._separatorType;
             }
+
             set {
                 this._separatorType = value;
             }
@@ -43,8 +45,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._identifier;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._identifier = value;
             }
         }
@@ -53,6 +56,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._functionCallExists;
             }
+
             set {
                 this._functionCallExists = value;
             }
@@ -68,8 +72,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._expression;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._expression = value;
             }
         }
@@ -78,8 +83,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._cursorDefinition;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._cursorDefinition = value;
             }
         }
@@ -88,6 +94,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._assignmentKind;
             }
+
             set {
                 this._assignmentKind = value;
             }

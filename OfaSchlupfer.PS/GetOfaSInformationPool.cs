@@ -6,7 +6,8 @@
     using System.Threading.Tasks;
 
     [System.Management.Automation.Cmdlet(System.Management.Automation.VerbsCommon.Get, "OfaSInformationPool")]
-    public class GetOfaSInformationPool : System.Management.Automation.PSCmdlet {
+    public class GetOfaSInformationPool
+        : System.Management.Automation.PSCmdlet {
         [System.Management.Automation.Parameter(Mandatory = false)]
         public string FileName { get; set; }
 

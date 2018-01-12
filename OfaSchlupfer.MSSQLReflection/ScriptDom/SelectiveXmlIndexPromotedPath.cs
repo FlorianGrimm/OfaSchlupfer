@@ -19,8 +19,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._name;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._name = value;
             }
         }
@@ -29,8 +30,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._path;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._path = value;
             }
         }
@@ -39,8 +41,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._sQLDataType;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._sQLDataType = value;
             }
         }
@@ -49,8 +52,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._xQueryDataType;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._xQueryDataType = value;
             }
         }
@@ -59,8 +63,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._maxLength;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._maxLength = value;
             }
         }
@@ -69,6 +74,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isSingleton;
             }
+
             set {
                 this._isSingleton = value;
             }

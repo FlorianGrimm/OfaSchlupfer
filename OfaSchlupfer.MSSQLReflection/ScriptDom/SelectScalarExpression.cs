@@ -11,8 +11,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._expression;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._expression = value;
             }
         }
@@ -21,8 +22,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._columnName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._columnName = value;
             }
         }

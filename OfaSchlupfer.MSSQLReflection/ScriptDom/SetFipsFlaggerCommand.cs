@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._complianceLevel;
             }
+
             set {
                 this._complianceLevel = value;
             }

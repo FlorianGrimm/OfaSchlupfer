@@ -12,8 +12,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._tableName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._tableName = value;
             }
         }

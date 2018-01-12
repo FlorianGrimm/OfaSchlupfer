@@ -22,6 +22,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._fullTextFunctionType;
             }
+
             set {
                 this._fullTextFunctionType = value;
             }
@@ -31,8 +32,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._tableName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._tableName = value;
             }
         }
@@ -47,8 +49,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._searchCondition;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._searchCondition = value;
             }
         }
@@ -57,8 +60,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._topN;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._topN = value;
             }
         }
@@ -67,8 +71,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._language;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._language = value;
             }
         }
@@ -77,8 +82,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._propertyName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._propertyName = value;
             }
         }

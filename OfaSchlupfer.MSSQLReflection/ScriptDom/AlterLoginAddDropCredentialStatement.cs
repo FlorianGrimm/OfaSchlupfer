@@ -11,6 +11,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isAdd;
             }
+
             set {
                 this._isAdd = value;
             }
@@ -20,8 +21,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._credentialName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._credentialName = value;
             }
         }

@@ -11,6 +11,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._alterAvailabilityGroupStatementType;
             }
+
             set {
                 this._alterAvailabilityGroupStatementType = value;
             }
@@ -20,8 +21,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._action;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._action = value;
             }
         }

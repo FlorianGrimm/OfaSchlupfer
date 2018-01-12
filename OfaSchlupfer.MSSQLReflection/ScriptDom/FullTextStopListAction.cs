@@ -15,6 +15,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isAdd;
             }
+
             set {
                 this._isAdd = value;
             }
@@ -24,6 +25,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isAll;
             }
+
             set {
                 this._isAll = value;
             }
@@ -33,8 +35,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._stopWord;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._stopWord = value;
             }
         }
@@ -43,8 +46,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._languageTerm;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._languageTerm = value;
             }
         }

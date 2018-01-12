@@ -15,6 +15,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._waitForOption;
             }
+
             set {
                 this._waitForOption = value;
             }
@@ -24,8 +25,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._parameter;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._parameter = value;
             }
         }
@@ -34,8 +36,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._timeout;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._timeout = value;
             }
         }
@@ -44,8 +47,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._statement;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._statement = value;
             }
         }

@@ -20,8 +20,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._fileGroup;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._fileGroup = value;
             }
         }
@@ -30,6 +31,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isLog;
             }
+
             set {
                 this._isLog = value;
             }

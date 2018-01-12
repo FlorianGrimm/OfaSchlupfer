@@ -11,6 +11,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._xmlDataTypeOption;
             }
+
             set {
                 this._xmlDataTypeOption = value;
             }
@@ -20,8 +21,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._xmlSchemaCollection;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._xmlSchemaCollection = value;
             }
         }

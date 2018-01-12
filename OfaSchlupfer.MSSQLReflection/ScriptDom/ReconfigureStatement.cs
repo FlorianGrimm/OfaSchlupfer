@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._withOverride;
             }
+
             set {
                 this._withOverride = value;
             }

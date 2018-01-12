@@ -14,8 +14,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._xmlNamespaces;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._xmlNamespaces = value;
             }
         }
@@ -30,8 +31,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._changeTrackingContext;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._changeTrackingContext = value;
             }
         }

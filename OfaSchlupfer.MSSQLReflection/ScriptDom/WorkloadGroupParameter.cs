@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._parameterType;
             }
+
             set {
                 this._parameterType = value;
             }

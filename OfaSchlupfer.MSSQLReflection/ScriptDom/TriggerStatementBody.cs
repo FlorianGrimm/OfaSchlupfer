@@ -26,8 +26,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._name;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._name = value;
             }
         }
@@ -36,8 +37,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._triggerObject;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._triggerObject = value;
             }
         }
@@ -52,6 +54,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._triggerType;
             }
+
             set {
                 this._triggerType = value;
             }
@@ -67,6 +70,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._withAppend;
             }
+
             set {
                 this._withAppend = value;
             }
@@ -76,6 +80,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isNotForReplication;
             }
+
             set {
                 this._isNotForReplication = value;
             }
@@ -85,8 +90,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._statementList;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._statementList = value;
             }
         }
@@ -95,8 +101,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._methodSpecifier;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._methodSpecifier = value;
             }
         }

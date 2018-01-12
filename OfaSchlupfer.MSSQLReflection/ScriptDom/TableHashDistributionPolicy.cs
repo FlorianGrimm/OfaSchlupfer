@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._distributionColumn;
             }
+
             set {
                 this._distributionColumn = value;
             }

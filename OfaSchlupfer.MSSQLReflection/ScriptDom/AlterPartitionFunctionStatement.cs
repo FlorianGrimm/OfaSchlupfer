@@ -13,8 +13,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._name;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._name = value;
             }
         }
@@ -23,6 +24,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isSplit;
             }
+
             set {
                 this._isSplit = value;
             }
@@ -32,8 +34,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._boundary;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._boundary = value;
             }
         }

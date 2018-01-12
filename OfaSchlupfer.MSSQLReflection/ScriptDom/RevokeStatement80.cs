@@ -13,6 +13,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._grantOptionFor;
             }
+
             set {
                 this._grantOptionFor = value;
             }
@@ -22,6 +23,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._cascadeOption;
             }
+
             set {
                 this._cascadeOption = value;
             }
@@ -31,8 +33,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._asClause;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._asClause = value;
             }
         }

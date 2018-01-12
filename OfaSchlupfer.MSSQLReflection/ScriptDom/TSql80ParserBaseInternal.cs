@@ -47,6 +47,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._phaseOne;
             }
+
             set {
                 this._phaseOne = value;
             }

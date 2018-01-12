@@ -20,8 +20,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._statementList;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._statementList = value;
             }
         }
@@ -30,8 +31,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._methodSpecifier;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._methodSpecifier = value;
             }
         }

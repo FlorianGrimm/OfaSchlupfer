@@ -22,6 +22,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isConversation;
             }
+
             set {
                 this._isConversation = value;
             }
@@ -31,8 +32,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._handle;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._handle = value;
             }
         }
@@ -41,8 +43,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._initiatorServiceName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._initiatorServiceName = value;
             }
         }
@@ -51,8 +54,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._targetServiceName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._targetServiceName = value;
             }
         }
@@ -61,8 +65,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._instanceSpec;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._instanceSpec = value;
             }
         }
@@ -71,8 +76,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._contractName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._contractName = value;
             }
         }

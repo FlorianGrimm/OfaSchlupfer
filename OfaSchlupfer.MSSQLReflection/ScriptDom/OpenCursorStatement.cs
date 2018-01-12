@@ -1,4 +1,6 @@
-using System;
+#pragma warning disable SA1402
+#pragma warning disable SA1600
+#pragma warning disable SA1649
 
 namespace OfaSchlupfer.ScriptDom {
     [System.Serializable]

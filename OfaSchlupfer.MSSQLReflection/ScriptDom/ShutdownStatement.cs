@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._withNoWait;
             }
+
             set {
                 this._withNoWait = value;
             }

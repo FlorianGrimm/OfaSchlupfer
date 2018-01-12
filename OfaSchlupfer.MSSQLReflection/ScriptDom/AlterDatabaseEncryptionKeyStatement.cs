@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._regenerate;
             }
+
             set {
                 this._regenerate = value;
             }

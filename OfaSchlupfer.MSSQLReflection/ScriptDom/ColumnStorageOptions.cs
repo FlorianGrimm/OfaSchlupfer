@@ -11,6 +11,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isFileStream;
             }
+
             set {
                 this._isFileStream = value;
             }
@@ -20,6 +21,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._sparseOption;
             }
+
             set {
                 this._sparseOption = value;
             }

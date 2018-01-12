@@ -9,8 +9,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._providerName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._providerName = value;
             }
         }
@@ -19,8 +20,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._initString;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._initString = value;
             }
         }

@@ -25,13 +25,11 @@
             return parser.Parse(input, out errors);
         }
 
-        public object Analyse(TSqlFragment fragment, ModelSqlDatabase modelDatabase) {
+        public List<AnalyseResult> Analyse(TSqlFragment fragment, ModelSqlDatabase modelDatabase) {
             var dbScope = SqlCodeScope.CreateRoot(modelDatabase);
             var bindVisitor = new TSqlBindVisitor(dbScope);
-            fragment.Accept(bindVisitor);
-            //var analyseVisitor = new TSqlAnalyseVisitor();
-            //fragment.Accept(visitor);
-            return null;
+            var result = bindVisitor.Run(fragment);
+            return result;
         }
     }
 }

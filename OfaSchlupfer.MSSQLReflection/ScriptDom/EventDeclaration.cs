@@ -16,8 +16,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._objectName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._objectName = value;
             }
         }
@@ -38,8 +39,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._eventDeclarationPredicateParameter;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._eventDeclarationPredicateParameter = value;
             }
         }

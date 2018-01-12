@@ -11,8 +11,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._databaseName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._databaseName = value;
             }
         }
@@ -21,6 +22,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._useCurrent;
             }
+
             set {
                 this._useCurrent = value;
             }

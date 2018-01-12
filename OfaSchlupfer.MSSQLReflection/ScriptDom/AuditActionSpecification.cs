@@ -26,8 +26,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._targetObject;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._targetObject = value;
             }
         }

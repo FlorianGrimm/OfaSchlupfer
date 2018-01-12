@@ -18,6 +18,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isPrimary;
             }
+
             set {
                 this._isPrimary = value;
             }

@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._eventGroup;
             }
+
             set {
                 this._eventGroup = value;
             }

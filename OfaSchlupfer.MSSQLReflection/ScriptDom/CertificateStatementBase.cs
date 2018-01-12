@@ -17,8 +17,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._name;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._name = value;
             }
         }
@@ -27,6 +28,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._activeForBeginDialog;
             }
+
             set {
                 this._activeForBeginDialog = value;
             }
@@ -36,8 +38,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._privateKeyPath;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._privateKeyPath = value;
             }
         }
@@ -46,8 +49,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._encryptionPassword;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._encryptionPassword = value;
             }
         }
@@ -56,8 +60,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._decryptionPassword;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._decryptionPassword = value;
             }
         }

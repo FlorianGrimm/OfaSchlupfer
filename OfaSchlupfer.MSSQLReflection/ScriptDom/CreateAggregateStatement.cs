@@ -16,8 +16,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._name;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._name = value;
             }
         }
@@ -26,8 +27,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._assemblyName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._assemblyName = value;
             }
         }
@@ -42,8 +44,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._returnType;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._returnType = value;
             }
         }

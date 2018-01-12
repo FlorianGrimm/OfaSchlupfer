@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._optionState;
             }
+
             set {
                 this._optionState = value;
             }

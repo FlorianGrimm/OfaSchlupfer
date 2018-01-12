@@ -13,6 +13,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._immediateRollback;
             }
+
             set {
                 this._immediateRollback = value;
             }
@@ -22,8 +23,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._rollbackAfter;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._rollbackAfter = value;
             }
         }
@@ -32,6 +34,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._noWait;
             }
+
             set {
                 this._noWait = value;
             }

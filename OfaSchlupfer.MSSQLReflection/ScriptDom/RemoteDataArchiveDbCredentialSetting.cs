@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._credential;
             }
+
             set {
                 this._credential = value;
             }

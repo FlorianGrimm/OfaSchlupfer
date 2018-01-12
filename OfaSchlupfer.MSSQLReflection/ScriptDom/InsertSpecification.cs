@@ -14,6 +14,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._insertOption;
             }
+
             set {
                 this._insertOption = value;
             }
@@ -23,8 +24,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._insertSource;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._insertSource = value;
             }
         }

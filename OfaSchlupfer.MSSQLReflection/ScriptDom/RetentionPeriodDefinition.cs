@@ -13,6 +13,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._duration;
             }
+
             set {
                 this._duration = value;
             }
@@ -22,6 +23,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._units;
             }
+
             set {
                 this._units = value;
             }
@@ -31,6 +33,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isInfinity;
             }
+
             set {
                 this._isInfinity = value;
             }

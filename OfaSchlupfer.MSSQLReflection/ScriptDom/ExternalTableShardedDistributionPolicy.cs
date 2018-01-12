@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._shardingColumn;
             }
+
             set {
                 this._shardingColumn = value;
             }

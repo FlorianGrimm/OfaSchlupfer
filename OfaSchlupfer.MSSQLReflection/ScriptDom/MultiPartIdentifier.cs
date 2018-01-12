@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this.Identifiers[index];
             }
+
             set {
                 this.Identifiers[index] = value;
             }

@@ -27,8 +27,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._schemaObjectName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._schemaObjectName = value;
             }
         }
@@ -37,6 +38,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._asEdge;
             }
+
             set {
                 this._asEdge = value;
             }
@@ -46,6 +48,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._asFileTable;
             }
+
             set {
                 this._asFileTable = value;
             }
@@ -55,6 +58,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._asNode;
             }
+
             set {
                 this._asNode = value;
             }
@@ -64,8 +68,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._definition;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._definition = value;
             }
         }
@@ -74,8 +79,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._onFileGroupOrPartitionScheme;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._onFileGroupOrPartitionScheme = value;
             }
         }
@@ -84,8 +90,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._federationScheme;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._federationScheme = value;
             }
         }
@@ -94,8 +101,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._textImageOn;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._textImageOn = value;
             }
         }
@@ -110,8 +118,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._fileStreamOn;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._fileStreamOn = value;
             }
         }

@@ -20,8 +20,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._orderByClause;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._orderByClause = value;
             }
         }
@@ -30,8 +31,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._windowFrameClause;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._windowFrameClause = value;
             }
         }

@@ -15,8 +15,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._name;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._name = value;
             }
         }
@@ -25,8 +26,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._keySource;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._keySource = value;
             }
         }
@@ -35,6 +37,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._encryptionAlgorithm;
             }
+
             set {
                 this._encryptionAlgorithm = value;
             }
@@ -44,8 +47,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._password;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._password = value;
             }
         }
@@ -54,8 +58,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._owner;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._owner = value;
             }
         }

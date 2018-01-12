@@ -13,6 +13,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._distributed;
             }
+
             set {
                 this._distributed = value;
             }
@@ -22,6 +23,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._markDefined;
             }
+
             set {
                 this._markDefined = value;
             }
@@ -31,8 +33,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._markDescription;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._markDescription = value;
             }
         }

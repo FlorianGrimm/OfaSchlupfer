@@ -11,8 +11,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._checkCondition;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._checkCondition = value;
             }
         }
@@ -21,6 +22,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._notForReplication;
             }
+
             set {
                 this._notForReplication = value;
             }

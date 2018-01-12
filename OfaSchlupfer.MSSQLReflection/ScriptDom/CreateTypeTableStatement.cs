@@ -12,8 +12,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._definition;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._definition = value;
             }
         }

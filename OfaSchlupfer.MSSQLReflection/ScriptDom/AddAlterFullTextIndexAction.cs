@@ -12,6 +12,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._withNoPopulation;
             }
+
             set {
                 this._withNoPopulation = value;
             }

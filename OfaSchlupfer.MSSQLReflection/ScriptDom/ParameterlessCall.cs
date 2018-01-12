@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._parameterlessCallType;
             }
+
             set {
                 this._parameterlessCallType = value;
             }

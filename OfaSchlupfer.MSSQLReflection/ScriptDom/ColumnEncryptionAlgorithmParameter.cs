@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._encryptionAlgorithm;
             }
+
             set {
                 this._encryptionAlgorithm = value;
             }

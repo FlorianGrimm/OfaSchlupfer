@@ -58,6 +58,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._firstTokenIndex;
             }
+
             set {
                 this._firstTokenIndex = value;
             }
@@ -67,6 +68,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._lastTokenIndex;
             }
+
             set {
                 this._lastTokenIndex = value;
             }
@@ -76,6 +78,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._scriptTokenStream;
             }
+
             set {
                 this._scriptTokenStream = value;
             }

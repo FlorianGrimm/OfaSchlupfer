@@ -13,8 +13,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._searchCondition;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._searchCondition = value;
             }
         }
@@ -23,6 +24,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._qualifiedJoinType;
             }
+
             set {
                 this._qualifiedJoinType = value;
             }
@@ -32,6 +34,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._joinHint;
             }
+
             set {
                 this._joinHint = value;
             }

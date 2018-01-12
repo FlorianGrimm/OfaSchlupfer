@@ -26,8 +26,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._referenceTableName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._referenceTableName = value;
             }
         }
@@ -42,6 +43,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._deleteAction;
             }
+
             set {
                 this._deleteAction = value;
             }
@@ -51,6 +53,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._updateAction;
             }
+
             set {
                 this._updateAction = value;
             }
@@ -60,6 +63,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._notForReplication;
             }
+
             set {
                 this._notForReplication = value;
             }

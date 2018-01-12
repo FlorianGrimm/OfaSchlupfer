@@ -22,6 +22,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._clustered;
             }
+
             set {
                 this._clustered = value;
             }
@@ -31,6 +32,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isPrimaryKey;
             }
+
             set {
                 this._isPrimaryKey = value;
             }
@@ -52,8 +54,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._onFileGroupOrPartitionScheme;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._onFileGroupOrPartitionScheme = value;
             }
         }
@@ -62,6 +65,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._indexType;
             }
+
             set {
                 this._indexType = value;
             }
@@ -71,8 +75,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._fileStreamOn;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._fileStreamOn = value;
             }
         }

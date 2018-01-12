@@ -13,6 +13,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._temporalClauseType;
             }
+
             set {
                 this._temporalClauseType = value;
             }
@@ -22,8 +23,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._startTime;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._startTime = value;
             }
         }
@@ -32,8 +34,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._endTime;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._endTime = value;
             }
         }

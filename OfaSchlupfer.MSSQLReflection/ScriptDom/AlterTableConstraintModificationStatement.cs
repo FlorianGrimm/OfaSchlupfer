@@ -16,6 +16,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._existingRowsCheckEnforcement;
             }
+
             set {
                 this._existingRowsCheckEnforcement = value;
             }
@@ -25,6 +26,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._constraintEnforcement;
             }
+
             set {
                 this._constraintEnforcement = value;
             }
@@ -34,6 +36,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._all;
             }
+
             set {
                 this._all = value;
             }

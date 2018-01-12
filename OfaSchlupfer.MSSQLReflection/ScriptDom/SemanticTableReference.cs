@@ -20,6 +20,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._semanticFunctionType;
             }
+
             set {
                 this._semanticFunctionType = value;
             }
@@ -29,8 +30,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._tableName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._tableName = value;
             }
         }
@@ -45,8 +47,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._sourceKey;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._sourceKey = value;
             }
         }
@@ -55,8 +58,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._matchedColumn;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._matchedColumn = value;
             }
         }
@@ -65,8 +69,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._matchedKey;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._matchedKey = value;
             }
         }

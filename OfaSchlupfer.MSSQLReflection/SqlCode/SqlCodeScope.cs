@@ -14,28 +14,34 @@
         public readonly SqlCodeScope Parent;
         public readonly SqlCodeScope Previous;
         public readonly ModelSqlDatabase ModelDatabase;
+        public readonly bool IsDeclaration;
         public Dictionary<SqlName, ISqlCodeType> Content;
 
-        private SqlCodeScope(string name, SqlCodeScope parent, SqlCodeScope previous, ModelSqlDatabase modelDatabase) {
+        private SqlCodeScope(string name, SqlCodeScope parent, bool isDeclaration, SqlCodeScope previous, ModelSqlDatabase modelDatabase) {
             if ((object)modelDatabase == null) { throw new ArgumentNullException(nameof(modelDatabase)); }
             this.Name = name;
             this.Parent = parent;
             this.Previous = previous;
             this.ModelDatabase = modelDatabase;
+            this.IsDeclaration = isDeclaration;
         }
 
         public static SqlCodeScope CreateRoot(ModelSqlDatabase modelDatabase) {
-            var result = new SqlCodeScope("DB", null, null, modelDatabase);
+            var result = new SqlCodeScope("DB", null, true, null, modelDatabase);
             return result;
         }
 
         public SqlCodeScope CreateChildScope(string name) {
-            var result = new SqlCodeScope(name, this, null, this.ModelDatabase);
+            var result = new SqlCodeScope(name, this, false, null, this.ModelDatabase);
+            return result;
+        }
+        public SqlCodeScope CreateChildDeclarationScope(string name) {
+            var result = new SqlCodeScope(name, this, true, null, this.ModelDatabase);
             return result;
         }
 
         public SqlCodeScope CreateNextScope(string name) {
-            var result = new SqlCodeScope(name, this.Parent, this, this.ModelDatabase);
+            var result = new SqlCodeScope(name, this.Parent, false, this, this.ModelDatabase);
             return result;
         }
 
@@ -74,6 +80,17 @@
                     }
                 }
             }
+            return null;
+        }
+
+        /// <summary>
+        /// Get the scope marked as IsDeclaration
+        /// </summary>
+        /// <returns>the declaration scope or null.</returns>
+        public SqlCodeScope GetDeclarationScope() {
+            if (this.IsDeclaration) { return this; }
+            if (this.Previous != null) { return this.Previous.GetDeclarationScope(); }
+            if (this.Parent != null) { return this.Parent.GetDeclarationScope(); }
             return null;
         }
 

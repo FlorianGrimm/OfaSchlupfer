@@ -20,8 +20,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._name;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._name = value;
             }
         }
@@ -30,8 +31,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._object;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._object = value;
             }
         }
@@ -40,8 +42,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._spatialColumnName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._spatialColumnName = value;
             }
         }
@@ -50,6 +53,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._spatialIndexingScheme;
             }
+
             set {
                 this._spatialIndexingScheme = value;
             }
@@ -65,8 +69,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._onFileGroup;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._onFileGroup = value;
             }
         }

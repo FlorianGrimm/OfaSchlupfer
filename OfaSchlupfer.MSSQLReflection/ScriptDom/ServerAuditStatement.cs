@@ -16,8 +16,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._auditName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._auditName = value;
             }
         }
@@ -26,8 +27,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._auditTarget;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._auditTarget = value;
             }
         }
@@ -42,8 +44,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._predicateExpression;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._predicateExpression = value;
             }
         }

@@ -11,8 +11,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._stopListOption;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._stopListOption = value;
             }
         }
@@ -21,6 +22,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._withNoPopulation;
             }
+
             set {
                 this._withNoPopulation = value;
             }

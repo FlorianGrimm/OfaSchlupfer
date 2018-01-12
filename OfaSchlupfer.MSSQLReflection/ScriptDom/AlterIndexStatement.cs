@@ -18,6 +18,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._all;
             }
+
             set {
                 this._all = value;
             }
@@ -27,6 +28,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._alterIndexType;
             }
+
             set {
                 this._alterIndexType = value;
             }
@@ -36,8 +38,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._partition;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._partition = value;
             }
         }
@@ -52,8 +55,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._xmlNamespaces;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._xmlNamespaces = value;
             }
         }

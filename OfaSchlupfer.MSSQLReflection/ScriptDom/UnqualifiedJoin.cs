@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._unqualifiedJoinType;
             }
+
             set {
                 this._unqualifiedJoinType = value;
             }

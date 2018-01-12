@@ -18,8 +18,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._schemaObjectName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._schemaObjectName = value;
             }
         }
@@ -40,8 +41,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._selectStatement;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._selectStatement = value;
             }
         }
@@ -50,6 +52,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._withCheckOption;
             }
+
             set {
                 this._withCheckOption = value;
             }

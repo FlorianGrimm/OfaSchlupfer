@@ -7,8 +7,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._queryExpression;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._queryExpression = value;
             }
         }

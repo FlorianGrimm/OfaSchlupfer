@@ -14,6 +14,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._triggerEnforcement;
             }
+
             set {
                 this._triggerEnforcement = value;
             }
@@ -23,6 +24,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._all;
             }
+
             set {
                 this._all = value;
             }

@@ -17,8 +17,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._firstExpression;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._firstExpression = value;
             }
         }
@@ -27,8 +28,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._secondExpression;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._secondExpression = value;
             }
         }
@@ -37,6 +39,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._notDefined;
             }
+
             set {
                 this._notDefined = value;
             }
@@ -46,6 +49,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._odbcEscape;
             }
+
             set {
                 this._odbcEscape = value;
             }
@@ -55,8 +59,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._escapeExpression;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._escapeExpression = value;
             }
         }

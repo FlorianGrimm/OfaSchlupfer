@@ -15,6 +15,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._quoteType;
             }
+
             set {
                 this._quoteType = value;
             }

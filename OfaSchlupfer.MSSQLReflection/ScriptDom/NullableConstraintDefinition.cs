@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._nullable;
             }
+
             set {
                 this._nullable = value;
             }

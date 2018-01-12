@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._withGrantOption;
             }
+
             set {
                 this._withGrantOption = value;
             }

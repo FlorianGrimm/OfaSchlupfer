@@ -13,6 +13,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._condition;
             }
+
             set {
                 this._condition = value;
             }
@@ -22,8 +23,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._searchCondition;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._searchCondition = value;
             }
         }
@@ -32,8 +34,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._action;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._action = value;
             }
         }

@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._actionKind;
             }
+
             set {
                 this._actionKind = value;
             }

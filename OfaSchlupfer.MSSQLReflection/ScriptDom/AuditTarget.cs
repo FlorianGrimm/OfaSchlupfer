@@ -12,6 +12,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._targetKind;
             }
+
             set {
                 this._targetKind = value;
             }

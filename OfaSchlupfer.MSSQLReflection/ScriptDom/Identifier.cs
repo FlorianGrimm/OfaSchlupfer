@@ -26,6 +26,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._value;
             }
+
             set {
                 this._value = value;
             }
@@ -35,6 +36,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._quoteType;
             }
+
             set {
                 this._quoteType = value;
             }

@@ -29,16 +29,12 @@ SELECT @hugo;
                 ");
             Assert.IsNotNull(fragment);
 
-            parse.Analyse(fragment, modelDatabase);
-            var scope = ((TSqlScript)fragment).Batches[0].SqlCodeScope;
-            Assert.IsNotNull(scope);
-            Assert.AreEqual("Batch", scope.Name);
-            Assert.IsTrue(scope.HasContent);
-            var hugoType = scope.Resolve("@hugo");
-            Assert.IsNotNull(hugoType);
-            Assert.AreEqual("SqlCodeTypeLazy", hugoType.GetType().Name);
-            Assert.IsNotNull(hugoType.GetResolved());
-            Assert.AreEqual("SqlCodeTypeSingle", hugoType.GetResolved().GetType().Name);
+            var analysis = parse.Analyse(fragment, modelDatabase).FirstOrDefault();
+            Assert.IsNotNull(analysis);
+            var resolved = analysis.DeclarationScope.Resolve("@hugo")?.GetResolved();
+            Assert.IsNotNull(resolved);
+            Assert.AreEqual("SqlCodeTypeSingle", resolved.GetType().Name);
+            Assert.AreEqual("sys.int", ((SqlCodeTypeSingle)resolved).Type.Name.GetQFullName(null));
             //scope.Content.ContainsKey()
         }
 
@@ -50,11 +46,12 @@ SELECT @hugo;
             var fragment = parse.Parse(@"SELECT 42;");
             Assert.IsNotNull(fragment);
 
-            parse.Analyse(fragment, modelDatabase);
+            var analysis = parse.Analyse(fragment, modelDatabase).FirstOrDefault();
+            Assert.IsNotNull(analysis);
 
             var scope = ((TSqlScript)fragment).Batches[0].SqlCodeScope;
             Assert.IsNotNull(scope);
-            Assert.AreEqual("Batch", scope.Name);
+            Assert.AreEqual("TSqlBatch", scope.Name);
             Assert.IsFalse(scope.HasContent);
         }
 
@@ -66,11 +63,12 @@ SELECT @hugo;
             var fragment = parse.Parse(@"SELECT answer = 42;");
             Assert.IsNotNull(fragment);
 
-            parse.Analyse(fragment, modelDatabase);
+            var analysis = parse.Analyse(fragment, modelDatabase).FirstOrDefault();
+            Assert.IsNotNull(analysis);
 
             var scope = ((TSqlScript)fragment).Batches[0].SqlCodeScope;
             Assert.IsNotNull(scope);
-            Assert.AreEqual("Batch", scope.Name);
+            Assert.AreEqual("TSqlBatch", scope.Name);
             Assert.IsFalse(scope.HasContent);
         }
 
@@ -82,11 +80,12 @@ SELECT @hugo;
             var fragment = parse.Parse(@"SELECT 4,2;");
             Assert.IsNotNull(fragment);
 
-            parse.Analyse(fragment, modelDatabase);
+            var analysis = parse.Analyse(fragment, modelDatabase).FirstOrDefault();
+            Assert.IsNotNull(analysis);
 
             var scope = ((TSqlScript)fragment).Batches[0].SqlCodeScope;
             Assert.IsNotNull(scope);
-            Assert.AreEqual("Batch", scope.Name);
+            Assert.AreEqual("TSqlBatch", scope.Name);
             Assert.IsFalse(scope.HasContent);
         }
 
@@ -98,11 +97,12 @@ SELECT @hugo;
             var fragment = parse.Parse(@"SELECT 4 as four,two=2;");
             Assert.IsNotNull(fragment);
 
-            parse.Analyse(fragment, modelDatabase);
+            var analysis = parse.Analyse(fragment, modelDatabase).FirstOrDefault();
+            Assert.IsNotNull(analysis);
 
             var scope = ((TSqlScript)fragment).Batches[0].SqlCodeScope;
             Assert.IsNotNull(scope);
-            Assert.AreEqual("Batch", scope.Name);
+            Assert.AreEqual("TSqlBatch", scope.Name);
             Assert.IsFalse(scope.HasContent);
         }
 
@@ -114,11 +114,12 @@ SELECT @hugo;
             var fragment = parse.Parse(@"SELECT 40;SELECT 42;");
             Assert.IsNotNull(fragment);
 
-            parse.Analyse(fragment, modelDatabase);
+            var analysis = parse.Analyse(fragment, modelDatabase).FirstOrDefault();
+            Assert.IsNotNull(analysis);
 
             var scope = ((TSqlScript)fragment).Batches[0].SqlCodeScope;
             Assert.IsNotNull(scope);
-            Assert.AreEqual("Batch", scope.Name);
+            Assert.AreEqual("TSqlBatch", scope.Name);
             Assert.IsFalse(scope.HasContent);
         }
 
@@ -130,11 +131,12 @@ SELECT @hugo;
             var fragment = parse.Parse(@"SELECT nv.idx, nv.Name FROM dbo.NameValue nv;");
             Assert.IsNotNull(fragment);
 
-            parse.Analyse(fragment, modelDatabase);
+            var analysis = parse.Analyse(fragment, modelDatabase).FirstOrDefault();
+            Assert.IsNotNull(analysis);
 
             var scope = ((TSqlScript)fragment).Batches[0].SqlCodeScope;
             Assert.IsNotNull(scope);
-            Assert.AreEqual("Batch", scope.Name);
+            Assert.AreEqual("TSqlBatch", scope.Name);
             Assert.IsFalse(scope.HasContent);
         }
 
@@ -146,11 +148,12 @@ SELECT @hugo;
             var fragment = parse.Parse(@"SELECT nv.[idx], nv.[Name] FROM dbo.NameValue nv;");
             Assert.IsNotNull(fragment);
 
-            parse.Analyse(fragment, modelDatabase);
+            var analysis = parse.Analyse(fragment, modelDatabase).FirstOrDefault();
+            Assert.IsNotNull(analysis);
 
             var scope = ((TSqlScript)fragment).Batches[0].SqlCodeScope;
             Assert.IsNotNull(scope);
-            Assert.AreEqual("Batch", scope.Name);
+            Assert.AreEqual("TSqlBatch", scope.Name);
             Assert.IsFalse(scope.HasContent);
         }
 
@@ -162,11 +165,12 @@ SELECT @hugo;
             var fragment = parse.Parse(@"SELECT idx, Name FROM dbo.NameValue;");
             Assert.IsNotNull(fragment);
 
-            parse.Analyse(fragment, modelDatabase);
+            var analysis = parse.Analyse(fragment, modelDatabase).FirstOrDefault();
+            Assert.IsNotNull(analysis);
 
             var scope = ((TSqlScript)fragment).Batches[0].SqlCodeScope;
             Assert.IsNotNull(scope);
-            Assert.AreEqual("Batch", scope.Name);
+            Assert.AreEqual("TSqlBatch", scope.Name);
             Assert.IsFalse(scope.HasContent);
         }
 
@@ -178,11 +182,12 @@ SELECT @hugo;
             var fragment = parse.Parse(@"SELECT [idx], [Name] FROM dbo.NameValue;");
             Assert.IsNotNull(fragment);
 
-            parse.Analyse(fragment, modelDatabase);
+            var analysis = parse.Analyse(fragment, modelDatabase).FirstOrDefault();
+            Assert.IsNotNull(analysis);
 
             var scope = ((TSqlScript)fragment).Batches[0].SqlCodeScope;
             Assert.IsNotNull(scope);
-            Assert.AreEqual("Batch", scope.Name);
+            Assert.AreEqual("TSqlBatch", scope.Name);
             Assert.IsFalse(scope.HasContent);
         }
 
@@ -200,11 +205,12 @@ DROP TABLE #x;
 ");
             Assert.IsNotNull(fragment);
 
-            parse.Analyse(fragment, modelDatabase);
+            var analysis = parse.Analyse(fragment, modelDatabase).FirstOrDefault();
+            Assert.IsNotNull(analysis);
 
             var scope = ((TSqlScript)fragment).Batches[0].SqlCodeScope;
             Assert.IsNotNull(scope);
-            Assert.AreEqual("Batch", scope.Name);
+            Assert.AreEqual("TSqlBatch", scope.Name);
             Assert.IsFalse(scope.HasContent);
         }
 

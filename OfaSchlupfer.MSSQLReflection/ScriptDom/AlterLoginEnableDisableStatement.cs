@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isEnable;
             }
+
             set {
                 this._isEnable = value;
             }

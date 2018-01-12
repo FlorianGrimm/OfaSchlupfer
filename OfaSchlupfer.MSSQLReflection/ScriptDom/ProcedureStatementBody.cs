@@ -14,8 +14,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._procedureReference;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._procedureReference = value;
             }
         }
@@ -24,6 +25,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isForReplication;
             }
+
             set {
                 this._isForReplication = value;
             }

@@ -16,6 +16,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isCounter;
             }
+
             set {
                 this._isCounter = value;
             }
@@ -25,6 +26,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._elementKind;
             }
+
             set {
                 this._elementKind = value;
             }
@@ -34,8 +36,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._element;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._element = value;
             }
         }

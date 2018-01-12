@@ -15,6 +15,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isLargeObject;
             }
+
             set {
                 this._isLargeObject = value;
             }

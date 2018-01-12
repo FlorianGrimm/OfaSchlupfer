@@ -87,6 +87,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._quotedIdentifier;
             }
+
             set {
                 this._quotedIdentifier = value;
             }

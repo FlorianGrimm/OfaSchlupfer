@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._sqlDataTypeOption;
             }
+
             set {
                 this._sqlDataTypeOption = value;
             }

@@ -15,8 +15,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._expression;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._expression = value;
             }
         }
@@ -25,6 +26,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._comparisonType;
             }
+
             set {
                 this._comparisonType = value;
             }
@@ -34,8 +36,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._subquery;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._subquery = value;
             }
         }
@@ -44,6 +47,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._subqueryComparisonPredicateType;
             }
+
             set {
                 this._subqueryComparisonPredicateType = value;
             }

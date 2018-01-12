@@ -15,6 +15,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._system;
             }
+
             set {
                 this._system = value;
             }
@@ -24,8 +25,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._sampleNumber;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._sampleNumber = value;
             }
         }
@@ -34,6 +36,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._tableSampleClauseOption;
             }
+
             set {
                 this._tableSampleClauseOption = value;
             }
@@ -43,8 +46,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._repeatSeed;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._repeatSeed = value;
             }
         }

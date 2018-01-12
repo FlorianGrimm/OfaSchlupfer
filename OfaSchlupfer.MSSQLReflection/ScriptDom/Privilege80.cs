@@ -18,6 +18,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._privilegeType80;
             }
+
             set {
                 this._privilegeType80 = value;
             }

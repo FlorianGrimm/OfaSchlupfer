@@ -13,8 +13,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._certificateSource;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._certificateSource = value;
             }
         }
@@ -29,8 +30,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._owner;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._owner = value;
             }
         }

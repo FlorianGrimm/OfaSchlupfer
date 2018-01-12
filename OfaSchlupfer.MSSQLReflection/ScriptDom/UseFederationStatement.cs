@@ -15,8 +15,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._federationName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._federationName = value;
             }
         }
@@ -25,8 +26,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._distributionName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._distributionName = value;
             }
         }
@@ -35,8 +37,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._value;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._value = value;
             }
         }
@@ -45,6 +48,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._filtering;
             }
+
             set {
                 this._filtering = value;
             }

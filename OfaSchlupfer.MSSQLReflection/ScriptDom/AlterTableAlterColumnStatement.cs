@@ -30,8 +30,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._columnIdentifier;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._columnIdentifier = value;
             }
         }
@@ -40,8 +41,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._dataType;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._dataType = value;
             }
         }
@@ -50,6 +52,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._alterTableAlterColumnOption;
             }
+
             set {
                 this._alterTableAlterColumnOption = value;
             }
@@ -59,8 +62,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._storageOptions;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._storageOptions = value;
             }
         }
@@ -75,6 +79,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._generatedAlways;
             }
+
             set {
                 this._generatedAlways = value;
             }
@@ -84,6 +89,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isHidden;
             }
+
             set {
                 this._isHidden = value;
             }
@@ -93,8 +99,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._encryption;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._encryption = value;
             }
         }
@@ -103,8 +110,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._collation;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._collation = value;
             }
         }
@@ -113,6 +121,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isMasked;
             }
+
             set {
                 this._isMasked = value;
             }
@@ -122,8 +131,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._maskingFunction;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._maskingFunction = value;
             }
         }

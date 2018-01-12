@@ -15,6 +15,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._primary;
             }
+
             set {
                 this._primary = value;
             }
@@ -24,8 +25,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._xmlColumn;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._xmlColumn = value;
             }
         }
@@ -34,8 +36,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._secondaryXmlIndexName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._secondaryXmlIndexName = value;
             }
         }
@@ -44,6 +47,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._secondaryXmlIndexType;
             }
+
             set {
                 this._secondaryXmlIndexType = value;
             }

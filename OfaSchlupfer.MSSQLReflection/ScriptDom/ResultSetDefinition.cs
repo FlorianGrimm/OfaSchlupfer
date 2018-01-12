@@ -7,6 +7,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._resultSetType;
             }
+
             set {
                 this._resultSetType = value;
             }

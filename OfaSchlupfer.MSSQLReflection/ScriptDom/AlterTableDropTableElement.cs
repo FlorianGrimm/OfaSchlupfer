@@ -16,6 +16,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._tableElementType;
             }
+
             set {
                 this._tableElementType = value;
             }
@@ -25,8 +26,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._name;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._name = value;
             }
         }
@@ -41,6 +43,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isIfExists;
             }
+
             set {
                 this._isIfExists = value;
             }

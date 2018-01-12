@@ -17,6 +17,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isNational;
             }
+
             set {
                 this._isNational = value;
             }
@@ -26,6 +27,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isLargeObject;
             }
+
             set {
                 this._isLargeObject = value;
             }

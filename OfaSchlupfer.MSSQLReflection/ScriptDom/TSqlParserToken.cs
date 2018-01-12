@@ -18,6 +18,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._tokenType;
             }
+
             set {
                 this._tokenType = value;
             }
@@ -27,6 +28,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._convertStringToIdentifier;
             }
+
             set {
                 this._convertStringToIdentifier = value;
             }
@@ -36,6 +38,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._offset;
             }
+
             set {
                 this._offset = value;
             }
@@ -45,6 +48,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._line;
             }
+
             set {
                 this._line = value;
             }
@@ -54,6 +58,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._column;
             }
+
             set {
                 this._column = value;
             }
@@ -63,6 +68,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._text;
             }
+
             set {
                 this._text = value;
             }
@@ -78,6 +84,7 @@ namespace OfaSchlupfer.ScriptDom {
                 }
                 return (int)this._tokenType;
             }
+
             set {
                 if (this._tokenType != TSqlTokenType.AsciiStringOrQuotedIdentifier) {
                     this._tokenType = (TSqlTokenType)value;

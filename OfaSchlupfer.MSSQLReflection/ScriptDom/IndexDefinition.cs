@@ -24,8 +24,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._name;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._name = value;
             }
         }
@@ -34,6 +35,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._unique;
             }
+
             set {
                 this._unique = value;
             }
@@ -43,6 +45,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._indexType;
             }
+
             set {
                 this._indexType = value;
             }
@@ -64,8 +67,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._onFileGroupOrPartitionScheme;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._onFileGroupOrPartitionScheme = value;
             }
         }
@@ -74,8 +78,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._filterPredicate;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._filterPredicate = value;
             }
         }
@@ -84,8 +89,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._fileStreamOn;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._fileStreamOn = value;
             }
         }

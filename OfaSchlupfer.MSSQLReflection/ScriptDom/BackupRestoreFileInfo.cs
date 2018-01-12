@@ -18,6 +18,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._itemKind;
             }
+
             set {
                 this._itemKind = value;
             }

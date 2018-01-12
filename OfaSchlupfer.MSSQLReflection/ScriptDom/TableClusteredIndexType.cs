@@ -18,6 +18,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._columnStore;
             }
+
             set {
                 this._columnStore = value;
             }

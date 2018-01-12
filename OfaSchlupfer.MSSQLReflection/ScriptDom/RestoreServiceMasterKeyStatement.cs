@@ -9,6 +9,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isForce;
             }
+
             set {
                 this._isForce = value;
             }

@@ -13,8 +13,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._identitySeed;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._identitySeed = value;
             }
         }
@@ -23,8 +24,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._identityIncrement;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._identityIncrement = value;
             }
         }
@@ -33,6 +35,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isIdentityNotForReplication;
             }
+
             set {
                 this._isIdentityNotForReplication = value;
             }

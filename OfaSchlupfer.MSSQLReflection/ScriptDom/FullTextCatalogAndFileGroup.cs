@@ -13,8 +13,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._catalogName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._catalogName = value;
             }
         }
@@ -23,8 +24,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._fileGroupName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._fileGroupName = value;
             }
         }
@@ -33,6 +35,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._fileGroupIsFirst;
             }
+
             set {
                 this._fileGroupIsFirst = value;
             }

@@ -15,8 +15,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._leftNode;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._leftNode = value;
             }
         }
@@ -25,8 +26,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._edge;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._edge = value;
             }
         }
@@ -35,8 +37,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._rightNode;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._rightNode = value;
             }
         }
@@ -45,6 +48,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._arrowOnRight;
             }
+
             set {
                 this._arrowOnRight = value;
             }

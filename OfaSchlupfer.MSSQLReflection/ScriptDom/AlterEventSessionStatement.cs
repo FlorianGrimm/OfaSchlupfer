@@ -13,6 +13,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._statementType;
             }
+
             set {
                 this._statementType = value;
             }

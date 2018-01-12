@@ -17,6 +17,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._bulk;
             }
+
             set {
                 this._bulk = value;
             }
@@ -26,8 +27,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._column;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._column = value;
             }
         }
@@ -36,8 +38,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._textId;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._textId = value;
             }
         }
@@ -46,8 +49,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._timestamp;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._timestamp = value;
             }
         }
@@ -56,6 +60,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._withLog;
             }
+
             set {
                 this._withLog = value;
             }

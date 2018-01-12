@@ -16,8 +16,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._sourcePartitionNumber;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._sourcePartitionNumber = value;
             }
         }
@@ -26,8 +27,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._targetPartitionNumber;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._targetPartitionNumber = value;
             }
         }
@@ -36,8 +38,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._targetTable;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._targetTable = value;
             }
         }

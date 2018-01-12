@@ -12,6 +12,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._processAffinity;
             }
+
             set {
                 this._processAffinity = value;
             }

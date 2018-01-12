@@ -12,6 +12,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isDefaultValues;
             }
+
             set {
                 this._isDefaultValues = value;
             }

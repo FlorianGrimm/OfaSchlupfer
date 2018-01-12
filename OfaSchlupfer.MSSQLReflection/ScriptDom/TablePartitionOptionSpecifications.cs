@@ -12,6 +12,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._range;
             }
+
             set {
                 this._range = value;
             }

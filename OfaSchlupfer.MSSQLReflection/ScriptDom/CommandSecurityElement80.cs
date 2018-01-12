@@ -11,6 +11,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._all;
             }
+
             set {
                 this._all = value;
             }
@@ -20,6 +21,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._commandOptions;
             }
+
             set {
                 this._commandOptions = value;
             }

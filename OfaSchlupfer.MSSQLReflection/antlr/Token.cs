@@ -19,6 +19,7 @@ namespace antlr {
             get {
                 return this.type_;
             }
+
             set {
                 this.type_ = value;
             }

@@ -17,6 +17,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._odbcLiteralType;
             }
+
             set {
                 this._odbcLiteralType = value;
             }
@@ -26,6 +27,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._isNational;
             }
+
             set {
                 this._isNational = value;
             }

@@ -16,6 +16,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._auditState;
             }
+
             set {
                 this._auditState = value;
             }
@@ -31,8 +32,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._specificationName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._specificationName = value;
             }
         }
@@ -41,8 +43,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._auditName;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._auditName = value;
             }
         }

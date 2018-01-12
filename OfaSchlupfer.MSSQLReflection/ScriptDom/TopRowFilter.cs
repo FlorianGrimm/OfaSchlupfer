@@ -13,8 +13,9 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._expression;
             }
+
             set {
-                base.UpdateTokenInfo(value);
+                this.UpdateTokenInfo(value);
                 this._expression = value;
             }
         }
@@ -23,6 +24,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._percent;
             }
+
             set {
                 this._percent = value;
             }
@@ -32,6 +34,7 @@ namespace OfaSchlupfer.ScriptDom {
             get {
                 return this._withTies;
             }
+
             set {
                 this._withTies = value;
             }
