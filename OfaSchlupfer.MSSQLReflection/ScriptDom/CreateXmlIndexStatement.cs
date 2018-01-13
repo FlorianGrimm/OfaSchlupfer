@@ -1,5 +1,3 @@
-using System;
-
 namespace OfaSchlupfer.ScriptDom {
     [System.Serializable]
     public sealed class CreateXmlIndexStatement : IndexStatement {
@@ -64,7 +62,7 @@ namespace OfaSchlupfer.ScriptDom {
             }
             this.XmlColumn?.Accept(visitor);
             this.SecondaryXmlIndexName?.Accept(visitor);
-            for (int i=0, count = base.IndexOptions.Count; i < count; i++) {
+            for (int i = 0, count = base.IndexOptions.Count; i < count; i++) {
                 base.IndexOptions[i].Accept(visitor);
             }
         }

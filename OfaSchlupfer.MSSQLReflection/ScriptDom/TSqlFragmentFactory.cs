@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+
     [System.Serializable]
     internal class TSqlFragmentFactory {
         private IList<TSqlParserToken> _tokenStream;

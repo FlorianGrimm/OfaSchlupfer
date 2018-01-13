@@ -1,12 +1,12 @@
 #pragma warning disable CA2214
 
-using antlr;
-using antlr.collections.impl;
-using System;
-using System.Collections;
-using System.IO;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System;
+    using System.Collections;
+    using System.IO;
+    using antlr;
+    using antlr.collections.impl;
+
     internal class TSql90LexerInternal : TSqlLexerBaseInternal, TokenStream {
         public const int EOF = 1;
 

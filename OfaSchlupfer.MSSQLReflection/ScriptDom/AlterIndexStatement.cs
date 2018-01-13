@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class AlterIndexStatement : IndexStatement {
         private bool _all;
@@ -71,7 +70,7 @@ namespace OfaSchlupfer.ScriptDom {
             if (base.OnName != null) {
                 base.OnName.Accept(visitor);
             }
-            for (int i=0, count = base.IndexOptions.Count; i < count; i++) {
+            for (int i = 0, count = base.IndexOptions.Count; i < count; i++) {
                 base.IndexOptions[i].Accept(visitor);
             }
             this.Partition?.Accept(visitor);

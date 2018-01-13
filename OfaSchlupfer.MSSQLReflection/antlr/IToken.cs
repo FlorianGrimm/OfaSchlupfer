@@ -1,27 +1,29 @@
-namespace antlr
-{
-	internal interface IToken
-	{
-		int Type
-		{
-			get;
-			set;
-		}
+#pragma warning disable SA1600 // Elements must be documented
+#pragma warning disable SA1307 // Accessible fields must begin with upper-case letter
+#pragma warning disable SA1300 // Element must begin with upper-case letter
+#pragma warning disable SA1602 // Enumeration items must be documented
 
-		int getColumn();
+namespace antlr {
+    internal interface IToken {
+        int Type {
+            get;
+            set;
+        }
 
-		void setColumn(int c);
+        int getColumn();
 
-		int getLine();
+        void setColumn(int c);
 
-		void setLine(int l);
+        int getLine();
 
-		string getFilename();
+        void setLine(int l);
 
-		void setFilename(string name);
+        string getFilename();
 
-		string getText();
+        void setFilename(string name);
 
-		void setText(string t);
-	}
+        string getText();
+
+        void setText(string t);
+    }
 }

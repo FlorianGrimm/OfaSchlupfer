@@ -1,6 +1,4 @@
-using System;
-
 namespace OfaSchlupfer.ScriptDom {
     [System.Serializable]
-    public abstract class OptionValue : TSqlFragment {    }
+    public abstract class OptionValue : TSqlFragment { }
 }

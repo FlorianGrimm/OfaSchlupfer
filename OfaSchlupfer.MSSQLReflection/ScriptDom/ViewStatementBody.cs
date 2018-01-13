@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class ViewStatementBody : TSqlStatement {
         private SchemaObjectName _schemaObjectName;
@@ -60,7 +59,7 @@ namespace OfaSchlupfer.ScriptDom {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.SchemaObjectName?.Accept(visitor);
-            for (int i=0, count = this.Columns.Count; i < count; i++) {
+            for (int i = 0, count = this.Columns.Count; i < count; i++) {
                 this.Columns[i].Accept(visitor);
             }
             int j = 0;

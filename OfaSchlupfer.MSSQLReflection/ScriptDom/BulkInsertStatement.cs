@@ -1,5 +1,3 @@
-using System;
-
 namespace OfaSchlupfer.ScriptDom {
     [System.Serializable]
     public sealed class BulkInsertStatement : BulkInsertBase {
@@ -23,7 +21,7 @@ namespace OfaSchlupfer.ScriptDom {
                 base.To.Accept(visitor);
             }
             this.From?.Accept(visitor);
-            for (int i=0, count = base.Options.Count; i < count; i++) {
+            for (int i = 0, count = base.Options.Count; i < count; i++) {
                 base.Options[i].Accept(visitor);
             }
         }

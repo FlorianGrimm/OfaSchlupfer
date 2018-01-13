@@ -10,9 +10,9 @@
 SELECT o.name, o.object_id, o.schema_id, o.parent_object_id, o.type, o.create_date, o.modify_date, m.definition, sn.base_object_name
 FROM sys.objects o
 LEFT JOIN sys.sql_modules m
-	ON o.object_id = m.object_id
+    ON o.object_id = m.object_id
 LEFT JOIN sys.synonyms sn
-	ON o.object_id = sn.object_id
+    ON o.object_id = sn.object_id
 WHERE (o.object_id>0) AND (o.is_ms_shipped=0)
 ;
         ";

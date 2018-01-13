@@ -1,18 +1,17 @@
-using System;
-using System.Runtime.Serialization;
+#pragma warning disable SA1300 // Element must begin with upper-case letter
+#pragma warning disable SA1307 // Accessible fields must begin with upper-case letter
+#pragma warning disable SA1600 // Elements must be documented
 
-namespace antlr
-{
-	[System.Serializable]
-	internal class TokenStreamRetryException : TokenStreamException
-	{
-		public TokenStreamRetryException()
-		{
-		}
+namespace antlr {
+    using System.Runtime.Serialization;
 
-		protected TokenStreamRetryException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-		}
-	}
+    [System.Serializable]
+    internal class TokenStreamRetryException : TokenStreamException {
+        public TokenStreamRetryException() {
+        }
+
+        protected TokenStreamRetryException(SerializationInfo info, StreamingContext context)
+            : base(info, context) {
+        }
+    }
 }

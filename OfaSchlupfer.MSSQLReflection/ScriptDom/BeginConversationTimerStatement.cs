@@ -1,5 +1,3 @@
-using System;
-
 namespace OfaSchlupfer.ScriptDom {
     [System.Serializable]
     public sealed class BeginConversationTimerStatement : TSqlStatement {

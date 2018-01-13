@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class AlterDatabaseAddFileStatement : AlterDatabaseStatement {
         private List<FileDeclaration> _fileDeclarations = new List<FileDeclaration>();

@@ -1,7 +1,7 @@
-using System;
-using System.Runtime.Serialization;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System;
+    using System.Runtime.Serialization;
+
     [System.Serializable]
     internal sealed class TSqlParseErrorException : Exception {
         private ParseError _parseError;

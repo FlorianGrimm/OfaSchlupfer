@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace OfaSchlupfer.ScriptDom {
@@ -56,7 +55,7 @@ namespace OfaSchlupfer.ScriptDom {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.SchemaObject?.Accept(visitor);
             base.AcceptChildren(visitor);
-            for (int i=0, count = this.TableHints.Count; i < count; i++) {
+            for (int i = 0, count = this.TableHints.Count; i < count; i++) {
                 this.TableHints[i].Accept(visitor);
             }
             this.TableSampleClause?.Accept(visitor);

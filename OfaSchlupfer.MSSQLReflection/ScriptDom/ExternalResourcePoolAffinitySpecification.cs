@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace OfaSchlupfer.ScriptDom {
@@ -53,7 +52,7 @@ namespace OfaSchlupfer.ScriptDom {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.ParameterValue?.Accept(visitor);
-            for (int i=0, count = this.PoolAffinityRanges.Count; i < count; i++) {
+            for (int i = 0, count = this.PoolAffinityRanges.Count; i < count; i++) {
                 this.PoolAffinityRanges[i].Accept(visitor);
             }
             base.AcceptChildren(visitor);

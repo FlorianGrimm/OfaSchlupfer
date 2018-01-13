@@ -1,37 +1,34 @@
-using antlr.collections.impl;
+#pragma warning disable SA1300 // Element must begin with upper-case letter
+#pragma warning disable SA1307 // Accessible fields must begin with upper-case letter
+#pragma warning disable SA1600 // Elements must be documented
 
-namespace antlr
-{
-	internal class TokenStreamBasicFilter : TokenStream
-	{
-		protected internal BitSet discardMask;
+namespace antlr {
+    using antlr.collections.impl;
 
-		protected internal TokenStream input;
+    internal class TokenStreamBasicFilter : TokenStream {
+        protected internal BitSet discardMask;
 
-		public TokenStreamBasicFilter(TokenStream input)
-		{
-			this.input = input;
-			this.discardMask = new BitSet();
-		}
+        protected internal TokenStream input;
 
-		public virtual void discard(int ttype)
-		{
-			this.discardMask.add(ttype);
-		}
+        public TokenStreamBasicFilter(TokenStream input) {
+            this.input = input;
+            this.discardMask = new BitSet();
+        }
 
-		public virtual void discard(BitSet mask)
-		{
-			this.discardMask = mask;
-		}
+        public virtual void discard(int ttype) {
+            this.discardMask.add(ttype);
+        }
 
-		public virtual IToken nextToken()
-		{
-			IToken token = this.input.nextToken();
-			while (token != null && this.discardMask.member(token.Type))
-			{
-				token = this.input.nextToken();
-			}
-			return token;
-		}
-	}
+        public virtual void discard(BitSet mask) {
+            this.discardMask = mask;
+        }
+
+        public virtual IToken nextToken() {
+            IToken token = this.input.nextToken();
+            while (token != null && this.discardMask.member(token.Type)) {
+                token = this.input.nextToken();
+            }
+            return token;
+        }
+    }
 }

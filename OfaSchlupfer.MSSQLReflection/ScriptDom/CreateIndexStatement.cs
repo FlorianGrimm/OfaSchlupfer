@@ -1,163 +1,134 @@
-using System;
-using System.Collections.Generic;
+#pragma warning disable SA1600 // Elements must be documented
+#pragma warning disable SA1307 // Accessible fields must begin with upper-case letter
+#pragma warning disable SA1300 // Element must begin with upper-case letter
+#pragma warning disable SA1602 // Enumeration items must be documented
 
-namespace OfaSchlupfer.ScriptDom
-{
-	[System.Serializable]
-	public sealed class CreateIndexStatement : IndexStatement, IFileStreamSpecifier
-	{
-		private bool _translated80SyntaxTo90;
+namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
 
-		private bool _unique;
+    [System.Serializable]
+    public sealed class CreateIndexStatement : IndexStatement, IFileStreamSpecifier {
+        private bool _translated80SyntaxTo90;
 
-		private bool? _clustered;
+        private bool _unique;
 
-		private List<ColumnWithSortOrder> _columns = new List<ColumnWithSortOrder>();
+        private bool? _clustered;
 
-		private List<ColumnReferenceExpression> _includeColumns = new List<ColumnReferenceExpression>();
+        private List<ColumnWithSortOrder> _columns = new List<ColumnWithSortOrder>();
 
-		private FileGroupOrPartitionScheme _onFileGroupOrPartitionScheme;
+        private List<ColumnReferenceExpression> _includeColumns = new List<ColumnReferenceExpression>();
 
-		private BooleanExpression _filterPredicate;
+        private FileGroupOrPartitionScheme _onFileGroupOrPartitionScheme;
 
-		private IdentifierOrValueExpression _fileStreamOn;
+        private BooleanExpression _filterPredicate;
 
-		public bool Translated80SyntaxTo90
-		{
-			get
-			{
-				return this._translated80SyntaxTo90;
-			}
-			set
-			{
-				this._translated80SyntaxTo90 = value;
-			}
-		}
+        private IdentifierOrValueExpression _fileStreamOn;
 
-		public bool Unique
-		{
-			get
-			{
-				return this._unique;
-			}
-			set
-			{
-				this._unique = value;
-			}
-		}
+        public bool Translated80SyntaxTo90 {
+            get {
+                return this._translated80SyntaxTo90;
+            }
 
-		public bool? Clustered
-		{
-			get
-			{
-				return this._clustered;
-			}
-			set
-			{
-				this._clustered = value;
-			}
-		}
+            set {
+                this._translated80SyntaxTo90 = value;
+            }
+        }
 
-		public List<ColumnWithSortOrder> Columns
-		{
-			get
-			{
-				return this._columns;
-			}
-		}
+        public bool Unique {
+            get {
+                return this._unique;
+            }
 
-		public List<ColumnReferenceExpression> IncludeColumns
-		{
-			get
-			{
-				return this._includeColumns;
-			}
-		}
+            set {
+                this._unique = value;
+            }
+        }
 
-		public FileGroupOrPartitionScheme OnFileGroupOrPartitionScheme
-		{
-			get
-			{
-				return this._onFileGroupOrPartitionScheme;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._onFileGroupOrPartitionScheme = value;
-			}
-		}
+        public bool? Clustered {
+            get {
+                return this._clustered;
+            }
 
-		public BooleanExpression FilterPredicate
-		{
-			get
-			{
-				return this._filterPredicate;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._filterPredicate = value;
-			}
-		}
+            set {
+                this._clustered = value;
+            }
+        }
 
-		public IdentifierOrValueExpression FileStreamOn
-		{
-			get
-			{
-				return this._fileStreamOn;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._fileStreamOn = value;
-			}
-		}
+        public List<ColumnWithSortOrder> Columns {
+            get {
+                return this._columns;
+            }
+        }
 
-		public override void Accept(TSqlFragmentVisitor visitor)
-		{
-			if (visitor != null)
-			{
-				visitor.ExplicitVisit(this);
-			}
-		}
+        public List<ColumnReferenceExpression> IncludeColumns {
+            get {
+                return this._includeColumns;
+            }
+        }
 
-		public override void AcceptChildren(TSqlFragmentVisitor visitor)
-		{
-			if (base.Name != null)
-			{
-				base.Name.Accept(visitor);
-			}
-			if (base.OnName != null)
-			{
-				base.OnName.Accept(visitor);
-			}
-			int i = 0;
-			for (int count = this.Columns.Count; i < count; i++)
-			{
-				this.Columns[i].Accept(visitor);
-			}
-			int j = 0;
-			for (int count2 = this.IncludeColumns.Count; j < count2; j++)
-			{
-				this.IncludeColumns[j].Accept(visitor);
-			}
-			int k = 0;
-			for (int count3 = base.IndexOptions.Count; k < count3; k++)
-			{
-				base.IndexOptions[k].Accept(visitor);
-			}
-			if (this.OnFileGroupOrPartitionScheme != null)
-			{
-				this.OnFileGroupOrPartitionScheme.Accept(visitor);
-			}
-			if (this.FilterPredicate != null)
-			{
-				this.FilterPredicate.Accept(visitor);
-			}
-			if (this.FileStreamOn != null)
-			{
-				this.FileStreamOn.Accept(visitor);
-			}
-		}
-	}
+        public FileGroupOrPartitionScheme OnFileGroupOrPartitionScheme {
+            get {
+                return this._onFileGroupOrPartitionScheme;
+            }
+
+            set {
+                this.UpdateTokenInfo(value);
+                this._onFileGroupOrPartitionScheme = value;
+            }
+        }
+
+        public BooleanExpression FilterPredicate {
+            get {
+                return this._filterPredicate;
+            }
+
+            set {
+                this.UpdateTokenInfo(value);
+                this._filterPredicate = value;
+            }
+        }
+
+        public IdentifierOrValueExpression FileStreamOn {
+            get {
+                return this._fileStreamOn;
+            }
+
+            set {
+                this.UpdateTokenInfo(value);
+                this._fileStreamOn = value;
+            }
+        }
+
+        public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+
+        public override void AcceptChildren(TSqlFragmentVisitor visitor) {
+            if (base.Name != null) {
+                base.Name.Accept(visitor);
+            }
+            if (base.OnName != null) {
+                base.OnName.Accept(visitor);
+            }
+            int i = 0;
+            for (int count = this.Columns.Count; i < count; i++) {
+                this.Columns[i].Accept(visitor);
+            }
+            int j = 0;
+            for (int count2 = this.IncludeColumns.Count; j < count2; j++) {
+                this.IncludeColumns[j].Accept(visitor);
+            }
+            int k = 0;
+            for (int count3 = base.IndexOptions.Count; k < count3; k++) {
+                base.IndexOptions[k].Accept(visitor);
+            }
+            if (this.OnFileGroupOrPartitionScheme != null) {
+                this.OnFileGroupOrPartitionScheme.Accept(visitor);
+            }
+            if (this.FilterPredicate != null) {
+                this.FilterPredicate.Accept(visitor);
+            }
+            if (this.FileStreamOn != null) {
+                this.FileStreamOn.Accept(visitor);
+            }
+        }
+    }
 }

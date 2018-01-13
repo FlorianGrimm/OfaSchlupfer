@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace OfaSchlupfer.ScriptDom {
@@ -42,7 +41,7 @@ namespace OfaSchlupfer.ScriptDom {
             if (base.SchemaObjectName != null) {
                 base.SchemaObjectName.Accept(visitor);
             }
-            for (int i=0, count = this.TriggerNames.Count; i < count; i++) {
+            for (int i = 0, count = this.TriggerNames.Count; i < count; i++) {
                 this.TriggerNames[i].Accept(visitor);
             }
         }

@@ -1,68 +1,40 @@
-using System;
+namespace OfaSchlupfer.ScriptDom {
+    [System.Serializable]
+    public sealed class DropSchemaStatement : TSqlStatement {
+        private SchemaObjectName _schema;
 
-namespace OfaSchlupfer.ScriptDom
-{
-	[System.Serializable]
-	public sealed class DropSchemaStatement : TSqlStatement
-	{
-		private SchemaObjectName _schema;
+        private DropSchemaBehavior _dropBehavior;
 
-		private DropSchemaBehavior _dropBehavior;
+        public SchemaObjectName Schema {
+            get {
+                return this._schema;
+            }
 
-		private bool _isIfExists;
+            set {
+                this.UpdateTokenInfo(value);
+                this._schema = value;
+            }
+        }
 
-		public SchemaObjectName Schema
-		{
-			get
-			{
-				return this._schema;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._schema = value;
-			}
-		}
+        public DropSchemaBehavior DropBehavior {
+            get {
+                return this._dropBehavior;
+            }
 
-		public DropSchemaBehavior DropBehavior
-		{
-			get
-			{
-				return this._dropBehavior;
-			}
-			set
-			{
-				this._dropBehavior = value;
-			}
-		}
+            set {
+                this._dropBehavior = value;
+            }
+        }
 
-		public bool IsIfExists
-		{
-			get
-			{
-				return this._isIfExists;
-			}
-			set
-			{
-				this._isIfExists = value;
-			}
-		}
+        public bool IsIfExists { get; set; }
 
-		public override void Accept(TSqlFragmentVisitor visitor)
-		{
-			if (visitor != null)
-			{
-				visitor.ExplicitVisit(this);
-			}
-		}
+        public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
-		public override void AcceptChildren(TSqlFragmentVisitor visitor)
-		{
-			if (this.Schema != null)
-			{
-				this.Schema.Accept(visitor);
-			}
-			base.AcceptChildren(visitor);
-		}
-	}
+        public override void AcceptChildren(TSqlFragmentVisitor visitor) {
+            if (this.Schema != null) {
+                this.Schema.Accept(visitor);
+            }
+            base.AcceptChildren(visitor);
+        }
+    }
 }

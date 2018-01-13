@@ -1,89 +1,52 @@
-using System;
-using System.Collections.Generic;
+namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+    [System.Serializable]
+    public sealed class CreatePartitionSchemeStatement : TSqlStatement {
+        private Identifier _name;
 
-namespace OfaSchlupfer.ScriptDom
-{
-	[System.Serializable]
-	public sealed class CreatePartitionSchemeStatement : TSqlStatement
-	{
-		private Identifier _name;
+        private Identifier _partitionFunction;
 
-		private Identifier _partitionFunction;
 
-		private bool _isAll;
+        public Identifier Name {
+            get {
+                return this._name;
+            }
 
-		private List<IdentifierOrValueExpression> _fileGroups = new List<IdentifierOrValueExpression>();
+            set {
+                this.UpdateTokenInfo(value);
+                this._name = value;
+            }
+        }
 
-		public Identifier Name
-		{
-			get
-			{
-				return this._name;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._name = value;
-			}
-		}
+        public Identifier PartitionFunction {
+            get {
+                return this._partitionFunction;
+            }
 
-		public Identifier PartitionFunction
-		{
-			get
-			{
-				return this._partitionFunction;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._partitionFunction = value;
-			}
-		}
+            set {
+                this.UpdateTokenInfo(value);
+                this._partitionFunction = value;
+            }
+        }
 
-		public bool IsAll
-		{
-			get
-			{
-				return this._isAll;
-			}
-			set
-			{
-				this._isAll = value;
-			}
-		}
+        public bool IsAll { get; set; }
 
-		public List<IdentifierOrValueExpression> FileGroups
-		{
-			get
-			{
-				return this._fileGroups;
-			}
-		}
+        public List<IdentifierOrValueExpression> FileGroups { get; } = new List<IdentifierOrValueExpression>();
 
-		public override void Accept(TSqlFragmentVisitor visitor)
-		{
-			if (visitor != null)
-			{
-				visitor.ExplicitVisit(this);
-			}
-		}
+        public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
-		public override void AcceptChildren(TSqlFragmentVisitor visitor)
-		{
-			if (this.Name != null)
-			{
-				this.Name.Accept(visitor);
-			}
-			if (this.PartitionFunction != null)
-			{
-				this.PartitionFunction.Accept(visitor);
-			}
-			int i = 0;
-			for (int count = this.FileGroups.Count; i < count; i++)
-			{
-				this.FileGroups[i].Accept(visitor);
-			}
-			base.AcceptChildren(visitor);
-		}
-	}
+        public override void AcceptChildren(TSqlFragmentVisitor visitor) {
+            if (this.Name != null) {
+                this.Name.Accept(visitor);
+            }
+            if (this.PartitionFunction != null) {
+                this.PartitionFunction.Accept(visitor);
+            }
+            int i = 0;
+            for (int count = this.FileGroups.Count; i < count; i++) {
+                this.FileGroups[i].Accept(visitor);
+            }
+            base.AcceptChildren(visitor);
+        }
+    }
 }

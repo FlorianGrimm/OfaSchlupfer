@@ -1,5 +1,3 @@
-using System;
-
 namespace OfaSchlupfer.ScriptDom {
     [System.Serializable]
     public sealed class EncryptedValueParameter : ColumnEncryptionKeyValueParameter {

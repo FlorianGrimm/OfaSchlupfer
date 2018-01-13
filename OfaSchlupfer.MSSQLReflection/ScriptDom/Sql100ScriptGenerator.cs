@@ -1,6 +1,6 @@
-using OfaSchlupfer.ScriptDom.ScriptGenerator;
-
 namespace OfaSchlupfer.ScriptDom {
+    using OfaSchlupfer.ScriptDom.ScriptGenerator;
+
     public sealed class Sql100ScriptGenerator : SqlScriptGenerator {
         public Sql100ScriptGenerator()
             : this(new SqlScriptGeneratorOptions()) {

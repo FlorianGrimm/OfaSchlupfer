@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class AlterCreateEndpointStatementBase : TSqlStatement {
         private Identifier _name;

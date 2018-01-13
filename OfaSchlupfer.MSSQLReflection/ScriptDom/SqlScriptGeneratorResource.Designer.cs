@@ -9,9 +9,6 @@
 //------------------------------------------------------------------------------
 
 namespace OfaSchlupfer.ScriptDom {
-    using System;
-    
-    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +20,15 @@ namespace OfaSchlupfer.ScriptDom {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class SqlScriptGeneratorResource {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal SqlScriptGeneratorResource() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +42,7 @@ namespace OfaSchlupfer.ScriptDom {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -60,7 +57,7 @@ namespace OfaSchlupfer.ScriptDom {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Circular alignment points are found.
         /// </summary>
@@ -69,7 +66,7 @@ namespace OfaSchlupfer.ScriptDom {
                 return ResourceManager.GetString("CircularAlignmentPoints", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid alignment operation.
         /// </summary>
@@ -78,7 +75,7 @@ namespace OfaSchlupfer.ScriptDom {
                 return ResourceManager.GetString("InvalidAlignmentOperation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to T-Sql Script Generator only supports generating source for T-Sql Script DOM Trees.
         /// </summary>
@@ -87,7 +84,7 @@ namespace OfaSchlupfer.ScriptDom {
                 return ResourceManager.GetString("ScriptDomTreeTypeNotSupported", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tokenization Failed.
         /// </summary>
@@ -96,7 +93,7 @@ namespace OfaSchlupfer.ScriptDom {
                 return ResourceManager.GetString("TokenizationFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The specified token type does not have a string representation: {0}.
         /// </summary>
@@ -105,7 +102,7 @@ namespace OfaSchlupfer.ScriptDom {
                 return ResourceManager.GetString("TokenTypeDoesNotHaveStringRepresentation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to An unhandled option is encountered.
         /// </summary>
@@ -114,7 +111,7 @@ namespace OfaSchlupfer.ScriptDom {
                 return ResourceManager.GetString("UnhandledOption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The value ({0}) provided for type ({1}) is unknown.
         /// </summary>
@@ -123,7 +120,7 @@ namespace OfaSchlupfer.ScriptDom {
                 return ResourceManager.GetString("UnknownEnumValue", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unknown literal type is encountered.
         /// </summary>
@@ -132,7 +129,7 @@ namespace OfaSchlupfer.ScriptDom {
                 return ResourceManager.GetString("UnknownLiteralType", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unknown quote type is encountered.
         /// </summary>

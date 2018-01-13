@@ -1,6 +1,4 @@
-using System;
-
 namespace OfaSchlupfer.ScriptDom {
     [System.Serializable]
-    public abstract class WaitForSupportedStatement : TSqlStatement {    }
+    public abstract class WaitForSupportedStatement : TSqlStatement { }
 }

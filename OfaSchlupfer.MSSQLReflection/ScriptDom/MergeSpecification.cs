@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace OfaSchlupfer.ScriptDom {
@@ -58,7 +57,7 @@ namespace OfaSchlupfer.ScriptDom {
             this.TableAlias?.Accept(visitor);
             this.TableReference?.Accept(visitor);
             this.SearchCondition?.Accept(visitor);
-            for (int i=0, count = this.ActionClauses.Count; i < count; i++) {
+            for (int i = 0, count = this.ActionClauses.Count; i < count; i++) {
                 this.ActionClauses[i].Accept(visitor);
             }
         }

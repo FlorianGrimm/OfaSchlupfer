@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace OfaSchlupfer.ScriptDom {
@@ -69,7 +68,7 @@ namespace OfaSchlupfer.ScriptDom {
             this.FirstParameter?.Accept(visitor);
             this.SecondParameter?.Accept(visitor);
             this.ThirdParameter?.Accept(visitor);
-            for (int i=0, count = this.OptionalParameters.Count; i < count; i++) {
+            for (int i = 0, count = this.OptionalParameters.Count; i < count; i++) {
                 this.OptionalParameters[i].Accept(visitor);
             }
             base.AcceptChildren(visitor);

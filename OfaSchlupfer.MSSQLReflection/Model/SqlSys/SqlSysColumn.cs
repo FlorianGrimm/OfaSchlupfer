@@ -6,16 +6,16 @@
     /// </summary>
     public sealed class SqlSysColumn : EntityArrayProp, ISqlSysTypedObject {
         public const string SELECTStatement = @"
-				SELECT c.object_id, c.name, c.column_id, c.system_type_id, c.user_type_id, c.max_length, c.precision, c.scale, c.collation_name, c.is_nullable 
+                SELECT c.object_id, c.name, c.column_id, c.system_type_id, c.user_type_id, c.max_length, c.precision, c.scale, c.collation_name, c.is_nullable 
                 FROM sys.all_columns c 
                 INNER JOIN sys.tables t 
                     ON c.object_id = t.object_id
-			UNION ALL
-				SELECT c.object_id, c.name, c.column_id, c.system_type_id, c.user_type_id, c.max_length, c.precision, c.scale, c.collation_name, c.is_nullable 
+            UNION ALL
+                SELECT c.object_id, c.name, c.column_id, c.system_type_id, c.user_type_id, c.max_length, c.precision, c.scale, c.collation_name, c.is_nullable 
                 FROM sys.all_columns c 
                 INNER JOIN sys.views v
                     ON c.object_id = v.object_id
-			;            ";
+            ;            ";
             
         public SqlSysColumn(MetaEntityArrayProp metaData, object[] values) : base(metaData, values) {
         }

@@ -1,6 +1,4 @@
-using System;
-
 namespace OfaSchlupfer.ScriptDom {
     [System.Serializable]
-    public abstract class ExternalTableDistributionPolicy : TSqlFragment {    }
+    public abstract class ExternalTableDistributionPolicy : TSqlFragment { }
 }

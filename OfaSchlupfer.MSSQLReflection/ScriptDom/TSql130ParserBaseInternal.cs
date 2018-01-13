@@ -1,8 +1,8 @@
-using antlr;
-using System;
-using System.Globalization;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System;
+    using System.Globalization;
+    using antlr;
+
     internal abstract class TSql130ParserBaseInternal : TSql120ParserBaseInternal {
         protected TSql130ParserBaseInternal(TokenBuffer tokenBuf, int k)
             : base(tokenBuf, k) {

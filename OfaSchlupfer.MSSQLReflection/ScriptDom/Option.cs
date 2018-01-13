@@ -3,7 +3,6 @@
 #pragma warning disable SA1649
 
 namespace OfaSchlupfer.ScriptDom {
-    using System;
     using System.Collections.Generic;
 
     [System.Serializable]
@@ -64,7 +63,7 @@ namespace OfaSchlupfer.ScriptDom {
     }
 
     [System.Serializable]
-    public /**/ class AlterServerConfigurationBufferPoolExtensionOption 
+    public /**/ class AlterServerConfigurationBufferPoolExtensionOption
         : TSqlFragment {
         private OptionValue _optionValue;
 
@@ -3207,7 +3206,7 @@ namespace OfaSchlupfer.ScriptDom {
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
     }
-    
+
     [System.Serializable]
     public sealed class OrderBulkInsertOption : BulkInsertOption {
         public List<ColumnWithSortOrder> Columns { get; } = new List<ColumnWithSortOrder>();
@@ -4001,7 +4000,7 @@ namespace OfaSchlupfer.ScriptDom {
             }
         }
     }
-    
+
     [System.Serializable]
     public sealed class ResampleStatisticsOption : StatisticsOption {
 
@@ -4025,7 +4024,7 @@ namespace OfaSchlupfer.ScriptDom {
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
     }
-    
+
     [System.Serializable]
     public sealed class ResultSetsExecuteOption : ExecuteOption {
         public ResultSetsOptionKind ResultSetsOptionKind { get; set; }

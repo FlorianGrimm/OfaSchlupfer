@@ -1,9 +1,8 @@
-using OfaSchlupfer.ScriptDom.Versioning;
-using System;
-using System.Collections.Generic;
-using System.IO;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+    using System.IO;
+    using OfaSchlupfer.ScriptDom.Versioning;
+
     [System.Serializable]
     public sealed class TSql130Parser : TSqlParser {
         private SqlEngineType engineType;

@@ -1,5 +1,4 @@
 namespace OfaSchlupfer.ScriptDom {
-    using System;
     using System.Collections.Generic;
 
     [System.Serializable]

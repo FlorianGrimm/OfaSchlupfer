@@ -1,4 +1,10 @@
+#pragma warning disable SA1310 // Field names must not contain underscore
+#pragma warning disable SA1100
+#pragma warning disable SA1300 // Element must begin with upper-case letter
+#pragma warning disable SA1307 // Accessible fields must begin with upper-case letter
+#pragma warning disable SA1600 // Elements must be documented
 #pragma warning disable CA2214
+
 namespace antlr {
     internal class Token : IToken {
         public const int MIN_USER_TYPE = 4;

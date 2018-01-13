@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace OfaSchlupfer.ScriptDom {
@@ -82,7 +81,7 @@ namespace OfaSchlupfer.ScriptDom {
             this.Name?.Accept(visitor);
             this.Object?.Accept(visitor);
             this.SpatialColumnName?.Accept(visitor);
-            for (int i=0, count = this.SpatialIndexOptions.Count; i < count; i++) {
+            for (int i = 0, count = this.SpatialIndexOptions.Count; i < count; i++) {
                 this.SpatialIndexOptions[i].Accept(visitor);
             }
             this.OnFileGroup?.Accept(visitor);

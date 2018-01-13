@@ -1,54 +1,26 @@
-using System;
+namespace OfaSchlupfer.ScriptDom {
+    [System.Serializable]
+    public sealed class DropTypeStatement : TSqlStatement {
+        private SchemaObjectName _name;
 
-namespace OfaSchlupfer.ScriptDom
-{
-	[System.Serializable]
-	public sealed class DropTypeStatement : TSqlStatement
-	{
-		private SchemaObjectName _name;
+        public SchemaObjectName Name {
+            get {
+                return this._name;
+            }
 
-		private bool _isIfExists;
+            set {
+                this.UpdateTokenInfo(value);
+                this._name = value;
+            }
+        }
 
-		public SchemaObjectName Name
-		{
-			get
-			{
-				return this._name;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._name = value;
-			}
-		}
+        public bool IsIfExists { get; set; }
 
-		public bool IsIfExists
-		{
-			get
-			{
-				return this._isIfExists;
-			}
-			set
-			{
-				this._isIfExists = value;
-			}
-		}
+        public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
-		public override void Accept(TSqlFragmentVisitor visitor)
-		{
-			if (visitor != null)
-			{
-				visitor.ExplicitVisit(this);
-			}
-		}
-
-		public override void AcceptChildren(TSqlFragmentVisitor visitor)
-		{
-			if (this.Name != null)
-			{
-				this.Name.Accept(visitor);
-			}
-			base.AcceptChildren(visitor);
-		}
-	}
+        public override void AcceptChildren(TSqlFragmentVisitor visitor) {
+            this.Name?.Accept(visitor);
+            base.AcceptChildren(visitor);
+        }
+    }
 }

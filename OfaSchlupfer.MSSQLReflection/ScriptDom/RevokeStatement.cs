@@ -1,5 +1,3 @@
-using System;
-
 namespace OfaSchlupfer.ScriptDom {
     [System.Serializable]
     public sealed class RevokeStatement : SecurityStatement {
@@ -30,7 +28,7 @@ namespace OfaSchlupfer.ScriptDom {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i=0, count = base.Permissions.Count; i < count; i++) {
+            for (int i = 0, count = base.Permissions.Count; i < count; i++) {
                 base.Permissions[i].Accept(visitor);
             }
             if (base.SecurityTargetObject != null) {

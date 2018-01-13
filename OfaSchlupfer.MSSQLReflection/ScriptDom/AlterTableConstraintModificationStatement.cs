@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class AlterTableConstraintModificationStatement : AlterTableStatement {
         private ConstraintEnforcement _existingRowsCheckEnforcement;
@@ -54,7 +53,7 @@ namespace OfaSchlupfer.ScriptDom {
             if (base.SchemaObjectName != null) {
                 base.SchemaObjectName.Accept(visitor);
             }
-            for (int i=0, count = this.ConstraintNames.Count; i < count; i++) {
+            for (int i = 0, count = this.ConstraintNames.Count; i < count; i++) {
                 this.ConstraintNames[i].Accept(visitor);
             }
         }

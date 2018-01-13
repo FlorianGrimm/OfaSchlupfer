@@ -1,90 +1,77 @@
-namespace antlr
-{
-	internal class TokenBuffer
-	{
-		protected internal TokenStream input;
+#pragma warning disable SA1600 // Elements must be documented
+#pragma warning disable SA1307 // Accessible fields must begin with upper-case letter
+#pragma warning disable SA1300 // Element must begin with upper-case letter
 
-		protected internal int nMarkers;
+namespace antlr {
+    internal class TokenBuffer {
+        protected internal TokenStream input;
 
-		protected internal int markerOffset;
+        protected internal int nMarkers;
 
-		protected internal int numToConsume;
+        protected internal int markerOffset;
 
-		internal TokenQueue queue;
+        protected internal int numToConsume;
 
-		public TokenBuffer(TokenStream input_)
-		{
-			this.input = input_;
-			this.queue = new TokenQueue(1);
-		}
+        internal TokenQueue queue;
 
-		public virtual void reset()
-		{
-			this.nMarkers = 0;
-			this.markerOffset = 0;
-			this.numToConsume = 0;
-			this.queue.reset();
-		}
+        public TokenBuffer(TokenStream input_) {
+            this.input = input_;
+            this.queue = new TokenQueue(1);
+        }
 
-		public virtual void consume()
-		{
-			this.numToConsume++;
-		}
+        public virtual void reset() {
+            this.nMarkers = 0;
+            this.markerOffset = 0;
+            this.numToConsume = 0;
+            this.queue.reset();
+        }
 
-		protected virtual void fill(int amount)
-		{
-			this.syncConsume();
-			while (this.queue.nbrEntries < amount + this.markerOffset)
-			{
-				this.queue.append(this.input.nextToken());
-			}
-		}
+        public virtual void consume() {
+            this.numToConsume++;
+        }
 
-		public virtual TokenStream getInput()
-		{
-			return this.input;
-		}
+        protected virtual void fill(int amount) {
+            this.syncConsume();
+            while (this.queue.nbrEntries < amount + this.markerOffset) {
+                this.queue.append(this.input.nextToken());
+            }
+        }
 
-		public virtual int LA(int i)
-		{
-			this.fill(i);
-			return this.queue.elementAt(this.markerOffset + i - 1).Type;
-		}
+        public virtual TokenStream getInput() {
+            return this.input;
+        }
 
-		public virtual IToken LT(int i)
-		{
-			this.fill(i);
-			return this.queue.elementAt(this.markerOffset + i - 1);
-		}
+        public virtual int LA(int i) {
+            this.fill(i);
+            return this.queue.elementAt(this.markerOffset + i - 1).Type;
+        }
 
-		public virtual int mark()
-		{
-			this.syncConsume();
-			this.nMarkers++;
-			return this.markerOffset;
-		}
+        public virtual IToken LT(int i) {
+            this.fill(i);
+            return this.queue.elementAt(this.markerOffset + i - 1);
+        }
 
-		public virtual void rewind(int mark)
-		{
-			this.syncConsume();
-			this.markerOffset = mark;
-			this.nMarkers--;
-		}
+        public virtual int mark() {
+            this.syncConsume();
+            this.nMarkers++;
+            return this.markerOffset;
+        }
 
-		protected virtual void syncConsume()
-		{
-			while (this.numToConsume > 0)
-			{
-				if (this.nMarkers > 0)
-				{
-					this.markerOffset++;
-				}
-				else
-				{
-					this.queue.removeFirst();
-				}
-				this.numToConsume--;
-			}
-		}
-	}
+        public virtual void rewind(int mark) {
+            this.syncConsume();
+            this.markerOffset = mark;
+            this.nMarkers--;
+        }
+
+        protected virtual void syncConsume() {
+            while (this.numToConsume > 0) {
+                if (this.nMarkers > 0) {
+                    this.markerOffset++;
+                } else {
+                    this.queue.removeFirst();
+                }
+                this.numToConsume--;
+            }
+        }
+    }
 }

@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class AlterDatabaseSetStatement : AlterDatabaseStatement {
         private AlterDatabaseTermination _termination;

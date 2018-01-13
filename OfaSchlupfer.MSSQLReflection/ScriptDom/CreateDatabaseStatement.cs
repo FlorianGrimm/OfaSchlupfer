@@ -1,176 +1,110 @@
-using System;
-using System.Collections.Generic;
+namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
 
-namespace OfaSchlupfer.ScriptDom
-{
-	[System.Serializable]
-	public sealed class CreateDatabaseStatement : TSqlStatement, ICollationSetter
-	{
-		private Identifier _databaseName;
+    [System.Serializable]
+    public sealed class CreateDatabaseStatement : TSqlStatement, ICollationSetter {
+        private Identifier _databaseName;
 
-		private ContainmentDatabaseOption _containment;
+        private ContainmentDatabaseOption _containment;
 
-		private List<FileGroupDefinition> _fileGroups = new List<FileGroupDefinition>();
+        private AttachMode _attachMode;
 
-		private List<FileDeclaration> _logOn = new List<FileDeclaration>();
+        private Identifier _databaseSnapshot;
 
-		private List<DatabaseOption> _options = new List<DatabaseOption>();
+        private MultiPartIdentifier _copyOf;
 
-		private AttachMode _attachMode;
+        private Identifier _collation;
 
-		private Identifier _databaseSnapshot;
+        public Identifier DatabaseName {
+            get {
+                return this._databaseName;
+            }
 
-		private MultiPartIdentifier _copyOf;
+            set {
+                this.UpdateTokenInfo(value);
+                this._databaseName = value;
+            }
+        }
 
-		private Identifier _collation;
+        public ContainmentDatabaseOption Containment {
+            get {
+                return this._containment;
+            }
 
-		public Identifier DatabaseName
-		{
-			get
-			{
-				return this._databaseName;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._databaseName = value;
-			}
-		}
+            set {
+                this.UpdateTokenInfo(value);
+                this._containment = value;
+            }
+        }
 
-		public ContainmentDatabaseOption Containment
-		{
-			get
-			{
-				return this._containment;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._containment = value;
-			}
-		}
+        public List<FileGroupDefinition> FileGroups { get; } = new List<FileGroupDefinition>();
 
-		public List<FileGroupDefinition> FileGroups
-		{
-			get
-			{
-				return this._fileGroups;
-			}
-		}
+        public List<FileDeclaration> LogOn { get; } = new List<FileDeclaration>();
 
-		public List<FileDeclaration> LogOn
-		{
-			get
-			{
-				return this._logOn;
-			}
-		}
+        public List<DatabaseOption> Options { get; } = new List<DatabaseOption>();
 
-		public List<DatabaseOption> Options
-		{
-			get
-			{
-				return this._options;
-			}
-		}
+        public AttachMode AttachMode {
+            get {
+                return this._attachMode;
+            }
 
-		public AttachMode AttachMode
-		{
-			get
-			{
-				return this._attachMode;
-			}
-			set
-			{
-				this._attachMode = value;
-			}
-		}
+            set {
+                this._attachMode = value;
+            }
+        }
 
-		public Identifier DatabaseSnapshot
-		{
-			get
-			{
-				return this._databaseSnapshot;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._databaseSnapshot = value;
-			}
-		}
+        public Identifier DatabaseSnapshot {
+            get {
+                return this._databaseSnapshot;
+            }
 
-		public MultiPartIdentifier CopyOf
-		{
-			get
-			{
-				return this._copyOf;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._copyOf = value;
-			}
-		}
+            set {
+                this.UpdateTokenInfo(value);
+                this._databaseSnapshot = value;
+            }
+        }
 
-		public Identifier Collation
-		{
-			get
-			{
-				return this._collation;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._collation = value;
-			}
-		}
+        public MultiPartIdentifier CopyOf {
+            get {
+                return this._copyOf;
+            }
 
-		public override void Accept(TSqlFragmentVisitor visitor)
-		{
-			if (visitor != null)
-			{
-				visitor.ExplicitVisit(this);
-			}
-		}
+            set {
+                this.UpdateTokenInfo(value);
+                this._copyOf = value;
+            }
+        }
 
-		public override void AcceptChildren(TSqlFragmentVisitor visitor)
-		{
-			if (this.DatabaseName != null)
-			{
-				this.DatabaseName.Accept(visitor);
-			}
-			if (this.Containment != null)
-			{
-				this.Containment.Accept(visitor);
-			}
-			int i = 0;
-			for (int count = this.FileGroups.Count; i < count; i++)
-			{
-				this.FileGroups[i].Accept(visitor);
-			}
-			int j = 0;
-			for (int count2 = this.LogOn.Count; j < count2; j++)
-			{
-				this.LogOn[j].Accept(visitor);
-			}
-			int k = 0;
-			for (int count3 = this.Options.Count; k < count3; k++)
-			{
-				this.Options[k].Accept(visitor);
-			}
-			if (this.DatabaseSnapshot != null)
-			{
-				this.DatabaseSnapshot.Accept(visitor);
-			}
-			if (this.CopyOf != null)
-			{
-				this.CopyOf.Accept(visitor);
-			}
-			if (this.Collation != null)
-			{
-				this.Collation.Accept(visitor);
-			}
-			base.AcceptChildren(visitor);
-		}
-	}
+        public Identifier Collation {
+            get {
+                return this._collation;
+            }
+
+            set {
+                this.UpdateTokenInfo(value);
+                this._collation = value;
+            }
+        }
+
+        public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+
+        public override void AcceptChildren(TSqlFragmentVisitor visitor) {
+            this.DatabaseName?.Accept(visitor);
+            this.Containment?.Accept(visitor);
+            for (int i = 0, count = this.FileGroups.Count; i < count; i++) {
+                this.FileGroups[i].Accept(visitor);
+            }
+            for (int j = 0, count2 = this.LogOn.Count; j < count2; j++) {
+                this.LogOn[j].Accept(visitor);
+            }
+            for (int k = 0, count3 = this.Options.Count; k < count3; k++) {
+                this.Options[k].Accept(visitor);
+            }
+
+            this.DatabaseSnapshot?.Accept(visitor);
+            this.CopyOf?.Accept(visitor);
+            this.Collation?.Accept(visitor);
+            base.AcceptChildren(visitor);
+        }
+    }
 }

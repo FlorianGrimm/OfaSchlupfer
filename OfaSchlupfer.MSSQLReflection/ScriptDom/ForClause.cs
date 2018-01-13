@@ -1,6 +1,4 @@
-using System;
-
 namespace OfaSchlupfer.ScriptDom {
     [System.Serializable]
-    public abstract class ForClause : TSqlFragment {    }
+    public abstract class ForClause : TSqlFragment { }
 }

@@ -1,5 +1,3 @@
-using System;
-
 namespace OfaSchlupfer.ScriptDom {
     [System.Serializable]
     public sealed class AlterFunctionStatement : FunctionStatementBody {
@@ -9,7 +7,7 @@ namespace OfaSchlupfer.ScriptDom {
             if (base.Name != null) {
                 base.Name.Accept(visitor);
             }
-            for (int i=0, count = base.Parameters.Count; i < count; i++) {
+            for (int i = 0, count = base.Parameters.Count; i < count; i++) {
                 base.Parameters[i].Accept(visitor);
             }
             if (base.ReturnType != null) {

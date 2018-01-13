@@ -1,59 +1,42 @@
-using System;
+namespace OfaSchlupfer.ScriptDom {
+    [System.Serializable]
+    public sealed class ExecutableProcedureReference : ExecutableEntity {
+        private ProcedureReferenceName _procedureReference;
 
-namespace OfaSchlupfer.ScriptDom
-{
-	[System.Serializable]
-	public sealed class ExecutableProcedureReference : ExecutableEntity
-	{
-		private ProcedureReferenceName _procedureReference;
+        private AdHocDataSource _adHocDataSource;
 
-		private AdHocDataSource _adHocDataSource;
+        public ProcedureReferenceName ProcedureReference {
+            get {
+                return this._procedureReference;
+            }
 
-		public ProcedureReferenceName ProcedureReference
-		{
-			get
-			{
-				return this._procedureReference;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._procedureReference = value;
-			}
-		}
+            set {
+                this.UpdateTokenInfo(value);
+                this._procedureReference = value;
+            }
+        }
 
-		public AdHocDataSource AdHocDataSource
-		{
-			get
-			{
-				return this._adHocDataSource;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._adHocDataSource = value;
-			}
-		}
+        public AdHocDataSource AdHocDataSource {
+            get {
+                return this._adHocDataSource;
+            }
 
-		public override void Accept(TSqlFragmentVisitor visitor)
-		{
-			if (visitor != null)
-			{
-				visitor.ExplicitVisit(this);
-			}
-		}
+            set {
+                this.UpdateTokenInfo(value);
+                this._adHocDataSource = value;
+            }
+        }
 
-		public override void AcceptChildren(TSqlFragmentVisitor visitor)
-		{
-			base.AcceptChildren(visitor);
-			if (this.ProcedureReference != null)
-			{
-				this.ProcedureReference.Accept(visitor);
-			}
-			if (this.AdHocDataSource != null)
-			{
-				this.AdHocDataSource.Accept(visitor);
-			}
-		}
-	}
+        public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+
+        public override void AcceptChildren(TSqlFragmentVisitor visitor) {
+            base.AcceptChildren(visitor);
+            if (this.ProcedureReference != null) {
+                this.ProcedureReference.Accept(visitor);
+            }
+            if (this.AdHocDataSource != null) {
+                this.AdHocDataSource.Accept(visitor);
+            }
+        }
+    }
 }

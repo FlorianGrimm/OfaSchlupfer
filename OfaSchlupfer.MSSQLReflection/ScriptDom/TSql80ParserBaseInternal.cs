@@ -1,11 +1,11 @@
-using antlr;
-using antlr.collections.impl;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
+    using antlr;
+    using antlr.collections.impl;
+
     internal abstract class TSql80ParserBaseInternal : LLkParser {
         internal delegate T ParserEntryPoint<T>() where T : TSqlFragment;
 

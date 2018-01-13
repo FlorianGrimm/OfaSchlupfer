@@ -53,6 +53,7 @@
     <None Include="Model\ModelSqlDatabaseSchemas.cs" />
     <None Include="Model\ModelSqlDatabaseTables.cs" />
     <None Include="Model\ModelSqlDatabaseTypes.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ScriptDom\ForceSeekTableHint.cs" />
     <Compile Include="Model\ModelSqlType.cs" />
     <Compile Include="Model\SqlSys\ISqlSysTypedObject.cs" />

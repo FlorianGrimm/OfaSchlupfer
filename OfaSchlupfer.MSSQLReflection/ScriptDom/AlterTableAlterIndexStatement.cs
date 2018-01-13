@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class AlterTableAlterIndexStatement : AlterTableStatement {
         private Identifier _indexIdentifier;
@@ -44,7 +43,7 @@ namespace OfaSchlupfer.ScriptDom {
                 base.SchemaObjectName.Accept(visitor);
             }
             this.IndexIdentifier?.Accept(visitor);
-            for (int i=0, count = this.IndexOptions.Count; i < count; i++) {
+            for (int i = 0, count = this.IndexOptions.Count; i < count; i++) {
                 this.IndexOptions[i].Accept(visitor);
             }
         }

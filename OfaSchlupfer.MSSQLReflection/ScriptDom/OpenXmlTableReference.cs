@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace OfaSchlupfer.ScriptDom {
@@ -70,7 +69,7 @@ namespace OfaSchlupfer.ScriptDom {
             this.Variable?.Accept(visitor);
             this.RowPattern?.Accept(visitor);
             this.Flags?.Accept(visitor);
-            for (int i=0, count = this.SchemaDeclarationItems.Count; i < count; i++) {
+            for (int i = 0, count = this.SchemaDeclarationItems.Count; i < count; i++) {
                 this.SchemaDeclarationItems[i].Accept(visitor);
             }
             this.TableName?.Accept(visitor);

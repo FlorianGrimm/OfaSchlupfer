@@ -1,136 +1,114 @@
-using antlr.collections.impl;
+#pragma warning disable SA1100
+#pragma warning disable SA1300 // Element must begin with upper-case letter
+#pragma warning disable SA1307 // Accessible fields must begin with upper-case letter
+#pragma warning disable SA1600 // Elements must be documented
 
-namespace antlr
-{
-	internal class TokenStreamHiddenTokenFilter : TokenStreamBasicFilter, TokenStream
-	{
-		protected internal BitSet hideMask;
+namespace antlr {
+    using antlr.collections.impl;
 
-		private IHiddenStreamToken nextMonitoredToken;
+    internal class TokenStreamHiddenTokenFilter : TokenStreamBasicFilter, TokenStream {
+        protected internal BitSet hideMask;
 
-		protected internal IHiddenStreamToken lastHiddenToken;
+        private IHiddenStreamToken nextMonitoredToken;
 
-		protected internal IHiddenStreamToken firstHidden;
+        protected internal IHiddenStreamToken lastHiddenToken;
 
-		public TokenStreamHiddenTokenFilter(TokenStream input)
-			: base(input)
-		{
-			this.hideMask = new BitSet();
-		}
+        protected internal IHiddenStreamToken firstHidden;
 
-		protected internal virtual void consume()
-		{
-			this.nextMonitoredToken = (IHiddenStreamToken)base.input.nextToken();
-		}
+        public TokenStreamHiddenTokenFilter(TokenStream input)
+            : base(input) {
+            this.hideMask = new BitSet();
+        }
 
-		private void consumeFirst()
-		{
-			this.consume();
-			IHiddenStreamToken hiddenStreamToken = null;
-			while (true)
-			{
-				if (!this.hideMask.member(this.LA(1).Type) && !base.discardMask.member(this.LA(1).Type))
-				{
-					break;
-				}
-				if (this.hideMask.member(this.LA(1).Type))
-				{
-					if (hiddenStreamToken == null)
-					{
-						hiddenStreamToken = this.LA(1);
-					}
-					else
-					{
-						hiddenStreamToken.setHiddenAfter(this.LA(1));
-						this.LA(1).setHiddenBefore(hiddenStreamToken);
-						hiddenStreamToken = this.LA(1);
-					}
-					this.lastHiddenToken = hiddenStreamToken;
-					if (this.firstHidden == null)
-					{
-						this.firstHidden = hiddenStreamToken;
-					}
-				}
-				this.consume();
-			}
-		}
+        protected internal virtual void consume() {
+            this.nextMonitoredToken = (IHiddenStreamToken)base.input.nextToken();
+        }
 
-		public virtual BitSet getDiscardMask()
-		{
-			return base.discardMask;
-		}
+        private void consumeFirst() {
+            this.consume();
+            IHiddenStreamToken hiddenStreamToken = null;
+            while (true) {
+                if (!this.hideMask.member(this.LA(1).Type) && !base.discardMask.member(this.LA(1).Type)) {
+                    break;
+                }
+                if (this.hideMask.member(this.LA(1).Type)) {
+                    if (hiddenStreamToken == null) {
+                        hiddenStreamToken = this.LA(1);
+                    } else {
+                        hiddenStreamToken.setHiddenAfter(this.LA(1));
+                        this.LA(1).setHiddenBefore(hiddenStreamToken);
+                        hiddenStreamToken = this.LA(1);
+                    }
+                    this.lastHiddenToken = hiddenStreamToken;
+                    if (this.firstHidden == null) {
+                        this.firstHidden = hiddenStreamToken;
+                    }
+                }
+                this.consume();
+            }
+        }
 
-		public virtual IHiddenStreamToken getHiddenAfter(IHiddenStreamToken t)
-		{
-			return t.getHiddenAfter();
-		}
+        public virtual BitSet getDiscardMask() {
+            return base.discardMask;
+        }
 
-		public virtual IHiddenStreamToken getHiddenBefore(IHiddenStreamToken t)
-		{
-			return t.getHiddenBefore();
-		}
+        public virtual IHiddenStreamToken getHiddenAfter(IHiddenStreamToken t) {
+            return t.getHiddenAfter();
+        }
 
-		public virtual BitSet getHideMask()
-		{
-			return this.hideMask;
-		}
+        public virtual IHiddenStreamToken getHiddenBefore(IHiddenStreamToken t) {
+            return t.getHiddenBefore();
+        }
 
-		public virtual IHiddenStreamToken getInitialHiddenToken()
-		{
-			return this.firstHidden;
-		}
+        public virtual BitSet getHideMask() {
+            return this.hideMask;
+        }
 
-		public virtual void hide(int m)
-		{
-			this.hideMask.add(m);
-		}
+        public virtual IHiddenStreamToken getInitialHiddenToken() {
+            return this.firstHidden;
+        }
 
-		public virtual void hide(BitSet mask)
-		{
-			this.hideMask = mask;
-		}
+        public virtual void hide(int m) {
+            this.hideMask.add(m);
+        }
 
-		protected internal virtual IHiddenStreamToken LA(int i)
-		{
-			return this.nextMonitoredToken;
-		}
+        public virtual void hide(BitSet mask) {
+            this.hideMask = mask;
+        }
 
-		public override IToken nextToken()
-		{
-			if (this.LA(1) == null)
-			{
-				this.consumeFirst();
-			}
-			IHiddenStreamToken hiddenStreamToken = this.LA(1);
-			hiddenStreamToken.setHiddenBefore(this.lastHiddenToken);
-			this.lastHiddenToken = null;
-			this.consume();
-			IHiddenStreamToken hiddenStreamToken2 = hiddenStreamToken;
-			while (true)
-			{
-				if (!this.hideMask.member(this.LA(1).Type) && !base.discardMask.member(this.LA(1).Type))
-				{
-					break;
-				}
-				if (this.hideMask.member(this.LA(1).Type))
-				{
-					hiddenStreamToken2.setHiddenAfter(this.LA(1));
-					if (hiddenStreamToken2 != hiddenStreamToken)
-					{
-						this.LA(1).setHiddenBefore(hiddenStreamToken2);
-					}
-					hiddenStreamToken2 = (this.lastHiddenToken = this.LA(1));
-				}
-				this.consume();
-			}
-			return hiddenStreamToken;
-		}
+        protected internal virtual IHiddenStreamToken LA(int i) {
+            return this.nextMonitoredToken;
+        }
 
-		public virtual void resetState()
-		{
-			this.firstHidden = null;
-			this.lastHiddenToken = null;
-			this.nextMonitoredToken = null;
-		}
-	}
+        public override IToken nextToken() {
+            if (this.LA(1) == null) {
+                this.consumeFirst();
+            }
+            IHiddenStreamToken hiddenStreamToken = this.LA(1);
+            hiddenStreamToken.setHiddenBefore(this.lastHiddenToken);
+            this.lastHiddenToken = null;
+            this.consume();
+            IHiddenStreamToken hiddenStreamToken2 = hiddenStreamToken;
+            while (true) {
+                if (!this.hideMask.member(this.LA(1).Type) && !base.discardMask.member(this.LA(1).Type)) {
+                    break;
+                }
+                if (this.hideMask.member(this.LA(1).Type)) {
+                    hiddenStreamToken2.setHiddenAfter(this.LA(1));
+                    if (hiddenStreamToken2 != hiddenStreamToken) {
+                        this.LA(1).setHiddenBefore(hiddenStreamToken2);
+                    }
+                    hiddenStreamToken2 = (this.lastHiddenToken = this.LA(1));
+                }
+                this.consume();
+            }
+            return hiddenStreamToken;
+        }
+
+        public virtual void resetState() {
+            this.firstHidden = null;
+            this.lastHiddenToken = null;
+            this.nextMonitoredToken = null;
+        }
+    }
 }

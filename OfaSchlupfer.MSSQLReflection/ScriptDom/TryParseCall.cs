@@ -1,78 +1,58 @@
-using System;
+namespace OfaSchlupfer.ScriptDom {
+    [System.Serializable]
+    public sealed class TryParseCall : PrimaryExpression {
+        private ScalarExpression _stringValue;
 
-namespace OfaSchlupfer.ScriptDom
-{
-	[System.Serializable]
-	public sealed class TryParseCall : PrimaryExpression
-	{
-		private ScalarExpression _stringValue;
+        private DataTypeReference _dataType;
 
-		private DataTypeReference _dataType;
+        private ScalarExpression _culture;
 
-		private ScalarExpression _culture;
+        public ScalarExpression StringValue {
+            get {
+                return this._stringValue;
+            }
 
-		public ScalarExpression StringValue
-		{
-			get
-			{
-				return this._stringValue;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._stringValue = value;
-			}
-		}
+            set {
+                this.UpdateTokenInfo(value);
+                this._stringValue = value;
+            }
+        }
 
-		public DataTypeReference DataType
-		{
-			get
-			{
-				return this._dataType;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._dataType = value;
-			}
-		}
+        public DataTypeReference DataType {
+            get {
+                return this._dataType;
+            }
 
-		public ScalarExpression Culture
-		{
-			get
-			{
-				return this._culture;
-			}
-			set
-			{
-				this.UpdateTokenInfo(value);
-				this._culture = value;
-			}
-		}
+            set {
+                this.UpdateTokenInfo(value);
+                this._dataType = value;
+            }
+        }
 
-		public override void Accept(TSqlFragmentVisitor visitor)
-		{
-			if (visitor != null)
-			{
-				visitor.ExplicitVisit(this);
-			}
-		}
+        public ScalarExpression Culture {
+            get {
+                return this._culture;
+            }
 
-		public override void AcceptChildren(TSqlFragmentVisitor visitor)
-		{
-			base.AcceptChildren(visitor);
-			if (this.StringValue != null)
-			{
-				this.StringValue.Accept(visitor);
-			}
-			if (this.DataType != null)
-			{
-				this.DataType.Accept(visitor);
-			}
-			if (this.Culture != null)
-			{
-				this.Culture.Accept(visitor);
-			}
-		}
-	}
+            set {
+                this.UpdateTokenInfo(value);
+                this._culture = value;
+            }
+        }
+
+        public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+
+        public override void AcceptChildren(TSqlFragmentVisitor visitor) {
+            base.AcceptChildren(visitor);
+            if (this.StringValue != null) {
+                this.StringValue.Accept(visitor);
+            }
+            if (this.DataType != null) {
+                this.DataType.Accept(visitor);
+            }
+            if (this.Culture != null) {
+                this.Culture.Accept(visitor);
+            }
+        }
+    }
 }

@@ -1,5 +1,3 @@
-using System;
-
 namespace OfaSchlupfer.ScriptDom {
     [System.Serializable]
     public sealed class CreateServiceStatement : AlterCreateServiceStatementBase, IAuthorization {
@@ -25,7 +23,7 @@ namespace OfaSchlupfer.ScriptDom {
             if (base.QueueName != null) {
                 base.QueueName.Accept(visitor);
             }
-            for (int i=0, count = base.ServiceContracts.Count; i < count; i++) {
+            for (int i = 0, count = base.ServiceContracts.Count; i < count; i++) {
                 base.ServiceContracts[i].Accept(visitor);
             }
             this.Owner?.Accept(visitor);

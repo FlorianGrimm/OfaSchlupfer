@@ -1,3 +1,8 @@
+#pragma warning disable SA1600 // Elements must be documented
+#pragma warning disable SA1307 // Accessible fields must begin with upper-case letter
+#pragma warning disable SA1300 // Element must begin with upper-case letter
+#pragma warning disable SA1602 // Enumeration items must be documented
+#pragma warning disable SA1310 // Field names must not contain underscore
 #pragma warning disable CA2214
 
 namespace antlr {

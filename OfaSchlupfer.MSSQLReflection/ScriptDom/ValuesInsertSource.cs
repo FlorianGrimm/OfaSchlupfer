@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class ValuesInsertSource : InsertSource {
         private bool _isDefaultValues;
@@ -27,7 +26,7 @@ namespace OfaSchlupfer.ScriptDom {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i=0, count = this.RowValues.Count; i < count; i++) {
+            for (int i = 0, count = this.RowValues.Count; i < count; i++) {
                 this.RowValues[i].Accept(visitor);
             }
             base.AcceptChildren(visitor);

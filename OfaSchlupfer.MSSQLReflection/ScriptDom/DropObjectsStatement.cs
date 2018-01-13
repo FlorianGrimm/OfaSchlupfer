@@ -1,43 +1,21 @@
-using System;
-using System.Collections.Generic;
+namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
 
-namespace OfaSchlupfer.ScriptDom
-{
-	[System.Serializable]
-	public abstract class DropObjectsStatement : TSqlStatement
-	{
-		private List<SchemaObjectName> _objects = new List<SchemaObjectName>();
+    [System.Serializable]
+    public abstract class DropObjectsStatement : TSqlStatement {
 
-		private bool _isIfExists;
+        private bool _isIfExists;
 
-		public List<SchemaObjectName> Objects
-		{
-			get
-			{
-				return this._objects;
-			}
-		}
+        public List<SchemaObjectName> Objects { get; } = new List<SchemaObjectName>();
 
-		public bool IsIfExists
-		{
-			get
-			{
-				return this._isIfExists;
-			}
-			set
-			{
-				this._isIfExists = value;
-			}
-		}
+        public bool IsIfExists { get; set; }
 
-		public override void AcceptChildren(TSqlFragmentVisitor visitor)
-		{
-			int i = 0;
-			for (int count = this.Objects.Count; i < count; i++)
-			{
-				this.Objects[i].Accept(visitor);
-			}
-			base.AcceptChildren(visitor);
-		}
-	}
+        public override void AcceptChildren(TSqlFragmentVisitor visitor) {
+            int i = 0;
+            for (int count = this.Objects.Count; i < count; i++) {
+                this.Objects[i].Accept(visitor);
+            }
+            base.AcceptChildren(visitor);
+        }
+    }
 }

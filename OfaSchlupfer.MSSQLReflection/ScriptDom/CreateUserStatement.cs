@@ -1,5 +1,3 @@
-using System;
-
 namespace OfaSchlupfer.ScriptDom {
     [System.Serializable]
     public sealed class CreateUserStatement : UserStatement {
@@ -23,7 +21,7 @@ namespace OfaSchlupfer.ScriptDom {
                 base.Name.Accept(visitor);
             }
             this.UserLoginOption?.Accept(visitor);
-            for (int i=0, count = base.UserOptions.Count; i < count; i++) {
+            for (int i = 0, count = base.UserOptions.Count; i < count; i++) {
                 base.UserOptions[i].Accept(visitor);
             }
         }

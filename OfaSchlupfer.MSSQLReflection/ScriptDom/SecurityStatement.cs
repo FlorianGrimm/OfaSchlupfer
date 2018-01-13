@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace OfaSchlupfer.ScriptDom {
@@ -47,7 +46,7 @@ namespace OfaSchlupfer.ScriptDom {
         }
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i=0, count = this.Permissions.Count; i < count; i++) {
+            for (int i = 0, count = this.Permissions.Count; i < count; i++) {
                 this.Permissions[i].Accept(visitor);
             }
             this.SecurityTargetObject?.Accept(visitor);

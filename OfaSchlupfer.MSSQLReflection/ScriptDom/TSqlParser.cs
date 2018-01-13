@@ -1,11 +1,10 @@
-using antlr;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using antlr;
+
     [System.Serializable]
     public abstract class TSqlParser {
         private class ExtractSchemaObjectNameVisitor : TSqlFragmentVisitor {

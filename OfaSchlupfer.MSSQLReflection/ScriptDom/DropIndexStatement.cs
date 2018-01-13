@@ -1,51 +1,20 @@
-using System;
-using System.Collections.Generic;
+namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
 
-namespace OfaSchlupfer.ScriptDom
-{
-	[System.Serializable]
-	public sealed class DropIndexStatement : TSqlStatement
-	{
-		private List<DropIndexClauseBase> _dropIndexClauses = new List<DropIndexClauseBase>();
+    [System.Serializable]
+    public sealed class DropIndexStatement : TSqlStatement {
+        public List<DropIndexClauseBase> DropIndexClauses { get; } = new List<DropIndexClauseBase>();
 
-		private bool _isIfExists;
+        public bool IsIfExists { get; set; }
 
-		public List<DropIndexClauseBase> DropIndexClauses
-		{
-			get
-			{
-				return this._dropIndexClauses;
-			}
-		}
+        public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
-		public bool IsIfExists
-		{
-			get
-			{
-				return this._isIfExists;
-			}
-			set
-			{
-				this._isIfExists = value;
-			}
-		}
-
-		public override void Accept(TSqlFragmentVisitor visitor)
-		{
-			if (visitor != null)
-			{
-				visitor.ExplicitVisit(this);
-			}
-		}
-
-		public override void AcceptChildren(TSqlFragmentVisitor visitor)
-		{
-			int i = 0;
-			for (int count = this.DropIndexClauses.Count; i < count; i++)
-			{
-				this.DropIndexClauses[i].Accept(visitor);
-			}
-			base.AcceptChildren(visitor);
-		}
-	}
+        public override void AcceptChildren(TSqlFragmentVisitor visitor) {
+            int i = 0;
+            for (int count = this.DropIndexClauses.Count; i < count; i++) {
+                this.DropIndexClauses[i].Accept(visitor);
+            }
+            base.AcceptChildren(visitor);
+        }
+    }
 }

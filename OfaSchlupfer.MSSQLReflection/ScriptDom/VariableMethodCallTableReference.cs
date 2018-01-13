@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class VariableMethodCallTableReference : TableReferenceWithAliasAndColumns {
         private VariableReference _variable;
@@ -43,7 +42,7 @@ namespace OfaSchlupfer.ScriptDom {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Variable?.Accept(visitor);
             this.MethodName?.Accept(visitor);
-            for (int i=0, count = this.Parameters.Count; i < count; i++) {
+            for (int i = 0, count = this.Parameters.Count; i < count; i++) {
                 this.Parameters[i].Accept(visitor);
             }
             base.AcceptChildren(visitor);

@@ -1,6 +1,4 @@
-using System;
-
 namespace OfaSchlupfer.ScriptDom {
     [System.Serializable]
-    public abstract class FunctionReturnType : TSqlFragment {    }
+    public abstract class FunctionReturnType : TSqlFragment { }
 }

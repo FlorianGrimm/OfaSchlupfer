@@ -1,8 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+    using System.IO;
+
     [System.Serializable]
     public sealed class TSql110Parser : TSqlParser {
         public TSql110Parser(bool initialQuotedIdentifiers)

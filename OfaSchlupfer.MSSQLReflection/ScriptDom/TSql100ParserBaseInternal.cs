@@ -1,10 +1,10 @@
-using antlr;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text.RegularExpressions;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Text.RegularExpressions;
+    using antlr;
+
     internal abstract class TSql100ParserBaseInternal : TSql90ParserBaseInternal {
         protected TSql100ParserBaseInternal(TokenBuffer tokenBuf, int k)
             : base(tokenBuf, k) {

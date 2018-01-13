@@ -1,101 +1,89 @@
-using System.Collections;
-using System.Text;
+#pragma warning disable SA1600 // Elements must be documented
+#pragma warning disable SA1307 // Accessible fields must begin with upper-case letter
+#pragma warning disable SA1300 // Element must begin with upper-case letter
+#pragma warning disable SA1602 // Enumeration items must be documented
 
-namespace antlr
-{
-	internal abstract class InputBuffer
-	{
-		protected internal int nMarkers;
+namespace antlr {
+    using System.Collections;
+    using System.Text;
 
-		protected internal int markerOffset;
+    internal abstract class InputBuffer {
+        protected internal int nMarkers;
 
-		protected internal int numToConsume;
+        protected internal int markerOffset;
 
-		protected ArrayList queue;
+        protected internal int numToConsume;
 
-		public InputBuffer()
-		{
-			this.queue = new ArrayList();
-		}
+        protected ArrayList queue;
 
-		public virtual void commit()
-		{
-			this.nMarkers--;
-		}
+        public InputBuffer() {
+            this.queue = new ArrayList();
+        }
 
-		public virtual char consume()
-		{
-			this.numToConsume++;
-			return this.LA(1);
-		}
+        public virtual void commit() {
+            this.nMarkers--;
+        }
 
-		public abstract void fill(int amount);
+        public virtual char consume() {
+            this.numToConsume++;
+            return this.LA(1);
+        }
 
-		public virtual string getLAChars()
-		{
-			StringBuilder stringBuilder = new StringBuilder();
-			char[] array = new char[this.queue.Count - this.markerOffset];
-			this.queue.CopyTo(array, this.markerOffset);
-			stringBuilder.Append(array);
-			return stringBuilder.ToString();
-		}
+        public abstract void fill(int amount);
 
-		public virtual string getMarkedChars()
-		{
-			StringBuilder stringBuilder = new StringBuilder();
-			char[] array = new char[this.queue.Count - this.markerOffset];
-			this.queue.CopyTo(array, this.markerOffset);
-			stringBuilder.Append(array);
-			return stringBuilder.ToString();
-		}
+        public virtual string getLAChars() {
+            StringBuilder stringBuilder = new StringBuilder();
+            char[] array = new char[this.queue.Count - this.markerOffset];
+            this.queue.CopyTo(array, this.markerOffset);
+            stringBuilder.Append(array);
+            return stringBuilder.ToString();
+        }
 
-		public virtual bool isMarked()
-		{
-			return this.nMarkers != 0;
-		}
+        public virtual string getMarkedChars() {
+            StringBuilder stringBuilder = new StringBuilder();
+            char[] array = new char[this.queue.Count - this.markerOffset];
+            this.queue.CopyTo(array, this.markerOffset);
+            stringBuilder.Append(array);
+            return stringBuilder.ToString();
+        }
 
-		public virtual char LA(int i)
-		{
-			this.fill(i);
-			return (char)this.queue[this.markerOffset + i - 1];
-		}
+        public virtual bool isMarked() {
+            return this.nMarkers != 0;
+        }
 
-		public virtual int mark()
-		{
-			this.syncConsume();
-			this.nMarkers++;
-			return this.markerOffset;
-		}
+        public virtual char LA(int i) {
+            this.fill(i);
+            return (char)this.queue[this.markerOffset + i - 1];
+        }
 
-		public virtual void rewind(int mark)
-		{
-			this.syncConsume();
-			this.markerOffset = mark;
-			this.nMarkers--;
-		}
+        public virtual int mark() {
+            this.syncConsume();
+            this.nMarkers++;
+            return this.markerOffset;
+        }
 
-		public virtual void reset()
-		{
-			this.nMarkers = 0;
-			this.markerOffset = 0;
-			this.numToConsume = 0;
-			this.queue.Clear();
-		}
+        public virtual void rewind(int mark) {
+            this.syncConsume();
+            this.markerOffset = mark;
+            this.nMarkers--;
+        }
 
-		protected internal virtual void syncConsume()
-		{
-			if (this.numToConsume > 0)
-			{
-				if (this.nMarkers > 0)
-				{
-					this.markerOffset += this.numToConsume;
-				}
-				else
-				{
-					this.queue.RemoveRange(0, this.numToConsume);
-				}
-				this.numToConsume = 0;
-			}
-		}
-	}
+        public virtual void reset() {
+            this.nMarkers = 0;
+            this.markerOffset = 0;
+            this.numToConsume = 0;
+            this.queue.Clear();
+        }
+
+        protected internal virtual void syncConsume() {
+            if (this.numToConsume > 0) {
+                if (this.nMarkers > 0) {
+                    this.markerOffset += this.numToConsume;
+                } else {
+                    this.queue.RemoveRange(0, this.numToConsume);
+                }
+                this.numToConsume = 0;
+            }
+        }
+    }
 }

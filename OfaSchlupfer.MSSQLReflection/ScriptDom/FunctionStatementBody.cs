@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace OfaSchlupfer.ScriptDom {
@@ -55,7 +54,7 @@ namespace OfaSchlupfer.ScriptDom {
             base.AcceptChildren(visitor);
             this.Name?.Accept(visitor);
             this.ReturnType?.Accept(visitor);
-            for (int i=0, count = this.Options.Count; i < count; i++) {
+            for (int i = 0, count = this.Options.Count; i < count; i++) {
                 this.Options[i].Accept(visitor);
             }
             this.OrderHint?.Accept(visitor);

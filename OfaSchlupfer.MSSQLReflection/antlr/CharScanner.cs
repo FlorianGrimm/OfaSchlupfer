@@ -1,14 +1,20 @@
-#pragma warning disable CA2214
-
-using antlr.collections.impl;
-using System;
-using System.Collections;
-using System.Globalization;
-using System.IO;
-using System.Reflection;
-using System.Text;
+#pragma warning disable SA1600 // Elements must be documented
+#pragma warning disable SA1307 // Accessible fields must begin with upper-case letter
+#pragma warning disable SA1300 // Element must begin with upper-case letter
+#pragma warning disable SA1602 // Enumeration items must be documented
+#pragma warning disable SA1310 // Field names must not contain underscore
+#pragma warning disable SA1131 // Use readable conditions
+#pragma warning disable SA1024 // Colons Must Be Spaced Correctly
 
 namespace antlr {
+    using System;
+    using System.Collections;
+    using System.Globalization;
+    using System.IO;
+    using System.Reflection;
+    using System.Text;
+    using antlr.collections.impl;
+
     internal abstract class CharScanner : TokenStream {
         private class ReflectionBasedTokenCreator : TokenCreator {
             private string _tokenTypeName;
@@ -341,7 +347,7 @@ namespace antlr {
 
         public virtual void tab() {
             int column = this.getColumn();
-            int column2 = ((column - 1) / this.tabsize + 1) * this.tabsize + 1;
+            int column2 = ((((column - 1) / this.tabsize) + 1) * this.tabsize) + 1;
             this.setColumn(column2);
         }
 
@@ -354,7 +360,7 @@ namespace antlr {
         }
 
         public virtual void panic() {
-            this.panic("");
+            this.panic(string.Empty);
         }
 
         public virtual void panic(string s) {

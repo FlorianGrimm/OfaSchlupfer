@@ -1,12 +1,13 @@
 #pragma warning disable CS0219
-using antlr;
-using antlr.collections.impl;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 
 namespace OfaSchlupfer.ScriptDom {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Text;
+    using antlr;
+    using antlr.collections.impl;
+
     internal class TSql100ParserInternal : TSql100ParserBaseInternal {
         public const int EOF = 1;
 

@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class AlterLoginOptionsStatement : AlterLoginStatement {
         private List<PrincipalOption> _options = new List<PrincipalOption>();
@@ -16,7 +15,7 @@ namespace OfaSchlupfer.ScriptDom {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            for (int i=0, count = this.Options.Count; i < count; i++) {
+            for (int i = 0, count = this.Options.Count; i < count; i++) {
                 this.Options[i].Accept(visitor);
             }
         }

@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.ScriptDom {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class AlterTableDropTableElement : TSqlFragment {
         private TableElementType _tableElementType;
@@ -53,7 +52,7 @@ namespace OfaSchlupfer.ScriptDom {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i=0, count = this.DropClusteredConstraintOptions.Count; i < count; i++) {
+            for (int i = 0, count = this.DropClusteredConstraintOptions.Count; i < count; i++) {
                 this.DropClusteredConstraintOptions[i].Accept(visitor);
             }
             base.AcceptChildren(visitor);

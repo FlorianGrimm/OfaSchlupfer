@@ -75,11 +75,7 @@ namespace OfaSchlupfer.ScriptDom {
             }
         }
 
-        public override void Accept(TSqlFragmentVisitor visitor) {
-            if (visitor != null) {
-                visitor.ExplicitVisit(this);
-            }
-        }
+        public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             if (this.Name != null) {

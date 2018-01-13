@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace OfaSchlupfer.ScriptDom {
@@ -105,7 +104,7 @@ namespace OfaSchlupfer.ScriptDom {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Variable?.Accept(visitor);
             this.Identifier?.Accept(visitor);
-            for (int i=0, count = this.Parameters.Count; i < count; i++) {
+            for (int i = 0, count = this.Parameters.Count; i < count; i++) {
                 this.Parameters[i].Accept(visitor);
             }
             this.Expression?.Accept(visitor);

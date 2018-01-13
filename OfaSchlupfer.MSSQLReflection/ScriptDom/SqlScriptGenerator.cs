@@ -1,11 +1,11 @@
 namespace OfaSchlupfer.ScriptDom {
-    using OfaSchlupfer.ScriptDom.ScriptGenerator;
-    using OfaSchlupfer.ScriptDom.Versioning;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
     using System.Text;
+    using OfaSchlupfer.ScriptDom.ScriptGenerator;
+    using OfaSchlupfer.ScriptDom.Versioning;
 
     public abstract class SqlScriptGenerator {
         private SqlScriptGeneratorOptions _options;
