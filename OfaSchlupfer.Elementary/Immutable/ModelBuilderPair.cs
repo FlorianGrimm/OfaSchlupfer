@@ -60,6 +60,19 @@ namespace OfaSchlupfer.Elementary.Immutable {
             result.SetBuilder(builder);
             return result;
         }
+
+        public static ModelBuilderPair<TModel, TBuilder> FactoryModelBuilderPair2<TModel, TBuilder>(
+            this TModel model,
+            Func<TModel, Func<bool, Action<TBuilder, TModel>, Action<TBuilder, TModel>, TBuilder>> getBuilder,
+            Action<TBuilder, TModel> setUnFrozen = null,
+            Action<TBuilder, TModel> setFrozen = null)
+            where TModel : IBuildTarget, IBuildTarget<TModel, TBuilder>
+            where TBuilder : IBuilder<TModel> {
+            var result = new ModelBuilderPair<TModel, TBuilder>(model, default(TBuilder), setUnFrozen, setFrozen);
+            var builder = model.GetBuilder(false, result.HandleSetUnFrozen, result.HandleSetFrozen);
+            result.SetBuilder(builder);
+            return result;
+        }
     }
 
     /// <summary>
@@ -166,6 +179,10 @@ namespace OfaSchlupfer.Elementary.Immutable {
         public void Dispose() {
             this._Builder = default(TModelBuilder);
             this._Model = default(TModel);
+        }
+
+        public void Freeze() {
+            this.Builder?.GetTarget();
         }
     }
 

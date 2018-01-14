@@ -1,4 +1,6 @@
-﻿namespace OfaSchlupfer.MSSQLReflection.Model {
+﻿#pragma warning disable SA1600 // Elements must be documented
+
+namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
     using System.Collections.Generic;
     using System.Text;
@@ -208,8 +210,7 @@
                     var hashCode =
                         ((ReferenceEquals(this.Parent, this) || ReferenceEquals(this._Parent, null))
                             ? 0
-                            : this._Parent.GetHashCode() << 7
-                        )
+                            : this._Parent.GetHashCode() << 7)
                         ^ (this._Name ?? string.Empty).GetHashCode();
                     if (hashCode == 0) { hashCode = 1; }
                     this._HashCode = hashCode;

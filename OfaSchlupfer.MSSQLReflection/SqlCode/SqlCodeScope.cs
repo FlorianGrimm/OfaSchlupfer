@@ -1,4 +1,6 @@
-﻿namespace OfaSchlupfer.MSSQLReflection.SqlCode {
+﻿#pragma warning disable SA1600
+
+namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     using System;
     using System.Collections.Generic;
     using OfaSchlupfer.MSSQLReflection.Model;
@@ -35,6 +37,7 @@
             var result = new SqlCodeScope(name, this, false, null, this.ModelDatabase);
             return result;
         }
+
         public SqlCodeScope CreateChildDeclarationScope(string name) {
             var result = new SqlCodeScope(name, this, true, null, this.ModelDatabase);
             return result;

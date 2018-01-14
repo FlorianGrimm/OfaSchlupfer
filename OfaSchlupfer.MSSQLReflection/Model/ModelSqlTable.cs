@@ -1,24 +1,39 @@
 ﻿namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
-    using System.Linq;
     using OfaSchlupfer.Elementary.Immutable;
 
-    public sealed class ModelSqlTable : ModelSqlObjectWithColumns, IEquatable<ModelSqlTable> {
+    /// <summary>
+    /// a sql table
+    /// </summary>
+    public sealed class ModelSqlTable
+        : ModelSqlObjectWithColumns
+        , IEquatable<ModelSqlTable>
+        , IBuildTarget<ModelSqlTable, ModelSqlTable.Builder> {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlTable"/> class.
+        /// </summary>
         public ModelSqlTable() {
         }
 
-        public ModelSqlTable(ModelSqlTable src, ModelDictionary<SqlName, ModelSqlColumn> columns) : base(src, columns) {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlTable"/> class.
+        /// </summary>
+        /// <param name="src">Copy source</param>
+        /// <param name="columns">alternatic columns</param>
+        public ModelSqlTable(ModelSqlTable src, ModelDictionary<SqlName, ModelSqlColumn> columns)
+            : base(src, columns) {
         }
-
 
         public static bool operator ==(ModelSqlTable a, ModelSqlTable b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);
 
         public static bool operator !=(ModelSqlTable a, ModelSqlTable b) => !(((object)a == null) ? ((object)b == null) : a.Equals(b));
 
+        /// <inheritdoc/>
         public override bool Equals(object obj) {
             return this.Equals(obj as ModelSqlColumn);
         }
 
+        /// <inheritdoc/>
         public bool Equals(ModelSqlTable other) {
             if ((object)other == null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
@@ -26,8 +41,10 @@
                 ;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode() => this.Name.GetHashCode();
 
+        /// <inheritdoc/>
         public override string ToString() => this.Name.ToString();
 
         /// <summary>
@@ -40,9 +57,12 @@
         public Builder GetBuilder(bool clone, Action<ModelSqlTable> setTarget, Action<ModelSqlTable> setFrozen)
             => new Builder(this, clone, setTarget, setFrozen);
 
+        /// <inheritdoc/>
         protected override void FreezeChildren() {
             base.FreezeChildren();
-            foreach (var column in this.Columns.GetValues()) { column.Freeze(); }
+            foreach (var column in this.Columns.GetValues()) {
+                column?.Freeze();
+            }
         }
 
         /// <summary>
@@ -53,21 +73,20 @@
             return new ModelSqlTable(this, null);
         }
 
+        /// <summary>
+        /// Builder
+        /// </summary>
         public sealed class Builder : ModelSqlObjectWithColumnsBuilder<ModelSqlTable> {
-
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Builder"/> class.
+            /// </summary>
+            /// <param name="target">the caller</param>
+            /// <param name="clone">always clone</param>
+            /// <param name="setUnFrozen">will be called if target is set to another instance - unfrozen.</param>
+            /// <param name="setFrozen">will be called if target is set to another instance - frozen.</param>
             internal Builder(ModelSqlTable target, bool clone, Action<ModelSqlTable> setUnFrozen, Action<ModelSqlTable> setFrozen)
                 : base(target, clone, setUnFrozen, setFrozen) {
             }
-
-            //public ModelSqlColumn AddColumn(ModelSqlColumn sqlColumn) {
-            //    if ((object)sqlColumn == null) { throw new ArgumentNullException(nameof(sqlColumn)); }
-            //    //var TypeByName = ensureUnfrozen()._ByName;
-            //    //ModelSqlTable result;
-            //    //TypeByName.TryGetValue(sqlColumn.Name, out result);
-            //    //TypeByName[sqlColumn.Name] = sqlColumn;
-            //    //return result;
-            //    return null;
-            //}
         }
     }
 }

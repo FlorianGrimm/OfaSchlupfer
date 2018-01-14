@@ -17,6 +17,6 @@
             base.ProcessRecord();
         }
 
-        //GetOfaSMSSQLReflection -Database
+        // GetOfaSMSSQLReflection -Database
     }
 }

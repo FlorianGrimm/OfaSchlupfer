@@ -104,10 +104,14 @@
 
         protected override void FreezeChildren() {
             base.FreezeChildren();
+
+            // 0 means undetermined - so calc
             if (_FreezeChildren == 0) {
                 if (typeof(IBuildTarget).IsAssignableFrom(typeof(TValue))) {
+                    // 1 means yes
                     _FreezeChildren = 1;
                 } else {
+                    // 2 means no
                     _FreezeChildren = 2;
                 }
             }

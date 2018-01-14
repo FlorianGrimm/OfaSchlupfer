@@ -2,8 +2,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using OfaSchlupfer.Elementary;
     using OfaSchlupfer.Elementary.SqlAccess;
 
@@ -11,12 +9,20 @@
     /// read infos from sys - schema
     /// </summary>
     public sealed class SqlSysUtiltiy : IDisposable {
-        public SqlSysDatabase CurrentDatabase;
         private SqlSysServer CurrentServer;
+
+        /// <summary>
+        /// id to Database
+        /// </summary>
         public readonly Dictionary<int, SqlSysDatabase> DatabaseById;
 
         /// <summary>
-        /// ctor
+        /// The current database - set by ReadCurrentDatbase.
+        /// </summary>
+        public SqlSysDatabase CurrentDatabase;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SqlSysUtiltiy"/> class.
         /// </summary>
         public SqlSysUtiltiy() {
             this.DatabaseById = new Dictionary<int, SqlSysDatabase>();
@@ -39,6 +45,8 @@
         /// <summary>
         /// Read the objects.
         /// </summary>
+        /// <param name="db">the database if null the current or the connnection db is used - null is good</param>
+        /// <returns>the database</returns>
         public SqlSysDatabase ReadAllFromDatbase(SqlSysDatabase db = null) {
             if (db == null) {
                 db = this.CurrentDatabase;
@@ -47,19 +55,18 @@
                 db = this.ReadCurrentDatbase();
             }
             if (db != null) {
-                var sqlTransConnection = ensureTransConnection();
+                var sqlTransConnection = this.ensureTransConnection();
                 db.ReadAll(sqlTransConnection);
             }
             return db;
         }
-
 
         /// <summary>
         /// Read the server info from the server;
         /// </summary>
         /// <returns>the server - null if no rights</returns>
         public SqlSysServer ReadServer() {
-            var sqlTransConnection = ensureTransConnection();
+            var sqlTransConnection = this.ensureTransConnection();
             try {
                 using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysServer.SELECTStatment)) {
                     var sqlResults = SqlUtility.ExecuteReader(command, false, false);
@@ -77,7 +84,7 @@
         /// </summary>
         /// <returns>the databases</returns>
         public List<SqlSysDatabase> ReadDatbases() {
-            var sqlTransConnection = ensureTransConnection();
+            var sqlTransConnection = this.ensureTransConnection();
             try {
                 using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysDatabase.SELECTAllStatement)) {
                     var sqlResults = SqlUtility.ExecuteReader(command, false, false);
@@ -104,7 +111,7 @@
         /// </summary>
         /// <returns>the databases</returns>
         public SqlSysDatabase ReadCurrentDatbase() {
-            var sqlTransConnection = ensureTransConnection();
+            var sqlTransConnection = this.ensureTransConnection();
             using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysDatabase.SELECTCurrentStatement)) {
                 var sqlResults = SqlUtility.ExecuteReader(command, false, false);
                 var result = EntityArrayProp.ConvertFromSqlResult<SqlSysDatabase>(sqlResults.First(), SqlSysDatabase.Factory).FirstOrDefault();
@@ -118,33 +125,31 @@
         /// Read the tables from the database;
         /// </summary>
         /// <returns>the tables</returns>
-        public List<SqlSysSchema> ReadSchemas() => this.ensureCurrentDatabase()?.ReadSchemas(ensureTransConnection());
+        public List<SqlSysSchema> ReadSchemas() => this.ensureCurrentDatabase()?.ReadSchemas(this.ensureTransConnection());
 
         /// <summary>
         /// Read the columns from the database.
         /// </summary>
         /// <returns>the columns.</returns>
-        public List<SqlSysType> ReadTypes() => this.ensureCurrentDatabase()?.ReadTypes(ensureTransConnection());
-
+        public List<SqlSysType> ReadTypes() => this.ensureCurrentDatabase()?.ReadTypes(this.ensureTransConnection());
 
         /// <summary>
         /// Read the sys.all_objects from the database.
         /// </summary>
         /// <returns>the columns.</returns>
-        public List<SqlSysObject> ReadAllObjects() => this.ensureCurrentDatabase()?.ReadAllObjects(ensureTransConnection());
+        public List<SqlSysObject> ReadAllObjects() => this.ensureCurrentDatabase()?.ReadAllObjects(this.ensureTransConnection());
 
         /// <summary>
         /// Read the columns from the database.
         /// </summary>
         /// <returns>the columns.</returns>
-        public List<SqlSysColumn> ReadColumns() => this.ensureCurrentDatabase()?.ReadColumns(ensureTransConnection());
+        public List<SqlSysColumn> ReadColumns() => this.ensureCurrentDatabase()?.ReadColumns(this.ensureTransConnection());
 
         /// <summary>
         /// Read the columns from the database.
         /// </summary>
         /// <returns>the columns.</returns>
-        public List<SqlSysParameter> ReadParameters() => this.ensureCurrentDatabase()?.ReadParameters(ensureTransConnection());
-
+        public List<SqlSysParameter> ReadParameters() => this.ensureCurrentDatabase()?.ReadParameters(this.ensureTransConnection());
 
         private SqlTransConnection ensureTransConnection() {
             if ((object)this.TransConnection == null) {

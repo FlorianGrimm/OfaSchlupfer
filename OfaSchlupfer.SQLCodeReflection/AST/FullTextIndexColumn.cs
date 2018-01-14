@@ -1,0 +1,54 @@
+namespace OfaSchlupfer.AST {
+    [System.Serializable]
+    public sealed class FullTextIndexColumn : TSqlFragment {
+        private Identifier _name;
+
+        private Identifier _typeColumn;
+
+        private IdentifierOrValueExpression _languageTerm;
+
+        public Identifier Name {
+            get {
+                return this._name;
+            }
+
+            set {
+                this.UpdateTokenInfo(value);
+                this._name = value;
+            }
+        }
+
+        public Identifier TypeColumn {
+            get {
+                return this._typeColumn;
+            }
+
+            set {
+                this.UpdateTokenInfo(value);
+                this._typeColumn = value;
+            }
+        }
+
+        public IdentifierOrValueExpression LanguageTerm {
+            get {
+                return this._languageTerm;
+            }
+
+            set {
+                this.UpdateTokenInfo(value);
+                this._languageTerm = value;
+            }
+        }
+
+        public bool StatisticalSemantics { get; set; }
+
+        public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+
+        public override void AcceptChildren(TSqlFragmentVisitor visitor) {
+            this.Name?.Accept(visitor);
+            this.TypeColumn?.Accept(visitor);
+            this.LanguageTerm?.Accept(visitor);
+            base.AcceptChildren(visitor);
+        }
+    }
+}

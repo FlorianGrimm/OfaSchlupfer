@@ -75,6 +75,10 @@
       <Project>{03C9DB9D-8BCA-4EA2-A891-5C5AAD9323FD}</Project>
       <Name>OfaSchlupfer.MSSQLReflection</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OfaSchlupfer.SQLCodeReflection\OfaSchlupfer.SQLCodeReflection.csproj">
+      <Project>{767c34c3-6273-4963-b0be-b49048dbd76e}</Project>
+      <Name>OfaSchlupfer.SQLCodeReflection</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="testDatabase.txt" />

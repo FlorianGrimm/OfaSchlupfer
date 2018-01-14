@@ -1,0 +1,38 @@
+namespace OfaSchlupfer.AST {
+    [System.Serializable]
+    public sealed class EventDeclarationSetParameter : TSqlFragment {
+        private Identifier _eventField;
+
+        private ScalarExpression _eventValue;
+
+        public Identifier EventField {
+            get {
+                return this._eventField;
+            }
+
+            set {
+                this.UpdateTokenInfo(value);
+                this._eventField = value;
+            }
+        }
+
+        public ScalarExpression EventValue {
+            get {
+                return this._eventValue;
+            }
+
+            set {
+                this.UpdateTokenInfo(value);
+                this._eventValue = value;
+            }
+        }
+
+        public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+
+        public override void AcceptChildren(TSqlFragmentVisitor visitor) {
+            this.EventField?.Accept(visitor);
+            this.EventValue?.Accept(visitor);
+            base.AcceptChildren(visitor);
+        }
+    }
+}

@@ -1,0 +1,22 @@
+namespace OfaSchlupfer.AST {
+    [System.Serializable]
+    public abstract class TableReferenceWithAlias : TableReference {
+        private Identifier _alias;
+
+        public Identifier Alias {
+            get {
+                return this._alias;
+            }
+
+            set {
+                this.UpdateTokenInfo(value);
+                this._alias = value;
+            }
+        }
+
+        public override void AcceptChildren(TSqlFragmentVisitor visitor) {
+            this.Alias?.Accept(visitor);
+            base.AcceptChildren(visitor);
+        }
+    }
+}

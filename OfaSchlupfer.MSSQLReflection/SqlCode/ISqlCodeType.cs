@@ -1,16 +1,20 @@
-﻿namespace OfaSchlupfer.MSSQLReflection.SqlCode {
+﻿#pragma warning disable SA1402
+#pragma warning disable SA1600
+
+namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     using System;
 
     public interface ISqlCodeType {
         ISqlCodeType GetResolved();
+
         void SetResolved(ISqlCodeType sqlCodeType);
     }
 
     public sealed class SqlCodeTypeLazy : ISqlCodeType {
-        public readonly OfaSchlupfer.ScriptDom.TSqlFragment Fragment;
+        public readonly OfaSchlupfer.AST.TSqlFragment Fragment;
         public ISqlCodeType Resolved;
 
-        public SqlCodeTypeLazy(OfaSchlupfer.ScriptDom.TSqlFragment fragment) {
+        public SqlCodeTypeLazy(OfaSchlupfer.AST.TSqlFragment fragment) {
             this.Fragment = fragment;
         }
 
@@ -40,6 +44,7 @@
 
     public sealed class SqlCodeTypeSingle : ISqlCodeType {
         public readonly Model.ModelSqlType Type;
+
         public SqlCodeTypeSingle(Model.ModelSqlType type) {
             this.Type = type;
         }
@@ -54,9 +59,9 @@
         }
     }
 
-
     public sealed class SqlCodeTypeObjectWithColumns : ISqlCodeType {
         public readonly Model.ModelSqlObjectWithColumns ObjectWithColumns;
+
         public SqlCodeTypeObjectWithColumns(Model.ModelSqlObjectWithColumns objectWithColumns) {
             this.ObjectWithColumns = objectWithColumns;
         }
