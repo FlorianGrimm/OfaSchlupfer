@@ -54,6 +54,7 @@
     <None Include="Model\ModelSqlDatabaseTables.cs" />
     <None Include="Model\ModelSqlDatabaseTypes.cs" />
     <Compile Include="Model\ModelSqlProcedure.cs" />
+    <Compile Include="Model\ModelSqlServer.cs" />
     <Compile Include="Model\ModelSqlType.cs" />
     <Compile Include="Model\ModelSqlView.cs" />
     <Compile Include="Model\SqlSys\ISqlSysTypedObject.cs" />

@@ -14,9 +14,9 @@
         /// Initializes a new instance of the <see cref="ModelSqlDatabase"/> class.
         /// </summary>
         public ModelSqlDatabase() {
-            this._Schemas = new ModelDictionary<SqlName, ModelSqlSchema>();
-            this._Types = new ModelDictionary<SqlName, ModelSqlType>();
-            this._Tables = new ModelDictionary<SqlName, ModelSqlTable>();
+            this._Schemas = new ModelDictionary<SqlName, ModelSqlSchema>(this);
+            this._Types = new ModelDictionary<SqlName, ModelSqlType>(this);
+            this._Tables = new ModelDictionary<SqlName, ModelSqlTable>(this);
         }
 
         /// <summary>
@@ -31,9 +31,9 @@
             ModelDictionary<SqlName, ModelSqlSchema> schemas,
             ModelDictionary<SqlName, ModelSqlType> types,
             ModelDictionary<SqlName, ModelSqlTable> tables) {
-            this._Schemas = ModelDictionary<SqlName, ModelSqlSchema>.FactoryCopy(schemas, src._Schemas);
-            this._Types = ModelDictionary<SqlName, ModelSqlType>.FactoryCopy(types, src._Types);
-            this._Tables = ModelDictionary<SqlName, ModelSqlTable>.FactoryCopy(tables, src._Tables);
+            this._Schemas = ModelDictionary<SqlName, ModelSqlSchema>.FactoryCopy(this, schemas, src._Schemas);
+            this._Types = ModelDictionary<SqlName, ModelSqlType>.FactoryCopy(this, types, src._Types);
+            this._Tables = ModelDictionary<SqlName, ModelSqlTable>.FactoryCopy(this, tables, src._Tables);
         }
 
         /// <summary>
@@ -169,7 +169,12 @@
 
                 set {
                     if (ReferenceEquals(this._Target.Schemas, value)) { return; }
-                    this.EnsureUnfrozen()._Schemas = value;
+                    var that = this.EnsureUnfrozen();
+                    if (ReferenceEquals(value?.Owner, that)) {
+                        that._Schemas = value;
+                    } else {
+                        that._Schemas = new ModelDictionary<SqlName, ModelSqlSchema>(that, value);
+                    }
                 }
             }
 

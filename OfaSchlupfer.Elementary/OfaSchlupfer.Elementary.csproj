@@ -50,6 +50,8 @@
     <Compile Include="Immutable\BuilderBase.cs" />
     <Compile Include="Immutable\BuildTargetBase.cs" />
     <Compile Include="Immutable\BuildTargetExtension.cs" />
+    <Compile Include="Immutable\FreezeVersion.cs" />
+    <Compile Include="Immutable\FreezeVersionNode.cs" />
     <Compile Include="Immutable\IBuildTarget{TModel,TBuilder}.cs" />
     <Compile Include="Immutable\SimpleList.cs" />
     <Compile Include="Immutable\IBuilder.cs" />

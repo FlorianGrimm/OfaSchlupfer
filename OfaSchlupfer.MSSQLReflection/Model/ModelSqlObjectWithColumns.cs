@@ -22,7 +22,7 @@
         /// Initializes a new instance of the <see cref="ModelSqlObjectWithColumns"/> class.
         /// </summary>
         public ModelSqlObjectWithColumns() {
-            this._Columns = new ModelDictionary<SqlName, ModelSqlColumn>();
+            this._Columns = new ModelDictionary<SqlName, ModelSqlColumn>(this);
         }
 
         /// <summary>
@@ -32,7 +32,7 @@
         /// <param name="columns">the new columns - can be null</param>
         public ModelSqlObjectWithColumns(ModelSqlObjectWithColumns src, ModelDictionary<SqlName, ModelSqlColumn> columns) {
             this.Name = src.Name;
-            this._Columns = ModelDictionary<SqlName, ModelSqlColumn>.FactoryCopy(columns, src._Columns);
+            this._Columns = ModelDictionary<SqlName, ModelSqlColumn>.FactoryCopy(this, columns, src._Columns);
         }
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line

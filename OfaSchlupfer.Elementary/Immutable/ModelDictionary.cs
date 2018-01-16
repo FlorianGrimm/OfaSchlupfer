@@ -14,21 +14,23 @@
         /// <summary>
         /// Helper for Copy Constructor.
         /// </summary>
-        /// <param name="schemas">the copy ctor parameter</param>
-        /// <param name="srcSchemas">the source field.</param>
+        /// <param name="owner">the owner.</param>
+        /// <param name="items">the copy ctor parameter</param>
+        /// <param name="srcItems">the source field.</param>
         /// <returns>schemas if frozen - otherwise a new <see cref="ModelDictionary{TKey, TValue}"/> with the data from schemas or srcSchemas.</returns>
-        public static ModelDictionary<TKey, TValue> FactoryCopy(ModelDictionary<TKey, TValue> schemas, ModelDictionary<TKey, TValue> srcSchemas) {
-            return (((object)schemas != null) && schemas.IsFrozen) ? schemas : new ModelDictionary<TKey, TValue>(schemas ?? srcSchemas);
+        public static ModelDictionary<TKey, TValue> FactoryCopy(IBuildTarget owner, ModelDictionary<TKey, TValue> items, ModelDictionary<TKey, TValue> srcItems) {
+            return (((object)items != null) && items.IsFrozen) ? items : new ModelDictionary<TKey, TValue>(items ?? srcItems);
         }
 
         /// <summary>
         /// Helper for Copy Constructor.
         /// </summary>
-        /// <param name="schemas">the copy ctor parameter</param>
-        /// <param name="srcSchemas">the source field.</param>
+        /// <param name="owner">the owner.</param>
+        /// <param name="items">the copy ctor parameter</param>
+        /// <param name="srcItems">the source field.</param>
         /// <returns>a new <see cref="ModelDictionary{TKey, TValue}"/> with the data from schemas or srcSchemas.</returns>
-        public static ModelDictionary<TKey, TValue> FactoryCopyUnFrozen(ModelDictionary<TKey, TValue> schemas, ModelDictionary<TKey, TValue> srcSchemas) {
-            return new ModelDictionary<TKey, TValue>(schemas ?? srcSchemas);
+        public static ModelDictionary<TKey, TValue> FactoryCopyUnFrozen(IBuildTarget owner, ModelDictionary<TKey, TValue> items, ModelDictionary<TKey, TValue> srcItems) {
+            return new ModelDictionary<TKey, TValue>(items ?? srcItems);
         }
 
         private static byte _FreezeChildren;
@@ -38,23 +40,33 @@
         /// </summary>
         protected readonly Dictionary<TKey, TValue> _ByName;
 
+        protected readonly IBuildTarget _Owner;
+
         private TValue[] _Cache;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelDictionary{TKey, TValue}"/> class.
         /// </summary>
-        public ModelDictionary() {
+        /// <param name="owner">the owner.</param>
+        public ModelDictionary(IBuildTarget owner) {
             this._ByName = new Dictionary<TKey, TValue>();
+            this._Owner = owner;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelDictionary{TKey, TValue}"/> class. Copy constructor.
         /// </summary>
+        /// <param name="owner">the owner.</param>
         /// <param name="src">the source - cannot be null.</param>
-        public ModelDictionary(ModelDictionary<TKey, TValue> src) {
+        public ModelDictionary(IBuildTarget owner, ModelDictionary<TKey, TValue> src) {
             if ((object)src == null) { throw new ArgumentNullException(nameof(src)); }
 
-            this._ByName = new Dictionary<TKey, TValue>(src._ByName);
+            this._Owner = owner;
+            if ((object)src == null) {
+                this._ByName = new Dictionary<TKey, TValue>();
+            } else {
+                this._ByName = new Dictionary<TKey, TValue>(src._ByName);
+            }
         }
 
         /// <summary>
@@ -131,6 +143,11 @@
         }
 
         /// <summary>
+        /// Gets the owner.
+        /// </summary>
+        public IBuildTarget Owner => this._Owner;
+
+        /// <summary>
         /// Builder for <see cref="ModelDictionary{TKey, TValue}"/>.
         /// </summary>
         /// <typeparam name="TModel">the Model type</typeparam>
@@ -205,5 +222,15 @@
             /// <returns>All items as an array.</returns>
             public KeyValuePair<TKey, TValue>[] GetKeyValues() => this._Target._ByName.ToArray();
         }
+
+        /*
+        public void EnsureUnfrozenAndSet<TModel, TBuilder>(
+            TBuilder builder,
+            ModelDictionary<TKey, TValue> value,
+            Action<TBuilder, ModelDictionary<TKey, TValue>> setter)
+            where TBuilder : IBuilder<TModel> {
+            throw new NotImplementedException();
+        }
+        */
     }
 }
