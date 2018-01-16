@@ -5,8 +5,6 @@ namespace OfaSchlupfer.AST {
     public sealed class AlterDatabaseSetStatement : AlterDatabaseStatement {
         private AlterDatabaseTermination _termination;
 
-        private List<DatabaseOption> _options = new List<DatabaseOption>();
-
         public AlterDatabaseTermination Termination {
             get {
                 return this._termination;
@@ -18,20 +16,14 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<DatabaseOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<DatabaseOption> Options { get; } = new List<DatabaseOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.Termination?.Accept(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
         }
     }
 }

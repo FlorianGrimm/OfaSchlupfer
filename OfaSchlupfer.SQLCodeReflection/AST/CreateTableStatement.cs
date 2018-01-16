@@ -13,8 +13,6 @@ namespace OfaSchlupfer.AST {
 
         private IdentifierOrValueExpression _textImageOn;
 
-        private List<TableOption> _options = new List<TableOption>();
-
         private IdentifierOrValueExpression _fileStreamOn;
 
         public SchemaObjectName SchemaObjectName {
@@ -78,11 +76,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<TableOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<TableOption> Options { get; } = new List<TableOption>();
 
         public IdentifierOrValueExpression FileStreamOn {
             get {
@@ -103,9 +97,7 @@ namespace OfaSchlupfer.AST {
             this.OnFileGroupOrPartitionScheme?.Accept(visitor);
             this.FederationScheme?.Accept(visitor);
             this.TextImageOn?.Accept(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
             this.FileStreamOn?.Accept(visitor);
             base.AcceptChildren(visitor);
         }

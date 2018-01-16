@@ -5,8 +5,6 @@ namespace OfaSchlupfer.AST {
     public abstract class WorkloadGroupStatement : TSqlStatement {
         private Identifier _name;
 
-        private List<WorkloadGroupParameter> _workloadGroupParameters = new List<WorkloadGroupParameter>();
-
         private Identifier _poolName;
 
         private Identifier _externalPoolName;
@@ -22,11 +20,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<WorkloadGroupParameter> WorkloadGroupParameters {
-            get {
-                return this._workloadGroupParameters;
-            }
-        }
+        public List<WorkloadGroupParameter> WorkloadGroupParameters { get; } = new List<WorkloadGroupParameter>();
 
         public Identifier PoolName {
             get {
@@ -52,9 +46,7 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.WorkloadGroupParameters.Count; i < count; i++) {
-                this.WorkloadGroupParameters[i].Accept(visitor);
-            }
+            this.WorkloadGroupParameters.Accept(visitor);
             this.PoolName?.Accept(visitor);
             this.ExternalPoolName?.Accept(visitor);
             base.AcceptChildren(visitor);

@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class ReceiveStatement : WaitForSupportedStatement {
         private ScalarExpression _top;
-
-        private List<SelectElement> _selectElements = new List<SelectElement>();
 
         private SchemaObjectName _queue;
 
@@ -24,11 +22,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<SelectElement> SelectElements {
-            get {
-                return this._selectElements;
-            }
-        }
+        public List<SelectElement> SelectElements { get; } = new List<SelectElement>();
 
         public SchemaObjectName Queue {
             get {
@@ -69,9 +63,7 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Top?.Accept(visitor);
-            for (int i = 0, count = this.SelectElements.Count; i < count; i++) {
-                this.SelectElements[i].Accept(visitor);
-            }
+            this.SelectElements.Accept(visitor);
             this.Queue?.Accept(visitor);
             this.Into?.Accept(visitor);
             this.Where?.Accept(visitor);

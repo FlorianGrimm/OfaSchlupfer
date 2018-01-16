@@ -53,7 +53,9 @@
     <None Include="Model\ModelSqlDatabaseSchemas.cs" />
     <None Include="Model\ModelSqlDatabaseTables.cs" />
     <None Include="Model\ModelSqlDatabaseTypes.cs" />
+    <Compile Include="Model\ModelSqlProcedure.cs" />
     <Compile Include="Model\ModelSqlType.cs" />
+    <Compile Include="Model\ModelSqlView.cs" />
     <Compile Include="Model\SqlSys\ISqlSysTypedObject.cs" />
     <Compile Include="Model\SqlSys\SqlSysDatabase.cs" />
     <Compile Include="Model\SqlSys\SqlSysColumn.cs" />
@@ -75,7 +77,7 @@
     <Compile Include="SqlCode\ISqlCodeResult.cs" />
     <Compile Include="SqlCode\ISqlCodeType.cs" />
     <Compile Include="SqlCode\SqlCodeScope.cs" />
-    <Compile Include="SqlCode\SqlCodeParse.cs" />
+    <Compile Include="SqlCode\SqlCodeAnalyse.cs" />
     <Compile Include="SqlCode\TSqlAnalyseVisitor.cs" />
     <Compile Include="SqlCode\TSqlBindVisitor.cs" />
     <Compile Include="Utility.cs" />

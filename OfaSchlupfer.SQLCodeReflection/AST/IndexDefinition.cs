@@ -1,15 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class IndexDefinition : TSqlStatement, IFileStreamSpecifier {
         private Identifier _name;
 
         private IndexType _indexType;
-
-        private List<IndexOption> _indexOptions = new List<IndexOption>();
-
-        private List<ColumnWithSortOrder> _columns = new List<ColumnWithSortOrder>();
 
         private FileGroupOrPartitionScheme _onFileGroupOrPartitionScheme;
 
@@ -40,17 +36,9 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<IndexOption> IndexOptions {
-            get {
-                return this._indexOptions;
-            }
-        }
+        public List<IndexOption> IndexOptions { get; } = new List<IndexOption>();
 
-        public List<ColumnWithSortOrder> Columns {
-            get {
-                return this._columns;
-            }
-        }
+        public List<ColumnWithSortOrder> Columns { get; } = new List<ColumnWithSortOrder>();
 
         public FileGroupOrPartitionScheme OnFileGroupOrPartitionScheme {
             get {
@@ -89,13 +77,8 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.IndexOptions.Count; i < count; i++) {
-                this.IndexOptions[i].Accept(visitor);
-            }
-            int j = 0;
-            for (int count2 = this.Columns.Count; j < count2; j++) {
-                this.Columns[j].Accept(visitor);
-            }
+            this.IndexOptions.Accept(visitor);
+            this.Columns.Accept(visitor);
             this.OnFileGroupOrPartitionScheme?.Accept(visitor);
             this.FilterPredicate?.Accept(visitor);
             this.FileStreamOn?.Accept(visitor);

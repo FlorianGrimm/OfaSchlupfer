@@ -1,19 +1,13 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class SendStatement : TSqlStatement {
-        private List<ScalarExpression> _conversationHandles = new List<ScalarExpression>();
-
         private IdentifierOrValueExpression _messageTypeName;
 
         private ScalarExpression _messageBody;
 
-        public List<ScalarExpression> ConversationHandles {
-            get {
-                return this._conversationHandles;
-            }
-        }
+        public List<ScalarExpression> ConversationHandles { get; } = new List<ScalarExpression>();
 
         public IdentifierOrValueExpression MessageTypeName {
             get {
@@ -40,9 +34,7 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.ConversationHandles.Count; i < count; i++) {
-                this.ConversationHandles[i].Accept(visitor);
-            }
+            this.ConversationHandles.Accept(visitor);
             this.MessageTypeName?.Accept(visitor);
             this.MessageBody?.Accept(visitor);
             base.AcceptChildren(visitor);

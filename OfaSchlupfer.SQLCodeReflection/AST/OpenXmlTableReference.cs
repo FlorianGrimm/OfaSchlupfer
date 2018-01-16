@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class OpenXmlTableReference : TableReferenceWithAlias {
         private VariableReference _variable;
@@ -8,8 +8,6 @@ namespace OfaSchlupfer.AST {
         private ValueExpression _rowPattern;
 
         private ValueExpression _flags;
-
-        private List<SchemaDeclarationItem> _schemaDeclarationItems = new List<SchemaDeclarationItem>();
 
         private SchemaObjectName _tableName;
 
@@ -46,11 +44,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<SchemaDeclarationItem> SchemaDeclarationItems {
-            get {
-                return this._schemaDeclarationItems;
-            }
-        }
+        public List<SchemaDeclarationItem> SchemaDeclarationItems { get; } = new List<SchemaDeclarationItem>();
 
         public SchemaObjectName TableName {
             get {
@@ -69,9 +63,7 @@ namespace OfaSchlupfer.AST {
             this.Variable?.Accept(visitor);
             this.RowPattern?.Accept(visitor);
             this.Flags?.Accept(visitor);
-            for (int i = 0, count = this.SchemaDeclarationItems.Count; i < count; i++) {
-                this.SchemaDeclarationItems[i].Accept(visitor);
-            }
+            this.SchemaDeclarationItems.Accept(visitor);
             this.TableName?.Accept(visitor);
             base.AcceptChildren(visitor);
         }

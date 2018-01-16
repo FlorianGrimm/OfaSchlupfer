@@ -1,15 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class RestoreStatement : TSqlStatement {
         private IdentifierOrValueExpression _databaseName;
-
-        private List<DeviceInfo> _devices = new List<DeviceInfo>();
-
-        private List<BackupRestoreFileInfo> _files = new List<BackupRestoreFileInfo>();
-
-        private List<RestoreOption> _options = new List<RestoreOption>();
 
         private RestoreStatementKind _kind;
 
@@ -24,23 +18,11 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<DeviceInfo> Devices {
-            get {
-                return this._devices;
-            }
-        }
+        public List<DeviceInfo> Devices { get; } = new List<DeviceInfo>();
 
-        public List<BackupRestoreFileInfo> Files {
-            get {
-                return this._files;
-            }
-        }
+        public List<BackupRestoreFileInfo> Files { get; } = new List<BackupRestoreFileInfo>();
 
-        public List<RestoreOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<RestoreOption> Options { get; } = new List<RestoreOption>();
 
         public RestoreStatementKind Kind {
             get {
@@ -56,17 +38,9 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.DatabaseName?.Accept(visitor);
-            for (int i = 0, count = this.Devices.Count; i < count; i++) {
-                this.Devices[i].Accept(visitor);
-            }
-            int j = 0;
-            for (int count2 = this.Files.Count; j < count2; j++) {
-                this.Files[j].Accept(visitor);
-            }
-            int k = 0;
-            for (int count3 = this.Options.Count; k < count3; k++) {
-                this.Options[k].Accept(visitor);
-            }
+            this.Devices.Accept(visitor);
+            this.Files.Accept(visitor);
+            this.Options.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

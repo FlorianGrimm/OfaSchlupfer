@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class AlterTableSwitchStatement : AlterTableStatement {
         private ScalarExpression _sourcePartitionNumber;
@@ -8,8 +8,6 @@ namespace OfaSchlupfer.AST {
         private ScalarExpression _targetPartitionNumber;
 
         private SchemaObjectName _targetTable;
-
-        private List<TableSwitchOption> _options = new List<TableSwitchOption>();
 
         public ScalarExpression SourcePartitionNumber {
             get {
@@ -44,24 +42,16 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<TableSwitchOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<TableSwitchOption> Options { get; } = new List<TableSwitchOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (base.SchemaObjectName != null) {
-                base.SchemaObjectName.Accept(visitor);
-            }
+            this.SchemaObjectName?.Accept(visitor);
             this.SourcePartitionNumber?.Accept(visitor);
             this.TargetPartitionNumber?.Accept(visitor);
             this.TargetTable?.Accept(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
         }
     }
 }

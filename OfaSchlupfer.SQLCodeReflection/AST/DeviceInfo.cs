@@ -32,12 +32,8 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (this.LogicalDevice != null) {
-                this.LogicalDevice.Accept(visitor);
-            }
-            if (this.PhysicalDevice != null) {
-                this.PhysicalDevice.Accept(visitor);
-            }
+            this.LogicalDevice?.Accept(visitor);
+            this.PhysicalDevice?.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

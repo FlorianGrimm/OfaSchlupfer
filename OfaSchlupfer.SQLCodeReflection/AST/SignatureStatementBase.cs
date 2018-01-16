@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class SignatureStatementBase : TSqlStatement {
         private SchemaObjectName _element;
-
-        private List<CryptoMechanism> _cryptos = new List<CryptoMechanism>();
 
         public bool IsCounter { get; set; }
 
@@ -22,17 +20,11 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<CryptoMechanism> Cryptos {
-            get {
-                return this._cryptos;
-            }
-        }
+        public List<CryptoMechanism> Cryptos { get; } = new List<CryptoMechanism>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Element?.Accept(visitor);
-            for (int i = 0, count = this.Cryptos.Count; i < count; i++) {
-                this.Cryptos[i].Accept(visitor);
-            }
+            this.Cryptos.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

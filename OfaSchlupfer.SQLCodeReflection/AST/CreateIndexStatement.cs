@@ -8,10 +8,6 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class CreateIndexStatement : IndexStatement, IFileStreamSpecifier {
-        private List<ColumnWithSortOrder> _columns = new List<ColumnWithSortOrder>();
-
-        private List<ColumnReferenceExpression> _includeColumns = new List<ColumnReferenceExpression>();
-
         private FileGroupOrPartitionScheme _onFileGroupOrPartitionScheme;
 
         private BooleanExpression _filterPredicate;
@@ -24,17 +20,9 @@ namespace OfaSchlupfer.AST {
 
         public bool? Clustered { get; set; }
 
-        public List<ColumnWithSortOrder> Columns {
-            get {
-                return this._columns;
-            }
-        }
+        public List<ColumnWithSortOrder> Columns { get; } = new List<ColumnWithSortOrder>();
 
-        public List<ColumnReferenceExpression> IncludeColumns {
-            get {
-                return this._includeColumns;
-            }
-        }
+        public List<ColumnReferenceExpression> IncludeColumns { get; } = new List<ColumnReferenceExpression>();
 
         public FileGroupOrPartitionScheme OnFileGroupOrPartitionScheme {
             get {
@@ -72,33 +60,14 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (base.Name != null) {
-                base.Name.Accept(visitor);
-            }
-            if (base.OnName != null) {
-                base.OnName.Accept(visitor);
-            }
-            int i = 0;
-            for (int count = this.Columns.Count; i < count; i++) {
-                this.Columns[i].Accept(visitor);
-            }
-            int j = 0;
-            for (int count2 = this.IncludeColumns.Count; j < count2; j++) {
-                this.IncludeColumns[j].Accept(visitor);
-            }
-            int k = 0;
-            for (int count3 = base.IndexOptions.Count; k < count3; k++) {
-                base.IndexOptions[k].Accept(visitor);
-            }
-            if (this.OnFileGroupOrPartitionScheme != null) {
-                this.OnFileGroupOrPartitionScheme.Accept(visitor);
-            }
-            if (this.FilterPredicate != null) {
-                this.FilterPredicate.Accept(visitor);
-            }
-            if (this.FileStreamOn != null) {
-                this.FileStreamOn.Accept(visitor);
-            }
+            base.Name?.Accept(visitor);
+            base.OnName?.Accept(visitor);
+            this.Columns.Accept(visitor);
+            this.IncludeColumns.Accept(visitor);
+            base.IndexOptions.Accept(visitor);
+            this.OnFileGroupOrPartitionScheme?.Accept(visitor);
+            this.FilterPredicate?.Accept(visitor);
+            this.FileStreamOn?.Accept(visitor);
         }
     }
 }

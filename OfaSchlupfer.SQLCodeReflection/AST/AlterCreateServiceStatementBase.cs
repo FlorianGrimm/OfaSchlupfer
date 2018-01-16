@@ -34,9 +34,7 @@ namespace OfaSchlupfer.AST {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
             this.QueueName?.Accept(visitor);
-            for (int i = 0, count = this.ServiceContracts.Count; i < count; i++) {
-                this.ServiceContracts[i].Accept(visitor);
-            }
+            this.ServiceContracts.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

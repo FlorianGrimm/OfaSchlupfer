@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class ColumnEncryptionKeyStatement : TSqlStatement {
         private Identifier _name;
-
-        private List<ColumnEncryptionKeyValue> _columnEncryptionKeyValues = new List<ColumnEncryptionKeyValue>();
 
         public Identifier Name {
             get {
@@ -18,17 +16,11 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ColumnEncryptionKeyValue> ColumnEncryptionKeyValues {
-            get {
-                return this._columnEncryptionKeyValues;
-            }
-        }
+        public List<ColumnEncryptionKeyValue> ColumnEncryptionKeyValues { get; } = new List<ColumnEncryptionKeyValue>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.ColumnEncryptionKeyValues.Count; i < count; i++) {
-                this.ColumnEncryptionKeyValues[i].Accept(visitor);
-            }
+            this.ColumnEncryptionKeyValues.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

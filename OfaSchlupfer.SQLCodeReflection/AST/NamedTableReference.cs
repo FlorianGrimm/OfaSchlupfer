@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class NamedTableReference : TableReferenceWithAlias {
         private SchemaObjectName _schemaObject;
-
-        private List<TableHint> _tableHints = new List<TableHint>();
 
         private TableSampleClause _tableSampleClause;
 
@@ -22,11 +20,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<TableHint> TableHints {
-            get {
-                return this._tableHints;
-            }
-        }
+        public List<TableHint> TableHints { get; } = new List<TableHint>();
 
         public TableSampleClause TableSampleClause {
             get {
@@ -55,9 +49,7 @@ namespace OfaSchlupfer.AST {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.SchemaObject?.Accept(visitor);
             base.AcceptChildren(visitor);
-            for (int i = 0, count = this.TableHints.Count; i < count; i++) {
-                this.TableHints[i].Accept(visitor);
-            }
+            this.TableHints.Accept(visitor);
             this.TableSampleClause?.Accept(visitor);
             this.TemporalClause?.Accept(visitor);
         }

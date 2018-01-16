@@ -7,8 +7,6 @@ namespace OfaSchlupfer.AST {
 
         private EventNotificationObjectScope _scope;
 
-        private List<EventTypeGroupContainer> _eventTypeGroups = new List<EventTypeGroupContainer>();
-
         private Literal _brokerService;
 
         private Literal _brokerInstanceSpecifier;
@@ -37,11 +35,7 @@ namespace OfaSchlupfer.AST {
 
         public bool WithFanIn { get; set; }
 
-        public List<EventTypeGroupContainer> EventTypeGroups {
-            get {
-                return this._eventTypeGroups;
-            }
-        }
+        public List<EventTypeGroupContainer> EventTypeGroups { get; } = new List<EventTypeGroupContainer>();
 
         public Literal BrokerService {
             get {
@@ -68,21 +62,11 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (this.Name != null) {
-                this.Name.Accept(visitor);
-            }
-            if (this.Scope != null) {
-                this.Scope.Accept(visitor);
-            }
-            for (int i = 0, count = this.EventTypeGroups.Count; i < count; i++) {
-                this.EventTypeGroups[i].Accept(visitor);
-            }
-            if (this.BrokerService != null) {
-                this.BrokerService.Accept(visitor);
-            }
-            if (this.BrokerInstanceSpecifier != null) {
-                this.BrokerInstanceSpecifier.Accept(visitor);
-            }
+            this.Name?.Accept(visitor);
+            this.Scope?.Accept(visitor);
+            this.EventTypeGroups.Accept(visitor);
+            this.BrokerService?.Accept(visitor);
+            this.BrokerInstanceSpecifier?.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

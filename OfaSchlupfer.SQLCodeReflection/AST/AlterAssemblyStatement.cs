@@ -13,15 +13,8 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            var dropFiles = this.DropFiles;
-            for (int i = 0, count = dropFiles.Count; i < count; i++) {
-                dropFiles[i].Accept(visitor);
-            }
-
-            var addFiles = this.AddFiles;
-            for (int i = 0, count = addFiles.Count; i < count; i++) {
-                addFiles[i].Accept(visitor);
-            }
+            this.DropFiles.Accept(visitor);
+            this.AddFiles.Accept(visitor);
         }
     }
 }

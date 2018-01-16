@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class ProviderEncryptionSource : EncryptionSource {
         private Identifier _name;
-
-        private List<KeyOption> _keyOptions = new List<KeyOption>();
 
         public Identifier Name {
             get {
@@ -18,19 +16,13 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<KeyOption> KeyOptions {
-            get {
-                return this._keyOptions;
-            }
-        }
+        public List<KeyOption> KeyOptions { get; } = new List<KeyOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.KeyOptions.Count; i < count; i++) {
-                this.KeyOptions[i].Accept(visitor);
-            }
+            this.KeyOptions.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

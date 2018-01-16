@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class SequenceStatement : TSqlStatement {
         private SchemaObjectName _name;
-
-        private List<SequenceOption> _sequenceOptions = new List<SequenceOption>();
 
         public SchemaObjectName Name {
             get {
@@ -18,17 +16,11 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<SequenceOption> SequenceOptions {
-            get {
-                return this._sequenceOptions;
-            }
-        }
+        public List<SequenceOption> SequenceOptions { get; } = new List<SequenceOption>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.SequenceOptions.Count; i < count; i++) {
-                this.SequenceOptions[i].Accept(visitor);
-            }
+            this.SequenceOptions.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

@@ -6,10 +6,7 @@ namespace OfaSchlupfer.AST {
         public List<ExecuteParameter> Parameters { get; } = new List<ExecuteParameter>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            int i = 0;
-            for (int count = this.Parameters.Count; i < count; i++) {
-                this.Parameters[i].Accept(visitor);
-            }
+            this.Parameters.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

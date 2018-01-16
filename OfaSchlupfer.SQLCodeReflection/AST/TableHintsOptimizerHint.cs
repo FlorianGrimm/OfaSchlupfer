@@ -5,8 +5,6 @@ namespace OfaSchlupfer.AST {
     public sealed class TableHintsOptimizerHint : OptimizerHint {
         private SchemaObjectName _objectName;
 
-        private List<TableHint> _tableHints = new List<TableHint>();
-
         public SchemaObjectName ObjectName {
             get {
                 return this._objectName;
@@ -18,20 +16,14 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<TableHint> TableHints {
-            get {
-                return this._tableHints;
-            }
-        }
+        public List<TableHint> TableHints { get; } = new List<TableHint>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.ObjectName?.Accept(visitor);
-            for (int i=0, count = this.TableHints.Count; i < count; i++) {
-                this.TableHints[i].Accept(visitor);
-            }
+            this.TableHints.Accept(visitor);
         }
     }
 }

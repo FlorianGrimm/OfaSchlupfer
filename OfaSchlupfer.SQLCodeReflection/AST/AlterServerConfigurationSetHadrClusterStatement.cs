@@ -3,20 +3,12 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class AlterServerConfigurationSetHadrClusterStatement : TSqlStatement {
-        private List<AlterServerConfigurationHadrClusterOption> _options = new List<AlterServerConfigurationHadrClusterOption>();
-
-        public List<AlterServerConfigurationHadrClusterOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<AlterServerConfigurationHadrClusterOption> Options { get; } = new List<AlterServerConfigurationHadrClusterOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

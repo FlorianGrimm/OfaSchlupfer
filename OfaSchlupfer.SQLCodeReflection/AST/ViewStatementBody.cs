@@ -5,10 +5,6 @@ namespace OfaSchlupfer.AST {
     public abstract class ViewStatementBody : TSqlStatement {
         private SchemaObjectName _schemaObjectName;
 
-        private List<Identifier> _columns = new List<Identifier>();
-
-        private List<ViewOption> _viewOptions = new List<ViewOption>();
-
         private SelectStatement _selectStatement;
 
         public SchemaObjectName SchemaObjectName {
@@ -22,17 +18,9 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<Identifier> Columns {
-            get {
-                return this._columns;
-            }
-        }
+        public List<Identifier> Columns { get; } = new List<Identifier>();
 
-        public List<ViewOption> ViewOptions {
-            get {
-                return this._viewOptions;
-            }
-        }
+        public List<ViewOption> ViewOptions { get; } = new List<ViewOption>();
 
         public SelectStatement SelectStatement {
             get {
@@ -49,13 +37,8 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.SchemaObjectName?.Accept(visitor);
-            for (int i = 0, count = this.Columns.Count; i < count; i++) {
-                this.Columns[i].Accept(visitor);
-            }
-            int j = 0;
-            for (int count2 = this.ViewOptions.Count; j < count2; j++) {
-                this.ViewOptions[j].Accept(visitor);
-            }
+            this.Columns.Accept(visitor);
+            this.ViewOptions.Accept(visitor);
             this.SelectStatement?.Accept(visitor);
             base.AcceptChildren(visitor);
         }

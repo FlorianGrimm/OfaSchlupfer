@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class CreateSpatialIndexStatement : TSqlStatement {
         private Identifier _name;
@@ -10,8 +10,6 @@ namespace OfaSchlupfer.AST {
         private Identifier _spatialColumnName;
 
         private SpatialIndexingSchemeType _spatialIndexingScheme;
-
-        private List<SpatialIndexOption> _spatialIndexOptions = new List<SpatialIndexOption>();
 
         private IdentifierOrValueExpression _onFileGroup;
 
@@ -58,11 +56,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<SpatialIndexOption> SpatialIndexOptions {
-            get {
-                return this._spatialIndexOptions;
-            }
-        }
+        public List<SpatialIndexOption> SpatialIndexOptions { get; } = new List<SpatialIndexOption>();
 
         public IdentifierOrValueExpression OnFileGroup {
             get {
@@ -81,9 +75,7 @@ namespace OfaSchlupfer.AST {
             this.Name?.Accept(visitor);
             this.Object?.Accept(visitor);
             this.SpatialColumnName?.Accept(visitor);
-            for (int i = 0, count = this.SpatialIndexOptions.Count; i < count; i++) {
-                this.SpatialIndexOptions[i].Accept(visitor);
-            }
+            this.SpatialIndexOptions.Accept(visitor);
             this.OnFileGroup?.Accept(visitor);
             base.AcceptChildren(visitor);
         }

@@ -4,8 +4,6 @@ namespace OfaSchlupfer.AST {
     public sealed class WithCtesAndXmlNamespaces : TSqlFragment {
         private XmlNamespaces _xmlNamespaces;
 
-        private List<CommonTableExpression> _commonTableExpressions = new List<CommonTableExpression>();
-
         private ValueExpression _changeTrackingContext;
 
         public XmlNamespaces XmlNamespaces {
@@ -19,11 +17,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<CommonTableExpression> CommonTableExpressions {
-            get {
-                return this._commonTableExpressions;
-            }
-        }
+        public List<CommonTableExpression> CommonTableExpressions { get; } = new List<CommonTableExpression>();
 
         public ValueExpression ChangeTrackingContext {
             get {
@@ -40,9 +34,7 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.XmlNamespaces?.Accept(visitor);
-            for (int i = 0, count = this.CommonTableExpressions.Count; i < count; i++) {
-                this.CommonTableExpressions[i].Accept(visitor);
-            }
+            this.CommonTableExpressions.Accept(visitor);
             this.ChangeTrackingContext?.Accept(visitor);
             base.AcceptChildren(visitor);
         }

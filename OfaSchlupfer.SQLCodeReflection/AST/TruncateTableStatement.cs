@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class TruncateTableStatement : TSqlStatement {
         private SchemaObjectName _tableName;
-
-        private List<CompressionPartitionRange> _partitionRanges = new List<CompressionPartitionRange>();
 
         public SchemaObjectName TableName {
             get {
@@ -18,19 +16,13 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<CompressionPartitionRange> PartitionRanges {
-            get {
-                return this._partitionRanges;
-            }
-        }
+        public List<CompressionPartitionRange> PartitionRanges { get; } = new List<CompressionPartitionRange>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.TableName?.Accept(visitor);
-            for (int i = 0, count = this.PartitionRanges.Count; i < count; i++) {
-                this.PartitionRanges[i].Accept(visitor);
-            }
+            this.PartitionRanges.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

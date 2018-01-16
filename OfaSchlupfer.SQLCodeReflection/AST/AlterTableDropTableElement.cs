@@ -7,8 +7,6 @@ namespace OfaSchlupfer.AST {
 
         private Identifier _name;
 
-        private List<DropClusteredConstraintOption> _dropClusteredConstraintOptions = new List<DropClusteredConstraintOption>();
-
         public TableElementType TableElementType {
             get {
                 return this._tableElementType;
@@ -30,11 +28,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<DropClusteredConstraintOption> DropClusteredConstraintOptions {
-            get {
-                return this._dropClusteredConstraintOptions;
-            }
-        }
+        public List<DropClusteredConstraintOption> DropClusteredConstraintOptions { get; } = new List<DropClusteredConstraintOption>();
 
         public bool IsIfExists { get; set; }
 
@@ -42,9 +36,7 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.DropClusteredConstraintOptions.Count; i < count; i++) {
-                this.DropClusteredConstraintOptions[i].Accept(visitor);
-            }
+            this.DropClusteredConstraintOptions.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

@@ -1,23 +1,15 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class InsertBulkStatement : BulkInsertBase {
-        private List<InsertBulkColumnDefinition> _columnDefinitions = new List<InsertBulkColumnDefinition>();
-
-        public List<InsertBulkColumnDefinition> ColumnDefinitions {
-            get {
-                return this._columnDefinitions;
-            }
-        }
+        public List<InsertBulkColumnDefinition> ColumnDefinitions { get; } = new List<InsertBulkColumnDefinition>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            for (int i = 0, count = this.ColumnDefinitions.Count; i < count; i++) {
-                this.ColumnDefinitions[i].Accept(visitor);
-            }
+            this.ColumnDefinitions.Accept(visitor);
         }
     }
 }

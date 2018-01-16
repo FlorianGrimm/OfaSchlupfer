@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class RaiseErrorStatement : TSqlStatement {
         private ScalarExpression _firstParameter;
@@ -8,8 +8,6 @@ namespace OfaSchlupfer.AST {
         private ScalarExpression _secondParameter;
 
         private ScalarExpression _thirdParameter;
-
-        private List<ScalarExpression> _optionalParameters = new List<ScalarExpression>();
 
         private RaiseErrorOptions _raiseErrorOptions;
 
@@ -46,11 +44,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ScalarExpression> OptionalParameters {
-            get {
-                return this._optionalParameters;
-            }
-        }
+        public List<ScalarExpression> OptionalParameters { get; } = new List<ScalarExpression>();
 
         public RaiseErrorOptions RaiseErrorOptions {
             get {
@@ -68,9 +62,7 @@ namespace OfaSchlupfer.AST {
             this.FirstParameter?.Accept(visitor);
             this.SecondParameter?.Accept(visitor);
             this.ThirdParameter?.Accept(visitor);
-            for (int i = 0, count = this.OptionalParameters.Count; i < count; i++) {
-                this.OptionalParameters[i].Accept(visitor);
-            }
+            this.OptionalParameters.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

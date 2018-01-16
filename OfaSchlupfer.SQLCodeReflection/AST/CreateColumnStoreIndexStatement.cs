@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class CreateColumnStoreIndexStatement : TSqlStatement {
         private Identifier _name;
@@ -9,11 +9,7 @@ namespace OfaSchlupfer.AST {
 
         private SchemaObjectName _onName;
 
-        private List<ColumnReferenceExpression> _columns = new List<ColumnReferenceExpression>();
-
         private BooleanExpression _filterPredicate;
-
-        private List<IndexOption> _indexOptions = new List<IndexOption>();
 
         private FileGroupOrPartitionScheme _onFileGroupOrPartitionScheme;
 
@@ -49,11 +45,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ColumnReferenceExpression> Columns {
-            get {
-                return this._columns;
-            }
-        }
+        public List<ColumnReferenceExpression> Columns { get; } = new List<ColumnReferenceExpression>();
 
         public BooleanExpression FilterPredicate {
             get {
@@ -66,11 +58,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<IndexOption> IndexOptions {
-            get {
-                return this._indexOptions;
-            }
-        }
+        public List<IndexOption> IndexOptions { get; } = new List<IndexOption>();
 
         public FileGroupOrPartitionScheme OnFileGroupOrPartitionScheme {
             get {
@@ -88,14 +76,9 @@ namespace OfaSchlupfer.AST {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
             this.OnName?.Accept(visitor);
-            for (int i=0, count = this.Columns.Count; i < count; i++) {
-                this.Columns[i].Accept(visitor);
-            }
+            this.Columns.Accept(visitor);
             this.FilterPredicate?.Accept(visitor);
-            int j = 0;
-            for (int count2 = this.IndexOptions.Count; j < count2; j++) {
-                this.IndexOptions[j].Accept(visitor);
-            }
+            this.IndexOptions.Accept(visitor);
             this.OnFileGroupOrPartitionScheme?.Accept(visitor);
             base.AcceptChildren(visitor);
         }

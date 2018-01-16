@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class AvailabilityReplica : TSqlFragment {
         private StringLiteral _serverName;
-
-        private List<AvailabilityReplicaOption> _options = new List<AvailabilityReplicaOption>();
 
         public StringLiteral ServerName {
             get {
@@ -18,19 +16,13 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<AvailabilityReplicaOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<AvailabilityReplicaOption> Options { get; } = new List<AvailabilityReplicaOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.ServerName?.Accept(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

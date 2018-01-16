@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class BulkInsertBase : TSqlStatement {
         private SchemaObjectName _to;
-
-        private List<BulkInsertOption> _options = new List<BulkInsertOption>();
 
         public SchemaObjectName To {
             get {
@@ -18,17 +16,11 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<BulkInsertOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<BulkInsertOption> Options { get; } = new List<BulkInsertOption>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.To?.Accept(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

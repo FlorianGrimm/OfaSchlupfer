@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class MergeSpecification : DataModificationSpecification {
         private Identifier _tableAlias;
@@ -8,8 +8,6 @@ namespace OfaSchlupfer.AST {
         private TableReference _tableReference;
 
         private BooleanExpression _searchCondition;
-
-        private List<MergeActionClause> _actionClauses = new List<MergeActionClause>();
 
         public Identifier TableAlias {
             get {
@@ -44,11 +42,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<MergeActionClause> ActionClauses {
-            get {
-                return this._actionClauses;
-            }
-        }
+        public List<MergeActionClause> ActionClauses { get; } = new List<MergeActionClause>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
@@ -57,9 +51,7 @@ namespace OfaSchlupfer.AST {
             this.TableAlias?.Accept(visitor);
             this.TableReference?.Accept(visitor);
             this.SearchCondition?.Accept(visitor);
-            for (int i = 0, count = this.ActionClauses.Count; i < count; i++) {
-                this.ActionClauses[i].Accept(visitor);
-            }
+            this.ActionClauses.Accept(visitor);
         }
     }
 }

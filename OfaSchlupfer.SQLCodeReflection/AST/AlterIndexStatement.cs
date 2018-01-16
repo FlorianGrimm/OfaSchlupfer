@@ -7,8 +7,6 @@ namespace OfaSchlupfer.AST {
 
         private PartitionSpecifier _partition;
 
-        private List<SelectiveXmlIndexPromotedPath> _promotedPaths = new List<SelectiveXmlIndexPromotedPath>();
-
         private XmlNamespaces _xmlNamespaces;
 
         public bool All { get; set; }
@@ -34,11 +32,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<SelectiveXmlIndexPromotedPath> PromotedPaths {
-            get {
-                return this._promotedPaths;
-            }
-        }
+        public List<SelectiveXmlIndexPromotedPath> PromotedPaths { get; } = new List<SelectiveXmlIndexPromotedPath>();
 
         public XmlNamespaces XmlNamespaces {
             get {
@@ -54,20 +48,11 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (base.Name != null) {
-                base.Name.Accept(visitor);
-            }
-            if (base.OnName != null) {
-                base.OnName.Accept(visitor);
-            }
-            for (int i = 0, count = base.IndexOptions.Count; i < count; i++) {
-                base.IndexOptions[i].Accept(visitor);
-            }
+            this.Name?.Accept(visitor);
+            this.OnName?.Accept(visitor);
+            this.IndexOptions.Accept(visitor);
             this.Partition?.Accept(visitor);
-            int j = 0;
-            for (int count2 = this.PromotedPaths.Count; j < count2; j++) {
-                this.PromotedPaths[j].Accept(visitor);
-            }
+            this.PromotedPaths.Accept(visitor);
             this.XmlNamespaces?.Accept(visitor);
         }
     }

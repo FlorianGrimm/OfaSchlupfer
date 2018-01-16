@@ -1,22 +1,14 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class OrderByClause : TSqlFragment {
-        private List<ExpressionWithSortOrder> _orderByElements = new List<ExpressionWithSortOrder>();
-
-        public List<ExpressionWithSortOrder> OrderByElements {
-            get {
-                return this._orderByElements;
-            }
-        }
+        public List<ExpressionWithSortOrder> OrderByElements { get; } = new List<ExpressionWithSortOrder>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.OrderByElements.Count; i < count; i++) {
-                this.OrderByElements[i].Accept(visitor);
-            }
+            this.OrderByElements.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

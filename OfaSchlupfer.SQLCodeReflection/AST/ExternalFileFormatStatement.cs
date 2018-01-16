@@ -1,13 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class ExternalFileFormatStatement : TSqlStatement {
         private Identifier _name;
 
         private ExternalFileFormatType _formatType;
-
-        private List<ExternalFileFormatOption> _externalFileFormatOptions = new List<ExternalFileFormatOption>();
 
         public Identifier Name {
             get {
@@ -30,17 +28,11 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ExternalFileFormatOption> ExternalFileFormatOptions {
-            get {
-                return this._externalFileFormatOptions;
-            }
-        }
+        public List<ExternalFileFormatOption> ExternalFileFormatOptions { get; } = new List<ExternalFileFormatOption>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.ExternalFileFormatOptions.Count; i < count; i++) {
-                this.ExternalFileFormatOptions[i].Accept(visitor);
-            }
+            this.ExternalFileFormatOptions.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

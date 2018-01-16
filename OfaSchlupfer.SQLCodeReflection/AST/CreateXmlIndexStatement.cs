@@ -44,17 +44,11 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (base.Name != null) {
-                base.Name.Accept(visitor);
-            }
-            if (base.OnName != null) {
-                base.OnName.Accept(visitor);
-            }
+            this.Name?.Accept(visitor);
+            this.OnName?.Accept(visitor);
             this.XmlColumn?.Accept(visitor);
             this.SecondaryXmlIndexName?.Accept(visitor);
-            for (int i = 0, count = base.IndexOptions.Count; i < count; i++) {
-                base.IndexOptions[i].Accept(visitor);
-            }
+            this.IndexOptions.Accept(visitor);
         }
     }
 }

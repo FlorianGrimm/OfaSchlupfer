@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class AuditTarget : TSqlFragment {
         private AuditTargetKind _targetKind;
-
-        private List<AuditTargetOption> _targetOptions = new List<AuditTargetOption>();
 
         public AuditTargetKind TargetKind {
             get {
@@ -17,18 +15,12 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<AuditTargetOption> TargetOptions {
-            get {
-                return this._targetOptions;
-            }
-        }
+        public List<AuditTargetOption> TargetOptions { get; } = new List<AuditTargetOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.TargetOptions.Count; i < count; i++) {
-                this.TargetOptions[i].Accept(visitor);
-            }
+            this.TargetOptions.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

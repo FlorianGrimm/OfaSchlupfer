@@ -9,8 +9,6 @@ namespace OfaSchlupfer.AST {
 
         private PartitionFunctionRange _range;
 
-        private List<ScalarExpression> _boundaryValues = new List<ScalarExpression>();
-
         public Identifier Name {
             get {
                 return this._name;
@@ -43,25 +41,14 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ScalarExpression> BoundaryValues {
-            get {
-                return this._boundaryValues;
-            }
-        }
+        public List<ScalarExpression> BoundaryValues { get; } = new List<ScalarExpression>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (this.Name != null) {
-                this.Name.Accept(visitor);
-            }
-            if (this.ParameterType != null) {
-                this.ParameterType.Accept(visitor);
-            }
-            int i = 0;
-            for (int count = this.BoundaryValues.Count; i < count; i++) {
-                this.BoundaryValues[i].Accept(visitor);
-            }
+            this.Name?.Accept(visitor);
+            this.ParameterType?.Accept(visitor);
+            this.BoundaryValues.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

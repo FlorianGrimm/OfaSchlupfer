@@ -42,15 +42,8 @@ namespace OfaSchlupfer.AST {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
             this.Affinity?.Accept(visitor);
-            var protocolOptions = this.ProtocolOptions;
-            for (int i = 0, count = protocolOptions.Count; i < count; i++) {
-                protocolOptions[i].Accept(visitor);
-            }
-
-            var payloadOptions = this.PayloadOptions;
-            for (int i = 0, count = payloadOptions.Count; i < count; i++) {
-                payloadOptions[i].Accept(visitor);
-            }
+            this.ProtocolOptions.Accept(visitor);
+            this.PayloadOptions.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

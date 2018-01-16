@@ -27,9 +27,7 @@ namespace OfaSchlupfer.AST {
         }
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (this.Encryptor != null) {
-                this.Encryptor.Accept(visitor);
-            }
+            this.Encryptor?.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

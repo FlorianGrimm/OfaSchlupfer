@@ -7,10 +7,6 @@ namespace OfaSchlupfer.AST {
 
         private TriggerObject _triggerObject;
 
-        private List<TriggerOption> _options = new List<TriggerOption>();
-
-        private List<TriggerAction> _triggerActions = new List<TriggerAction>();
-
         private StatementList _statementList;
 
         private MethodSpecifier _methodSpecifier;
@@ -37,19 +33,11 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<TriggerOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<TriggerOption> Options { get; } = new List<TriggerOption>();
 
         public TriggerType TriggerType { get; set; }
 
-        public List<TriggerAction> TriggerActions {
-            get {
-                return this._triggerActions;
-            }
-        }
+        public List<TriggerAction> TriggerActions { get; } = new List<TriggerAction>();
 
         public bool WithAppend { get; set; }
 
@@ -80,13 +68,8 @@ namespace OfaSchlupfer.AST {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
             this.TriggerObject?.Accept(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
-            int j = 0;
-            for (int count2 = this.TriggerActions.Count; j < count2; j++) {
-                this.TriggerActions[j].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
+            this.TriggerActions.Accept(visitor);
             this.StatementList?.Accept(visitor);
             this.MethodSpecifier?.Accept(visitor);
             base.AcceptChildren(visitor);

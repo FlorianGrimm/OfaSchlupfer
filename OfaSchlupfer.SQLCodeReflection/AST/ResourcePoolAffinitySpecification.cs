@@ -1,13 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class ResourcePoolAffinitySpecification : TSqlFragment {
         private ResourcePoolAffinityType _affinityType;
 
         private Literal _parameterValue;
-
-        private List<LiteralRange> _poolAffinityRanges = new List<LiteralRange>();
 
         public ResourcePoolAffinityType AffinityType {
             get {
@@ -32,19 +30,13 @@ namespace OfaSchlupfer.AST {
 
         public bool IsAuto { get; set; }
 
-        public List<LiteralRange> PoolAffinityRanges {
-            get {
-                return this._poolAffinityRanges;
-            }
-        }
+        public List<LiteralRange> PoolAffinityRanges { get; } = new List<LiteralRange>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.ParameterValue?.Accept(visitor);
-            for (int i = 0, count = this.PoolAffinityRanges.Count; i < count; i++) {
-                this.PoolAffinityRanges[i].Accept(visitor);
-            }
+            this.PoolAffinityRanges.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

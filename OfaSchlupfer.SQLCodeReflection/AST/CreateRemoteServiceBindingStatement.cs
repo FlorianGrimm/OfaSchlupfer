@@ -30,19 +30,10 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (base.Name != null) {
-                base.Name.Accept(visitor);
-            }
-            if (this.Service != null) {
-                this.Service.Accept(visitor);
-            }
-            int i = 0;
-            for (int count = base.Options.Count; i < count; i++) {
-                base.Options[i].Accept(visitor);
-            }
-            if (this.Owner != null) {
-                this.Owner.Accept(visitor);
-            }
+            this.Name?.Accept(visitor);
+            this.Service?.Accept(visitor);
+            this.Options.Accept(visitor);
+            this.Owner?.Accept(visitor);
         }
     }
 }

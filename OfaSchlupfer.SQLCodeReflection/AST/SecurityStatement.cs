@@ -1,21 +1,13 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class SecurityStatement : TSqlStatement {
-        private List<Permission> _permissions = new List<Permission>();
-
         private SecurityTargetObject _securityTargetObject;
-
-        private List<SecurityPrincipal> _principals = new List<SecurityPrincipal>();
 
         private Identifier _asClause;
 
-        public List<Permission> Permissions {
-            get {
-                return this._permissions;
-            }
-        }
+        public List<Permission> Permissions { get; } = new List<Permission>();
 
         public SecurityTargetObject SecurityTargetObject {
             get {
@@ -28,11 +20,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<SecurityPrincipal> Principals {
-            get {
-                return this._principals;
-            }
-        }
+        public List<SecurityPrincipal> Principals { get; } = new List<SecurityPrincipal>();
 
         public Identifier AsClause {
             get {
@@ -46,14 +34,9 @@ namespace OfaSchlupfer.AST {
         }
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.Permissions.Count; i < count; i++) {
-                this.Permissions[i].Accept(visitor);
-            }
+            this.Permissions.Accept(visitor);
             this.SecurityTargetObject?.Accept(visitor);
-            int j = 0;
-            for (int count2 = this.Principals.Count; j < count2; j++) {
-                this.Principals[j].Accept(visitor);
-            }
+            this.Principals.Accept(visitor);
             this.AsClause?.Accept(visitor);
             base.AcceptChildren(visitor);
         }

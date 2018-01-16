@@ -1,13 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class OpenJsonTableReference : TableReferenceWithAlias {
         private ScalarExpression _variable;
 
         private StringLiteral _rowPattern;
-
-        private List<SchemaDeclarationItemOpenjson> _schemaDeclarationItems = new List<SchemaDeclarationItemOpenjson>();
 
         public ScalarExpression Variable {
             get {
@@ -31,20 +29,14 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<SchemaDeclarationItemOpenjson> SchemaDeclarationItems {
-            get {
-                return this._schemaDeclarationItems;
-            }
-        }
+        public List<SchemaDeclarationItemOpenjson> SchemaDeclarationItems { get; } = new List<SchemaDeclarationItemOpenjson>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Variable?.Accept(visitor);
             this.RowPattern?.Accept(visitor);
-            for (int i = 0, count = this.SchemaDeclarationItems.Count; i < count; i++) {
-                this.SchemaDeclarationItems[i].Accept(visitor);
-            }
+            this.SchemaDeclarationItems.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

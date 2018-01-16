@@ -1,19 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class OutputIntoClause : TSqlFragment {
-        private List<SelectElement> _selectColumns = new List<SelectElement>();
-
         private TableReference _intoTable;
 
-        private List<ColumnReferenceExpression> _intoTableColumns = new List<ColumnReferenceExpression>();
-
-        public List<SelectElement> SelectColumns {
-            get {
-                return this._selectColumns;
-            }
-        }
+        public List<SelectElement> SelectColumns { get; } = new List<SelectElement>();
 
         public TableReference IntoTable {
             get {
@@ -26,23 +18,14 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ColumnReferenceExpression> IntoTableColumns {
-            get {
-                return this._intoTableColumns;
-            }
-        }
+        public List<ColumnReferenceExpression> IntoTableColumns { get; } = new List<ColumnReferenceExpression>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.SelectColumns.Count; i < count; i++) {
-                this.SelectColumns[i].Accept(visitor);
-            }
+            this.SelectColumns.Accept(visitor);
             this.IntoTable?.Accept(visitor);
-            int j = 0;
-            for (int count2 = this.IntoTableColumns.Count; j < count2; j++) {
-                this.IntoTableColumns[j].Accept(visitor);
-            }
+            this.IntoTableColumns.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

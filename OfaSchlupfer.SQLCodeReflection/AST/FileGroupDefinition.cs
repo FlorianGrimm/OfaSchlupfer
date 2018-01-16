@@ -5,8 +5,6 @@ namespace OfaSchlupfer.AST {
     public sealed class FileGroupDefinition : TSqlFragment {
         private Identifier _name;
 
-        private List<FileDeclaration> _fileDeclarations = new List<FileDeclaration>();
-
         public Identifier Name {
             get {
                 return this._name;
@@ -18,11 +16,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<FileDeclaration> FileDeclarations {
-            get {
-                return this._fileDeclarations;
-            }
-        }
+        public List<FileDeclaration> FileDeclarations { get; } = new List<FileDeclaration>();
 
         public bool IsDefault { get; set; }
 
@@ -34,9 +28,7 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.FileDeclarations.Count; i < count; i++) {
-                this.FileDeclarations[i].Accept(visitor);
-            }
+            this.FileDeclarations.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

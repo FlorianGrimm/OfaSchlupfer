@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class RemoteServiceBindingStatementBase : TSqlStatement {
         private Identifier _name;
-
-        private List<RemoteServiceBindingOption> _options = new List<RemoteServiceBindingOption>();
 
         public Identifier Name {
             get {
@@ -18,17 +16,11 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<RemoteServiceBindingOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<RemoteServiceBindingOption> Options { get; } = new List<RemoteServiceBindingOption>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

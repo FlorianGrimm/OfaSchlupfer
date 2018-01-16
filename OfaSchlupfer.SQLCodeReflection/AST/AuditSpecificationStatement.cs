@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class AuditSpecificationStatement : TSqlStatement {
         private OptionState _auditState;
-
-        private List<AuditSpecificationPart> _parts = new List<AuditSpecificationPart>();
 
         private Identifier _specificationName;
 
@@ -21,11 +19,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<AuditSpecificationPart> Parts {
-            get {
-                return this._parts;
-            }
-        }
+        public List<AuditSpecificationPart> Parts { get; } = new List<AuditSpecificationPart>();
 
         public Identifier SpecificationName {
             get {
@@ -50,9 +44,7 @@ namespace OfaSchlupfer.AST {
         }
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.Parts.Count; i < count; i++) {
-                this.Parts[i].Accept(visitor);
-            }
+            this.Parts.Accept(visitor);
             this.SpecificationName?.Accept(visitor);
             this.AuditName?.Accept(visitor);
             base.AcceptChildren(visitor);

@@ -7,8 +7,6 @@ namespace OfaSchlupfer.AST {
 
         private AlterIndexType _alterIndexType;
 
-        private List<IndexOption> _indexOptions = new List<IndexOption>();
-
         public Identifier IndexIdentifier {
             get {
                 return this._indexIdentifier;
@@ -30,22 +28,14 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<IndexOption> IndexOptions {
-            get {
-                return this._indexOptions;
-            }
-        }
+        public List<IndexOption> IndexOptions { get; } = new List<IndexOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (base.SchemaObjectName != null) {
-                base.SchemaObjectName.Accept(visitor);
-            }
+            this.SchemaObjectName?.Accept(visitor);
             this.IndexIdentifier?.Accept(visitor);
-            for (int i = 0, count = this.IndexOptions.Count; i < count; i++) {
-                this.IndexOptions[i].Accept(visitor);
-            }
+            this.IndexOptions.Accept(visitor);
         }
     }
 }

@@ -6,7 +6,7 @@
     /// <summary>
     /// Parse and analyse
     /// </summary>
-    public sealed class SqlCodeParse {
+    public sealed class SqlCodeAnalyse {
         /// <summary>
         /// Gets or sets the parser Version - default Sql140.
         /// </summary>
@@ -18,38 +18,33 @@
         public bool InitialQuotedIdentifiers { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SqlCodeParse"/> class.
+        /// Initializes a new instance of the <see cref="SqlCodeAnalyse"/> class.
         /// </summary>
-        public SqlCodeParse() {
+        public SqlCodeAnalyse() {
             this.ParserVersion = OfaSchlupfer.AST.SqlVersion.Sql140;
             this.InitialQuotedIdentifiers = true;
         }
 
         /// <summary>
-        /// Parse TSQL
+        /// Parse the sql code
         /// </summary>
-        /// <param name="input">sql code</param>
-        /// <returns>the AST</returns>
-        public OfaSchlupfer.AST.TSqlFragment Parse(string input) {
-            var sr = new StringReader(input);
-            IList<OfaSchlupfer.AST.ParseError> errors;
-            var parser = OfaSchlupfer.AST.TSqlParser.Create(OfaSchlupfer.AST.SqlVersion.Sql140, true);
-            var result = parser.Parse(sr, out errors);
-            if ((errors != null) && (errors.Count > 0)) {
-                return null;
-            }
-            return result;
+        /// <param name="sqlCode">the sql code </param>
+        /// <returns>the AST or null.</returns>
+        public OfaSchlupfer.AST.TSqlFragment Parse(string sqlCode) {
+            return new OfaSchlupfer.SQLCodeReflection.Utiltiy().Parse(sqlCode);
         }
 
         /// <summary>
-        /// Parse TSQL
+        /// Analyse the sql Code
         /// </summary>
-        /// <param name="input">sql code</param>
-        /// <param name="errors">errors</param>
-        /// <returns>the ast or null</returns>
-        public OfaSchlupfer.AST.TSqlFragment Parse(TextReader input, out IList<OfaSchlupfer.AST.ParseError> errors) {
-            var parser = OfaSchlupfer.AST.TSqlParser.Create(OfaSchlupfer.AST.SqlVersion.Sql140, true);
-            return parser.Parse(input, out errors);
+        /// <param name="sqlCode">the sql code to analyse.</param>
+        /// <param name="modelDatabase">The model datavase</param>
+        /// <returns>the analyse results</returns>
+        public List<AnalyseResult> Analyse(string sqlCode, ModelSqlDatabase modelDatabase) {
+            var utiltiy = new OfaSchlupfer.SQLCodeReflection.Utiltiy();
+            var fragment = utiltiy.Parse(sqlCode);
+            if (fragment == null) { return null; }
+            return this.Analyse(fragment, modelDatabase);
         }
 
         /// <summary>

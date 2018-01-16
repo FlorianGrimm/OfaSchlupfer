@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class EnableDisableTriggerStatement : TSqlStatement {
         private TriggerEnforcement _triggerEnforcement;
-
-        private List<SchemaObjectName> _triggerNames = new List<SchemaObjectName>();
 
         private TriggerObject _triggerObject;
 
@@ -21,11 +19,7 @@ namespace OfaSchlupfer.AST {
 
         public bool All { get; set; }
 
-        public List<SchemaObjectName> TriggerNames {
-            get {
-                return this._triggerNames;
-            }
-        }
+        public List<SchemaObjectName> TriggerNames { get; } = new List<SchemaObjectName>();
 
         public TriggerObject TriggerObject {
             get {
@@ -41,9 +35,7 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.TriggerNames.Count; i < count; i++) {
-                this.TriggerNames[i].Accept(visitor);
-            }
+            this.TriggerNames.Accept(visitor);
             this.TriggerObject?.Accept(visitor);
             base.AcceptChildren(visitor);
         }

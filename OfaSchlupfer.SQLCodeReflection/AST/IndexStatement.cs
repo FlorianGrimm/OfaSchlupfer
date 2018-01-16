@@ -1,13 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class IndexStatement : TSqlStatement {
         private Identifier _name;
 
         private SchemaObjectName _onName;
-
-        private List<IndexOption> _indexOptions = new List<IndexOption>();
 
         public Identifier Name {
             get {
@@ -31,18 +29,12 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<IndexOption> IndexOptions {
-            get {
-                return this._indexOptions;
-            }
-        }
+        public List<IndexOption> IndexOptions { get; } = new List<IndexOption>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
             this.OnName?.Accept(visitor);
-            for (int i = 0, count = this.IndexOptions.Count; i < count; i++) {
-                this.IndexOptions[i].Accept(visitor);
-            }
+            this.IndexOptions.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class FileGroupOrPartitionScheme : TSqlFragment {
         private IdentifierOrValueExpression _name;
-
-        private List<Identifier> _partitionSchemeColumns = new List<Identifier>();
 
         public IdentifierOrValueExpression Name {
             get {
@@ -18,19 +16,13 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<Identifier> PartitionSchemeColumns {
-            get {
-                return this._partitionSchemeColumns;
-            }
-        }
+        public List<Identifier> PartitionSchemeColumns { get; } = new List<Identifier>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.PartitionSchemeColumns.Count; i < count; i++) {
-                this.PartitionSchemeColumns[i].Accept(visitor);
-            }
+            this.PartitionSchemeColumns.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

@@ -33,7 +33,7 @@
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>  
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -182,6 +182,7 @@
     <Compile Include="AST\AlterTriggerStatement.cs" />
     <Compile Include="AST\AlterUserStatement.cs" />
     <Compile Include="AST\AlterViewStatement.cs" />
+    <Compile Include="AST\AlterVisitor.cs" />
     <Compile Include="AST\AlterWorkloadGroupStatement.cs" />
     <Compile Include="AST\AlterXmlSchemaCollectionStatement.cs" />
     <Compile Include="AST\ApplicationRoleStatement.cs" />
@@ -841,6 +842,7 @@
     <Compile Include="AST\TSqlBatch.cs" />
     <Compile Include="AST\TSqlConcreteFragmentVisitor.cs" />
     <Compile Include="AST\TSqlFragment.cs" />
+    <Compile Include="AST\TSqlFragmentExtension.cs" />
     <Compile Include="AST\TSqlFragmentFactory.cs" />
     <Compile Include="AST\TSqlFragmentSnippet.cs" />
     <Compile Include="AST\TSqlFragmentVisitor.cs" />
@@ -906,11 +908,11 @@
     <Compile Include="AST\XmlNamespacesAliasElement.cs" />
     <Compile Include="AST\XmlNamespacesDefaultElement.cs" />
     <Compile Include="AST\XmlNamespacesElement.cs" />
+    <Compile Include="Operations\AlterVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utiltiy.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AST\Microsoft.SqlServer.TransactSql.ScriptDom.SqlScriptGeneratorResource.resources" />
-    <EmbeddedResource Include="AST\Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.resources" />
     <EmbeddedResource Include="AST\SqlScriptGeneratorResource.resx">
       <CustomToolNamespace>OfaSchlupfer.AST</CustomToolNamespace>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -922,5 +924,6 @@
       <CustomToolNamespace>OfaSchlupfer.AST</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

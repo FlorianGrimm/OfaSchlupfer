@@ -55,10 +55,7 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            var suboptions = this.Suboptions;
-            for (int i = 0, count = suboptions.Count; i < count; i++) {
-                suboptions[i].Accept(visitor);
-            }
+            this.Suboptions.Accept(visitor);
         }
     }
 
@@ -425,23 +422,15 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class AutomaticTuningDatabaseOption : DatabaseOption {
-        private List<AutomaticTuningOption> _options = new List<AutomaticTuningOption>();
-
         public AutomaticTuningState AutomaticTuningState { get; set; }
 
-        public List<AutomaticTuningOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<AutomaticTuningOption> Options { get; } = new List<AutomaticTuningOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
         }
     }
 
@@ -522,20 +511,12 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class BoundingBoxSpatialIndexOption : SpatialIndexOption {
-        private List<BoundingBoxParameter> _boundingBoxParameters = new List<BoundingBoxParameter>();
-
-        public List<BoundingBoxParameter> BoundingBoxParameters {
-            get {
-                return this._boundingBoxParameters;
-            }
-        }
+        public List<BoundingBoxParameter> BoundingBoxParameters { get; } = new List<BoundingBoxParameter>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.BoundingBoxParameters.Count; i < count; i++) {
-                this.BoundingBoxParameters[i].Accept(visitor);
-            }
+            this.BoundingBoxParameters.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }
@@ -597,23 +578,15 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class ChangeTrackingDatabaseOption : DatabaseOption {
-        private List<ChangeTrackingOptionDetail> _details = new List<ChangeTrackingOptionDetail>();
-
         public OptionState OptionState { get; set; }
 
-        public List<ChangeTrackingOptionDetail> Details {
-            get {
-                return this._details;
-            }
-        }
+        public List<ChangeTrackingOptionDetail> Details { get; } = new List<ChangeTrackingOptionDetail>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            for (int i = 0, count = this.Details.Count; i < count; i++) {
-                this.Details[i].Accept(visitor);
-            }
+            this.Details.Accept(visitor);
         }
     }
 
@@ -717,24 +690,15 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class DataCompressionOption : IndexOption {
-        private List<CompressionPartitionRange> _partitionRanges = new List<CompressionPartitionRange>();
-
         public DataCompressionLevel CompressionLevel { get; set; }
 
-        public List<CompressionPartitionRange> PartitionRanges {
-            get {
-                return this._partitionRanges;
-            }
-        }
+        public List<CompressionPartitionRange> PartitionRanges { get; } = new List<CompressionPartitionRange>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            int i = 0;
-            for (int count = this.PartitionRanges.Count; i < count; i++) {
-                this.PartitionRanges[i].Accept(visitor);
-            }
+            this.PartitionRanges.Accept(visitor);
         }
     }
 
@@ -757,9 +721,7 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            if (this.DataType != null) {
-                this.DataType.Accept(visitor);
-            }
+            this.DataType?.Accept(visitor);
         }
     }
 
@@ -802,9 +764,7 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (this.Value != null) {
-                this.Value.Accept(visitor);
-            }
+            this.Value?.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }
@@ -828,9 +788,7 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            if (this.OptionValue != null) {
-                this.OptionValue.Accept(visitor);
-            }
+            this.OptionValue?.Accept(visitor);
         }
     }
 
@@ -865,30 +823,19 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            if (this.OptionValue != null) {
-                this.OptionValue.Accept(visitor);
-            }
+            this.OptionValue?.Accept(visitor);
         }
     }
 
     [System.Serializable]
     public sealed class DropClusteredConstraintWaitAtLowPriorityLockOption : DropClusteredConstraintOption {
-        private List<LowPriorityLockWaitOption> _options = new List<LowPriorityLockWaitOption>();
-
-        public List<LowPriorityLockWaitOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<LowPriorityLockWaitOption> Options { get; } = new List<LowPriorityLockWaitOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            int i = 0;
-            for (int count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
         }
     }
 
@@ -1024,9 +971,7 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            if (this.Value != null) {
-                this.Value.Accept(visitor);
-            }
+            this.Value?.Accept(visitor);
         }
     }
 
@@ -1037,21 +982,13 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class ExternalFileFormatContainerOption : ExternalFileFormatOption {
-        private List<ExternalFileFormatOption> _suboptions = new List<ExternalFileFormatOption>();
-
-        public List<ExternalFileFormatOption> Suboptions {
-            get {
-                return this._suboptions;
-            }
-        }
+        public List<ExternalFileFormatOption> Suboptions { get; } = new List<ExternalFileFormatOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            for (int i = 0, count = this.Suboptions.Count; i < count; i++) {
-                this.Suboptions[i].Accept(visitor);
-            }
+            this.Suboptions.Accept(visitor);
         }
     }
 
@@ -1383,20 +1320,12 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class GridsSpatialIndexOption : SpatialIndexOption {
-        private List<GridParameter> _gridParameters = new List<GridParameter>();
-
-        public List<GridParameter> GridParameters {
-            get {
-                return this._gridParameters;
-            }
-        }
+        public List<GridParameter> GridParameters { get; } = new List<GridParameter>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.GridParameters.Count; i < count; i++) {
-                this.GridParameters[i].Accept(visitor);
-            }
+            this.GridParameters.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }
@@ -1656,15 +1585,9 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            if (this.IPv6 != null) {
-                this.IPv6.Accept(visitor);
-            }
-            if (this.IPv4PartOne != null) {
-                this.IPv4PartOne.Accept(visitor);
-            }
-            if (this.IPv4PartTwo != null) {
-                this.IPv4PartTwo.Accept(visitor);
-            }
+            this.IPv6?.Accept(visitor);
+            this.IPv4PartOne?.Accept(visitor);
+            this.IPv4PartTwo?.Accept(visitor);
         }
     }
 
@@ -1976,21 +1899,13 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class LowPriorityLockWaitTableSwitchOption : TableSwitchOption {
-        private List<LowPriorityLockWaitOption> _options = new List<LowPriorityLockWaitOption>();
-
-        public List<LowPriorityLockWaitOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<LowPriorityLockWaitOption> Options { get; } = new List<LowPriorityLockWaitOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
         }
     }
 
@@ -2259,20 +2174,12 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class OnlineIndexLowPriorityLockWaitOption : TSqlFragment {
-        private List<LowPriorityLockWaitOption> _options = new List<LowPriorityLockWaitOption>();
-
-        public List<LowPriorityLockWaitOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<LowPriorityLockWaitOption> Options { get; } = new List<LowPriorityLockWaitOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }
@@ -2387,29 +2294,19 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            for (int i = 0, count = this.Columns.Count; i < count; i++) {
-                this.Columns[i].Accept(visitor);
-            }
+            this.Columns.Accept(visitor);
         }
     }
 
     [System.Serializable]
     public sealed class OrderIndexOption : IndexOption {
-        private List<ColumnReferenceExpression> _columns = new List<ColumnReferenceExpression>();
-
-        public List<ColumnReferenceExpression> Columns {
-            get {
-                return this._columns;
-            }
-        }
+        public List<ColumnReferenceExpression> Columns { get; } = new List<ColumnReferenceExpression>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            for (int i = 0, count = this.Columns.Count; i < count; i++) {
-                this.Columns[i].Accept(visitor);
-            }
+            this.Columns.Accept(visitor);
         }
     }
 
@@ -2581,27 +2478,19 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class QueryStoreDatabaseOption : DatabaseOption {
-        private List<QueryStoreOption> _options = new List<QueryStoreOption>();
-
         public bool Clear { get; set; }
 
         public bool ClearAll { get; set; }
 
         public OptionState OptionState { get; set; }
 
-        public List<QueryStoreOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<QueryStoreOption> Options { get; } = new List<QueryStoreOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
         }
     }
 
@@ -2887,23 +2776,15 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class RemoteDataArchiveDatabaseOption : DatabaseOption {
-        private List<RemoteDataArchiveDatabaseSetting> _settings = new List<RemoteDataArchiveDatabaseSetting>();
-
         public OptionState OptionState { get; set; }
 
-        public List<RemoteDataArchiveDatabaseSetting> Settings {
-            get {
-                return this._settings;
-            }
-        }
+        public List<RemoteDataArchiveDatabaseSetting> Settings { get; } = new List<RemoteDataArchiveDatabaseSetting>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            for (int i = 0, count = this.Settings.Count; i < count; i++) {
-                this.Settings[i].Accept(visitor);
-            }
+            this.Settings.Accept(visitor);
         }
     }
 
@@ -2930,10 +2811,7 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            var partitions = this.Partitions;
-            for (int i = 0, count = partitions.Count; i < count; i++) {
-                partitions[i].Accept(visitor);
-            }
+            this.Partitions.Accept(visitor);
         }
     }
 
@@ -2955,10 +2833,7 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            var definitions = this.Definitions;
-            for (int i = 0, count = definitions.Count; i < count; i++) {
-                definitions[i].Accept(visitor);
-            }
+            this.Definitions.Accept(visitor);
         }
     }
 
@@ -3481,21 +3356,13 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class WaitAtLowPriorityOption : IndexOption {
-        private List<LowPriorityLockWaitOption> _options = new List<LowPriorityLockWaitOption>();
-
-        public List<LowPriorityLockWaitOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<LowPriorityLockWaitOption> Options { get; } = new List<LowPriorityLockWaitOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
         }
     }
 

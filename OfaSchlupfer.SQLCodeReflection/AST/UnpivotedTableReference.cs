@@ -5,8 +5,6 @@ namespace OfaSchlupfer.AST {
     public sealed class UnpivotedTableReference : TableReferenceWithAlias {
         private TableReference _tableReference;
 
-        private List<ColumnReferenceExpression> _inColumns = new List<ColumnReferenceExpression>();
-
         private Identifier _pivotColumn;
 
         private Identifier _valueColumn;
@@ -22,11 +20,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ColumnReferenceExpression> InColumns {
-            get {
-                return this._inColumns;
-            }
-        }
+        public List<ColumnReferenceExpression> InColumns { get; } = new List<ColumnReferenceExpression>();
 
         public Identifier PivotColumn {
             get {
@@ -55,9 +49,7 @@ namespace OfaSchlupfer.AST {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.TableReference?.Accept(visitor);
-            for (int i = 0, count = this.InColumns.Count; i < count; i++) {
-                this.InColumns[i].Accept(visitor);
-            }
+            this.InColumns.Accept(visitor);
             this.PivotColumn?.Accept(visitor);
             this.ValueColumn?.Accept(visitor);
         }

@@ -52,18 +52,10 @@ namespace OfaSchlupfer.AST {
         }
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (this.Target != null) {
-                this.Target.Accept(visitor);
-            }
-            if (this.TopRowFilter != null) {
-                this.TopRowFilter.Accept(visitor);
-            }
-            if (this.OutputIntoClause != null) {
-                this.OutputIntoClause.Accept(visitor);
-            }
-            if (this.OutputClause != null) {
-                this.OutputClause.Accept(visitor);
-            }
+            this.Target?.Accept(visitor);
+            this.TopRowFilter?.Accept(visitor);
+            this.OutputIntoClause?.Accept(visitor);
+            this.OutputClause?.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

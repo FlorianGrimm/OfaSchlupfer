@@ -5,8 +5,6 @@ namespace OfaSchlupfer.AST {
     public abstract class ExternalResourcePoolStatement : TSqlStatement {
         private Identifier _name;
 
-        private List<ExternalResourcePoolParameter> _externalResourcePoolParameters = new List<ExternalResourcePoolParameter>();
-
         public Identifier Name {
             get {
                 return this._name;
@@ -18,19 +16,13 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ExternalResourcePoolParameter> ExternalResourcePoolParameters {
-            get {
-                return this._externalResourcePoolParameters;
-            }
-        }
+        public List<ExternalResourcePoolParameter> ExternalResourcePoolParameters { get; } = new List<ExternalResourcePoolParameter>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.ExternalResourcePoolParameters.Count; i < count; i++) {
-                this.ExternalResourcePoolParameters[i].Accept(visitor);
-            }
+            this.ExternalResourcePoolParameters.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

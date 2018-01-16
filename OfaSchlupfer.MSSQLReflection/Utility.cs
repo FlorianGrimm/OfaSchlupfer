@@ -80,7 +80,7 @@
             }
 
             // for testing?
-            targetDatabase.Freeze();
+            // targetDatabase.Freeze();
 
             // pair
             var targetDatabasePair = targetDatabase.FactoryModelBuilderPair(
@@ -169,7 +169,7 @@
                         var dstTable = new ModelSqlTable();
                         dstTable.Name = tableName;
 
-                        //dstTable.FactoryModelBuilderPair2(_ => _.GetBuilder);
+                        // dstTable.FactoryModelBuilderPair2(_ => _.GetBuilder);
                         // targetTablesPair.
 
                         // tables

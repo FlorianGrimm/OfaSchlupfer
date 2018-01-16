@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class BrokerPriorityStatement : TSqlStatement {
         private Identifier _name;
-
-        private List<BrokerPriorityParameter> _brokerPriorityParameters = new List<BrokerPriorityParameter>();
 
         public Identifier Name {
             get {
@@ -18,17 +16,11 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<BrokerPriorityParameter> BrokerPriorityParameters {
-            get {
-                return this._brokerPriorityParameters;
-            }
-        }
+        public List<BrokerPriorityParameter> BrokerPriorityParameters { get; } = new List<BrokerPriorityParameter>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.BrokerPriorityParameters.Count; i < count; i++) {
-                this.BrokerPriorityParameters[i].Accept(visitor);
-            }
+            this.BrokerPriorityParameters.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

@@ -19,13 +19,8 @@ namespace OfaSchlupfer.AST {
         public List<CryptoMechanism> EncryptingMechanisms { get; } = new List<CryptoMechanism>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (this.Name != null) {
-                this.Name.Accept(visitor);
-            }
-            int i = 0;
-            for (int count = this.EncryptingMechanisms.Count; i < count; i++) {
-                this.EncryptingMechanisms[i].Accept(visitor);
-            }
+            this.Name?.Accept(visitor);
+            this.EncryptingMechanisms.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

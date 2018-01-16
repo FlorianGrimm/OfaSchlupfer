@@ -1,7 +1,7 @@
 using antlr;
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     internal class TSqlWhitespaceTokenFilter : TokenStream {
         internal class TSqlParserTokenProxyWithIndex : IToken {
             private IToken _token;

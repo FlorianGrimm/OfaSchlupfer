@@ -3,15 +3,9 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class AlterDatabaseAddFileStatement : AlterDatabaseStatement {
-        private List<FileDeclaration> _fileDeclarations = new List<FileDeclaration>();
-
         private Identifier _fileGroup;
 
-        public List<FileDeclaration> FileDeclarations {
-            get {
-                return this._fileDeclarations;
-            }
-        }
+        public List<FileDeclaration> FileDeclarations { get; } = new List<FileDeclaration>();
 
         public Identifier FileGroup {
             get {
@@ -30,9 +24,7 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
-            for (int i = 0, count = this.FileDeclarations.Count; i < count; i++) {
-                this.FileDeclarations[i].Accept(visitor);
-            }
+            this.FileDeclarations.Accept(visitor);
             this.FileGroup?.Accept(visitor);
         }
     }

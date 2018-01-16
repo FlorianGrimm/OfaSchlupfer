@@ -11,8 +11,6 @@ namespace OfaSchlupfer.AST {
 
         private IdentityOptions _identityOptions;
 
-        private List<ConstraintDefinition> _constraints = new List<ConstraintDefinition>();
-
         private ColumnStorageOptions _storageOptions;
 
         private IndexDefinition _index;
@@ -60,11 +58,7 @@ namespace OfaSchlupfer.AST {
 
         public bool IsRowGuidCol { get; set; }
 
-        public List<ConstraintDefinition> Constraints {
-            get {
-                return this._constraints;
-            }
-        }
+        public List<ConstraintDefinition> Constraints { get; } = new List<ConstraintDefinition>();
 
         public ColumnStorageOptions StorageOptions {
             get {
@@ -131,9 +125,7 @@ namespace OfaSchlupfer.AST {
             this.ComputedColumnExpression?.Accept(visitor);
             this.DefaultConstraint?.Accept(visitor);
             this.IdentityOptions?.Accept(visitor);
-            for (int i = 0, count = this.Constraints.Count; i < count; i++) {
-                this.Constraints[i].Accept(visitor);
-            }
+            this.Constraints.Accept(visitor);
             this.StorageOptions?.Accept(visitor);
             this.Index?.Accept(visitor);
             this.Encryption?.Accept(visitor);

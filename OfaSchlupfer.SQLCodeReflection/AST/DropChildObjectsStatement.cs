@@ -7,10 +7,7 @@ namespace OfaSchlupfer.AST {
         public List<ChildObjectName> Objects { get; } = new List<ChildObjectName>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            int i = 0;
-            for (int count = this.Objects.Count; i < count; i++) {
-                this.Objects[i].Accept(visitor);
-            }
+            this.Objects.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

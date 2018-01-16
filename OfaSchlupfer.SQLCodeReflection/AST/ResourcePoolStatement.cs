@@ -22,10 +22,7 @@ namespace OfaSchlupfer.AST {
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            var resourcePoolParameters = this.ResourcePoolParameters;
-            for (int i = 0, count = resourcePoolParameters.Count; i < count; i++) {
-                resourcePoolParameters[i].Accept(visitor);
-            }
+            this.ResourcePoolParameters.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

@@ -5,8 +5,6 @@ namespace OfaSchlupfer.AST {
     public sealed class CreateSelectiveXmlIndexStatement : IndexStatement {
         private Identifier _xmlColumn;
 
-        private List<SelectiveXmlIndexPromotedPath> _promotedPaths = new List<SelectiveXmlIndexPromotedPath>();
-
         private XmlNamespaces _xmlNamespaces;
 
         private Identifier _usingXmlIndexName;
@@ -26,11 +24,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<SelectiveXmlIndexPromotedPath> PromotedPaths {
-            get {
-                return this._promotedPaths;
-            }
-        }
+        public List<SelectiveXmlIndexPromotedPath> PromotedPaths { get; } = new List<SelectiveXmlIndexPromotedPath>();
 
         public XmlNamespaces XmlNamespaces {
             get {
@@ -68,32 +62,14 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (base.Name != null) {
-                base.Name.Accept(visitor);
-            }
-            if (base.OnName != null) {
-                base.OnName.Accept(visitor);
-            }
-            if (this.XmlColumn != null) {
-                this.XmlColumn.Accept(visitor);
-            }
-            int i = 0;
-            for (int count = this.PromotedPaths.Count; i < count; i++) {
-                this.PromotedPaths[i].Accept(visitor);
-            }
-            if (this.XmlNamespaces != null) {
-                this.XmlNamespaces.Accept(visitor);
-            }
-            if (this.UsingXmlIndexName != null) {
-                this.UsingXmlIndexName.Accept(visitor);
-            }
-            if (this.PathName != null) {
-                this.PathName.Accept(visitor);
-            }
-            int j = 0;
-            for (int count2 = base.IndexOptions.Count; j < count2; j++) {
-                base.IndexOptions[j].Accept(visitor);
-            }
+            this.Name?.Accept(visitor);
+            this.OnName?.Accept(visitor);
+            this.XmlColumn?.Accept(visitor);
+            this.PromotedPaths.Accept(visitor);
+            this.XmlNamespaces?.Accept(visitor);
+            this.UsingXmlIndexName?.Accept(visitor);
+            this.PathName?.Accept(visitor);
+            this.IndexOptions.Accept(visitor);
         }
     }
 }

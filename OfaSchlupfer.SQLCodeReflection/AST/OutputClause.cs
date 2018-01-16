@@ -1,22 +1,14 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class OutputClause : TSqlFragment {
-        private List<SelectElement> _selectColumns = new List<SelectElement>();
-
-        public List<SelectElement> SelectColumns {
-            get {
-                return this._selectColumns;
-            }
-        }
+        public List<SelectElement> SelectColumns { get; } = new List<SelectElement>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.SelectColumns.Count; i < count; i++) {
-                this.SelectColumns[i].Accept(visitor);
-            }
+            this.SelectColumns.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

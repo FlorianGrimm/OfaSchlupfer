@@ -7,7 +7,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     /// <summary>
     /// ModelSqlType
     /// </summary>
-    public sealed class ModelSqlType : BuildTargetBase, IEquatable<ModelSqlType> {
+    public sealed class ModelSqlType
+        : BuildTargetBase
+        , IEquatable<ModelSqlType>
+        , IBuildTarget<ModelSqlType, ModelSqlType.Builder> {
         private SqlName _Name;
         private int _ColumnId;
 

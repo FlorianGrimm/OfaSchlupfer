@@ -3,20 +3,12 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public sealed class SetCommandStatement : TSqlStatement {
-        private List<SetCommand> _commands = new List<SetCommand>();
-
-        public List<SetCommand> Commands {
-            get {
-                return this._commands;
-            }
-        }
+        public List<SetCommand> Commands { get; } = new List<SetCommand>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.Commands.Count; i < count; i++) {
-                this.Commands[i].Accept(visitor);
-            }
+            this.Commands.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

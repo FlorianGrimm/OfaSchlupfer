@@ -48,9 +48,7 @@ namespace OfaSchlupfer.AST {
             this.Name?.Accept(visitor);
             this.FileGroup?.Accept(visitor);
             this.Path?.Accept(visitor);
-            for (int i = 0, count = base.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
             this.Owner?.Accept(visitor);
         }
     }

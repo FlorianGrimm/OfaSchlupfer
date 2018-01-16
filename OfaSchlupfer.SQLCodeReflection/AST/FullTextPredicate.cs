@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class FullTextPredicate : BooleanExpression {
         private FullTextFunctionType _fullTextFunctionType;
-
-        private List<ColumnReferenceExpression> _columns = new List<ColumnReferenceExpression>();
 
         private ValueExpression _value;
 
@@ -23,11 +21,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ColumnReferenceExpression> Columns {
-            get {
-                return this._columns;
-            }
-        }
+        public List<ColumnReferenceExpression> Columns { get; } = new List<ColumnReferenceExpression>();
 
         public ValueExpression Value {
             get {
@@ -65,9 +59,7 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.Columns.Count; i < count; i++) {
-                this.Columns[i].Accept(visitor);
-            }
+            this.Columns.Accept(visitor);
             this.Value?.Accept(visitor);
             this.LanguageTerm?.Accept(visitor);
             this.PropertyName?.Accept(visitor);

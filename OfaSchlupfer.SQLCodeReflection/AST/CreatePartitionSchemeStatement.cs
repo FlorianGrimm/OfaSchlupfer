@@ -36,16 +36,9 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (this.Name != null) {
-                this.Name.Accept(visitor);
-            }
-            if (this.PartitionFunction != null) {
-                this.PartitionFunction.Accept(visitor);
-            }
-            int i = 0;
-            for (int count = this.FileGroups.Count; i < count; i++) {
-                this.FileGroups[i].Accept(visitor);
-            }
+            this.Name?.Accept(visitor);
+            this.PartitionFunction?.Accept(visitor);
+            this.FileGroups.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

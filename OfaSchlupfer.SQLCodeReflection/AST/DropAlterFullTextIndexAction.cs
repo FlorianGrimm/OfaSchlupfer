@@ -9,10 +9,7 @@ namespace OfaSchlupfer.AST {
         public bool WithNoPopulation { get; set; }
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            int i = 0;
-            for (int count = this.Columns.Count; i < count; i++) {
-                this.Columns[i].Accept(visitor);
-            }
+            this.Columns.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

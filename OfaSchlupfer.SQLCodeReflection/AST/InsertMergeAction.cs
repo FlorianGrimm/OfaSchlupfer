@@ -1,17 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class InsertMergeAction : MergeAction {
-        private List<ColumnReferenceExpression> _columns = new List<ColumnReferenceExpression>();
-
         private ValuesInsertSource _source;
 
-        public List<ColumnReferenceExpression> Columns {
-            get {
-                return this._columns;
-            }
-        }
+        public List<ColumnReferenceExpression> Columns { get; } = new List<ColumnReferenceExpression>();
 
         public ValuesInsertSource Source {
             get {
@@ -27,9 +21,7 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.Columns.Count; i < count; i++) {
-                this.Columns[i].Accept(visitor);
-            }
+            this.Columns.Accept(visitor);
             this.Source?.Accept(visitor);
             base.AcceptChildren(visitor);
         }

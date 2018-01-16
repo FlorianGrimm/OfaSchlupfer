@@ -1,13 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class InPredicate : BooleanExpression {
         private ScalarExpression _expression;
 
         private ScalarSubquery _subquery;
-
-        private List<ScalarExpression> _values = new List<ScalarExpression>();
 
         public ScalarExpression Expression {
             get {
@@ -33,20 +31,14 @@ namespace OfaSchlupfer.AST {
 
         public bool NotDefined { get; set; }
 
-        public List<ScalarExpression> Values {
-            get {
-                return this._values;
-            }
-        }
+        public List<ScalarExpression> Values { get; } = new List<ScalarExpression>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Expression?.Accept(visitor);
             this.Subquery?.Accept(visitor);
-            for (int i = 0, count = this.Values.Count; i < count; i++) {
-                this.Values[i].Accept(visitor);
-            }
+            this.Values.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

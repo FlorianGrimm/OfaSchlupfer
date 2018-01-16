@@ -1,13 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class AssemblyStatement : TSqlStatement {
         private Identifier _name;
-
-        private List<ScalarExpression> _parameters = new List<ScalarExpression>();
-
-        private List<AssemblyOption> _options = new List<AssemblyOption>();
 
         public Identifier Name {
             get {
@@ -20,27 +16,14 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ScalarExpression> Parameters {
-            get {
-                return this._parameters;
-            }
-        }
+        public List<ScalarExpression> Parameters { get; } = new List<ScalarExpression>();
 
-        public List<AssemblyOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<AssemblyOption> Options { get; } = new List<AssemblyOption>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.Parameters.Count; i < count; i++) {
-                this.Parameters[i].Accept(visitor);
-            }
-            int j = 0;
-            for (int count2 = this.Options.Count; j < count2; j++) {
-                this.Options[j].Accept(visitor);
-            }
+            this.Parameters.Accept(visitor);
+            this.Options.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

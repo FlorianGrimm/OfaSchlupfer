@@ -1,17 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class CursorDefinition : TSqlFragment {
-        private List<CursorOption> _options = new List<CursorOption>();
-
         private SelectStatement _select;
 
-        public List<CursorOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<CursorOption> Options { get; } = new List<CursorOption>();
 
         public SelectStatement Select {
             get {
@@ -27,9 +21,7 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
             this.Select?.Accept(visitor);
             base.AcceptChildren(visitor);
         }

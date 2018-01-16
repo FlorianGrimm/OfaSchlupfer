@@ -1,13 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class SecurityPolicyStatement : TSqlStatement {
         private SchemaObjectName _name;
-
-        private List<SecurityPolicyOption> _securityPolicyOptions = new List<SecurityPolicyOption>();
-
-        private List<SecurityPredicateAction> _securityPredicateActions = new List<SecurityPredicateAction>();
 
         public SchemaObjectName Name {
             get {
@@ -22,17 +18,9 @@ namespace OfaSchlupfer.AST {
 
         public bool NotForReplication { get; set; }
 
-        public List<SecurityPolicyOption> SecurityPolicyOptions {
-            get {
-                return this._securityPolicyOptions;
-            }
-        }
+        public List<SecurityPolicyOption> SecurityPolicyOptions { get; } = new List<SecurityPolicyOption>();
 
-        public List<SecurityPredicateAction> SecurityPredicateActions {
-            get {
-                return this._securityPredicateActions;
-            }
-        }
+        public List<SecurityPredicateAction> SecurityPredicateActions { get; } = new List<SecurityPredicateAction>();
 
         public SecurityPolicyActionType ActionType { get; set; }
 

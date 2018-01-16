@@ -1,19 +1,13 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class OverClause : TSqlFragment {
-        private List<ScalarExpression> _partitions = new List<ScalarExpression>();
-
         private OrderByClause _orderByClause;
 
         private WindowFrameClause _windowFrameClause;
 
-        public List<ScalarExpression> Partitions {
-            get {
-                return this._partitions;
-            }
-        }
+        public List<ScalarExpression> Partitions { get; } = new List<ScalarExpression>();
 
         public OrderByClause OrderByClause {
             get {
@@ -40,9 +34,7 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.Partitions.Count; i < count; i++) {
-                this.Partitions[i].Accept(visitor);
-            }
+            this.Partitions.Accept(visitor);
             this.OrderByClause?.Accept(visitor);
             this.WindowFrameClause?.Accept(visitor);
             base.AcceptChildren(visitor);

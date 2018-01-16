@@ -7,8 +7,6 @@ namespace OfaSchlupfer.AST {
 
         private ConstraintEnforcement _constraintEnforcement;
 
-        private List<Identifier> _constraintNames = new List<Identifier>();
-
         public ConstraintEnforcement ExistingRowsCheckEnforcement {
             get {
                 return this._existingRowsCheckEnforcement;
@@ -31,21 +29,13 @@ namespace OfaSchlupfer.AST {
 
         public bool All { get; set; }
 
-        public List<Identifier> ConstraintNames {
-            get {
-                return this._constraintNames;
-            }
-        }
+        public List<Identifier> ConstraintNames { get; } = new List<Identifier>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (base.SchemaObjectName != null) {
-                base.SchemaObjectName.Accept(visitor);
-            }
-            for (int i = 0, count = this.ConstraintNames.Count; i < count; i++) {
-                this.ConstraintNames[i].Accept(visitor);
-            }
+            this.SchemaObjectName?.Accept(visitor);
+            this.ConstraintNames.Accept(visitor);
         }
     }
 }

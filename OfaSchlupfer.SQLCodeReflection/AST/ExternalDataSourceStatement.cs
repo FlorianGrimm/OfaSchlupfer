@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class ExternalDataSourceStatement : TSqlStatement {
         private Identifier _name;
@@ -8,8 +8,6 @@ namespace OfaSchlupfer.AST {
         private ExternalDataSourceType _dataSourceType;
 
         private Literal _location;
-
-        private List<ExternalDataSourceOption> _externalDataSourceOptions = new List<ExternalDataSourceOption>();
 
         public Identifier Name {
             get {
@@ -43,18 +41,12 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ExternalDataSourceOption> ExternalDataSourceOptions {
-            get {
-                return this._externalDataSourceOptions;
-            }
-        }
+        public List<ExternalDataSourceOption> ExternalDataSourceOptions { get; } = new List<ExternalDataSourceOption>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
             this.Location?.Accept(visitor);
-            for (int i = 0, count = this.ExternalDataSourceOptions.Count; i < count; i++) {
-                this.ExternalDataSourceOptions[i].Accept(visitor);
-            }
+            this.ExternalDataSourceOptions.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

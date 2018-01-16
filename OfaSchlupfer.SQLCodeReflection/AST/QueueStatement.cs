@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class QueueStatement : TSqlStatement {
         private SchemaObjectName _name;
-
-        private List<QueueOption> _queueOptions = new List<QueueOption>();
 
         public SchemaObjectName Name {
             get {
@@ -18,17 +16,11 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<QueueOption> QueueOptions {
-            get {
-                return this._queueOptions;
-            }
-        }
+        public List<QueueOption> QueueOptions { get; } = new List<QueueOption>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.QueueOptions.Count; i < count; i++) {
-                this.QueueOptions[i].Accept(visitor);
-            }
+            this.QueueOptions.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

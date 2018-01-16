@@ -1,13 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class PartitionFunctionCall : PrimaryExpression {
         private Identifier _databaseName;
 
         private Identifier _functionName;
-
-        private List<ScalarExpression> _parameters = new List<ScalarExpression>();
 
         public Identifier DatabaseName {
             get {
@@ -31,11 +29,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ScalarExpression> Parameters {
-            get {
-                return this._parameters;
-            }
-        }
+        public List<ScalarExpression> Parameters { get; } = new List<ScalarExpression>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
@@ -43,9 +37,7 @@ namespace OfaSchlupfer.AST {
             base.AcceptChildren(visitor);
             this.DatabaseName?.Accept(visitor);
             this.FunctionName?.Accept(visitor);
-            for (int i = 0, count = this.Parameters.Count; i < count; i++) {
-                this.Parameters[i].Accept(visitor);
-            }
+            this.Parameters.Accept(visitor);
         }
     }
 }

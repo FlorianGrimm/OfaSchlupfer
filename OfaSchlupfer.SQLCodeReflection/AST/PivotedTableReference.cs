@@ -1,15 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class PivotedTableReference : TableReferenceWithAlias {
         private TableReference _tableReference;
 
-        private List<Identifier> _inColumns = new List<Identifier>();
-
         private ColumnReferenceExpression _pivotColumn;
-
-        private List<ColumnReferenceExpression> _valueColumns = new List<ColumnReferenceExpression>();
 
         private MultiPartIdentifier _aggregateFunctionIdentifier;
 
@@ -24,11 +20,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<Identifier> InColumns {
-            get {
-                return this._inColumns;
-            }
-        }
+        public List<Identifier> InColumns { get; } = new List<Identifier>();
 
         public ColumnReferenceExpression PivotColumn {
             get {
@@ -41,11 +33,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ColumnReferenceExpression> ValueColumns {
-            get {
-                return this._valueColumns;
-            }
-        }
+        public List<ColumnReferenceExpression> ValueColumns { get; } = new List<ColumnReferenceExpression>();
 
         public MultiPartIdentifier AggregateFunctionIdentifier {
             get {
@@ -63,14 +51,9 @@ namespace OfaSchlupfer.AST {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.TableReference?.Accept(visitor);
-            for (int i = 0, count = this.InColumns.Count; i < count; i++) {
-                this.InColumns[i].Accept(visitor);
-            }
+            this.InColumns.Accept(visitor);
             this.PivotColumn?.Accept(visitor);
-            int j = 0;
-            for (int count2 = this.ValueColumns.Count; j < count2; j++) {
-                this.ValueColumns[j].Accept(visitor);
-            }
+            this.ValueColumns.Accept(visitor);
             this.AggregateFunctionIdentifier?.Accept(visitor);
         }
     }

@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class BeginDialogStatement : TSqlStatement {
         private VariableReference _handle;
@@ -12,8 +12,6 @@ namespace OfaSchlupfer.AST {
         private ValueExpression _instanceSpec;
 
         private IdentifierOrValueExpression _contractName;
-
-        private List<DialogOption> _options = new List<DialogOption>();
 
         public bool IsConversation { get; set; }
 
@@ -72,11 +70,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<DialogOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<DialogOption> Options { get; } = new List<DialogOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
@@ -86,9 +80,7 @@ namespace OfaSchlupfer.AST {
             this.TargetServiceName?.Accept(visitor);
             this.InstanceSpec?.Accept(visitor);
             this.ContractName?.Accept(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

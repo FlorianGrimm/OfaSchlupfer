@@ -17,14 +17,10 @@ namespace OfaSchlupfer.AST {
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            base.Name?.Accept(visitor);
-            base.Affinity?.Accept(visitor);
-            for (int i = 0, count = base.ProtocolOptions.Count; i < count; i++) {
-                base.ProtocolOptions[i].Accept(visitor);
-            }
-            for (int j = 0, count2 = base.PayloadOptions.Count; j < count2; j++) {
-                base.PayloadOptions[j].Accept(visitor);
-            }
+            this.Name?.Accept(visitor);
+            this.Affinity?.Accept(visitor);
+            this.ProtocolOptions.Accept(visitor);
+            this.PayloadOptions.Accept(visitor);
             this.Owner?.Accept(visitor);
         }
     }

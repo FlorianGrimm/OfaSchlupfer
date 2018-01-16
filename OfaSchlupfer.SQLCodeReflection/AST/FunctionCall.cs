@@ -1,13 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class FunctionCall : PrimaryExpression {
         private CallTarget _callTarget;
 
         private Identifier _functionName;
-
-        private List<ScalarExpression> _parameters = new List<ScalarExpression>();
 
         private UniqueRowFilter _uniqueRowFilter;
 
@@ -37,11 +35,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ScalarExpression> Parameters {
-            get {
-                return this._parameters;
-            }
-        }
+        public List<ScalarExpression> Parameters { get; } = new List<ScalarExpression>();
 
         public UniqueRowFilter UniqueRowFilter {
             get {
@@ -81,9 +75,7 @@ namespace OfaSchlupfer.AST {
             base.AcceptChildren(visitor);
             this.CallTarget?.Accept(visitor);
             this.FunctionName?.Accept(visitor);
-            for (int i = 0, count = this.Parameters.Count; i < count; i++) {
-                this.Parameters[i].Accept(visitor);
-            }
+            this.Parameters.Accept(visitor);
             this.OverClause?.Accept(visitor);
             this.WithinGroupClause?.Accept(visitor);
         }

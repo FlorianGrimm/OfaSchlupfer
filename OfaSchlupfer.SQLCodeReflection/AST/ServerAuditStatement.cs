@@ -1,13 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class ServerAuditStatement : TSqlStatement {
         private Identifier _auditName;
 
         private AuditTarget _auditTarget;
-
-        private List<AuditOption> _options = new List<AuditOption>();
 
         private BooleanExpression _predicateExpression;
 
@@ -33,11 +31,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<AuditOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<AuditOption> Options { get; } = new List<AuditOption>();
 
         public BooleanExpression PredicateExpression {
             get {
@@ -53,9 +47,7 @@ namespace OfaSchlupfer.AST {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.AuditName?.Accept(visitor);
             this.AuditTarget?.Accept(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
             this.PredicateExpression?.Accept(visitor);
             base.AcceptChildren(visitor);
         }

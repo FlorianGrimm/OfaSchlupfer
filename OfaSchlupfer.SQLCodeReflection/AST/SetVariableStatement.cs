@@ -1,13 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class SetVariableStatement : TSqlStatement {
         private VariableReference _variable;
 
         private Identifier _identifier;
-
-        private List<ScalarExpression> _parameters = new List<ScalarExpression>();
 
         private ScalarExpression _expression;
 
@@ -39,11 +37,7 @@ namespace OfaSchlupfer.AST {
 
         public bool FunctionCallExists { get; set; }
 
-        public List<ScalarExpression> Parameters {
-            get {
-                return this._parameters;
-            }
-        }
+        public List<ScalarExpression> Parameters { get; } = new List<ScalarExpression>();
 
         public ScalarExpression Expression {
             get {
@@ -74,9 +68,7 @@ namespace OfaSchlupfer.AST {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Variable?.Accept(visitor);
             this.Identifier?.Accept(visitor);
-            for (int i = 0, count = this.Parameters.Count; i < count; i++) {
-                this.Parameters[i].Accept(visitor);
-            }
+            this.Parameters.Accept(visitor);
             this.Expression?.Accept(visitor);
             this.CursorDefinition?.Accept(visitor);
             base.AcceptChildren(visitor);

@@ -11,8 +11,6 @@ namespace OfaSchlupfer.AST {
 
         private ColumnStorageOptions _storageOptions;
 
-        private List<IndexOption> _options = new List<IndexOption>();
-
         private GeneratedAlwaysType? _generatedAlways;
 
         private ColumnEncryptionDefinition _encryption;
@@ -64,11 +62,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<IndexOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<IndexOption> Options { get; } = new List<IndexOption>();
 
         public GeneratedAlwaysType? GeneratedAlways {
             get {
@@ -126,9 +120,7 @@ namespace OfaSchlupfer.AST {
             this.ColumnIdentifier?.Accept(visitor);
             this.DataType?.Accept(visitor);
             this.StorageOptions?.Accept(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
             this.Encryption?.Accept(visitor);
             this.Collation?.Accept(visitor);
             this.MaskingFunction?.Accept(visitor);

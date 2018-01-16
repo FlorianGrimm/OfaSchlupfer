@@ -1,13 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class CreateAggregateStatement : TSqlStatement {
         private SchemaObjectName _name;
 
         private AssemblyName _assemblyName;
-
-        private List<ProcedureParameter> _parameters = new List<ProcedureParameter>();
 
         private DataTypeReference _returnType;
 
@@ -33,11 +31,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ProcedureParameter> Parameters {
-            get {
-                return this._parameters;
-            }
-        }
+        public List<ProcedureParameter> Parameters { get; } = new List<ProcedureParameter>();
 
         public DataTypeReference ReturnType {
             get {
@@ -55,9 +49,7 @@ namespace OfaSchlupfer.AST {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
             this.AssemblyName?.Accept(visitor);
-            for (int i = 0, count = this.Parameters.Count; i < count; i++) {
-                this.Parameters[i].Accept(visitor);
-            }
+            this.Parameters.Accept(visitor);
             this.ReturnType?.Accept(visitor);
             base.AcceptChildren(visitor);
         }

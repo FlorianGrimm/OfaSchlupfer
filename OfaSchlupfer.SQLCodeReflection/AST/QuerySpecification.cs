@@ -78,10 +78,7 @@ namespace OfaSchlupfer.AST {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.TopRowFilter?.Accept(visitor);
-            var selectElements = this.SelectElements;
-            for (int i = 0, count = selectElements.Count; i < count; i++) {
-                selectElements[i].Accept(visitor);
-            }
+            this.SelectElements.Accept(visitor);
             this.FromClause?.Accept(visitor);
             this.WhereClause?.Accept(visitor);
             this.GroupByClause?.Accept(visitor);

@@ -5,10 +5,6 @@ namespace OfaSchlupfer.AST {
     public sealed class UpdateStatisticsStatement : TSqlStatement {
         private SchemaObjectName _schemaObjectName;
 
-        private List<Identifier> _subElements = new List<Identifier>();
-
-        private List<StatisticsOption> _statisticsOptions = new List<StatisticsOption>();
-
         public SchemaObjectName SchemaObjectName {
             get {
                 return this._schemaObjectName;
@@ -20,29 +16,16 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<Identifier> SubElements {
-            get {
-                return this._subElements;
-            }
-        }
+        public List<Identifier> SubElements { get; } = new List<Identifier>();
 
-        public List<StatisticsOption> StatisticsOptions {
-            get {
-                return this._statisticsOptions;
-            }
-        }
+        public List<StatisticsOption> StatisticsOptions { get; } = new List<StatisticsOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.SchemaObjectName?.Accept(visitor);
-            for (int i = 0, count = this.SubElements.Count; i < count; i++) {
-                this.SubElements[i].Accept(visitor);
-            }
-            int j = 0;
-            for (int count2 = this.StatisticsOptions.Count; j < count2; j++) {
-                this.StatisticsOptions[j].Accept(visitor);
-            }
+            this.SubElements.Accept(visitor);
+            this.StatisticsOptions.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

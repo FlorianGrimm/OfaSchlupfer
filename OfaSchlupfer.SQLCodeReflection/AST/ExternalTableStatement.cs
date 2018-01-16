@@ -1,15 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class ExternalTableStatement : TSqlStatement {
         private SchemaObjectName _schemaObjectName;
 
-        private List<ExternalTableColumnDefinition> _columnDefinitions = new List<ExternalTableColumnDefinition>();
-
         private Identifier _dataSource;
-
-        private List<ExternalTableOption> _externalTableOptions = new List<ExternalTableOption>();
 
         public SchemaObjectName SchemaObjectName {
             get {
@@ -22,11 +18,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ExternalTableColumnDefinition> ColumnDefinitions {
-            get {
-                return this._columnDefinitions;
-            }
-        }
+        public List<ExternalTableColumnDefinition> ColumnDefinitions { get; } = new List<ExternalTableColumnDefinition>();
 
         public Identifier DataSource {
             get {
@@ -39,22 +31,13 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ExternalTableOption> ExternalTableOptions {
-            get {
-                return this._externalTableOptions;
-            }
-        }
+        public List<ExternalTableOption> ExternalTableOptions { get; } = new List<ExternalTableOption>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.SchemaObjectName?.Accept(visitor);
-            for (int i = 0, count = this.ColumnDefinitions.Count; i < count; i++) {
-                this.ColumnDefinitions[i].Accept(visitor);
-            }
+            this.ColumnDefinitions.Accept(visitor);
             this.DataSource?.Accept(visitor);
-            int j = 0;
-            for (int count2 = this.ExternalTableOptions.Count; j < count2; j++) {
-                this.ExternalTableOptions[j].Accept(visitor);
-            }
+            this.ExternalTableOptions.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

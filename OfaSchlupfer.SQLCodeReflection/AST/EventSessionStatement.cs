@@ -7,12 +7,6 @@ namespace OfaSchlupfer.AST {
 
         private EventSessionScope _sessionScope;
 
-        private List<EventDeclaration> _eventDeclarations = new List<EventDeclaration>();
-
-        private List<TargetDeclaration> _targetDeclarations = new List<TargetDeclaration>();
-
-        private List<SessionOption> _sessionOptions = new List<SessionOption>();
-
         public Identifier Name {
             get {
                 return this._name;
@@ -34,39 +28,19 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<EventDeclaration> EventDeclarations {
-            get {
-                return this._eventDeclarations;
-            }
-        }
+        public List<EventDeclaration> EventDeclarations { get; } = new List<EventDeclaration>();
 
-        public List<TargetDeclaration> TargetDeclarations {
-            get {
-                return this._targetDeclarations;
-            }
-        }
+        public List<TargetDeclaration> TargetDeclarations { get; } = new List<TargetDeclaration>();
 
-        public List<SessionOption> SessionOptions {
-            get {
-                return this._sessionOptions;
-            }
-        }
+        public List<SessionOption> SessionOptions { get; } = new List<SessionOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.EventDeclarations.Count; i < count; i++) {
-                this.EventDeclarations[i].Accept(visitor);
-            }
-            int j = 0;
-            for (int count2 = this.TargetDeclarations.Count; j < count2; j++) {
-                this.TargetDeclarations[j].Accept(visitor);
-            }
-            int k = 0;
-            for (int count3 = this.SessionOptions.Count; k < count3; k++) {
-                this.SessionOptions[k].Accept(visitor);
-            }
+            this.EventDeclarations.Accept(visitor);
+            this.TargetDeclarations.Accept(visitor);
+            this.SessionOptions.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

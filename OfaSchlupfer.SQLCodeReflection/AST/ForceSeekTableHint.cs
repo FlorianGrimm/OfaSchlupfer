@@ -23,9 +23,7 @@ namespace OfaSchlupfer.AST {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.IndexValue?.Accept(visitor);
-            for (int i = 0, count = this.ColumnValues.Count; i < count; i++) {
-                this.ColumnValues[i].Accept(visitor);
-            }
+            this.ColumnValues.Accept(visitor);
         }
     }
 }

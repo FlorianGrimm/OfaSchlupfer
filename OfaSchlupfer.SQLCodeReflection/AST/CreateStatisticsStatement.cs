@@ -1,15 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class CreateStatisticsStatement : TSqlStatement {
         private Identifier _name;
 
         private SchemaObjectName _onName;
-
-        private List<ColumnReferenceExpression> _columns = new List<ColumnReferenceExpression>();
-
-        private List<StatisticsOption> _statisticsOptions = new List<StatisticsOption>();
 
         private BooleanExpression _filterPredicate;
 
@@ -35,17 +31,9 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ColumnReferenceExpression> Columns {
-            get {
-                return this._columns;
-            }
-        }
+        public List<ColumnReferenceExpression> Columns { get; } = new List<ColumnReferenceExpression>();
 
-        public List<StatisticsOption> StatisticsOptions {
-            get {
-                return this._statisticsOptions;
-            }
-        }
+        public List<StatisticsOption> StatisticsOptions { get; } = new List<StatisticsOption>();
 
         public BooleanExpression FilterPredicate {
             get {
@@ -63,13 +51,8 @@ namespace OfaSchlupfer.AST {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
             this.OnName?.Accept(visitor);
-            for (int i = 0, count = this.Columns.Count; i < count; i++) {
-                this.Columns[i].Accept(visitor);
-            }
-            int j = 0;
-            for (int count2 = this.StatisticsOptions.Count; j < count2; j++) {
-                this.StatisticsOptions[j].Accept(visitor);
-            }
+            this.Columns.Accept(visitor);
+            this.StatisticsOptions.Accept(visitor);
             this.FilterPredicate?.Accept(visitor);
             base.AcceptChildren(visitor);
         }

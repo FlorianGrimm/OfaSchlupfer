@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class ProcedureStatementBody : ProcedureStatementBodyBase {
         private ProcedureReference _procedureReference;
-
-        private List<ProcedureOption> _options = new List<ProcedureOption>();
 
         public ProcedureReference ProcedureReference {
             get {
@@ -20,18 +18,12 @@ namespace OfaSchlupfer.AST {
 
         public bool IsForReplication { get; set; }
 
-        public List<ProcedureOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<ProcedureOption> Options { get; } = new List<ProcedureOption>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.ProcedureReference?.Accept(visitor);
-            for (int i = 0, count = this.Options.Count; i < count; i++) {
-                this.Options[i].Accept(visitor);
-            }
+            this.Options.Accept(visitor);
         }
     }
 }

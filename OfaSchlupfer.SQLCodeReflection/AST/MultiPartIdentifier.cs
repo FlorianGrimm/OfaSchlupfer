@@ -3,8 +3,6 @@ namespace OfaSchlupfer.AST {
 
     [System.Serializable]
     public class MultiPartIdentifier : TSqlFragment {
-        private List<Identifier> _identifiers = new List<Identifier>();
-
         public Identifier this[int index] {
             get {
                 return this.Identifiers[index];
@@ -21,18 +19,12 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<Identifier> Identifiers {
-            get {
-                return this._identifiers;
-            }
-        }
+        public List<Identifier> Identifiers { get; } = new List<Identifier>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.Identifiers.Count; i < count; i++) {
-                this.Identifiers[i].Accept(visitor);
-            }
+            this.Identifiers.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

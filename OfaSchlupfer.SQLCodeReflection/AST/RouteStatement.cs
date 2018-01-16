@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public abstract class RouteStatement : TSqlStatement {
         private Identifier _name;
-
-        private List<RouteOption> _routeOptions = new List<RouteOption>();
 
         public Identifier Name {
             get {
@@ -18,17 +16,11 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<RouteOption> RouteOptions {
-            get {
-                return this._routeOptions;
-            }
-        }
+        public List<RouteOption> RouteOptions { get; } = new List<RouteOption>();
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
-            for (int i = 0, count = this.RouteOptions.Count; i < count; i++) {
-                this.RouteOptions[i].Accept(visitor);
-            }
+            this.RouteOptions.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

@@ -50,10 +50,7 @@ namespace OfaSchlupfer.AST {
             this.QueryExpression?.Accept(visitor);
             this.Into?.Accept(visitor);
             this.On?.Accept(visitor);
-            var computeClauses = this.ComputeClauses;
-            for (int i = 0, count = computeClauses.Count; i < count; i++) {
-                computeClauses[i].Accept(visitor);
-            }
+            this.ComputeClauses.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

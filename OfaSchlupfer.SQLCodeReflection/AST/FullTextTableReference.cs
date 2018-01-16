@@ -1,13 +1,11 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class FullTextTableReference : TableReferenceWithAlias {
         private FullTextFunctionType _fullTextFunctionType;
 
         private SchemaObjectName _tableName;
-
-        private List<ColumnReferenceExpression> _columns = new List<ColumnReferenceExpression>();
 
         private ValueExpression _searchCondition;
 
@@ -38,11 +36,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ColumnReferenceExpression> Columns {
-            get {
-                return this._columns;
-            }
-        }
+        public List<ColumnReferenceExpression> Columns { get; } = new List<ColumnReferenceExpression>();
 
         public ValueExpression SearchCondition {
             get {
@@ -93,9 +87,7 @@ namespace OfaSchlupfer.AST {
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.TableName?.Accept(visitor);
-            for (int i = 0, count = this.Columns.Count; i < count; i++) {
-                this.Columns[i].Accept(visitor);
-            }
+            this.Columns.Accept(visitor);
             this.SearchCondition?.Accept(visitor);
             this.TopN?.Accept(visitor);
             this.Language?.Accept(visitor);

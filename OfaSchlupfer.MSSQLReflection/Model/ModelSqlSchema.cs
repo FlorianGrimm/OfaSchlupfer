@@ -8,7 +8,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     using OfaSchlupfer.Elementary.Immutable;
     using OfaSchlupfer.Elementary.SqlAccess;
 
-    public sealed class ModelSqlSchema : BuildTargetBase, IEquatable<ModelSqlSchema> {
+    public sealed class ModelSqlSchema
+        : BuildTargetBase
+        , IEquatable<ModelSqlSchema>
+        , IBuildTarget<ModelSqlSchema, ModelSqlSchema.Builder> {
         public static void MetaInfo(ModelSqlDatabase sqlDatabase) {
             ModelSqlTable sqlTable = new ModelSqlTable();
             sqlTable.Name = SqlName.Parse("sys.schemas");

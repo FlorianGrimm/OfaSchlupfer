@@ -5,13 +5,9 @@ namespace OfaSchlupfer.AST {
     public sealed class CreateFullTextIndexStatement : TSqlStatement {
         private SchemaObjectName _onName;
 
-        private List<FullTextIndexColumn> _fullTextIndexColumns = new List<FullTextIndexColumn>();
-
         private Identifier _keyIndexName;
 
         private FullTextCatalogAndFileGroup _catalogAndFileGroup;
-
-        private List<FullTextIndexOption> _options = new List<FullTextIndexOption>();
 
         public SchemaObjectName OnName {
             get {
@@ -24,11 +20,7 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<FullTextIndexColumn> FullTextIndexColumns {
-            get {
-                return this._fullTextIndexColumns;
-            }
-        }
+        public List<FullTextIndexColumn> FullTextIndexColumns { get; } = new List<FullTextIndexColumn>();
 
         public Identifier KeyIndexName {
             get {
@@ -50,32 +42,16 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<FullTextIndexOption> Options {
-            get {
-                return this._options;
-            }
-        }
+        public List<FullTextIndexOption> Options { get; } = new List<FullTextIndexOption>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            if (this.OnName != null) {
-                this.OnName.Accept(visitor);
-            }
-            int i = 0;
-            for (int count = this.FullTextIndexColumns.Count; i < count; i++) {
-                this.FullTextIndexColumns[i].Accept(visitor);
-            }
-            if (this.KeyIndexName != null) {
-                this.KeyIndexName.Accept(visitor);
-            }
-            if (this.CatalogAndFileGroup != null) {
-                this.CatalogAndFileGroup.Accept(visitor);
-            }
-            int j = 0;
-            for (int count2 = this.Options.Count; j < count2; j++) {
-                this.Options[j].Accept(visitor);
-            }
+            this.OnName?.Accept(visitor);
+            this.FullTextIndexColumns.Accept(visitor);
+            this.KeyIndexName?.Accept(visitor);
+            this.CatalogAndFileGroup?.Accept(visitor);
+            this.Options.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }

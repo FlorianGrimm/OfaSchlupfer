@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class InternalOpenRowset : TableReferenceWithAlias {
         private Identifier _identifier;
-
-        private List<ScalarExpression> _varArgs = new List<ScalarExpression>();
 
         public Identifier Identifier {
             get {
@@ -18,20 +16,14 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ScalarExpression> VarArgs {
-            get {
-                return this._varArgs;
-            }
-        }
+        public List<ScalarExpression> VarArgs { get; } = new List<ScalarExpression>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.Identifier?.Accept(visitor);
-            for (int i = 0, count = this.VarArgs.Count; i < count; i++) {
-                this.VarArgs[i].Accept(visitor);
-            }
+            this.VarArgs.Accept(visitor);
         }
     }
 }

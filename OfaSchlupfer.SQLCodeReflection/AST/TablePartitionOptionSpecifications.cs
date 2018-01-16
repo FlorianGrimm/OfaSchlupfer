@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace OfaSchlupfer.AST {
+    using System.Collections.Generic;
+
     [System.Serializable]
     public sealed class TablePartitionOptionSpecifications : PartitionSpecifications {
         private PartitionTableOptionRange _range;
-
-        private List<ScalarExpression> _boundaryValues = new List<ScalarExpression>();
 
         public PartitionTableOptionRange Range {
             get {
@@ -17,18 +15,12 @@ namespace OfaSchlupfer.AST {
             }
         }
 
-        public List<ScalarExpression> BoundaryValues {
-            get {
-                return this._boundaryValues;
-            }
-        }
+        public List<ScalarExpression> BoundaryValues { get; } = new List<ScalarExpression>();
 
         public override void Accept(TSqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
 
         public override void AcceptChildren(TSqlFragmentVisitor visitor) {
-            for (int i = 0, count = this.BoundaryValues.Count; i < count; i++) {
-                this.BoundaryValues[i].Accept(visitor);
-            }
+            this.BoundaryValues.Accept(visitor);
             base.AcceptChildren(visitor);
         }
     }
