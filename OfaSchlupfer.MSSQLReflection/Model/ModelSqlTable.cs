@@ -20,7 +20,7 @@
         /// </summary>
         /// <param name="src">Copy source</param>
         /// <param name="columns">alternatic columns</param>
-        public ModelSqlTable(ModelSqlTable src, ModelDictionary<SqlName, ModelSqlColumn> columns)
+        public ModelSqlTable(ModelSqlTable src, Dictionary<SqlName, ModelSqlColumn> columns)
             : base(src, columns) {
         }
 

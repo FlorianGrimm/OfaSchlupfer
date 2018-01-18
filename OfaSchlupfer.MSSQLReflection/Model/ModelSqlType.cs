@@ -39,37 +39,37 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets or sets the name of the type.
         /// </summary>
-        public SqlName Name { get { return this._Name; } set { this.ThrowIfFozen(); this._Name = value; } }
+        public SqlName Name { get { return this._Name; } set { this._Name = value; } }
 
         /// <summary>
         /// Gets or sets the ColumnId hte order.
         /// </summary>
-        public int ColumnId { get { return this._ColumnId; } set { this.ThrowIfFozen(); this._ColumnId = value; } }
+        public int ColumnId { get { return this._ColumnId; } set { this._ColumnId = value; } }
 
         /// <summary>
         /// Gets or sets the MaxLength of char types.
         /// </summary>
-        public short MaxLength { get { return this._MaxLength; } set { this.ThrowIfFozen(); this._MaxLength = value; } }
+        public short MaxLength { get { return this._MaxLength; } set { this._MaxLength = value; } }
 
         /// <summary>
         /// Gets or sets the Precision of float types.
         /// </summary>
-        public byte Precision { get { return this._Precision; } set { this.ThrowIfFozen(); this._Precision = value; } }
+        public byte Precision { get { return this._Precision; } set { this._Precision = value; } }
 
         /// <summary>
         /// Gets or sets the Scale of float types..
         /// </summary>
-        public byte Scale { get { return this._Scale; } set { this.ThrowIfFozen(); this._Scale = value; } }
+        public byte Scale { get { return this._Scale; } set { this._Scale = value; } }
 
         /// <summary>
         /// Gets or sets the collation of the type - can be null.
         /// </summary>
-        public string CollationName { get { return this._CollationName; } set { this.ThrowIfFozen(); this._CollationName = value; } }
+        public string CollationName { get { return this._CollationName; } set { this._CollationName = value; } }
 
         /// <summary>
         /// Gets or sets a value indicating whether gets or sets the type is null-able.
         /// </summary>
-        public bool IsNullable { get { return this._IsNullable; } set { this.ThrowIfFozen(); this._IsNullable = value; } }
+        public bool IsNullable { get { return this._IsNullable; } set { this._IsNullable = value; } }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 

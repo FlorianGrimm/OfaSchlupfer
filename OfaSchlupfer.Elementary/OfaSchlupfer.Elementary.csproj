@@ -47,18 +47,18 @@
   <ItemGroup>
     <Compile Include="DictionaryExtension.cs" />
     <Compile Include="EquatableUtility.cs" />
-    <Compile Include="Immutable\BuilderBase.cs" />
-    <Compile Include="Immutable\BuildTargetBase.cs" />
-    <Compile Include="Immutable\BuildTargetExtension.cs" />
-    <Compile Include="Immutable\FreezeVersion.cs" />
-    <Compile Include="Immutable\FreezeVersionNode.cs" />
-    <Compile Include="Immutable\IBuildTarget{TModel,TBuilder}.cs" />
-    <Compile Include="Immutable\SimpleList.cs" />
-    <Compile Include="Immutable\IBuilder.cs" />
-    <Compile Include="Immutable\IBuildTarget.cs" />
-    <Compile Include="Immutable\IFreezeReceiver.cs" />
-    <Compile Include="Immutable\ModelBuilderPair.cs" />
-    <Compile Include="Immutable\ModelDictionary.cs" />
+    <None Include="Immutable\BuilderBase.cs" />
+    <None Include="Immutable\BuildTargetBase.cs" />
+    <None Include="Immutable\BuildTargetExtension.cs" />
+    <None Include="Immutable\FreezeVersion.cs" />
+    <None Include="Immutable\FreezeVersionNode.cs" />
+    <None Include="Immutable\IBuildTarget{TModel,TBuilder}.cs" />
+    <None Include="Immutable\SimpleList.cs" />
+    <None Include="Immutable\IBuilder.cs" />
+    <None Include="Immutable\IBuildTarget.cs" />
+    <None Include="Immutable\IFreezeReceiver.cs" />
+    <None Include="Immutable\ModelBuilderPair.cs" />
+    <None Include="Immutable\ModelDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

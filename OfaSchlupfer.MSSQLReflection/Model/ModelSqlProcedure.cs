@@ -29,12 +29,12 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets or sets the name of the type.
         /// </summary>
-        public SqlName Name { get { return this._Name; } set { this.ThrowIfFozen(); this._Name = value; } }
+        public SqlName Name { get { return this._Name; } set { this._Name = value; } }
 
         /// <summary>
         /// Gets or sets the name of the type.
         /// </summary>
-        public string Definition { get { return this._Definition; } set { this.ThrowIfFozen(); this._Definition = value ?? string.Empty; } }
+        public string Definition { get { return this._Definition; } set { this._Definition = value ?? string.Empty; } }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 

@@ -2,7 +2,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using OfaSchlupfer.Elementary;
-    using OfaSchlupfer.Elementary.Immutable;
     using OfaSchlupfer.MSSQLReflection.Model;
     using OfaSchlupfer.MSSQLReflection.Model.SqlSys;
 
@@ -79,156 +78,97 @@
                 targetDatabase = this.GetTarget();
             }
 
-            // for testing?
-            // targetDatabase.Freeze();
-
-            // pair
-            var targetDatabasePair = targetDatabase.FactoryModelBuilderPair(
-                (model, clone, setU, setF) => model.GetBuilder(clone, setU, setF),
-                (builder, model) => {
-                    targetDatabase = model;
-                },
-                (builder, model) => {
-                    targetDatabase = model;
-                });
-
             var schemaById = new Dictionary<int, ModelSqlSchema>();
             var objectById = new Dictionary<int, object>();
             var typeByName = new Dictionary<SqlName, ModelSqlType>();
             var typeById = new Dictionary<int, ModelSqlType>();
 
-            using (var targetSchemaPair = targetDatabasePair.FactoryModelBuilderProperty(
-                    (owner) => owner.Schemas,
-                    (ownerBuilder, schemas) => { ownerBuilder.Schemas = schemas; },
-                    (schemas, clone, setU, setF) => schemas.GetBuilder(clone, setU, setF))) {
-                var targetSchemaBuilder = targetSchemaPair.Builder;
-                foreach (var src in sysDatabase.SchemaById.Values.ToArray()) {
-                    var name = SqlName.Root.ChildWellkown(src.name);
-                    ModelSqlSchema foundSchema = targetSchemaBuilder.GetByName(name);
-                    var dstSchema = new ModelSqlSchema();
-                    dstSchema.Name = name;
-                    if ((object)foundSchema == null) {
-                        dstSchema.Freeze();
-                        targetSchemaBuilder.Add(dstSchema.Name, dstSchema);
-                    } else if (foundSchema != dstSchema) {
-                        dstSchema.Freeze();
-                        targetSchemaBuilder.Add(dstSchema.Name, dstSchema);
-                    } else {
-                        dstSchema = foundSchema;
-                    }
-                    schemaById[src.schema_id] = dstSchema;
+            foreach (var src in sysDatabase.SchemaById.Values.ToArray()) {
+                var name = SqlName.Root.ChildWellkown(src.name);
+
+                ModelSqlSchema foundSchema = targetDatabase.GetSchemaByName(name);
+                var dstSchema = new ModelSqlSchema();
+                dstSchema.Name = name;
+                if ((object)foundSchema == null) {
+                    targetDatabase.Schemas.Add(dstSchema.Name, dstSchema);
+                } else if (foundSchema != dstSchema) {
+                    targetDatabase.Schemas[dstSchema.Name] = dstSchema;
+                } else {
+                    dstSchema = foundSchema;
                 }
-                targetSchemaPair.GetTarget();
+                schemaById[src.schema_id] = dstSchema;
             }
 
             // add types
-            using (var targetTypesPair = targetDatabasePair.FactoryModelBuilderProperty(
-                    (db) => db.Types,
-                    (dbBuilder, types) => { dbBuilder.Types = types; },
-                    (types, clone, setU, setF) => types.GetBuilder(clone, setU, setF))) {
-                var targetTypesBuilder = targetTypesPair.Builder;
-                foreach (var srcType in sysDatabase.Types) {
-                    ModelSqlSchema modelSqlSchema;
-                    if (schemaById.TryGetValue(srcType.schema_id, out modelSqlSchema)) {
-                        var name = modelSqlSchema.Name.Child(srcType.name);
-                        ModelSqlType foundType = targetTypesBuilder.GetByName(name);
-                        ModelSqlType dstType = new ModelSqlType();
-                        dstType.Name = name;
-                        dstType.MaxLength = srcType.max_length;
-                        dstType.Precision = srcType.precision;
-                        dstType.Scale = srcType.scale;
-                        dstType.CollationName = srcType.collation_name;
-                        dstType.IsNullable = srcType.is_nullable;
-                        if ((object)foundType == null) {
-                            dstType.Freeze();
-                            targetTypesBuilder.Add(dstType.Name, dstType);
-                        } else if (foundType == dstType) {
-                            dstType.Freeze();
-                            targetTypesBuilder.Add(dstType.Name, dstType);
-                        } else {
-                            dstType = foundType;
-                        }
-                        typeById[srcType.user_type_id] = dstType;
-                        typeByName[dstType.Name] = dstType;
+            foreach (var srcType in sysDatabase.Types) {
+                ModelSqlSchema modelSqlSchema;
+                if (schemaById.TryGetValue(srcType.schema_id, out modelSqlSchema)) {
+                    var name = modelSqlSchema.Name.Child(srcType.name);
+                    ModelSqlType foundType = targetDatabase.GetTypeByName(name);
+                    ModelSqlType dstType = new ModelSqlType();
+                    dstType.Name = name;
+                    dstType.MaxLength = srcType.max_length;
+                    dstType.Precision = srcType.precision;
+                    dstType.Scale = srcType.scale;
+                    dstType.CollationName = srcType.collation_name;
+                    dstType.IsNullable = srcType.is_nullable;
+                    if ((object)foundType == null) {
+                        targetDatabase.Types.Add(dstType.Name, dstType);
+                    } else if (foundType == dstType) {
+                        targetDatabase.Types[dstType.Name] = dstType;
+                    } else {
+                        dstType = foundType;
                     }
+                    typeById[srcType.user_type_id] = dstType;
+                    typeByName[dstType.Name] = dstType;
                 }
-                targetTypesPair.GetTarget();
             }
 
-            // add tables
-            using (var targetTablesPair = targetDatabasePair.FactoryModelBuilderProperty(
-                    (owner) => owner.Tables,
-                    (ownerBuilder, tables) => { ownerBuilder.Tables = tables; },
-                    (model, clone, setU, setF) => model.GetBuilder(clone, setU, setF))) {
-                var targetTablesBuilder = targetTablesPair.Builder;
-                foreach (var srcTable in sysDatabase.GetTables()) {
-                    ModelSqlSchema modelSqlSchema;
-                    if (schemaById.TryGetValue(srcTable.schema_id, out modelSqlSchema)) {
-                        var tableName = modelSqlSchema.Name.Child(srcTable.name);
-                        var foundTable = (ModelSqlTable)targetTablesBuilder.GetByName(tableName);
-                        var dstTable = new ModelSqlTable();
-                        dstTable.Name = tableName;
+            foreach (var srcTable in sysDatabase.GetTables()) {
+                ModelSqlSchema modelSqlSchema;
+                if (schemaById.TryGetValue(srcTable.schema_id, out modelSqlSchema)) {
+                    var tableName = modelSqlSchema.Name.Child(srcTable.name);
+                    var foundTable = (ModelSqlTable)targetDatabase.GetTableByName(tableName);
+                    var dstTable = new ModelSqlTable();
+                    dstTable.Name = tableName;
 
-                        // dstTable.FactoryModelBuilderPair2(_ => _.GetBuilder);
-                        // targetTablesPair.
-
-                        // tables
-                        var dstTableBuilder = dstTable.GetBuilder(false, t => { dstTable = t; }, null);
-                        {
-                            using (var dstTableColumnsPair = dstTable.Columns.FactoryModelBuilderPair(
-                                (model, clone, setU, setF) => model.GetBuilder(clone, setU, setF),
-                                null,
-                                (builder, model) => { dstTableBuilder.Columns = model; })) {
-                                var dstTableColumnsBuilder = dstTableColumnsPair.Builder;
-
-                                // srcTable.Columns
-                                var srcTable_Columns = srcTable.Columns;
-                                if (srcTable_Columns != null) {
-                                    foreach (var srcColumn in srcTable_Columns) {
-                                        var columnName = tableName.ScopeChild(srcTable.name);
-                                        ModelSqlColumn foundColumn = dstTable.GetColumnByName(columnName);
-                                        var dstColumn = new ModelSqlColumn();
-                                        dstColumn.Name = columnName;
-                                        dstColumn.ColumnId = srcColumn.column_id;
-                                        dstColumn.MaxLength = srcColumn.max_length;
-                                        dstColumn.Precision = srcColumn.precision;
-                                        dstColumn.Scale = srcColumn.scale;
-                                        dstColumn.CollationName = srcColumn.collation_name;
-                                        dstColumn.IsNullable = srcColumn.is_nullable;
-                                        ModelSqlType foundSqlType = typeById.GetValueOrDefault(srcColumn.user_type_id);
-                                        dstColumn.SqlType = foundSqlType;
-                                        dstColumn.Freeze();
-                                        if (foundColumn == null) {
-                                            dstTableColumnsBuilder.Add(dstColumn.Name, dstColumn);
-                                        } else if (foundColumn != dstColumn) {
-                                            dstTableColumnsBuilder.Add(dstColumn.Name, dstColumn);
-                                        } else {
-                                            dstColumn = foundColumn;
-                                            dstTableColumnsBuilder.Add(dstColumn.Name, dstColumn);
-                                        }
-                                    }
-                                }
-                                dstTableColumnsPair.Freeze();
+                    // srcTable.Columns
+                    var srcTable_Columns = srcTable.Columns;
+                    if (srcTable_Columns != null) {
+                        foreach (var srcColumn in srcTable_Columns) {
+                            var columnName = tableName.ScopeChild(srcTable.name);
+                            ModelSqlColumn foundColumn = dstTable.GetColumnByName(columnName);
+                            var dstColumn = new ModelSqlColumn();
+                            dstColumn.Name = columnName;
+                            dstColumn.ColumnId = srcColumn.column_id;
+                            dstColumn.MaxLength = srcColumn.max_length;
+                            dstColumn.Precision = srcColumn.precision;
+                            dstColumn.Scale = srcColumn.scale;
+                            dstColumn.CollationName = srcColumn.collation_name;
+                            dstColumn.IsNullable = srcColumn.is_nullable;
+                            ModelSqlType foundSqlType = typeById.GetValueOrDefault(srcColumn.user_type_id);
+                            dstColumn.SqlType = foundSqlType;
+                            if (foundColumn == null) {
+                                dstTable.Columns.Add(dstColumn.Name, dstColumn);
+                            } else if (foundColumn != dstColumn) {
+                                dstTable.Columns[dstColumn.Name] = dstColumn;
+                            } else {
+                                dstColumn = foundColumn;
                             }
                         }
-
-                        // store back
-                        dstTable = dstTableBuilder.GetTarget();
-                        if ((object)foundTable == null) {
-                            targetTablesBuilder.Add(dstTable.Name, dstTable);
-                        } else if (foundTable == dstTable) {
-                            targetTablesBuilder.Add(dstTable.Name, dstTable);
-                        } else {
-                            dstTable = foundTable;
-                        }
-                        objectById[srcTable.object_id] = dstTable;
                     }
-                }
-                targetTablesBuilder.GetTarget();
-            }
 
-            // store back
-            this.ModelDatabase = targetDatabasePair.Builder.GetTarget();
+                    // store back
+                    if ((object)foundTable == null) {
+                        targetDatabase.Tables.Add(dstTable.Name, dstTable);
+                    } else if (foundTable == dstTable) {
+                        targetDatabase.Tables[dstTable.Name] = dstTable;
+                    } else {
+                        dstTable = foundTable;
+                    }
+                    objectById[srcTable.object_id] = dstTable;
+                }
+            }
         }
     }
 }

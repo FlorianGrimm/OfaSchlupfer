@@ -30,7 +30,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
-        public SqlName Name { get { return this._Name; } set { this.ThrowIfFozen(); this._Name = value; } }
+        public SqlName Name { get { return this._Name; } set { this._Name = value; } }
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
         public static bool operator ==(ModelSqlSchema a, ModelSqlSchema b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);

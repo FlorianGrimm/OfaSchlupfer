@@ -1,94 +1,78 @@
 ﻿namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
-    using OfaSchlupfer.Elementary.Immutable;
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// the database
     /// </summary>
-    public sealed class ModelSqlDatabase : BuildTargetBase {
-        private ModelDictionary<SqlName, ModelSqlSchema> _Schemas;
-        private ModelDictionary<SqlName, ModelSqlType> _Types;
-        private ModelDictionary<SqlName, ModelSqlTable> _Tables;
+    public sealed class ModelSqlDatabase {
+        private readonly Dictionary<SqlName, ModelSqlSchema> _Schemas;
+        private readonly Dictionary<SqlName, ModelSqlType> _Types;
+        private readonly Dictionary<SqlName, ModelSqlTable> _Tables;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlDatabase"/> class.
         /// </summary>
         public ModelSqlDatabase() {
-            this._Schemas = new ModelDictionary<SqlName, ModelSqlSchema>(this);
-            this._Types = new ModelDictionary<SqlName, ModelSqlType>(this);
-            this._Tables = new ModelDictionary<SqlName, ModelSqlTable>(this);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ModelSqlDatabase"/> class.
-        /// </summary>
-        /// <param name="src">the source - cannot be null.</param>
-        /// <param name="schemas">new schemas - can be null.</param>
-        /// <param name="types">new types - can be null.</param>
-        /// <param name="tables">new tables - can be null.</param>
-        public ModelSqlDatabase(
-            ModelSqlDatabase src,
-            ModelDictionary<SqlName, ModelSqlSchema> schemas,
-            ModelDictionary<SqlName, ModelSqlType> types,
-            ModelDictionary<SqlName, ModelSqlTable> tables) {
-            this._Schemas = ModelDictionary<SqlName, ModelSqlSchema>.FactoryCopy(this, schemas, src._Schemas);
-            this._Types = ModelDictionary<SqlName, ModelSqlType>.FactoryCopy(this, types, src._Types);
-            this._Tables = ModelDictionary<SqlName, ModelSqlTable>.FactoryCopy(this, tables, src._Tables);
+            this._Schemas = new Dictionary<SqlName, ModelSqlSchema>();
+            this._Types = new Dictionary<SqlName, ModelSqlType>();
+            this._Tables = new Dictionary<SqlName, ModelSqlTable>();
         }
 
         /// <summary>
         /// Gets the schemas.
         /// </summary>
-        public ModelDictionary<SqlName, ModelSqlSchema> Schemas => this._Schemas;
+        public Dictionary<SqlName, ModelSqlSchema> Schemas => this._Schemas;
 
         /// <summary>
         /// Gets the types.
         /// </summary>
-        public ModelDictionary<SqlName, ModelSqlType> Types => this._Types;
+        public Dictionary<SqlName, ModelSqlType> Types => this._Types;
 
         /// <summary>
         /// Gets the tables.
         /// </summary>
-        public ModelDictionary<SqlName, ModelSqlTable> Tables => this._Tables;
+        public Dictionary<SqlName, ModelSqlTable> Tables => this._Tables;
 
         /// <summary>
         /// Gets the schemas.
         /// </summary>
         /// <returns>the schemas.</returns>
-        public ModelSqlSchema[] GetSchemas() => this._Schemas?.GetValues();
+        public ModelSqlSchema[] GetSchemas() => this._Schemas.Values.ToArray();
 
         /// <summary>
         /// Gets the types.
         /// </summary>
         /// <returns>the types</returns>
-        public ModelSqlType[] GetTypes() => this._Types?.GetValues();
+        public ModelSqlType[] GetTypes() => this._Types.Values.ToArray();
 
         /// <summary>
         /// Get the sql tables.
         /// </summary>
         /// <returns>the sql tables</returns>
-        public ModelSqlTable[] GetTables() => this._Tables?.GetValues();
+        public ModelSqlTable[] GetTables() => this._Tables.Values.ToArray();
 
         /// <summary>
         /// Gets the schema by its's name
         /// </summary>
         /// <param name="name">the schema name to search for</param>
         /// <returns>the found schema or null.</returns>
-        public ModelSqlSchema GetSchemaByName(SqlName name) => this._Schemas?.GetByName(name);
+        public ModelSqlSchema GetSchemaByName(SqlName name) => this._Schemas.GetValueOrDefault(name);
 
         /// <summary>
         /// Gets the type by its's name
         /// </summary>
         /// <param name="name">the schema name to search for</param>
         /// <returns>the found schema or null.</returns>
-        public ModelSqlType GetTypeByName(SqlName name) => this._Types?.GetByName(name);
+        public ModelSqlType GetTypeByName(SqlName name) => this._Types.GetValueOrDefault(name);
 
         /// <summary>
         /// Gets the table by its's name
         /// </summary>
         /// <param name="name">the schema name to search for</param>
         /// <returns>the found schema or null.</returns>
-        public ModelSqlTable GetTableByName(SqlName name) => this._Tables?.GetByName(name);
+        public ModelSqlTable GetTableByName(SqlName name) => this._Tables.GetValueOrDefault(name);
 
         /// <summary>
         /// Gets the named object called name.
@@ -98,10 +82,10 @@
         public object GetObject(SqlName name) {
             object result;
 
-            result = this._Types?.GetByName(name);
+            result = this._Types.GetValueOrDefault(name);
             if ((object)result != null) { return result; }
 
-            result = this._Tables?.GetByName(name);
+            result = this._Tables.GetValueOrDefault(name);
             if ((object)result != null) { return result; }
 
             return null;
@@ -114,97 +98,6 @@
         /// <returns>the named object or null.</returns>
         public object Resolve(SqlName sqlName) {
             return this.GetObject(sqlName);
-        }
-
-        /// <summary>
-        /// Get the builder for mutate.
-        /// </summary>
-        /// <param name="clone">always clone.</param>
-        /// <param name="setUnFrozen">will be called if target is set to another instance - unfrozen.</param>
-        /// <param name="setFrozen">will be called if target is set to another instance - frozen.</param>
-        /// <returns>a builder</returns>
-        public Builder GetBuilder(bool clone, Action<ModelSqlDatabase> setUnFrozen, Action<ModelSqlDatabase> setFrozen)
-            => new Builder(this, clone, setUnFrozen, setFrozen);
-
-        /// <summary>
-        /// Freeze the children of this.
-        /// </summary>
-        protected override void FreezeChildren() {
-            base.FreezeChildren();
-            this.Schemas.Freeze();
-            this.Types.Freeze();
-            this.Tables.Freeze();
-        }
-
-        /// <summary>
-        /// Create a unfrozen instance
-        /// </summary>
-        /// <returns>a new instacne</returns>
-        protected override IBuildTarget UnFreezeCreateInstance() {
-            return new ModelSqlDatabase(this, null, null, null);
-        }
-
-        /// <summary>
-        /// Builder
-        /// </summary>
-        public sealed class Builder : BuilderBase<ModelSqlDatabase> {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Builder"/> class.
-            /// </summary>
-            /// <param name="target">the caller</param>
-            /// <param name="clone">always clone</param>
-            /// <param name="setUnFrozen">will be called if target is set to another instance - unfrozen.</param>
-            /// <param name="setFrozen">will be called if target is set to another instance - frozen.</param>
-            internal Builder(ModelSqlDatabase target, bool clone, Action<ModelSqlDatabase> setUnFrozen, Action<ModelSqlDatabase> setFrozen)
-                : base(target, clone, setUnFrozen, setFrozen) {
-            }
-
-            /// <summary>
-            /// Gets or sets the schemas
-            /// </summary>
-            public ModelDictionary<SqlName, ModelSqlSchema> Schemas {
-                get {
-                    return this._Target.Schemas;
-                }
-
-                set {
-                    if (ReferenceEquals(this._Target.Schemas, value)) { return; }
-                    var that = this.EnsureUnfrozen();
-                    if (ReferenceEquals(value?.Owner, that)) {
-                        that._Schemas = value;
-                    } else {
-                        that._Schemas = new ModelDictionary<SqlName, ModelSqlSchema>(that, value);
-                    }
-                }
-            }
-
-            /// <summary>
-            /// Gets or sets the types.
-            /// </summary>
-            public ModelDictionary<SqlName, ModelSqlType> Types {
-                get {
-                    return this._Target.Types;
-                }
-
-                set {
-                    if (ReferenceEquals(this._Target.Types, value)) { return; }
-                    this.EnsureUnfrozen()._Types = value;
-                }
-            }
-
-            /// <summary>
-            /// Gets or sets the tables.
-            /// </summary>
-            public ModelDictionary<SqlName, ModelSqlTable> Tables {
-                get {
-                    return this._Target.Tables;
-                }
-
-                set {
-                    if (ReferenceEquals(this._Target.Tables, value)) { return; }
-                    this.EnsureUnfrozen()._Tables = value;
-                }
-            }
         }
     }
 }

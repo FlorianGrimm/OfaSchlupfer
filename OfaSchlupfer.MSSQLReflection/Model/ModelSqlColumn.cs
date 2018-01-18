@@ -2,16 +2,14 @@
 
 namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
+    using System.Linq;
     using OfaSchlupfer.Elementary;
-    using OfaSchlupfer.Elementary.Immutable;
 
     /// <summary>
     /// column
     /// </summary>
     public sealed class ModelSqlColumn
-        : BuildTargetBase
-        , IEquatable<ModelSqlColumn>
-        , IBuildTarget<ModelSqlColumn, ModelSqlColumn.Builder> {
+        : IEquatable<ModelSqlColumn> {
         private SqlName _Name;
         private int _ColumnId;
         private short _system_type_id;
@@ -38,28 +36,28 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
 
-        public SqlName Name { get { return this._Name; } set { this.ThrowIfFozen(); this._Name = value; } }
+        public SqlName Name { get { return this._Name; } set { this._Name = value; } }
 
-        public int ColumnId { get { return this._ColumnId; } set { this.ThrowIfFozen(); this._ColumnId = value; } }
+        public int ColumnId { get { return this._ColumnId; } set { this._ColumnId = value; } }
 
-        public short system_type_id { get { return this._system_type_id; } set { this.ThrowIfFozen(); this._system_type_id = value; } }
+        public short system_type_id { get { return this._system_type_id; } set { this._system_type_id = value; } }
 
-        public int user_type_id { get { return this._user_type_id; } set { this.ThrowIfFozen(); this._user_type_id = value; } }
+        public int user_type_id { get { return this._user_type_id; } set { this._user_type_id = value; } }
 
-        public short MaxLength { get { return this._MaxLength; } set { this.ThrowIfFozen(); this._MaxLength = value; } }
+        public short MaxLength { get { return this._MaxLength; } set { this._MaxLength = value; } }
 
-        public byte Precision { get { return this._Precision; } set { this.ThrowIfFozen(); this._Precision = value; } }
+        public byte Precision { get { return this._Precision; } set { this._Precision = value; } }
 
-        public byte Scale { get { return this._Scale; } set { this.ThrowIfFozen(); this._Scale = value; } }
+        public byte Scale { get { return this._Scale; } set { this._Scale = value; } }
 
-        public string CollationName { get { return this._CollationName; } set { this.ThrowIfFozen(); this._CollationName = value; } }
+        public string CollationName { get { return this._CollationName; } set { this._CollationName = value; } }
 
-        public bool IsNullable { get { return this._IsNullable; } set { this.ThrowIfFozen(); this._IsNullable = value; } }
+        public bool IsNullable { get { return this._IsNullable; } set { this._IsNullable = value; } }
 
         /// <summary>
         /// Gets or sets the reference to the SqlType
         /// </summary>
-        public ModelSqlType SqlType { get { return this._SqlType; } set { this.ThrowIfFozen(); this._SqlType = value; } }
+        public ModelSqlType SqlType { get { return this._SqlType; } set { this._SqlType = value; } }
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
         public static bool operator ==(ModelSqlColumn a, ModelSqlColumn b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);
@@ -90,52 +88,5 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         /// <inheritdoc/>
         public override string ToString() => this.Name.ToString();
-
-        /// <summary>
-        /// Get the builder for mutate.
-        /// </summary>
-        /// <param name="clone">always clone.</param>
-        /// <param name="setUnFrozen">will be called if target is set to another instance - unfrozen.</param>
-        /// <param name="setFrozen">will be called if target is set to another instance - frozen.</param>
-        /// <returns>a builder</returns>
-        public Builder GetBuilder(bool clone, Action<ModelSqlColumn> setUnFrozen, Action<ModelSqlColumn> setFrozen)
-            => new Builder(this, clone, setUnFrozen, setFrozen);
-
-        /// <summary>
-        /// Builder
-        /// </summary>
-        public sealed class Builder : BuilderBase<ModelSqlColumn> {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Builder"/> class.
-            /// </summary>
-            /// <param name="target">the caller</param>
-            /// <param name="clone">always clone</param>
-            /// <param name="setUnFrozen">will be called if target is set to another instance - unfrozen.</param>
-            /// <param name="setFrozen">will be called if target is set to another instance - frozen.</param>
-            internal Builder(ModelSqlColumn target, bool clone, Action<ModelSqlColumn> setUnFrozen, Action<ModelSqlColumn> setFrozen)
-                : base(target, clone, setUnFrozen, setFrozen) {
-            }
-
-#pragma warning disable SA1107 // Code must not contain multiple statements on one line
-
-            public SqlName Name { get { return this._Target._Name; } set { if (this._Target._Name == value) { return; } this.EnsureUnfrozen()._Name = value; } }
-
-            public int ColumnId { get { return this._Target._ColumnId; } set { if (this._Target._ColumnId == value) { return; } this.EnsureUnfrozen()._ColumnId = value; } }
-
-            public short system_type_id { get { return this._Target._system_type_id; } set { if (this._Target._system_type_id == value) { return; } this.EnsureUnfrozen()._system_type_id = value; } }
-
-            public int user_type_id { get { return this._Target._user_type_id; } set { if (this._Target._user_type_id == value) { return; } this.EnsureUnfrozen()._user_type_id = value; } }
-
-            public short MaxLength { get { return this._Target._MaxLength; } set { if (this._Target._MaxLength == value) { return; } this.EnsureUnfrozen()._MaxLength = value; } }
-
-            public byte Precision { get { return this._Target._Precision; } set { if (this._Target._Precision == value) { return; } this.EnsureUnfrozen()._Precision = value; } }
-
-            public byte Scale { get { return this._Target._Scale; } set { if (this._Target._Scale == value) { return; } this.EnsureUnfrozen()._Scale = value; } }
-
-            public string CollationName { get { return this._Target._CollationName; } set { if (this._Target._CollationName == value) { return; } this.EnsureUnfrozen()._CollationName = value; } }
-
-            public bool IsNullable { get { return this._Target._IsNullable; } set { if (this._Target._IsNullable == value) { return; } this.EnsureUnfrozen()._IsNullable = value; } }
-#pragma warning restore SA1107 // Code must not contain multiple statements on one line
-        }
     }
 }
