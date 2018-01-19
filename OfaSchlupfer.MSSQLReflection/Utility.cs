@@ -9,7 +9,7 @@
     /// Utility
     /// </summary>
     public sealed class Utility {
-        private SqlSysUtiltiy _SysDatabase;
+        private SqlSysUtiltiy _SysUtiltiy;
 
         private ModelSqlDatabase _ModelDatabase;
 
@@ -25,12 +25,22 @@
         public string ConnectionString { get; set; }
 
         /// <summary>
-        /// Gets or sets the sql source.
+        /// Gets or sets the source server SysServer.
         /// </summary>
-        public SqlSysUtiltiy SysUtiltiy { get => this._SysDatabase; set => this._SysDatabase = value; }
+        public SqlSysServer SysServer { get; set; }
 
         /// <summary>
-        /// Gets or sets the target model
+        /// Gets or sets the target model for server.
+        /// </summary>
+        public ModelSqlServer ModelServer { get; set; }
+
+        /// <summary>
+        /// Gets or sets the sql source.
+        /// </summary>
+        public SqlSysUtiltiy SysUtiltiy { get => this._SysUtiltiy; set => this._SysUtiltiy = value; }
+
+        /// <summary>
+        /// Gets or sets the target model for the database
         /// </summary>
         public ModelSqlDatabase ModelDatabase { get => this._ModelDatabase; set => this._ModelDatabase = value; }
 
@@ -85,7 +95,6 @@
 
             foreach (var src in sysDatabase.SchemaById.Values.ToArray()) {
                 var name = SqlName.Root.ChildWellkown(src.name);
-
                 ModelSqlSchema foundSchema = targetDatabase.GetSchemaByName(name);
                 var dstSchema = new ModelSqlSchema();
                 dstSchema.Name = name;

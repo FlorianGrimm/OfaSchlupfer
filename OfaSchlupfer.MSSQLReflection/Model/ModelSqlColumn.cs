@@ -10,17 +10,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     /// </summary>
     public sealed class ModelSqlColumn
         : IEquatable<ModelSqlColumn> {
-        private SqlName _Name;
-        private int _ColumnId;
-        private short _system_type_id;
-        private int _user_type_id;
-        private short _MaxLength;
-        private byte _Precision;
-        private byte _Scale;
-        private string _CollationName;
-        private bool _IsNullable;
-        private ModelSqlType _SqlType;
-
         public ModelSqlColumn() {
         }
 
@@ -36,28 +25,29 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
 
-        public SqlName Name { get { return this._Name; } set { this._Name = value; } }
+        public SqlName Name { get; set; }
 
-        public int ColumnId { get { return this._ColumnId; } set { this._ColumnId = value; } }
+        public int ColumnId { get; set; }
 
-        public short system_type_id { get { return this._system_type_id; } set { this._system_type_id = value; } }
+        public short system_type_id { get; set; }
 
-        public int user_type_id { get { return this._user_type_id; } set { this._user_type_id = value; } }
+        public int user_type_id { get; set; }
 
-        public short MaxLength { get { return this._MaxLength; } set { this._MaxLength = value; } }
+        public short MaxLength { get; set; }
 
-        public byte Precision { get { return this._Precision; } set { this._Precision = value; } }
+        public byte Precision { get; set; }
 
-        public byte Scale { get { return this._Scale; } set { this._Scale = value; } }
+        public byte Scale { get; set; }
 
-        public string CollationName { get { return this._CollationName; } set { this._CollationName = value; } }
+        public string CollationName { get; set; }
 
-        public bool IsNullable { get { return this._IsNullable; } set { this._IsNullable = value; } }
+        public bool IsNullable { get; set; }
 
         /// <summary>
         /// Gets or sets the reference to the SqlType
         /// </summary>
-        public ModelSqlType SqlType { get { return this._SqlType; } set { this._SqlType = value; } }
+        public ModelSqlType SqlType { get; set; }
+
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
         public static bool operator ==(ModelSqlColumn a, ModelSqlColumn b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);

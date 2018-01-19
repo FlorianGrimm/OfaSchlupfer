@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.SqlSys.SqlSysServer" Collapsed="true">
+    <Position X="2.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAEAAAACAIAAEAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Model\SqlSys\SqlSysServer.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Databases" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.SqlSys.SqlSysDatabase" Collapsed="true">
+    <Position X="2.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gmAAAAgAQCIAEAoAcQAAAAgAAACUAAAAAAAAACAAQAE=</HashCode>
+      <FileName>Model\SqlSys\SqlSysDatabase.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="SchemaById" />
+      <Field Name="AllObjectsById" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.SqlSys.SqlSysSchema" Collapsed="true">
+    <Position X="0.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAEACAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\SqlSys\SqlSysSchema.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.SqlSys.SqlSysObject">
+    <Position X="6" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABEAAhCIAAAAACAEIAABAAAEACAFAAAAAIgAgAgAQAA=</HashCode>
+      <FileName>Model\SqlSys\SqlSysObject.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="Columns" />
+      <Field Name="Indexes" />
+      <Field Name="Parameters" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.SqlSys.SqlSysColumn" Collapsed="true">
+    <Position X="9.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACABAAAEAAAIAAAABACACgUAAAAAAAQAAEAAAA=</HashCode>
+      <FileName>Model\SqlSys\SqlSysColumn.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.SqlSys.SqlSysIndex" Collapsed="true">
+    <Position X="9.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAgIAAAAAAIAAAAAAgACAUAAAAAAAAAAEACAA=</HashCode>
+      <FileName>Model\SqlSys\SqlSysIndex.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.SqlSys.SqlSysParameter" Collapsed="true">
+    <Position X="9.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAACEAAAIAABARACACgUAAAAAEAQAAEAAAA=</HashCode>
+      <FileName>Model\SqlSys\SqlSysParameter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

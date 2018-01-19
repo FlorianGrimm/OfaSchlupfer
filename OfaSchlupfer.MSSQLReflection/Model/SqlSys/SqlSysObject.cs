@@ -40,6 +40,16 @@ WHERE (o.object_id>0) AND (o.is_ms_shipped=0)
         public List<SqlSysParameter> Parameters;
 
         /// <summary>
+        /// The parameters - can be null.
+        /// </summary>
+        public List<SqlSysIndex> Indexes;
+
+        /// <summary>
+        /// The ForeignKeys - can be null.
+        /// </summary>
+        public List<SqlSysForeignKey> ForeignKeys;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="SqlSysObject"/> class.
         /// </summary>
         /// <param name="metaData">the metadata</param>
@@ -143,6 +153,28 @@ WHERE (o.object_id>0) AND (o.is_ms_shipped=0)
                 this.Parameters = new List<SqlSysParameter>();
             }
             return this.Parameters;
+        }
+
+        /// <summary>
+        /// The indexes.
+        /// </summary>
+        /// <returns>the parameters not null</returns>
+        public List<SqlSysIndex> GetIndexes() {
+            if (this.Indexes == null) {
+                this.Indexes = new List<SqlSysIndex>();
+            }
+            return this.Indexes;
+        }
+
+        /// <summary>
+        /// The parameters.
+        /// </summary>
+        /// <returns>the parameters not null</returns>
+        public List<SqlSysForeignKey> GetForeignKeys() {
+            if (this.ForeignKeys == null) {
+                this.ForeignKeys = new List<SqlSysForeignKey>();
+            }
+            return this.ForeignKeys;
         }
 
         /// <summary>

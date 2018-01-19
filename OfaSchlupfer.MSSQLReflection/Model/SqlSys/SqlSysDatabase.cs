@@ -9,11 +9,9 @@
     // SELECT * FROM sys.check_constraints;
     // SELECT * FROM sys.default_constraints;
     //
-    // SELECT i.name, i.object_id, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique , i.is_unique_constraint, i.filter_definition FROM sys.indexes i INNER JOIN sys.tables t ON i.object_id = t.object_id;
-    // SELECT c.object_id, c.index_id, c.index_column_id, c.column_id, c.key_ordinal, c.is_descending_key, c.is_included_column FROM sys.index_columns c INNER JOIN sys.indexes i ON c.object_id = i.object_id INNER JOIN sys.tables t ON i.object_id = t.object_id;
-    //
     // SELECT name, object_id, schema_id, type, create_date, modify_date, referenced_object_id, key_index_id, delete_referential_action_desc, update_referential_action_desc, is_system_named FROM sys.foreign_keys;
     // SELECT constraint_object_id, constraint_column_id, referenced_object_id, referenced_column_id FROM sys.foreign_key_columns;
+    //
     // SELECT constraint_object_id, constraint_column_id, parent_object_id, parent_column_id, referenced_object_id, referenced_column_id FROM sys.foreign_key_columns;
     // SELECT object_id, definition FROM sys.all_sql_modules WHERE (object_id > 0);
 
@@ -113,6 +111,10 @@
             this.ReadTypes(sqlTransConnection);
             this.ReadColumns(sqlTransConnection);
             this.ReadParameters(sqlTransConnection);
+            this.ReadIndex(sqlTransConnection);
+            this.ReadIndexColumn(sqlTransConnection);
+            this.ReadForeignKey(sqlTransConnection);
+            this.ReadForeignKeysColumn(sqlTransConnection);
         }
 
         /// <summary>
@@ -196,7 +198,97 @@
                     {
                         var obj = this.AllObjectsById.GetValueOrDefault(item.object_id);
                         if (obj != null) {
-                            obj.Parameters.Add(item);
+                            obj.GetParameters().Add(item);
+                        }
+                    }
+                });
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Read the index from the database.
+        /// </summary>
+        /// <param name="sqlTransConnection">the TransConnection.</param>
+        /// <returns>the columns.</returns>
+        public List<SqlSysIndex> ReadIndex(SqlTransConnection sqlTransConnection) {
+            using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysIndex.SELECTStatement)) {
+                var sqlResults = SqlUtility.ExecuteReader(command, false, false);
+                var result = EntityArrayProp.ConvertFromSqlResult<SqlSysIndex>(sqlResults.First(), SqlSysIndex.Factory);
+                result.ForEach((item) => {
+                    {
+                        var obj = this.AllObjectsById.GetValueOrDefault(item.object_id);
+                        if (obj != null) {
+                            obj.GetIndexes().Add(item);
+                        }
+                    }
+                });
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Read the IndexColumn from the database.
+        /// </summary>
+        /// <param name="sqlTransConnection">the TransConnection.</param>
+        /// <returns>the columns.</returns>
+        public List<SqlSysIndexColumn> ReadIndexColumn(SqlTransConnection sqlTransConnection) {
+            using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysIndexColumn.SELECTStatement)) {
+                var sqlResults = SqlUtility.ExecuteReader(command, false, false);
+                var result = EntityArrayProp.ConvertFromSqlResult<SqlSysIndexColumn>(sqlResults.First(), SqlSysIndexColumn.Factory);
+                result.ForEach((item) => {
+                    {
+                        var obj = this.AllObjectsById.GetValueOrDefault(item.object_id);
+                        if ((object)obj != null) {
+                            var index = obj.GetIndexes().Where(_ => _.index_id == item.index_id).FirstOrDefault();
+                            if ((object)index != null) {
+                                index.IndexColumns.Add(item);
+                            }
+                        }
+                    }
+                });
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Read the index from the database.
+        /// </summary>
+        /// <param name="sqlTransConnection">the TransConnection.</param>
+        /// <returns>the columns.</returns>
+        public List<SqlSysForeignKey> ReadForeignKey(SqlTransConnection sqlTransConnection) {
+            using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysForeignKey.SELECTStatement)) {
+                var sqlResults = SqlUtility.ExecuteReader(command, false, false);
+                var result = EntityArrayProp.ConvertFromSqlResult<SqlSysForeignKey>(sqlResults.First(), SqlSysForeignKey.Factory);
+                result.ForEach((item) => {
+                    {
+                        var obj = this.AllObjectsById.GetValueOrDefault(item.object_id);
+                        if (obj != null) {
+                            obj.GetForeignKeys().Add(item);
+                        }
+                    }
+                });
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Read the IndexColumn from the database.
+        /// </summary>
+        /// <param name="sqlTransConnection">the TransConnection.</param>
+        /// <returns>the columns.</returns>
+        public List<SqlSysForeignKeysColumn> ReadForeignKeysColumn(SqlTransConnection sqlTransConnection) {
+            using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysForeignKeysColumn.SELECTStatement)) {
+                var sqlResults = SqlUtility.ExecuteReader(command, false, false);
+                var result = EntityArrayProp.ConvertFromSqlResult<SqlSysForeignKeysColumn>(sqlResults.First(), SqlSysForeignKeysColumn.Factory);
+                result.ForEach((item) => {
+                    {
+                        var obj = this.AllObjectsById.GetValueOrDefault(item.object_id);
+                        if ((object)obj != null) {
+                            var index = obj.GetForeignKeys().Where(_ => _.index_id == item.index_id).FirstOrDefault();
+                            if ((object)index != null) {
+                                index.ForeignKeysColumns.Add(item);
+                            }
                         }
                     }
                 });

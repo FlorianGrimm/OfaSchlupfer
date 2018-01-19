@@ -183,6 +183,11 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             return new SqlName(SqlName.Root, this, name);
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this is the root
+        /// </summary>
+        public bool IsRoot => ReferenceEquals(this.Parent, null) || ReferenceEquals(this.Parent, this);
+
         public static bool operator ==(SqlName a, SqlName b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);
 
         public static bool operator !=(SqlName a, SqlName b) => !(((object)a == null) ? ((object)b == null) : a.Equals(b));
