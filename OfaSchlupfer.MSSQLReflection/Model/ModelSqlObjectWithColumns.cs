@@ -6,7 +6,8 @@
     /// <summary>
     /// anything that owns columns
     /// </summary>
-    public abstract class ModelSqlObjectWithColumns {
+    public abstract class ModelSqlObjectWithColumns
+        : IScopeNameResolver {
         private SqlName _Name;
 
         /// <summary>
@@ -26,6 +27,20 @@
             this._Columns = new Dictionary<SqlName, ModelSqlColumn>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlObjectWithColumns"/> class.
+        /// </summary>
+        /// <param name="src">the source instance.</param>
+        public ModelSqlObjectWithColumns(ModelSqlObjectWithColumns src)
+            : this() {
+            if ((object)src != null) {
+                this.Name = src.Name;
+                foreach (var kv in src._Columns) {
+                    this._Columns[kv.Key] = kv.Value;
+                }
+            }
+        }
+
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
         /// <summary>
         /// Gets or sets the object name.
@@ -37,6 +52,13 @@
         /// Gets the columns
         /// </summary>
         public Dictionary<SqlName, ModelSqlColumn> Columns => this._Columns;
+
+        /// <summary>
+        /// Resolve a column.
+        /// </summary>
+        /// <param name="name">name to find</param>
+        /// <returns>the column or null</returns>
+        public virtual object Resolve(SqlName name) => this.Columns.GetValueOrDefault(name);
 
         /// <summary>
         /// Get the column by name

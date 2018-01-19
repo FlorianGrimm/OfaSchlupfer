@@ -19,6 +19,11 @@
         }
 
         /// <summary>
+        /// Gets or sets the Name.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
         /// Gets the databases.
         /// </summary>
         public Dictionary<SqlName, ModelSqlDatabase> Database => this._Database;
@@ -42,6 +47,22 @@
             if ((object)result != null) { return result; }
 
             // TODO check if name has 3 parts - than use the 3rd and go ahead with 2
+            if ((object)name != null) {
+                var schemaName = name.Parent;
+                var dbName = schemaName?.Parent;
+                if (!ReferenceEquals(dbName, null) && ReferenceEquals(dbName?.Parent, SqlName.Root)) {
+                    result = this._Database.GetValueOrDefault(dbName);
+                    if ((object)result != null) { return result; }
+                }
+
+                var serverName = dbName?.Parent;
+                if (!ReferenceEquals(serverName, null) && ReferenceEquals(serverName?.Parent, SqlName.Root)) {
+                    if (serverName.Name == this.Name) {
+                        result = this._Database.GetValueOrDefault(serverName);
+                    }
+                    if ((object)result != null) { return result; }
+                }
+            }
 
             return null;
         }

@@ -2,15 +2,12 @@
 
 namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
-    using OfaSchlupfer.Elementary.Immutable;
 
     /// <summary>
     /// ModelSqlProcedure
     /// </summary>
     public sealed class ModelSqlProcedure
-        : BuildTargetBase
-        , IEquatable<ModelSqlProcedure>
-        , IBuildTarget<ModelSqlProcedure, ModelSqlProcedure.Builder> {
+        : IEquatable<ModelSqlProcedure> {
         private SqlName _Name;
 
         private string _Definition;
@@ -74,38 +71,5 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         /// <inheritdoc/>
         public override string ToString() => this.Name.ToString();
-
-        /// <summary>
-        /// Get the builder for mutate.
-        /// </summary>
-        /// <param name="clone">always clone.</param>
-        /// <param name="setUnFrozen">will be called if target is set to another instance - unfrozen.</param>
-        /// <param name="setFrozen">will be called if target is set to another instance - frozen.</param>
-        /// <returns>a builder</returns>
-        public Builder GetBuilder(bool clone, Action<ModelSqlProcedure> setUnFrozen, Action<ModelSqlProcedure> setFrozen)
-            => new Builder(this, clone, setUnFrozen, setFrozen);
-
-        /// <summary>
-        /// Builder
-        /// </summary>
-        public sealed class Builder : BuilderBase<ModelSqlProcedure> {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Builder"/> class.
-            /// </summary>
-            /// <param name="target">the caller</param>
-            /// <param name="clone">always clone</param>
-            /// <param name="setUnFrozen">will be called if target is set to another instance - unfrozen.</param>
-            /// <param name="setFrozen">will be called if target is set to another instance - frozen.</param>
-            internal Builder(ModelSqlProcedure target, bool clone, Action<ModelSqlProcedure> setUnFrozen, Action<ModelSqlProcedure> setFrozen)
-                : base(target, clone, setUnFrozen, setFrozen) {
-            }
-
-#pragma warning disable SA1107 // Code must not contain multiple statements on one line
-
-            public SqlName Name { get { return this._Target._Name; } set { if (this._Target._Name == value) { return; } this.EnsureUnfrozen()._Name = value; } }
-
-            public string Definition { get { return this._Target._Definition; } set { if (string.Equals(this._Target._Definition, value ?? string.Empty, StringComparison.Ordinal)) { return; } this.EnsureUnfrozen()._Definition = value ?? string.Empty; } }
-#pragma warning restore SA1107 // Code must not contain multiple statements on one line
-        }
     }
 }

@@ -13,7 +13,6 @@
         /// Initializes a new instance of the <see cref="ModelSqlScalarType"/> class.
         /// </summary>
         public ModelSqlScalarType() {
-            
         }
 
         /// <summary>

@@ -18,11 +18,22 @@
             }
         }
 
+
         [TestMethod()]
-        public void SqlSysDatabase_ReadAllTest() {
+        public void SqlSysDatabase_ReadServerTest() {
             using (var sut = new SqlSysUtiltiy()) {
                 sut.TransConnection = new SqlTransConnection(TestCfg.Get().ConnectionString);
-                sut.ReadAllFromDatbase(null);
+                var act = sut.ReadServer();
+                Assert.IsNotNull(act);
+            }
+        }
+
+        [TestMethod()]
+        public void SqlSysDatabase_ReadDatbasesTest() {
+            using (var sut = new SqlSysUtiltiy()) {
+                sut.TransConnection = new SqlTransConnection(TestCfg.Get().ConnectionString);
+                var act = sut.ReadDatbases();
+                Assert.IsTrue(act.Count > 1);
             }
         }
 
@@ -32,6 +43,16 @@
                 sut.TransConnection = new SqlTransConnection(TestCfg.Get().ConnectionString);
                 var act = sut.ReadSchemas();
                 Assert.IsTrue(act.Count > 4);
+            }
+        }
+
+
+        [TestMethod()]
+        public void SqlSysDatabase_ReadAllTest() {
+            using (var sut = new SqlSysUtiltiy()) {
+                sut.TransConnection = new SqlTransConnection(TestCfg.Get().ConnectionString);
+                var act = sut.ReadAllFromDatbase(null);
+                Assert.IsTrue(act.AllObjectsById.Count > 0);
             }
         }
 
@@ -57,7 +78,8 @@
         public void SqlSysDatabase_ReadColumnsTest() {
             using (var sut = new SqlSysUtiltiy()) {
                 sut.TransConnection = new SqlTransConnection(TestCfg.Get().ConnectionString);
-                sut.ReadColumns();
+                var act = sut.ReadColumns();
+                Assert.IsTrue(act.Count >= 1);
             }
         }
     }

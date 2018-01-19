@@ -57,6 +57,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Model\SqlScopeTests.cs" />
     <Compile Include="Model\SqlSys\SqlSysDatabaseTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlCode\SqlCodeParseTests.cs" />

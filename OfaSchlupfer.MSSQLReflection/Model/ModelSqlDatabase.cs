@@ -6,7 +6,7 @@
     /// <summary>
     /// the database
     /// </summary>
-    public sealed class ModelSqlDatabase {
+    public sealed class ModelSqlDatabase : IScopeNameResolver {
         private readonly Dictionary<SqlName, ModelSqlSchema> _Schemas;
         private readonly Dictionary<SqlName, ModelSqlType> _Types;
         private readonly Dictionary<SqlName, ModelSqlTable> _Tables;
@@ -81,6 +81,9 @@
         /// <returns>the found object or null.</returns>
         public object GetObject(SqlName name) {
             object result;
+
+            result = this._Schemas.GetValueOrDefault(name);
+            if ((object)result != null) { return result; }
 
             result = this._Types.GetValueOrDefault(name);
             if ((object)result != null) { return result; }
