@@ -1,4 +1,7 @@
-﻿namespace OfaSchlupfer.MSSQLReflection.Model {
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OfaSchlupfer.MSSQLReflection.Model;
+
+namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -29,6 +32,31 @@
             var sut = new SqlScope(SqlScope.Root);
             sut.Add(SqlName.Parse("a"), "42");
             Assert.AreEqual("42", sut.Get(SqlName.Parse("a")));
+        }
+
+        [TestMethod()]
+        public void SqlScopeTest() {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void AddChildScopeTest() {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void AddTest() {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void GetTest() {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void ResolveTest() {
+            Assert.Fail();
         }
     }
 }

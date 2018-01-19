@@ -57,6 +57,10 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Model\ModelSqlDatabaseTests.cs" />
+    <Compile Include="Model\ModelSqlSchemaTests.cs" />
+    <Compile Include="Model\ModelSqlTableTests.cs" />
+    <Compile Include="Model\SqlNameTests.cs" />
     <Compile Include="Model\SqlScopeTests.cs" />
     <Compile Include="Model\SqlSys\SqlSysDatabaseTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
