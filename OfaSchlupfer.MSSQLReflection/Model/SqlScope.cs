@@ -57,7 +57,7 @@
         /// </summary>
         /// <param name="nameResolver">resolve injection names/object.</param>
         /// <returns>a child scope.</returns>
-        public SqlScope AddChildScope(IScopeNameResolver nameResolver = null) => new SqlScope(this, nameResolver);
+        public SqlScope CreateChildScope(IScopeNameResolver nameResolver = null) => new SqlScope(this, nameResolver);
 
         /// <summary>
         /// Gets a value indicating whether this is the root

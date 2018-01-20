@@ -17,9 +17,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public static SqlName Root {
             get {
                 if ((object)_Root == null) {
-                    var root = new SqlName(null, null, "%");
-                    root._Parent = root;
-                    root._Level = 1;
+                    var root = new SqlName("%");
                     System.Threading.Interlocked.CompareExchange(ref _Root, root, null);
                 }
                 return _Root;
@@ -81,76 +79,41 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             return result;
         }
 
-        private int _Level;
-        private SqlName _Parent;
-        private SqlName _Scope;
-        private string _Name;
         private int _HashCode;
         private Dictionary<string, SqlName> _Wellknown;
 
         /// <summary>
-        /// Gets or sets the name.
+        /// Gets the name.
         /// </summary>
-        public SqlName Parent {
-            get {
-                return this._Parent;
-            }
-
-            set {
-                if (this._Parent != null) { throw new ArgumentException("Parent is already set."); }
-                if (ReferenceEquals(this, value)) { throw new ArgumentException("Parent cannot be this."); }
-                this._Parent = value;
-                if ((object)value == null) {
-                    this._Level = 0;
-                } else if (value._Level == 0) {
-                    throw new ArgumentException("Parent has no Root.");
-                } else {
-                    this._Level = value._Level + 1;
-                }
-            }
-        }
-
-        public SqlName Scope {
-            get {
-                return this._Scope;
-            }
-
-            set {
-                if (this._Scope != null) { throw new ArgumentException("Parent is already set."); }
-                this._Scope = value;
-            }
-        }
+        public SqlName Parent { get; }
 
         /// <summary>
-        /// Gets or sets the name.
+        /// Gets the name.
         /// </summary>
-        public string Name {
-            get {
-                return this._Name;
-            }
-
-            set {
-                if (this._Parent != null) { throw new ArgumentException(nameof(this.Name)); }
-                this._Name = value;
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SqlName"/> class.
-        /// </summary>
-        public SqlName() {
-        }
+        public string Name { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlName"/> class.
         /// </summary>
         /// <param name="parent">parent Name</param>
-        /// <param name="scope">scope</param>
         /// <param name="name">the name</param>
-        public SqlName(SqlName parent, SqlName scope, string name) {
-            this.Name = name;
+        public SqlName(SqlName parent, string name) {
+            if ((object)parent == null) {
+                throw new ArgumentNullException(nameof(parent));
+            }
+            if (string.IsNullOrEmpty(name)) {
+                throw new ArgumentNullException(nameof(name));
+            }
             this.Parent = parent;
-            this.Scope = scope;
+            this.Name = name;
+        }
+
+        private SqlName(string name) {
+            if (string.IsNullOrEmpty(name)) {
+                throw new ArgumentNullException(nameof(name));
+            }
+            this.Parent = this;
+            this.Name = name;
         }
 
         /// <summary>
@@ -158,9 +121,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         /// <param name="name">the name of the child</param>
         /// <returns>the new child.</returns>
-        public SqlName Child(string name) {
-            return new SqlName(this, null, name);
-        }
+        public SqlName Child(string name) => new SqlName(this, name);
 
         /// <summary>
         /// Creates or get a child
@@ -173,14 +134,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             if (this._Wellknown.TryGetValue(name, out result)) {
                 return result;
             } else {
-                result = new SqlName(this, null, name);
+                result = new SqlName(this, name);
                 this._Wellknown[name] = result;
                 return result;
             }
-        }
-
-        public SqlName ScopeChild(string name) {
-            return new SqlName(SqlName.Root, this, name);
         }
 
         /// <summary>
@@ -199,24 +156,24 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public bool Equals(SqlName other) {
             if ((object)other == null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
-            if (!string.Equals(this._Name, other._Name, StringComparison.OrdinalIgnoreCase)) {
+            if (!string.Equals(this.Name, other.Name, StringComparison.OrdinalIgnoreCase)) {
                 return false;
             }
-            var tpn = ((object)this._Parent == null);
-            var opn = ((object)other._Parent == null);
+            var tpn = ((object)this.Parent == null);
+            var opn = ((object)other.Parent == null);
             if (tpn && opn) { return true; }
             if (tpn || opn) { return false; }
-            return (ReferenceEquals(this._Parent, other._Parent)) || (this._Parent.Equals(other._Parent));
+            return (ReferenceEquals(this.Parent, other.Parent)) || (this.Parent.Equals(other.Parent));
         }
 
         public override int GetHashCode() {
             if (this._HashCode == 0) {
                 unchecked {
                     var hashCode =
-                        ((ReferenceEquals(this.Parent, this) || ReferenceEquals(this._Parent, null))
+                        ((ReferenceEquals(this.Parent, this) || ReferenceEquals(this.Parent, null))
                             ? 0
-                            : this._Parent.GetHashCode() << 7)
-                        ^ (this._Name ?? string.Empty).GetHashCode();
+                            : this.Parent.GetHashCode() << 7)
+                        ^ (this.Name ?? string.Empty).GetHashCode();
                     if (hashCode == 0) { hashCode = 1; }
                     this._HashCode = hashCode;
                     return hashCode;

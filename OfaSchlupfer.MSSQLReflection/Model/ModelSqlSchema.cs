@@ -1,4 +1,5 @@
 ﻿#pragma warning disable SA1600
+
 namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
     using System.Collections.Generic;
@@ -8,15 +9,20 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     using OfaSchlupfer.Elementary.SqlAccess;
 
     public sealed class ModelSqlSchema
-        : IEquatable<ModelSqlSchema> {
-        public static void MetaInfo(ModelSqlDatabase sqlDatabase) {
-            ModelSqlTable sqlTable = new ModelSqlTable();
-            sqlTable.Name = SqlName.Parse("sys.schemas");
-        }
-
+        : IEquatable<ModelSqlSchema>
+        , IScopeNameResolver {
         private SqlName _Name;
+        private SqlScope _Scope;
 
         public ModelSqlSchema() {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlSchema"/> class.
+        /// </summary>
+        /// <param name="scopeDatbase">the database scope.</param>
+        public ModelSqlSchema(SqlScope scopeDatbase) {
+            this._Scope = (scopeDatbase?.CreateChildScope()) ?? (SqlScope.Root.CreateChildScope(this));
         }
 
         public ModelSqlSchema(ModelSqlSchema src) {
@@ -29,6 +35,18 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         public SqlName Name { get { return this._Name; } set { this._Name = value; } }
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
+
+        /// <summary>
+        /// Get the current scope
+        /// </summary>
+        /// <returns>this scope</returns>
+        public SqlScope GetScope() {
+            return this._Scope ?? (this._Scope = SqlScope.Root.CreateChildScope(this));
+        }
+
+        public object Resolve(SqlName name) {
+            throw new NotImplementedException();
+        }
 
         public static bool operator ==(ModelSqlSchema a, ModelSqlSchema b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);
 

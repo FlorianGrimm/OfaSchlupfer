@@ -10,11 +10,21 @@
         private readonly Dictionary<SqlName, ModelSqlSchema> _Schemas;
         private readonly Dictionary<SqlName, ModelSqlType> _Types;
         private readonly Dictionary<SqlName, ModelSqlTable> _Tables;
+        private SqlScope _Scope;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlDatabase"/> class.
         /// </summary>
-        public ModelSqlDatabase() {
+        public ModelSqlDatabase()
+            : this((SqlScope)null) {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlDatabase"/> class.
+        /// </summary>
+        /// <param name="scope">the scope</param>
+        public ModelSqlDatabase(SqlScope scope) {
+            this._Scope = (scope ?? SqlScope.Root).CreateChildScope(this);
             this._Schemas = new Dictionary<SqlName, ModelSqlSchema>();
             this._Types = new Dictionary<SqlName, ModelSqlType>();
             this._Tables = new Dictionary<SqlName, ModelSqlTable>();
@@ -101,6 +111,50 @@
         /// <returns>the named object or null.</returns>
         public object Resolve(SqlName sqlName) {
             return this.GetObject(sqlName);
+        }
+
+        /// <summary>
+        /// Add schema.
+        /// </summary>
+        /// <param name="schema">the schema to add.</param>
+        public void AddSchema(ModelSqlSchema schema) {
+            if ((object)schema == null) { throw new ArgumentNullException(nameof(schema)); }
+            this.Schemas.Add(schema.Name, schema);
+        }
+
+        /// <summary>
+        /// Set schema.
+        /// </summary>
+        /// <param name="schema">the schema to set.</param>
+        public void SetSchema(ModelSqlSchema schema) {
+            if ((object)schema == null) { throw new ArgumentNullException(nameof(schema)); }
+            this.Schemas[schema.Name] = schema;
+        }
+
+        /// <summary>
+        /// Add the type.
+        /// </summary>
+        /// <param name="type">The type to add.</param>
+        public void AddType(ModelSqlType type) {
+            if ((object)type == null) { throw new ArgumentNullException(nameof(type)); }
+            this.Types.Add(type.Name, type);
+        }
+
+        /// <summary>
+        /// Set the type.
+        /// </summary>
+        /// <param name="type">The type to set.</param>
+        public void SetType(ModelSqlType type) {
+            if ((object)type == null) { throw new ArgumentNullException(nameof(type)); }
+            this.Types[type.Name] = type;
+        }
+
+        /// <summary>
+        /// Get the current scope
+        /// </summary>
+        /// <returns>this scope</returns>
+        public SqlScope GetScope() {
+            return this._Scope ?? (this._Scope = SqlScope.Root.CreateChildScope(this));
         }
     }
 }

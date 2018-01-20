@@ -8,8 +8,10 @@
     /// <summary>
     /// Server
     /// </summary>
-    public class ModelSqlServer {
+    public class ModelSqlServer
+        : IScopeNameResolver {
         private readonly Dictionary<SqlName, ModelSqlDatabase> _Database;
+        private SqlScope _Scope;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlServer"/> class.
@@ -74,6 +76,14 @@
         /// <returns>the named object or null.</returns>
         public object Resolve(SqlName sqlName) {
             return this.GetObject(sqlName);
+        }
+
+        /// <summary>
+        /// Get the current scope
+        /// </summary>
+        /// <returns>this scope</returns>
+        public SqlScope GetScope() {
+            return this._Scope ?? (this._Scope = SqlScope.Root.CreateChildScope(this));
         }
     }
 }

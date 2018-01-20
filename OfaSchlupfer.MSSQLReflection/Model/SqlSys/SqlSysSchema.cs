@@ -33,6 +33,15 @@
 
 #pragma warning restore SA1101 // Prefix local calls with this
 
+        /// <inheritdoc/>
+        public override string ToString() {
+            try {
+                return this.name ?? this.schema_id.ToString();
+            } catch {
+                return "schema";
+            }
+        }
+
         /// <summary>
         /// Factory function
         /// </summary>

@@ -8,6 +8,8 @@
         : ModelSqlObjectWithColumns
         , IEquatable<ModelSqlTable>
         , IScopeNameResolver {
+        private SqlScope _Scope;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlTable"/> class.
         /// </summary>
@@ -17,9 +19,25 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlTable"/> class.
         /// </summary>
+        /// <param name="scopeDatbase">the database scope</param>
+        public ModelSqlTable(SqlScope scopeDatbase) {
+            this._Scope = (scopeDatbase?.CreateChildScope()) ?? (SqlScope.Root.CreateChildScope(this));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlTable"/> class.
+        /// </summary>
         /// <param name="src">Copy source</param>
         public ModelSqlTable(ModelSqlTable src)
             : base(src) {
+        }
+
+        /// <summary>
+        /// Get the current scope
+        /// </summary>
+        /// <returns>this scope</returns>
+        public SqlScope GetScope() {
+            return this._Scope ?? (this._Scope = SqlScope.Root.CreateChildScope(this));
         }
 
         public static bool operator ==(ModelSqlTable a, ModelSqlTable b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);

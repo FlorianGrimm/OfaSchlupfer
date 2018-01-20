@@ -10,7 +10,6 @@
     /// </summary>
     public sealed class Utility {
         private SqlSysUtiltiy _SysUtiltiy;
-
         private ModelSqlDatabase _ModelDatabase;
 
         /// <summary>
@@ -45,6 +44,24 @@
         public ModelSqlDatabase ModelDatabase { get => this._ModelDatabase; set => this._ModelDatabase = value; }
 
         /// <summary>
+        /// GetModelServer
+        /// </summary>
+        /// <returns>the ModelServer.</returns>
+        public ModelSqlServer GetModelServer() {
+            var result = this.ModelServer;
+            if ((object)result == null) {
+                result = new ModelSqlServer();
+                if ((object)this.SysServer == null) {
+                    result.Name = "localhost";
+                } else {
+                    result.Name = this.SysServer.servername;
+                }
+                this.ModelServer = result;
+            }
+            return result;
+        }
+
+        /// <summary>
         /// get the source - created if needed
         /// </summary>
         /// <returns>the exiting or new instance</returns>
@@ -61,7 +78,8 @@
         /// <returns>the exiting or new instance</returns>
         public ModelSqlDatabase GetTarget() {
             if (this.ModelDatabase == null) {
-                this.ModelDatabase = new ModelSqlDatabase();
+                var modelServer = this.GetModelServer();
+                this.ModelDatabase = new ModelSqlDatabase(modelServer?.GetScope());
             }
             return this.ModelDatabase;
         }
@@ -80,11 +98,11 @@
         /// <param name="sysDatabase">the source.</param>
         /// <param name="targetDatabase">the target.</param>
         public void ConvertSysToModel(SqlSysDatabase sysDatabase, ModelSqlDatabase targetDatabase) {
-            if (sysDatabase == null) {
+            if ((object)sysDatabase == null) {
                 var source = this.GetSource();
                 sysDatabase = source.CurrentDatabase;
             }
-            if (targetDatabase == null) {
+            if ((object)targetDatabase == null) {
                 targetDatabase = this.GetTarget();
             }
 
@@ -96,12 +114,12 @@
             foreach (var src in sysDatabase.SchemaById.Values.ToArray()) {
                 var name = SqlName.Root.ChildWellkown(src.name);
                 ModelSqlSchema foundSchema = targetDatabase.GetSchemaByName(name);
-                var dstSchema = new ModelSqlSchema();
+                var dstSchema = new ModelSqlSchema(targetDatabase.GetScope());
                 dstSchema.Name = name;
                 if ((object)foundSchema == null) {
-                    targetDatabase.Schemas.Add(dstSchema.Name, dstSchema);
+                    targetDatabase.AddSchema(dstSchema);
                 } else if (foundSchema != dstSchema) {
-                    targetDatabase.Schemas[dstSchema.Name] = dstSchema;
+                    targetDatabase.SetSchema(dstSchema);
                 } else {
                     dstSchema = foundSchema;
                 }
@@ -122,9 +140,9 @@
                     dstType.CollationName = srcType.collation_name;
                     dstType.IsNullable = srcType.is_nullable;
                     if ((object)foundType == null) {
-                        targetDatabase.Types.Add(dstType.Name, dstType);
+                        targetDatabase.AddType(dstType);
                     } else if (foundType == dstType) {
-                        targetDatabase.Types[dstType.Name] = dstType;
+                        targetDatabase.SetType(dstType);
                     } else {
                         dstType = foundType;
                     }
@@ -136,16 +154,16 @@
             foreach (var srcTable in sysDatabase.GetTables()) {
                 ModelSqlSchema modelSqlSchema;
                 if (schemaById.TryGetValue(srcTable.schema_id, out modelSqlSchema)) {
-                    var tableName = modelSqlSchema.Name.Child(srcTable.name);
+                    var tableName = modelSqlSchema.Name.ChildWellkown(srcTable.name);
                     var foundTable = (ModelSqlTable)targetDatabase.GetTableByName(tableName);
-                    var dstTable = new ModelSqlTable();
+                    var dstTable = new ModelSqlTable(targetDatabase.GetScope());
                     dstTable.Name = tableName;
 
                     // srcTable.Columns
                     var srcTable_Columns = srcTable.Columns;
                     if (srcTable_Columns != null) {
                         foreach (var srcColumn in srcTable_Columns) {
-                            var columnName = tableName.ScopeChild(srcTable.name);
+                            var columnName = dstTable.Name.ChildWellkown(srcColumn.name);
                             ModelSqlColumn foundColumn = dstTable.GetColumnByName(columnName);
                             var dstColumn = new ModelSqlColumn();
                             dstColumn.Name = columnName;

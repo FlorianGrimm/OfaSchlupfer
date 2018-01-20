@@ -10,48 +10,35 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     [TestClass()]
     public class ModelSqlDatabaseTests {
         [TestMethod()]
-        public void ModelSqlDatabaseTest() {
-            Assert.Fail();
+        public void ModelSqlDatabase_GetSchemasTest() {
         }
 
         [TestMethod()]
-        public void GetSchemasTest() {
-            Assert.Fail();
+        public void ModelSqlDatabase_GetTypesTest() {
         }
 
         [TestMethod()]
-        public void GetTypesTest() {
-            Assert.Fail();
+        public void ModelSqlDatabase_GetTablesTest() {
         }
 
         [TestMethod()]
-        public void GetTablesTest() {
-            Assert.Fail();
+        public void ModelSqlDatabase_GetSchemaByNameTest() {
         }
 
         [TestMethod()]
-        public void GetSchemaByNameTest() {
-            Assert.Fail();
+        public void ModelSqlDatabase_GetTypeByNameTest() {
         }
 
         [TestMethod()]
-        public void GetTypeByNameTest() {
-            Assert.Fail();
+        public void ModelSqlDatabase_GetTableByNameTest() {
         }
 
         [TestMethod()]
-        public void GetTableByNameTest() {
-            Assert.Fail();
+        public void ModelSqlDatabase_GetObjectTest() {
         }
 
         [TestMethod()]
-        public void GetObjectTest() {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void ResolveTest() {
-            Assert.Fail();
+        public void ModelSqlDatabase_ResolveTest() {
         }
     }
 }

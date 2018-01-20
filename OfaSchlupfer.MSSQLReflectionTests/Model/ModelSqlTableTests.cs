@@ -10,73 +10,55 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     [TestClass()]
     public class ModelSqlTableTests {
         [TestMethod()]
-        public void ModelSqlTableTest() {
-            Assert.Fail();
+        public void ModelSqlTable_ModelSqlTableTest() {
+        }
+
+                [TestMethod()]
+        public void ModelSqlTable_EqualsTest() {
         }
 
         [TestMethod()]
-        public void ModelSqlTableTest1() {
-            Assert.Fail();
+        public void ModelSqlTable_EqualsTest1() {
         }
 
         [TestMethod()]
-        public void EqualsTest() {
-            Assert.Fail();
+        public void ModelSqlTable_ResolveTest() {
         }
 
         [TestMethod()]
-        public void EqualsTest1() {
-            Assert.Fail();
+        public void ModelSqlTable_GetHashCodeTest() {
         }
 
         [TestMethod()]
-        public void ResolveTest() {
-            Assert.Fail();
+        public void ModelSqlTable_ToStringTest() {
         }
 
         [TestMethod()]
-        public void GetHashCodeTest() {
-            Assert.Fail();
+        public void ModelSqlTable_ModelSqlTableTest2() {
         }
 
         [TestMethod()]
-        public void ToStringTest() {
-            Assert.Fail();
+        public void ModelSqlTable_ModelSqlTableTest3() {
         }
 
         [TestMethod()]
-        public void ModelSqlTableTest2() {
-            Assert.Fail();
+        public void ModelSqlTable_EqualsTest2() {
         }
 
         [TestMethod()]
-        public void ModelSqlTableTest3() {
-            Assert.Fail();
+        public void ModelSqlTable_EqualsTest3() {
         }
 
         [TestMethod()]
-        public void EqualsTest2() {
-            Assert.Fail();
+        public void ModelSqlTable_ResolveTest1() {
         }
 
         [TestMethod()]
-        public void EqualsTest3() {
-            Assert.Fail();
+        public void ModelSqlTable_GetHashCodeTest1() {
         }
 
         [TestMethod()]
-        public void ResolveTest1() {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void GetHashCodeTest1() {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void ToStringTest1() {
-            Assert.Fail();
+        public void ModelSqlTable_ToStringTest1() {
         }
     }
 }

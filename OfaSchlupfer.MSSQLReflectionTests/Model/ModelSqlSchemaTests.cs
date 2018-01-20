@@ -10,38 +10,31 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     [TestClass()]
     public class ModelSqlSchemaTests {
         [TestMethod()]
-        public void MetaInfoTest() {
-            Assert.Fail();
+        public void ModelSqlSchema_MetaInfoTest() {
         }
 
         [TestMethod()]
-        public void ModelSqlSchemaTest() {
-            Assert.Fail();
+        public void ModelSqlSchema_ModelSqlSchemaTest() {
         }
 
         [TestMethod()]
-        public void ModelSqlSchemaTest1() {
-            Assert.Fail();
+        public void ModelSqlSchema_ModelSqlSchemaTest1() {
         }
 
         [TestMethod()]
-        public void EqualsTest() {
-            Assert.Fail();
+        public void ModelSqlSchema_EqualsTest() {
         }
 
         [TestMethod()]
-        public void EqualsTest1() {
-            Assert.Fail();
+        public void ModelSqlSchema_EqualsTest1() {
         }
 
         [TestMethod()]
-        public void GetHashCodeTest() {
-            Assert.Fail();
+        public void ModelSqlSchema_GetHashCodeTest() {
         }
 
         [TestMethod()]
-        public void ToStringTest() {
-            Assert.Fail();
+        public void ModelSqlSchema_ToStringTest() {
         }
     }
 }
