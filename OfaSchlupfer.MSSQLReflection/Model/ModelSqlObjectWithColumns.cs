@@ -60,11 +60,14 @@
         public Dictionary<SqlName, ModelSqlColumn> Columns => this._Columns;
 
         /// <summary>
-        /// Resolve a column.
+        /// Resolve the name.
         /// </summary>
-        /// <param name="name">name to find</param>
-        /// <returns>the column or null</returns>
-        public virtual object ResolveObject(SqlName name) => this.Columns.GetValueOrDefault(name);
+        /// <param name="name">the name to find the item thats called name</param>
+        /// <param name="level">the level to find the item at.</param>
+        /// <returns>the named object or null.</returns>
+        public virtual object ResolveObject(SqlName name, ObjectLevel level) {
+            return this.Columns.GetValueOrDefault(name);
+        }
 
         /// <summary>
         /// Add the column

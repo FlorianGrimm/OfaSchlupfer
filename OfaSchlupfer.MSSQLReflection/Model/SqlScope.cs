@@ -74,15 +74,16 @@
         }
 
         /// <summary>
-        /// Resolve here (and NOT in the parents.)
+        /// Resolve the name.
         /// </summary>
-        /// <param name="name">the name to search.</param>
-        /// <returns>the found object or null.</returns>
-        public object Get(SqlName name) {
+        /// <param name="name">the name to find the item thats called name</param>
+        /// <param name="level">the level to find the item at.</param>
+        /// <returns>the named object or null.</returns>
+        public object ResolveObject(SqlName name, ObjectLevel level) {
             var result = this.ChildElements.GetValueOrDefault(name);
             if ((object)result != null) { return result; }
             if ((object)this._NameResolver != null) {
-                result = this._NameResolver.ResolveObject(name);
+                result = this._NameResolver.ResolveObject(name, level);
                 if ((object)result != null) { return result; }
             }
             return null;
@@ -92,10 +93,11 @@
         /// Resolve here and in the parents.
         /// </summary>
         /// <param name="name">the name to search.</param>
+        /// <param name="level">the level to find the item at.</param>
         /// <returns>the found object or null.</returns>
-        public object Resolve(SqlName name) {
+        public object Resolve(SqlName name, ObjectLevel level) {
             for (var that = this; !that.IsRoot; that = that.Parent) {
-                var result = that.Get(name);
+                var result = that.ResolveObject(name, level);
                 if ((object)result != null) { return result; }
             }
             return null;

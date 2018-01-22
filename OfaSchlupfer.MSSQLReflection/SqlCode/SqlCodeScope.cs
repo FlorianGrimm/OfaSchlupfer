@@ -59,37 +59,38 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         public ISqlCodeType Resolve(string name) => this.Resolve(SqlName.Parse(name));
 
         public ISqlCodeType Resolve(SqlName sqlName) {
-            if (this.Content != null) {
-                ISqlCodeType result;
-                if (this.Content.TryGetValue(sqlName, out result)) {
-                    return result;
-                }
-            }
-            if (this.Previous != null) {
-                return this.Parent.Resolve(sqlName);
-            }
-            if (this.IsDeclaration) {
-                if (this.ModelDatabase != null) {
-                    var result = this.ModelDatabase.ResolveObject(sqlName);
+#warning here
+            //if (this.Content != null) {
+            //    ISqlCodeType result;
+            //    if (this.Content.TryGetValue(sqlName, out result)) {
+            //        return result;
+            //    }
+            //}
+            //if (this.Previous != null) {
+            //    return this.Parent.Resolve(sqlName);
+            //}
+            //if (this.IsDeclaration) {
+            //    if (this.ModelDatabase != null) {
+            //        var result = this.ModelDatabase.ResolveObject(sqlName);
 
-                    // HERE
-                }
-            }
-            if (this.Parent != null) {
-                return this.Parent.Resolve(sqlName);
-            }
-            if (this.ModelDatabase != null) {
-                var modelType = this.ModelDatabase.ResolveObject(sqlName);
+            //        // HERE
+            //    }
+            //}
+            //if (this.Parent != null) {
+            //    return this.Parent.Resolve(sqlName);
+            //}
+            //if (this.ModelDatabase != null) {
+            //    var modelType = this.ModelDatabase.ResolveObject(sqlName);
 
-                if (modelType != null) {
-                    if (modelType is ModelSqlType modelSqlType) {
-                        return modelSqlType.SqlCodeType ?? (modelSqlType.SqlCodeType = new SqlCodeTypeSingle(modelSqlType));
-                    }
-                    if (modelType is ModelSqlObjectWithColumns modelSqlObjectWithColumns) {
-                        return modelSqlObjectWithColumns.SqlCodeType ?? (modelSqlObjectWithColumns.SqlCodeType = new SqlCodeTypeObjectWithColumns(modelSqlObjectWithColumns));
-                    }
-                }
-            }
+            //    if (modelType != null) {
+            //        if (modelType is ModelSqlType modelSqlType) {
+            //            return modelSqlType.SqlCodeType ?? (modelSqlType.SqlCodeType = new SqlCodeTypeSingle(modelSqlType));
+            //        }
+            //        if (modelType is ModelSqlObjectWithColumns modelSqlObjectWithColumns) {
+            //            return modelSqlObjectWithColumns.SqlCodeType ?? (modelSqlObjectWithColumns.SqlCodeType = new SqlCodeTypeObjectWithColumns(modelSqlObjectWithColumns));
+            //        }
+            //    }
+            //}
             return null;
         }
 

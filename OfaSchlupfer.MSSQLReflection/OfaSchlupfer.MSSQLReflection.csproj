@@ -59,6 +59,7 @@
     <Compile Include="Model\ModelSqlTableType.cs" />
     <Compile Include="Model\ModelSqlType.cs" />
     <Compile Include="Model\ModelSqlView.cs" />
+    <Compile Include="Model\ObjectLevel.cs" />
     <Compile Include="Model\SqlNameEqualityComparer.cs" />
     <Compile Include="Model\SqlScope.cs" />
     <Compile Include="Model\SqlSys\ISqlSysTypedObject.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="SqlCode\SqlCodeAnalyse.cs" />
     <Compile Include="SqlCode\TSqlAnalyseVisitor.cs" />
     <Compile Include="SqlCode\TSqlBindVisitor.cs" />
+    <Compile Include="Model\SqlResolveScope.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Model\SqlSys\ClassDiagram.cd" />

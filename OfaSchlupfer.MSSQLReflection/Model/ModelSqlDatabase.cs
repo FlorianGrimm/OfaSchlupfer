@@ -20,11 +20,11 @@
         /// Initializes a new instance of the <see cref="ModelSqlDatabase"/> class.
         /// </summary>
         public ModelSqlDatabase() {
-            this._Schemas = new Dictionary<SqlName, ModelSqlSchema>(SqlNameEqualityComparer.Instance1);
-            this._Types = new Dictionary<SqlName, ModelSqlType>(SqlNameEqualityComparer.Instance2);
-            this._Tables = new Dictionary<SqlName, ModelSqlTable>(SqlNameEqualityComparer.Instance2);
-            this._Views = new Dictionary<SqlName, ModelSqlView>(SqlNameEqualityComparer.Instance2);
-            this._Procedures = new Dictionary<SqlName, ModelSqlProcedure>(SqlNameEqualityComparer.Instance2);
+            this._Schemas = new Dictionary<SqlName, ModelSqlSchema>(SqlNameEqualityComparer.Level1);
+            this._Types = new Dictionary<SqlName, ModelSqlType>(SqlNameEqualityComparer.Level2);
+            this._Tables = new Dictionary<SqlName, ModelSqlTable>(SqlNameEqualityComparer.Level2);
+            this._Views = new Dictionary<SqlName, ModelSqlView>(SqlNameEqualityComparer.Level2);
+            this._Procedures = new Dictionary<SqlName, ModelSqlProcedure>(SqlNameEqualityComparer.Level2);
         }
 
         /// <summary>
@@ -90,8 +90,9 @@
         /// Gets the named object called name.
         /// </summary>
         /// <param name="name">the name to serach for</param>
+        /// <param name="level">the level to find the item at.</param>
         /// <returns>the found object or null.</returns>
-        public object GetObject(SqlName name) {
+        public object GetObject(SqlName name, ObjectLevel level) {
             object result;
 
             result = this._Schemas.GetValueOrDefault(name);
@@ -109,13 +110,20 @@
         /// <summary>
         /// Resolve the name.
         /// </summary>
-        /// <param name="sqlName">the name to search for</param>
+        /// <param name="name">the name to find the item thats called name</param>
+        /// <param name="level">the level to find the item at.</param>
         /// <returns>the named object or null.</returns>
-        public object ResolveObject(SqlName sqlName) {
-            if (this.Name.Equals(sqlName)) {
-                return this;
+        public object ResolveObject(SqlName name, ObjectLevel level) {
+            if (level == ObjectLevel.Database) {
+                if (name.Level == 1 && SqlNameEqualityComparer.Level1.Equals(this.Name, name)) {
+                    return this;
+                }
+                if (name.Level == 2 && this.Name.Equals(name)) {
+                    return this;
+                }
+                return null;
             }
-            return this.GetObject(sqlName);
+            return this.GetObject(name, level);
         }
 
         /// <summary>

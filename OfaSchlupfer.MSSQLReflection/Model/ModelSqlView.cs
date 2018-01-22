@@ -44,6 +44,19 @@
         }
 
         /// <summary>
+        /// Resolve the name.
+        /// </summary>
+        /// <param name="name">the name to find the item thats called name</param>
+        /// <param name="level">the level to find the item at.</param>
+        /// <returns>the named object or null.</returns>
+        public override object ResolveObject(SqlName name, ObjectLevel level) {
+            var result = base.ResolveObject(name, level);
+            if ((object)result != null) { return result; }
+
+            return null;
+        }
+
+        /// <summary>
         /// Get the current scope
         /// </summary>
         /// <returns>this scope</returns>

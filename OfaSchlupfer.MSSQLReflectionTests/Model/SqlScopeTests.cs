@@ -17,21 +17,21 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             var sut = new SqlScope(SqlScope.Root);
             var a = sut.CreateChildScope();
             sut.Add(SqlName.Parse("a"), "42");
-            Assert.AreEqual("42", a.Resolve(SqlName.Parse("a")));
+            Assert.AreEqual("42", a.Resolve(SqlName.Parse("a"), ObjectLevel.Local));
         }
 
         [TestMethod()]
         public void SqlScope_AddTest() {
             var sut = new SqlScope(SqlScope.Root);
             sut.Add(SqlName.Parse("a"), "42");
-            Assert.AreEqual("42", sut.Resolve(SqlName.Parse("a")));
+            Assert.AreEqual("42", sut.Resolve(SqlName.Parse("a"), ObjectLevel.Local));
         }
 
         [TestMethod()]
         public void SqlScope_GetTest() {
             var sut = new SqlScope(SqlScope.Root);
             sut.Add(SqlName.Parse("a"), "42");
-            Assert.AreEqual("42", sut.Get(SqlName.Parse("a")));
+            Assert.AreEqual("42", sut.ResolveObject(SqlName.Parse("a"),ObjectLevel.Local));
         }
 
         [TestMethod()]
@@ -45,25 +45,25 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             b.Add(SqlName.Parse("b"), "2");
             c.Add(SqlName.Parse("c"), "3");
             d.Add(SqlName.Parse("d"), "4");
-            Assert.AreEqual("1", a.Resolve(SqlName.Parse("a")));
-            Assert.IsNull(a.Resolve(SqlName.Parse("b")));
-            Assert.IsNull(a.Resolve(SqlName.Parse("c")));
-            Assert.IsNull(a.Resolve(SqlName.Parse("d")));
+            Assert.AreEqual("1", a.Resolve(SqlName.Parse("a"), ObjectLevel.Local));
+            Assert.IsNull(a.Resolve(SqlName.Parse("b"), ObjectLevel.Local));
+            Assert.IsNull(a.Resolve(SqlName.Parse("c"), ObjectLevel.Local));
+            Assert.IsNull(a.Resolve(SqlName.Parse("d"), ObjectLevel.Local));
 
-            Assert.AreEqual("1", b.Resolve(SqlName.Parse("a")));
-            Assert.AreEqual("2", b.Resolve(SqlName.Parse("b")));
-            Assert.IsNull(b.Resolve(SqlName.Parse("c")));
-            Assert.IsNull(b.Resolve(SqlName.Parse("d")));
+            Assert.AreEqual("1", b.Resolve(SqlName.Parse("a"), ObjectLevel.Local));
+            Assert.AreEqual("2", b.Resolve(SqlName.Parse("b"), ObjectLevel.Local));
+            Assert.IsNull(b.Resolve(SqlName.Parse("c"), ObjectLevel.Local));
+            Assert.IsNull(b.Resolve(SqlName.Parse("d"), ObjectLevel.Local));
 
-            Assert.AreEqual("1", c.Resolve(SqlName.Parse("a")));
-            Assert.AreEqual("2", c.Resolve(SqlName.Parse("b")));
-            Assert.AreEqual("3", c.Resolve(SqlName.Parse("c")));
-            Assert.IsNull(c.Resolve(SqlName.Parse("d")));
+            Assert.AreEqual("1", c.Resolve(SqlName.Parse("a"), ObjectLevel.Local));
+            Assert.AreEqual("2", c.Resolve(SqlName.Parse("b"), ObjectLevel.Local));
+            Assert.AreEqual("3", c.Resolve(SqlName.Parse("c"), ObjectLevel.Local));
+            Assert.IsNull(c.Resolve(SqlName.Parse("d"), ObjectLevel.Local));
 
-            Assert.AreEqual("1", d.Resolve(SqlName.Parse("a")));
-            Assert.AreEqual("2", d.Resolve(SqlName.Parse("b")));
-            Assert.IsNull(d.Resolve(SqlName.Parse("c")));
-            Assert.AreEqual("4", d.Resolve(SqlName.Parse("d")));
+            Assert.AreEqual("1", d.Resolve(SqlName.Parse("a"), ObjectLevel.Local));
+            Assert.AreEqual("2", d.Resolve(SqlName.Parse("b"), ObjectLevel.Local));
+            Assert.IsNull(d.Resolve(SqlName.Parse("c"), ObjectLevel.Local));
+            Assert.AreEqual("4", d.Resolve(SqlName.Parse("d"), ObjectLevel.Local));
         }
     }
 }

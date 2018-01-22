@@ -74,9 +74,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Resolve the name.
         /// </summary>
-        /// <param name="sqlName">the name to search for</param>
+        /// <param name="name">the name to find the item thats called name</param>
+        /// <param name="level">the level to find the item at.</param>
         /// <returns>the named object or null.</returns>
-        public object ResolveObject(SqlName sqlName) {
+        public object ResolveObject(SqlName name, ObjectLevel level) {
             return null;
         }
 

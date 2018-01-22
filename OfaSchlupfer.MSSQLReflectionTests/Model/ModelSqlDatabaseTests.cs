@@ -54,7 +54,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public void ModelSqlDatabase_GetObjectTest() {
             var sut = GetTestModelSqlDatabase();
             {
-                var act = sut.GetObject(SqlName.Root.Child("dbo"));
+                var act = sut.GetObject(SqlName.Root.Child("dbo"), ObjectLevel.Schema);
                 Assert.IsNotNull(act as ModelSqlSchema);
                 Assert.AreEqual("dbo", (act as ModelSqlSchema).Name.Name);
             }

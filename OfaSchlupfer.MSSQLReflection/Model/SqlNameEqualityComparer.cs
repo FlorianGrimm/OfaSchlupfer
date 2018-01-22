@@ -7,36 +7,36 @@
     /// </summary>
     public sealed class SqlNameEqualityComparer
         : IEqualityComparer<SqlName> {
-        private static SqlNameEqualityComparer _Instance1;
-        private static SqlNameEqualityComparer _Instance2;
-        private static SqlNameEqualityComparer _Instance3;
-        private static SqlNameEqualityComparer _Instance4;
-        private static SqlNameEqualityComparer _Instance5;
+        private static SqlNameEqualityComparer _Level1;
+        private static SqlNameEqualityComparer _Level2;
+        private static SqlNameEqualityComparer _Level3;
+        private static SqlNameEqualityComparer _Level4;
+        private static SqlNameEqualityComparer _Level5;
 
         /// <summary>
         /// Gets a shared SqlNameEqualityComparer of one level.
         /// </summary>
-        public static SqlNameEqualityComparer Instance1 => _Instance1 ?? (_Instance1 = new SqlNameEqualityComparer(1, null));
+        public static SqlNameEqualityComparer Level1 => _Level1 ?? (_Level1 = new SqlNameEqualityComparer(1, null));
 
         /// <summary>
         /// Gets a shared SqlNameEqualityComparer of one level.
         /// </summary>
-        public static SqlNameEqualityComparer Instance2 => _Instance2 ?? (_Instance2 = new SqlNameEqualityComparer(1, null));
+        public static SqlNameEqualityComparer Level2 => _Level2 ?? (_Level2 = new SqlNameEqualityComparer(2, null));
 
         /// <summary>
         /// Gets a shared SqlNameEqualityComparer of one level.
         /// </summary>
-        public static SqlNameEqualityComparer Instance3 => _Instance3 ?? (_Instance3 = new SqlNameEqualityComparer(1, null));
+        public static SqlNameEqualityComparer Level3 => _Level3 ?? (_Level3 = new SqlNameEqualityComparer(3, null));
 
         /// <summary>
         /// Gets a shared SqlNameEqualityComparer of one level.
         /// </summary>
-        public static SqlNameEqualityComparer Instance4 => _Instance4 ?? (_Instance4 = new SqlNameEqualityComparer(1, null));
+        public static SqlNameEqualityComparer Level4 => _Level4 ?? (_Level4 = new SqlNameEqualityComparer(4, null));
 
         /// <summary>
         /// Gets a shared SqlNameEqualityComparer of one level.
         /// </summary>
-        public static SqlNameEqualityComparer Instance5 => _Instance5 ?? (_Instance5 = new SqlNameEqualityComparer(1, null));
+        public static SqlNameEqualityComparer Level5 => _Level5 ?? (_Level5 = new SqlNameEqualityComparer(5, null));
 
         /// <summary>
         /// Number of levels to check

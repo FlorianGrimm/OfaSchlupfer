@@ -20,10 +20,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         private ModelSqlDatabase _Database;
 
         public ModelSqlSchema() {
-            this._Types = new Dictionary<SqlName, ModelSqlType>(SqlNameEqualityComparer.Instance1);
-            this._Tables = new Dictionary<SqlName, ModelSqlTable>(SqlNameEqualityComparer.Instance1);
-            this._Views = new Dictionary<SqlName, ModelSqlView>(SqlNameEqualityComparer.Instance1);
-            this._Procedures = new Dictionary<SqlName, ModelSqlProcedure>(SqlNameEqualityComparer.Instance1);
+            this._Types = new Dictionary<SqlName, ModelSqlType>(SqlNameEqualityComparer.Level1);
+            this._Tables = new Dictionary<SqlName, ModelSqlTable>(SqlNameEqualityComparer.Level1);
+            this._Views = new Dictionary<SqlName, ModelSqlView>(SqlNameEqualityComparer.Level1);
+            this._Procedures = new Dictionary<SqlName, ModelSqlProcedure>(SqlNameEqualityComparer.Level1);
         }
 
         /// <summary>
@@ -96,7 +96,13 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             return this._Scope ?? (this._Scope = SqlScope.Root.CreateChildScope(this));
         }
 
-        public object ResolveObject(SqlName name) {
+        /// <summary>
+        /// Resolve the name.
+        /// </summary>
+        /// <param name="name">the name to find the item thats called name</param>
+        /// <param name="level">the level to find the item at.</param>
+        /// <returns>the named object or null.</returns>
+        public object ResolveObject(SqlName name, ObjectLevel level) {
             throw new NotImplementedException();
         }
 

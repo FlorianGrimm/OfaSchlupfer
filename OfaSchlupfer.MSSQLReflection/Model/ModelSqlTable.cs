@@ -79,12 +79,13 @@
         }
 
         /// <summary>
-        /// Resolve a column.
+        /// Resolve the name.
         /// </summary>
-        /// <param name="name">name to find</param>
-        /// <returns>the column or null</returns>
-        public override object ResolveObject(SqlName name) {
-            var result = base.ResolveObject(name);
+        /// <param name="name">the name to find the item thats called name</param>
+        /// <param name="level">the level to find the item at.</param>
+        /// <returns>the named object or null.</returns>
+        public override object ResolveObject(SqlName name, ObjectLevel level) {
+            var result = base.ResolveObject(name, level);
             if ((object)result != null) { return result; }
 
             return null;

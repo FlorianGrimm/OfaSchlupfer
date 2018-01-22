@@ -17,7 +17,7 @@
         /// Initializes a new instance of the <see cref="ModelSqlServer"/> class.
         /// </summary>
         public ModelSqlServer() {
-            this._Database = new Dictionary<SqlName, ModelSqlDatabase>(SqlNameEqualityComparer.Instance1);
+            this._Database = new Dictionary<SqlName, ModelSqlDatabase>(SqlNameEqualityComparer.Level1);
         }
 
         /// <summary>
@@ -59,8 +59,9 @@
         /// Gets the named object called name.
         /// </summary>
         /// <param name="name">the name to serach for</param>
+        /// <param name="level">the level to find the item at.</param>
         /// <returns>the found object or null.</returns>
-        public object GetObject(SqlName name) {
+        public object GetObject(SqlName name, ObjectLevel level) {
             object result;
 
             result = this._Database.GetValueOrDefault(name);
@@ -90,10 +91,11 @@
         /// <summary>
         /// Resolve the name.
         /// </summary>
-        /// <param name="sqlName">the name to search for</param>
+        /// <param name="name">the name to find the item thats called name</param>
+        /// <param name="level">the level to find the item at.</param>
         /// <returns>the named object or null.</returns>
-        public object ResolveObject(SqlName sqlName) {
-            return this.GetObject(sqlName);
+        public object ResolveObject(SqlName name, ObjectLevel level) {
+            return this.GetObject(name, level);
         }
 
         /// <summary>
