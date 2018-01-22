@@ -11,29 +11,81 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     public sealed class ModelSqlSchema
         : IEquatable<ModelSqlSchema>
         , IScopeNameResolver {
+        private readonly Dictionary<SqlName, ModelSqlType> _Types;
+        private readonly Dictionary<SqlName, ModelSqlTable> _Tables;
+        private readonly Dictionary<SqlName, ModelSqlView> _Views;
+        private readonly Dictionary<SqlName, ModelSqlProcedure> _Procedures;
         private SqlName _Name;
         private SqlScope _Scope;
+        private ModelSqlDatabase _Database;
 
         public ModelSqlSchema() {
+            this._Types = new Dictionary<SqlName, ModelSqlType>(SqlNameEqualityComparer.Instance1);
+            this._Tables = new Dictionary<SqlName, ModelSqlTable>(SqlNameEqualityComparer.Instance1);
+            this._Views = new Dictionary<SqlName, ModelSqlView>(SqlNameEqualityComparer.Instance1);
+            this._Procedures = new Dictionary<SqlName, ModelSqlProcedure>(SqlNameEqualityComparer.Instance1);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlSchema"/> class.
         /// </summary>
         /// <param name="scopeDatbase">the database scope.</param>
-        public ModelSqlSchema(SqlScope scopeDatbase) {
+        public ModelSqlSchema(SqlScope scopeDatbase)
+            : this() {
             this._Scope = (scopeDatbase?.CreateChildScope()) ?? (SqlScope.Root.CreateChildScope(this));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlSchema"/> class.
+        /// </summary>
+        /// <param name="database">the owner</param>
+        /// <param name="name">the name of the schema</param>
+        public ModelSqlSchema(ModelSqlDatabase database, string name)
+            : this(database.GetScope()) {
+            this.Name = database.Name.Child(name);
+            this._Database = database;
         }
 
         public ModelSqlSchema(ModelSqlSchema src) {
             this.Name = src.Name;
         }
 
+        /// <summary>
+        /// Add this to the parent
+        /// </summary>
+        /// <returns>this.</returns>
+        public ModelSqlSchema AddToParent() {
+            this._Database.AddSchema(this);
+            return this;
+        }
+
+        public void AddType(ModelSqlType modelSqlType) {
+            this._Types[modelSqlType.Name] = modelSqlType;
+            this._Database.AddType(modelSqlType);
+        }
+
+        public void AddTable(ModelSqlTable modelSqlTable) {
+            this._Tables[modelSqlTable.Name] = modelSqlTable;
+            this._Database.AddTable(modelSqlTable);
+        }
+
+        public void AddView(ModelSqlView modelSqlView) {
+            this._Views[modelSqlView.Name] = modelSqlView;
+            this._Database.AddView(modelSqlView);
+        }
+
+        public void AddProcedure(ModelSqlProcedure modelSqlProcedure) {
+            this._Procedures[modelSqlProcedure.Name] = modelSqlProcedure;
+            this._Database.AddProcedure(modelSqlProcedure);
+        }
+
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
+
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
         public SqlName Name { get { return this._Name; } set { this._Name = value; } }
+
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
         /// <summary>
@@ -44,7 +96,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             return this._Scope ?? (this._Scope = SqlScope.Root.CreateChildScope(this));
         }
 
-        public object Resolve(SqlName name) {
+        public object ResolveObject(SqlName name) {
             throw new NotImplementedException();
         }
 

@@ -17,13 +17,13 @@
         /// Initializes a new instance of the <see cref="ModelSqlServer"/> class.
         /// </summary>
         public ModelSqlServer() {
-            this._Database = new Dictionary<SqlName, ModelSqlDatabase>();
+            this._Database = new Dictionary<SqlName, ModelSqlDatabase>(SqlNameEqualityComparer.Instance1);
         }
 
         /// <summary>
         /// Gets or sets the Name.
         /// </summary>
-        public string Name { get; set; }
+        public SqlName Name { get; set; }
 
         /// <summary>
         /// Gets the databases.
@@ -36,6 +36,24 @@
         /// <param name="name">the schema name to search for</param>
         /// <returns>the found schema or null.</returns>
         public ModelSqlDatabase GetTypeByName(SqlName name) => this._Database.GetValueOrDefault(name);
+
+        /// <summary>
+        /// Add the database
+        /// </summary>
+        /// <param name="modelSqlDatabase">the datbase to add</param>
+        public void AddDatabase(ModelSqlDatabase modelSqlDatabase) {
+            if ((object)modelSqlDatabase == null) { throw new ArgumentNullException(nameof(modelSqlDatabase)); }
+            this.Database.Add(modelSqlDatabase.Name, modelSqlDatabase);
+        }
+
+        /// <summary>
+        /// Set the database
+        /// </summary>
+        /// <param name="modelSqlDatabase">the datbase to add</param>
+        public void SetDatabase(ModelSqlDatabase modelSqlDatabase) {
+            if ((object)modelSqlDatabase == null) { throw new ArgumentNullException(nameof(modelSqlDatabase)); }
+            this.Database[modelSqlDatabase.Name] = modelSqlDatabase;
+        }
 
         /// <summary>
         /// Gets the named object called name.
@@ -59,7 +77,7 @@
 
                 var serverName = dbName?.Parent;
                 if (!ReferenceEquals(serverName, null) && ReferenceEquals(serverName?.Parent, SqlName.Root)) {
-                    if (serverName.Name == this.Name) {
+                    if (serverName.Name == this.Name.Name) {
                         result = this._Database.GetValueOrDefault(serverName);
                     }
                     if ((object)result != null) { return result; }
@@ -74,7 +92,7 @@
         /// </summary>
         /// <param name="sqlName">the name to search for</param>
         /// <returns>the named object or null.</returns>
-        public object Resolve(SqlName sqlName) {
+        public object ResolveObject(SqlName sqlName) {
             return this.GetObject(sqlName);
         }
 

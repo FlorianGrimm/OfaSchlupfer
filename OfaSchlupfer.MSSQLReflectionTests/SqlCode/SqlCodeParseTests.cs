@@ -34,7 +34,7 @@ SELECT @hugo;
             var resolved = analysis.DeclarationScope.Resolve("@hugo")?.GetResolved();
             Assert.IsNotNull(resolved);
             Assert.AreEqual("SqlCodeTypeSingle", resolved.GetType().Name);
-            Assert.AreEqual("sys.int", ((SqlCodeTypeSingle)resolved).Type.Name.GetQFullName(null));
+            Assert.AreEqual("sys.int", ((SqlCodeTypeSingle)resolved).Type.Name.GetQFullName(null,2));
             //scope.Content.ContainsKey()
         }
 

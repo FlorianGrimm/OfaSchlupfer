@@ -68,11 +68,18 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             if (this.Previous != null) {
                 return this.Parent.Resolve(sqlName);
             }
+            if (this.IsDeclaration) {
+                if (this.ModelDatabase != null) {
+                    var result = this.ModelDatabase.ResolveObject(sqlName);
+
+                    // HERE
+                }
+            }
             if (this.Parent != null) {
                 return this.Parent.Resolve(sqlName);
             }
             if (this.ModelDatabase != null) {
-                var modelType = this.ModelDatabase.Resolve(sqlName);
+                var modelType = this.ModelDatabase.ResolveObject(sqlName);
 
                 if (modelType != null) {
                     if (modelType is ModelSqlType modelSqlType) {

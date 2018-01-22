@@ -6,29 +6,51 @@
     /// <summary>
     /// the database
     /// </summary>
-    public sealed class ModelSqlDatabase : IScopeNameResolver {
+    public sealed class ModelSqlDatabase
+        : IScopeNameResolver {
         private readonly Dictionary<SqlName, ModelSqlSchema> _Schemas;
         private readonly Dictionary<SqlName, ModelSqlType> _Types;
         private readonly Dictionary<SqlName, ModelSqlTable> _Tables;
+        private readonly Dictionary<SqlName, ModelSqlView> _Views;
+        private readonly Dictionary<SqlName, ModelSqlProcedure> _Procedures;
         private SqlScope _Scope;
+        private ModelSqlServer _SqlServer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlDatabase"/> class.
         /// </summary>
-        public ModelSqlDatabase()
-            : this((SqlScope)null) {
+        public ModelSqlDatabase() {
+            this._Schemas = new Dictionary<SqlName, ModelSqlSchema>(SqlNameEqualityComparer.Instance1);
+            this._Types = new Dictionary<SqlName, ModelSqlType>(SqlNameEqualityComparer.Instance2);
+            this._Tables = new Dictionary<SqlName, ModelSqlTable>(SqlNameEqualityComparer.Instance2);
+            this._Views = new Dictionary<SqlName, ModelSqlView>(SqlNameEqualityComparer.Instance2);
+            this._Procedures = new Dictionary<SqlName, ModelSqlProcedure>(SqlNameEqualityComparer.Instance2);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlDatabase"/> class.
         /// </summary>
         /// <param name="scope">the scope</param>
-        public ModelSqlDatabase(SqlScope scope) {
+        public ModelSqlDatabase(SqlScope scope)
+            : this() {
             this._Scope = (scope ?? SqlScope.Root).CreateChildScope(this);
-            this._Schemas = new Dictionary<SqlName, ModelSqlSchema>();
-            this._Types = new Dictionary<SqlName, ModelSqlType>();
-            this._Tables = new Dictionary<SqlName, ModelSqlTable>();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlDatabase"/> class.
+        /// </summary>
+        /// <param name="sqlServer">the owner</param>
+        /// <param name="name">the name of the database</param>
+        public ModelSqlDatabase(ModelSqlServer sqlServer, string name)
+            : this(sqlServer.GetScope()) {
+            this.Name = sqlServer.Name.Child(name);
+            this._SqlServer = sqlServer;
+        }
+
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        public SqlName Name { get; set; }
 
         /// <summary>
         /// Gets the schemas.
@@ -46,43 +68,23 @@
         public Dictionary<SqlName, ModelSqlTable> Tables => this._Tables;
 
         /// <summary>
-        /// Gets the schemas.
+        /// Gets the views.
         /// </summary>
-        /// <returns>the schemas.</returns>
-        public ModelSqlSchema[] GetSchemas() => this._Schemas.Values.ToArray();
+        public Dictionary<SqlName, ModelSqlView> Views => this._Views;
 
         /// <summary>
-        /// Gets the types.
+        /// Gets the procedures.
         /// </summary>
-        /// <returns>the types</returns>
-        public ModelSqlType[] GetTypes() => this._Types.Values.ToArray();
+        public Dictionary<SqlName, ModelSqlProcedure> Procedures => this._Procedures;
 
         /// <summary>
-        /// Get the sql tables.
+        /// Add this to parent.
         /// </summary>
-        /// <returns>the sql tables</returns>
-        public ModelSqlTable[] GetTables() => this._Tables.Values.ToArray();
-
-        /// <summary>
-        /// Gets the schema by its's name
-        /// </summary>
-        /// <param name="name">the schema name to search for</param>
-        /// <returns>the found schema or null.</returns>
-        public ModelSqlSchema GetSchemaByName(SqlName name) => this._Schemas.GetValueOrDefault(name);
-
-        /// <summary>
-        /// Gets the type by its's name
-        /// </summary>
-        /// <param name="name">the schema name to search for</param>
-        /// <returns>the found schema or null.</returns>
-        public ModelSqlType GetTypeByName(SqlName name) => this._Types.GetValueOrDefault(name);
-
-        /// <summary>
-        /// Gets the table by its's name
-        /// </summary>
-        /// <param name="name">the schema name to search for</param>
-        /// <returns>the found schema or null.</returns>
-        public ModelSqlTable GetTableByName(SqlName name) => this._Tables.GetValueOrDefault(name);
+        /// <returns>this</returns>
+        public ModelSqlDatabase AddToParent() {
+            this._SqlServer.AddDatabase(this);
+            return this;
+        }
 
         /// <summary>
         /// Gets the named object called name.
@@ -109,7 +111,10 @@
         /// </summary>
         /// <param name="sqlName">the name to search for</param>
         /// <returns>the named object or null.</returns>
-        public object Resolve(SqlName sqlName) {
+        public object ResolveObject(SqlName sqlName) {
+            if (this.Name.Equals(sqlName)) {
+                return this;
+            }
             return this.GetObject(sqlName);
         }
 
@@ -118,15 +123,6 @@
         /// </summary>
         /// <param name="schema">the schema to add.</param>
         public void AddSchema(ModelSqlSchema schema) {
-            if ((object)schema == null) { throw new ArgumentNullException(nameof(schema)); }
-            this.Schemas.Add(schema.Name, schema);
-        }
-
-        /// <summary>
-        /// Set schema.
-        /// </summary>
-        /// <param name="schema">the schema to set.</param>
-        public void SetSchema(ModelSqlSchema schema) {
             if ((object)schema == null) { throw new ArgumentNullException(nameof(schema)); }
             this.Schemas[schema.Name] = schema;
         }
@@ -137,16 +133,35 @@
         /// <param name="type">The type to add.</param>
         public void AddType(ModelSqlType type) {
             if ((object)type == null) { throw new ArgumentNullException(nameof(type)); }
-            this.Types.Add(type.Name, type);
+            this.Types[type.Name] = type;
         }
 
         /// <summary>
-        /// Set the type.
+        /// Add the table.
         /// </summary>
-        /// <param name="type">The type to set.</param>
-        public void SetType(ModelSqlType type) {
-            if ((object)type == null) { throw new ArgumentNullException(nameof(type)); }
-            this.Types[type.Name] = type;
+        /// <param name="table">The table to add.</param>
+        public void AddTable(ModelSqlTable table) {
+            if ((object)table == null) { throw new ArgumentNullException(nameof(table)); }
+            this.Tables.Add(table.Name, table);
+            this.Tables[table.Name] = table;
+        }
+
+        /// <summary>
+        /// Add the view.
+        /// </summary>
+        /// <param name="view">The view to add.</param>
+        public void AddView(ModelSqlView view) {
+            if ((object)view == null) { throw new ArgumentNullException(nameof(view)); }
+            this.Views[view.Name] = view;
+        }
+
+        /// <summary>
+        /// Add the procedure.
+        /// </summary>
+        /// <param name="procedure">The procedure to add.</param>
+        public void AddProcedure(ModelSqlProcedure procedure) {
+            if ((object)procedure == null) { throw new ArgumentNullException(nameof(procedure)); }
+            this.Procedures[procedure.Name] = procedure;
         }
 
         /// <summary>

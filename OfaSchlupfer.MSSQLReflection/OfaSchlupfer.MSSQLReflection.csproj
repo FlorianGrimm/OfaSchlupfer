@@ -59,6 +59,7 @@
     <Compile Include="Model\ModelSqlTableType.cs" />
     <Compile Include="Model\ModelSqlType.cs" />
     <Compile Include="Model\ModelSqlView.cs" />
+    <Compile Include="Model\SqlNameEqualityComparer.cs" />
     <Compile Include="Model\SqlScope.cs" />
     <Compile Include="Model\SqlSys\ISqlSysTypedObject.cs" />
     <Compile Include="Model\SqlSys\SqlSysDatabase.cs" />

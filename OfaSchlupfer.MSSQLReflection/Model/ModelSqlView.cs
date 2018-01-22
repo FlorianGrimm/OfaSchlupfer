@@ -6,11 +6,49 @@
     /// </summary>
     public sealed class ModelSqlView
         : ModelSqlObjectWithColumns
-        , IEquatable<ModelSqlView> {
+        , IEquatable<ModelSqlView>
+        , IScopeNameResolver {
+        private SqlScope _Scope;
+        private ModelSqlSchema _Schema;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlView"/> class.
         /// </summary>
         public ModelSqlView() {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlView"/> class.
+        /// </summary>
+        /// <param name="scopeDatbase">the database scope</param>
+        public ModelSqlView(SqlScope scopeDatbase) {
+            this._Scope = (scopeDatbase?.CreateChildScope()) ?? (SqlScope.Root.CreateChildScope(this));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlView"/> class.
+        /// </summary>
+        /// <param name="schema">the owner</param>
+        /// <param name="name">the name</param>
+        public ModelSqlView(ModelSqlSchema schema, string name)
+            : this(schema.GetScope()) {
+            this.Name = schema.Name.Child(name);
+            this._Schema = schema;
+        }
+
+        /// <summary>
+        /// Add this to the parent
+        /// </summary>
+        public void AddToParent() {
+            this._Schema.AddView(this);
+        }
+
+        /// <summary>
+        /// Get the current scope
+        /// </summary>
+        /// <returns>this scope</returns>
+        public override SqlScope GetScope() {
+            return this._Scope ?? (this._Scope = SqlScope.Root.CreateChildScope(this));
         }
 
         public static bool operator ==(ModelSqlView a, ModelSqlView b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);

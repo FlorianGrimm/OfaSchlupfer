@@ -9,6 +9,7 @@
         , IEquatable<ModelSqlTable>
         , IScopeNameResolver {
         private SqlScope _Scope;
+        private ModelSqlSchema _Schema;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlTable"/> class.
@@ -19,9 +20,29 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlTable"/> class.
         /// </summary>
-        /// <param name="scopeDatbase">the database scope</param>
-        public ModelSqlTable(SqlScope scopeDatbase) {
-            this._Scope = (scopeDatbase?.CreateChildScope()) ?? (SqlScope.Root.CreateChildScope(this));
+        /// <param name="ownerScope">the scope of the owner - schema</param>
+        public ModelSqlTable(SqlScope ownerScope) {
+            this._Scope = (ownerScope?.CreateChildScope()) ?? (SqlScope.Root.CreateChildScope(this));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlTable"/> class.
+        /// </summary>
+        /// <param name="schema">the owner</param>
+        /// <param name="name">the name</param>
+        public ModelSqlTable(ModelSqlSchema schema, string name)
+            : this(schema.GetScope()) {
+            this.Name = schema.Name.Child(name);
+            this._Schema = schema;
+        }
+
+        /// <summary>
+        /// Add this to the parent
+        /// </summary>
+        /// <returns>this</returns>
+        public ModelSqlTable AddToParent() {
+            this._Schema.AddTable(this);
+            return this;
         }
 
         /// <summary>
@@ -36,7 +57,7 @@
         /// Get the current scope
         /// </summary>
         /// <returns>this scope</returns>
-        public SqlScope GetScope() {
+        public override SqlScope GetScope() {
             return this._Scope ?? (this._Scope = SqlScope.Root.CreateChildScope(this));
         }
 
@@ -62,8 +83,8 @@
         /// </summary>
         /// <param name="name">name to find</param>
         /// <returns>the column or null</returns>
-        public override object Resolve(SqlName name) {
-            var result = base.Resolve(name);
+        public override object ResolveObject(SqlName name) {
+            var result = base.ResolveObject(name);
             if ((object)result != null) { return result; }
 
             return null;

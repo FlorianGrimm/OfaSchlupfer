@@ -10,6 +10,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     /// </summary>
     public sealed class SqlName : IEquatable<SqlName> {
         private static SqlName _Root;
+        private static IEqualityComparer<string> comparer = StringComparer.OrdinalIgnoreCase;
 
         /// <summary>
         /// Gets the Root.
@@ -81,6 +82,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         private int _HashCode;
         private Dictionary<string, SqlName> _Wellknown;
+        public readonly int Level;
 
         /// <summary>
         /// Gets the name.
@@ -101,19 +103,21 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             if ((object)parent == null) {
                 throw new ArgumentNullException(nameof(parent));
             }
-            if (string.IsNullOrEmpty(name)) {
+            if ((object)name == null) {
                 throw new ArgumentNullException(nameof(name));
             }
             this.Parent = parent;
             this.Name = name;
+            this.Level = parent.Level + 1;
         }
 
         private SqlName(string name) {
-            if (string.IsNullOrEmpty(name)) {
+            if ((object)name == null) {
                 throw new ArgumentNullException(nameof(name));
             }
             this.Parent = this;
             this.Name = name;
+            this.Level = 0;
         }
 
         /// <summary>
@@ -129,7 +133,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="name">the name of the child</param>
         /// <returns>an old or new child.</returns>
         public SqlName ChildWellkown(string name) {
-            if (this._Wellknown == null) { this._Wellknown = new Dictionary<string, SqlName>(StringComparer.OrdinalIgnoreCase); }
+            if (this._Wellknown == null) { this._Wellknown = new Dictionary<string, SqlName>(comparer); }
             SqlName result;
             if (this._Wellknown.TryGetValue(name, out result)) {
                 return result;
@@ -153,19 +157,21 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             return this.Equals(obj as SqlName);
         }
 
+        /// <inheritdoc/>
         public bool Equals(SqlName other) {
             if ((object)other == null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
-            if (!string.Equals(this.Name, other.Name, StringComparison.OrdinalIgnoreCase)) {
-                return false;
-            }
             var tpn = ((object)this.Parent == null);
             var opn = ((object)other.Parent == null);
             if (tpn && opn) { return true; }
             if (tpn || opn) { return false; }
+            if (!comparer.Equals(this.Name, other.Name)) {
+                return false;
+            }
             return (ReferenceEquals(this.Parent, other.Parent)) || (this.Parent.Equals(other.Parent));
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode() {
             if (this._HashCode == 0) {
                 unchecked {
@@ -173,7 +179,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
                         ((ReferenceEquals(this.Parent, this) || ReferenceEquals(this.Parent, null))
                             ? 0
                             : this.Parent.GetHashCode() << 7)
-                        ^ (this.Name ?? string.Empty).GetHashCode();
+                        ^ comparer.GetHashCode(this.Name ?? string.Empty);
                     if (hashCode == 0) { hashCode = 1; }
                     this._HashCode = hashCode;
                     return hashCode;
@@ -216,20 +222,25 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// Get quoted full name
         /// </summary>
         /// <param name="mode"> null @ [</param>
+        /// <param name="levels">maximum levels</param>
         /// <returns>the quoted full name</returns>
-        public string GetQFullName(string mode = null) {
-            if (ReferenceEquals(this.Parent, null) || ReferenceEquals(this.Parent, Root)) {
+        public string GetQFullName(string mode = null, int levels = 0) {
+            var this_Level = this.Level;
+            if (this_Level == 1) {
                 return this.GetQName(mode);
-            } else if (ReferenceEquals(this.Parent.Parent, null) || ReferenceEquals(this.Parent.Parent, Root)) {
+            } else if (this_Level == 2 && ((levels >= 2) || (levels == 0))) {
                 return this.Parent.GetQName(mode) + "." + this.GetQName(mode);
-            } else if (ReferenceEquals(this.Parent.Parent.Parent, null) || ReferenceEquals(this.Parent.Parent.Parent, Root)) {
+            } else if (this_Level == 3 && ((levels >= 3) || (levels == 0))) {
                 return this.Parent.Parent.GetQName(mode) + "." + this.Parent.GetQName(mode) + "." + this.GetQName(mode);
             } else {
-                var items = new List<string>();
+                var currentLevel = (levels <= 0 || this_Level < levels) ? this_Level : levels;
+                var items = new string[currentLevel];
                 var current = this;
-                while (!((ReferenceEquals(current, null) || ReferenceEquals(current, Root)))) {
-                    items.Insert(0, current.GetQName(mode));
+                while ((!ReferenceEquals(current, null)) && (!ReferenceEquals(current, current.Parent))) {
+                    currentLevel--;
+                    items[currentLevel] = current.GetQName(mode);
                     current = current.Parent;
+                    if (currentLevel <= 0) { break; }
                 }
                 return string.Join(".", items);
             }

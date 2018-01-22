@@ -52,9 +52,9 @@
             if ((object)result == null) {
                 result = new ModelSqlServer();
                 if ((object)this.SysServer == null) {
-                    result.Name = "localhost";
+                    result.Name = SqlName.Root.ChildWellkown("localhost");
                 } else {
-                    result.Name = this.SysServer.servername;
+                    result.Name = SqlName.Root.ChildWellkown(this.SysServer.servername);
                 }
                 this.ModelServer = result;
             }
@@ -75,11 +75,13 @@
         /// <summary>
         /// get the target - created if needed
         /// </summary>
+        /// <param name="name">the name of the db.</param>
         /// <returns>the exiting or new instance</returns>
-        public ModelSqlDatabase GetTarget() {
+        public ModelSqlDatabase GetTarget(string name) {
             if (this.ModelDatabase == null) {
-                var modelServer = this.GetModelServer();
-                this.ModelDatabase = new ModelSqlDatabase(modelServer?.GetScope());
+                var server = this.GetModelServer();
+                this.ModelDatabase = new ModelSqlDatabase(server, name);
+                server.AddDatabase(this.ModelDatabase);
             }
             return this.ModelDatabase;
         }
@@ -102,9 +104,11 @@
                 var source = this.GetSource();
                 sysDatabase = source.CurrentDatabase;
             }
+            if (sysDatabase == null) { return; }
             if ((object)targetDatabase == null) {
-                targetDatabase = this.GetTarget();
+                targetDatabase = this.GetTarget(sysDatabase.name);
             }
+            if ((object)targetDatabase == null) { return; }
 
             var schemaById = new Dictionary<int, ModelSqlSchema>();
             var objectById = new Dictionary<int, object>();
@@ -112,14 +116,10 @@
             var typeById = new Dictionary<int, ModelSqlType>();
 
             foreach (var src in sysDatabase.SchemaById.Values.ToArray()) {
-                var name = SqlName.Root.ChildWellkown(src.name);
-                ModelSqlSchema foundSchema = targetDatabase.GetSchemaByName(name);
-                var dstSchema = new ModelSqlSchema(targetDatabase.GetScope());
-                dstSchema.Name = name;
-                if ((object)foundSchema == null) {
-                    targetDatabase.AddSchema(dstSchema);
-                } else if (foundSchema != dstSchema) {
-                    targetDatabase.SetSchema(dstSchema);
+                var dstSchema = new ModelSqlSchema(targetDatabase, src.name);
+                ModelSqlSchema foundSchema = targetDatabase.Schemas.GetValueOrDefault(dstSchema.Name);
+                if (((object)foundSchema == null) || (foundSchema != dstSchema)) {
+                    dstSchema.AddToParent();
                 } else {
                     dstSchema = foundSchema;
                 }
@@ -130,19 +130,15 @@
             foreach (var srcType in sysDatabase.Types) {
                 ModelSqlSchema modelSqlSchema;
                 if (schemaById.TryGetValue(srcType.schema_id, out modelSqlSchema)) {
-                    var name = modelSqlSchema.Name.Child(srcType.name);
-                    ModelSqlType foundType = targetDatabase.GetTypeByName(name);
-                    ModelSqlType dstType = new ModelSqlType();
-                    dstType.Name = name;
+                    ModelSqlType dstType = new ModelSqlType(modelSqlSchema, srcType.name);
+                    ModelSqlType foundType = targetDatabase.Types.GetValueOrDefault(dstType.Name);
                     dstType.MaxLength = srcType.max_length;
                     dstType.Precision = srcType.precision;
                     dstType.Scale = srcType.scale;
                     dstType.CollationName = srcType.collation_name;
                     dstType.IsNullable = srcType.is_nullable;
-                    if ((object)foundType == null) {
-                        targetDatabase.AddType(dstType);
-                    } else if (foundType == dstType) {
-                        targetDatabase.SetType(dstType);
+                    if (((object)foundType == null) && (foundType != dstType)) {
+                        dstType.AddToParent();
                     } else {
                         dstType = foundType;
                     }
@@ -154,19 +150,15 @@
             foreach (var srcTable in sysDatabase.GetTables()) {
                 ModelSqlSchema modelSqlSchema;
                 if (schemaById.TryGetValue(srcTable.schema_id, out modelSqlSchema)) {
-                    var tableName = modelSqlSchema.Name.ChildWellkown(srcTable.name);
-                    var foundTable = (ModelSqlTable)targetDatabase.GetTableByName(tableName);
-                    var dstTable = new ModelSqlTable(targetDatabase.GetScope());
-                    dstTable.Name = tableName;
+                    var dstTable = new ModelSqlTable(modelSqlSchema, srcTable.name);
+                    var foundTable = targetDatabase.Tables.GetValueOrDefault(dstTable.Name);
 
                     // srcTable.Columns
                     var srcTable_Columns = srcTable.Columns;
                     if (srcTable_Columns != null) {
                         foreach (var srcColumn in srcTable_Columns) {
-                            var columnName = dstTable.Name.ChildWellkown(srcColumn.name);
-                            ModelSqlColumn foundColumn = dstTable.GetColumnByName(columnName);
-                            var dstColumn = new ModelSqlColumn();
-                            dstColumn.Name = columnName;
+                            var dstColumn = new ModelSqlColumn(dstTable, srcColumn.name);
+                            ModelSqlColumn foundColumn = dstTable.GetColumnByName(dstColumn.Name);
                             dstColumn.ColumnId = srcColumn.column_id;
                             dstColumn.MaxLength = srcColumn.max_length;
                             dstColumn.Precision = srcColumn.precision;
@@ -175,10 +167,8 @@
                             dstColumn.IsNullable = srcColumn.is_nullable;
                             ModelSqlType foundSqlType = typeById.GetValueOrDefault(srcColumn.user_type_id);
                             dstColumn.SqlType = foundSqlType;
-                            if (foundColumn == null) {
-                                dstTable.Columns.Add(dstColumn.Name, dstColumn);
-                            } else if (foundColumn != dstColumn) {
-                                dstTable.Columns[dstColumn.Name] = dstColumn;
+                            if ((foundColumn == null) || (foundColumn != dstColumn)) {
+                                dstColumn.AddToParent();
                             } else {
                                 dstColumn = foundColumn;
                             }
@@ -186,14 +176,50 @@
                     }
 
                     // store back
-                    if ((object)foundTable == null) {
-                        targetDatabase.Tables.Add(dstTable.Name, dstTable);
-                    } else if (foundTable == dstTable) {
-                        targetDatabase.Tables[dstTable.Name] = dstTable;
+                    if (((object)foundTable == null) || (foundTable != dstTable)) {
+                        dstTable.AddToParent();
                     } else {
                         dstTable = foundTable;
                     }
                     objectById[srcTable.object_id] = dstTable;
+                }
+            }
+
+            foreach (var srcView in sysDatabase.GetViews()) {
+                ModelSqlSchema modelSqlSchema;
+                if (schemaById.TryGetValue(srcView.schema_id, out modelSqlSchema)) {
+                    var dstView = new ModelSqlView(modelSqlSchema, srcView.name);
+                    var foundView = targetDatabase.Views.GetValueOrDefault(dstView.Name);
+
+                    // srcTable.Columns
+                    var srcTable_Columns = srcView.Columns;
+                    if (srcTable_Columns != null) {
+                        foreach (var srcColumn in srcTable_Columns) {
+                            var dstColumn = new ModelSqlColumn(dstView, srcColumn.name);
+                            ModelSqlColumn foundColumn = dstView.GetColumnByName(dstColumn.Name);
+                            dstColumn.ColumnId = srcColumn.column_id;
+                            dstColumn.MaxLength = srcColumn.max_length;
+                            dstColumn.Precision = srcColumn.precision;
+                            dstColumn.Scale = srcColumn.scale;
+                            dstColumn.CollationName = srcColumn.collation_name;
+                            dstColumn.IsNullable = srcColumn.is_nullable;
+                            ModelSqlType foundSqlType = typeById.GetValueOrDefault(srcColumn.user_type_id);
+                            dstColumn.SqlType = foundSqlType;
+                            if ((foundColumn == null) || (foundColumn != dstColumn)) {
+                                dstColumn.AddToParent();
+                            } else {
+                                dstColumn = foundColumn;
+                            }
+                        }
+                    }
+
+                    // store back
+                    if (((object)foundView == null) || (foundView != dstView)) {
+                        dstView.AddToParent();
+                    } else {
+                        dstView = foundView;
+                    }
+                    objectById[srcView.object_id] = dstView;
                 }
             }
         }

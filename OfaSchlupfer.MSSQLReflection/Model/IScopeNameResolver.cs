@@ -15,6 +15,6 @@
         /// </summary>
         /// <param name="name">the name to find</param>
         /// <returns>the found object or null</returns>
-        object Resolve(SqlName name);
+        object ResolveObject(SqlName name);
     }
 }

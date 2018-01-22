@@ -49,6 +49,12 @@
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
         /// <summary>
+        /// Get the current scope
+        /// </summary>
+        /// <returns>this scope</returns>
+        public virtual SqlScope GetScope() => null;
+
+        /// <summary>
         /// Gets the columns
         /// </summary>
         public Dictionary<SqlName, ModelSqlColumn> Columns => this._Columns;
@@ -58,7 +64,15 @@
         /// </summary>
         /// <param name="name">name to find</param>
         /// <returns>the column or null</returns>
-        public virtual object Resolve(SqlName name) => this.Columns.GetValueOrDefault(name);
+        public virtual object ResolveObject(SqlName name) => this.Columns.GetValueOrDefault(name);
+
+        /// <summary>
+        /// Add the column
+        /// </summary>
+        /// <param name="modelSqlColumn">the column to add</param>
+        public void AddColumn(ModelSqlColumn modelSqlColumn) {
+            this.Columns[modelSqlColumn.Name] = modelSqlColumn;
+        }
 
         /// <summary>
         /// Get the column by name

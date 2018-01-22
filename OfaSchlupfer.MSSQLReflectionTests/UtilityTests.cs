@@ -17,11 +17,11 @@
             sut.ReadAll();
             Assert.IsTrue(sut.GetSource().CurrentDatabase.GetTables().Count > 0);
             var act = sut.ModelDatabase;
-            Assert.IsTrue(act.GetSchemas().Length > 0);
-            Assert.IsTrue(act.GetTypes().Length > 0);
-            Assert.IsTrue(act.GetTables().Length > 0);
-            Assert.IsTrue(act.GetTables()[0].Columns.Values.Count > 0);
-            var columns = act.GetTables()[0].Columns.Values;
+            Assert.IsTrue(act.Schemas.Count > 0, "Schemas");
+            Assert.IsTrue(act.Types.Count > 0, "Types");
+            Assert.IsTrue(act.Tables.Count > 0, "Tables");
+            Assert.IsTrue(act.Tables.Values.FirstOrDefault().Columns.Values.Count > 0, "Columns");
+            var columns = act.Tables.Values.FirstOrDefault().Columns.Values;
             foreach (var column in columns) {
                 Assert.IsNotNull(column.SqlType, "no SqlType in column " + column.Name.ToString());
             }
@@ -34,14 +34,6 @@
             var act = sut.ModelDatabase;
             var guest = act.Schemas.GetValueOrDefault(SqlName.Root.Child("guest"));
             Assert.IsNotNull(guest);
-            Assert.IsTrue(act.GetSchemas().Length > 0);
-            Assert.IsTrue(act.GetTypes().Length > 0);
-            Assert.IsTrue(act.GetTables().Length > 0);
-            Assert.IsTrue(act.GetTables()[0].Columns.Values.Count > 0);
-            var columns = act.GetTables()[0].Columns.Values;
-            foreach (var column in columns) {
-                Assert.IsNotNull(column.SqlType, "no SqlType in column " + column.Name.ToString());
-            }
         }
     }
 }

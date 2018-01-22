@@ -9,8 +9,27 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     /// column
     /// </summary>
     public sealed class ModelSqlColumn
-        : IEquatable<ModelSqlColumn> {
-        public ModelSqlColumn() {
+        : IEquatable<ModelSqlColumn>
+        , IScopeNameResolver {
+        private SqlScope _Scope;
+
+        public ModelSqlColumn()
+            : this((SqlScope)null) {
+        }
+
+        public ModelSqlColumn(SqlScope ownerScope) {
+            this._Scope = ownerScope;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlColumn"/> class.
+        /// </summary>
+        /// <param name="owner">the owner</param>
+        /// <param name="name">the column name</param>
+        public ModelSqlColumn(ModelSqlObjectWithColumns owner, string name)
+            : this(owner.GetScope()) {
+            this.Name = owner.Name.ChildWellkown(name);
+            this._Owner = owner;
         }
 
         public ModelSqlColumn(ModelSqlColumn src) {
@@ -26,6 +45,8 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
 
         public SqlName Name { get; set; }
+
+        private ModelSqlObjectWithColumns _Owner;
 
         public int ColumnId { get; set; }
 
@@ -49,6 +70,32 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public ModelSqlType SqlType { get; set; }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
+
+        /// <summary>
+        /// Resolve the name.
+        /// </summary>
+        /// <param name="sqlName">the name to search for</param>
+        /// <returns>the named object or null.</returns>
+        public object ResolveObject(SqlName sqlName) {
+            return null;
+        }
+
+        /// <summary>
+        /// Add this to its parent.
+        /// </summary>
+        /// <returns>this</returns>
+        public ModelSqlColumn AddToParent() {
+            this._Owner.AddColumn(this);
+            return this;
+        }
+
+        /// <summary>
+        /// Get the current scope
+        /// </summary>
+        /// <returns>this scope</returns>
+        public SqlScope GetScope() {
+            return this._Scope ?? (this._Scope = SqlScope.Root.CreateChildScope(this));
+        }
 
         public static bool operator ==(ModelSqlColumn a, ModelSqlColumn b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);
 

@@ -82,7 +82,7 @@
             var result = this.ChildElements.GetValueOrDefault(name);
             if ((object)result != null) { return result; }
             if ((object)this._NameResolver != null) {
-                result = this._NameResolver.Resolve(name);
+                result = this._NameResolver.ResolveObject(name);
                 if ((object)result != null) { return result; }
             }
             return null;

@@ -17,6 +17,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         private string _CollationName;
         private bool _IsNullable;
         internal OfaSchlupfer.MSSQLReflection.SqlCode.ISqlCodeType SqlCodeType;
+        private ModelSqlSchema _Schema;
 
         public ModelSqlType() {
         }
@@ -29,6 +30,16 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             this.Precision = src.Precision;
             this.CollationName = src.CollationName;
             this.IsNullable = src.IsNullable;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlType"/> class.
+        /// </summary>
+        /// <param name="schema">the owner schema</param>
+        /// <param name="name">the name</param>
+        public ModelSqlType(ModelSqlSchema schema, string name) {
+            this.Name = schema.Name.Child(name);
+            this._Schema = schema;
         }
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
@@ -69,6 +80,13 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public bool IsNullable { get { return this._IsNullable; } set { this._IsNullable = value; } }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
+
+        /// <summary>
+        /// Add this to the parent
+        /// </summary>
+        public void AddToParent() {
+            this._Schema.AddType(this);
+        }
 
         /// <summary>
         /// a equals b

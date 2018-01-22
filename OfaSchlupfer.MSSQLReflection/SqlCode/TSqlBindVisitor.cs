@@ -197,7 +197,7 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             var nodeAnalyse = node.Related();
 
             var sys_int_name = this.GetSqlNameSys().ChildWellkown("int");
-            var sys_int_model = this._DBScope.ModelDatabase.GetTypeByName(sys_int_name);
+            var sys_int_model = this._DBScope.ModelDatabase.Types.GetValueOrDefault(sys_int_name);
             ISqlCodeType sqlCodeType = new SqlCodeTypeSingle(sys_int_model);
             nodeAnalyse.SqlCodeType = sqlCodeType;
             nodeAnalyse.SqlCodeResult = new SqlCodeResultConst(sqlCodeType, node.Value);
@@ -208,7 +208,7 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             var sqlSysName = this._sqlSysName;
             if (sqlSysName == null) {
                 sqlSysName = SqlName.Root.ChildWellkown("sys");
-                this._sqlSysName = this._DBScope.ModelDatabase.GetSchemaByName(sqlSysName)?.Name ?? sqlSysName;
+                this._sqlSysName = this._DBScope.ModelDatabase.Schemas.GetValueOrDefault(sqlSysName)?.Name ?? sqlSysName;
             }
             return sqlSysName;
         }
