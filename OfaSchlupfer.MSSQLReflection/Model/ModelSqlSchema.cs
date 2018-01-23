@@ -32,7 +32,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="scopeDatbase">the database scope.</param>
         public ModelSqlSchema(SqlScope scopeDatbase)
             : this() {
-            this._Scope = (scopeDatbase?.CreateChildScope()) ?? (SqlScope.Root.CreateChildScope(this));
+            this._Scope = (scopeDatbase?.CreateChildScope(this)) ?? (new SqlScope(null, this));
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="name">the name of the schema</param>
         public ModelSqlSchema(ModelSqlDatabase database, string name)
             : this(database.GetScope()) {
-            this.Name = database.Name.Child(name);
+            this.Name = database.Name.Child(name, ObjectLevel.Schema);
             this._Database = database;
         }
 
@@ -84,7 +84,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
-        public SqlName Name { get { return this._Name; } set { this._Name = value; } }
+        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Schema); } }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
@@ -93,16 +93,16 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         /// <returns>this scope</returns>
         public SqlScope GetScope() {
-            return this._Scope ?? (this._Scope = SqlScope.Root.CreateChildScope(this));
+            return this._Scope ?? (this._Scope = new SqlScope(null, this));
         }
 
         /// <summary>
         /// Resolve the name.
         /// </summary>
         /// <param name="name">the name to find the item thats called name</param>
-        /// <param name="level">the level to find the item at.</param>
+        /// <param name="context">the resolver context.</param>
         /// <returns>the named object or null.</returns>
-        public object ResolveObject(SqlName name, ObjectLevel level) {
+        public object ResolveObject(SqlName name, IScopeNameResolverContext context) {
             throw new NotImplementedException();
         }
 

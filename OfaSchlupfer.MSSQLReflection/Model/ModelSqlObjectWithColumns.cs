@@ -45,7 +45,8 @@
         /// <summary>
         /// Gets or sets the object name.
         /// </summary>
-        public SqlName Name { get { return this._Name; } set { this._Name = value; } }
+        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
+
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
         /// <summary>
@@ -63,9 +64,9 @@
         /// Resolve the name.
         /// </summary>
         /// <param name="name">the name to find the item thats called name</param>
-        /// <param name="level">the level to find the item at.</param>
+        /// <param name="context">the resolver context.</param>
         /// <returns>the named object or null.</returns>
-        public virtual object ResolveObject(SqlName name, ObjectLevel level) {
+        public virtual object ResolveObject(SqlName name, IScopeNameResolverContext context) {
             return this.Columns.GetValueOrDefault(name);
         }
 

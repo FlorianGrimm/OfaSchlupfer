@@ -12,6 +12,7 @@
         : IScopeNameResolver {
         private readonly Dictionary<SqlName, ModelSqlDatabase> _Database;
         private SqlScope _Scope;
+        private SqlName _Name;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlServer"/> class.
@@ -23,7 +24,7 @@
         /// <summary>
         /// Gets or sets the Name.
         /// </summary>
-        public SqlName Name { get; set; }
+        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Server); } }
 
         /// <summary>
         /// Gets the databases.
@@ -56,46 +57,38 @@
         }
 
         /// <summary>
-        /// Gets the named object called name.
+        /// Resolve the name.
         /// </summary>
-        /// <param name="name">the name to serach for</param>
-        /// <param name="level">the level to find the item at.</param>
-        /// <returns>the found object or null.</returns>
-        public object GetObject(SqlName name, ObjectLevel level) {
-            object result;
-
-            result = this._Database.GetValueOrDefault(name);
-            if ((object)result != null) { return result; }
-
-            // TODO check if name has 3 parts - than use the 3rd and go ahead with 2
-            if ((object)name != null) {
+        /// <param name="name">the name to find the item thats called name</param>
+        /// <param name="context">the resolver context.</param>
+        /// <returns>the named object or null.</returns>
+        public object ResolveObject(SqlName name, IScopeNameResolverContext context) {
+            // if ((object)name != null)
+            {
+                if ((name.ObjectLevel == ObjectLevel.Database)
+                    || (name.ObjectLevel == ObjectLevel.Unknown)) {
+                    var result = this._Database.GetValueOrDefault(name);
+                    if ((object)result != null) { return result; }
+                }
+            }
+#warning TODO check if name has 3 parts - than use the 3rd and go ahead with 2
+            {
                 var schemaName = name.Parent;
                 var dbName = schemaName?.Parent;
                 if (!ReferenceEquals(dbName, null) && ReferenceEquals(dbName?.Parent, SqlName.Root)) {
-                    result = this._Database.GetValueOrDefault(dbName);
+                    var result = this._Database.GetValueOrDefault(dbName);
                     if ((object)result != null) { return result; }
                 }
 
                 var serverName = dbName?.Parent;
                 if (!ReferenceEquals(serverName, null) && ReferenceEquals(serverName?.Parent, SqlName.Root)) {
                     if (serverName.Name == this.Name.Name) {
-                        result = this._Database.GetValueOrDefault(serverName);
+                        var result = this._Database.GetValueOrDefault(serverName);
+                        if ((object)result != null) { return result; }
                     }
-                    if ((object)result != null) { return result; }
                 }
             }
-
             return null;
-        }
-
-        /// <summary>
-        /// Resolve the name.
-        /// </summary>
-        /// <param name="name">the name to find the item thats called name</param>
-        /// <param name="level">the level to find the item at.</param>
-        /// <returns>the named object or null.</returns>
-        public object ResolveObject(SqlName name, ObjectLevel level) {
-            return this.GetObject(name, level);
         }
 
         /// <summary>
@@ -103,7 +96,7 @@
         /// </summary>
         /// <returns>this scope</returns>
         public SqlScope GetScope() {
-            return this._Scope ?? (this._Scope = SqlScope.Root.CreateChildScope(this));
+            return this._Scope ?? (this._Scope = new SqlScope(null, this));
         }
     }
 }

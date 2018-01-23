@@ -11,7 +11,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     public class ModelSqlDatabaseTests {
         private static ModelSqlDatabase GetTestModelSqlDatabase() {
             ModelSqlServer modelSqlServer = new ModelSqlServer();
-            modelSqlServer.Name = SqlName.Root.ChildWellkown("localhost");
+            modelSqlServer.Name = SqlName.Root.ChildWellkown("default");
 
             var serverScope = modelSqlServer.GetScope();
 
@@ -26,35 +26,12 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             return result;
         }
 
-        [TestMethod()]
-        public void ModelSqlDatabase_GetSchemasTest() {
-        }
 
         [TestMethod()]
-        public void ModelSqlDatabase_GetTypesTest() {
-        }
-
-        [TestMethod()]
-        public void ModelSqlDatabase_GetTablesTest() {
-        }
-
-        [TestMethod()]
-        public void ModelSqlDatabase_GetSchemaByNameTest() {
-        }
-
-        [TestMethod()]
-        public void ModelSqlDatabase_GetTypeByNameTest() {
-        }
-
-        [TestMethod()]
-        public void ModelSqlDatabase_GetTableByNameTest() {
-        }
-
-        [TestMethod()]
-        public void ModelSqlDatabase_GetObjectTest() {
+        public void ModelSqlDatabase_ResolveTest() {
             var sut = GetTestModelSqlDatabase();
             {
-                var act = sut.GetObject(SqlName.Root.Child("dbo"), ObjectLevel.Schema);
+                var act = sut.ResolveObject(SqlName.Root.Child("dbo", ObjectLevel.Schema), null);
                 Assert.IsNotNull(act as ModelSqlSchema);
                 Assert.AreEqual("dbo", (act as ModelSqlSchema).Name.Name);
             }
@@ -64,10 +41,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             Assert.IsNotNull(act);
             }             
              */
-        }
-
-        [TestMethod()]
-        public void ModelSqlDatabase_ResolveTest() {
         }
     }
 }

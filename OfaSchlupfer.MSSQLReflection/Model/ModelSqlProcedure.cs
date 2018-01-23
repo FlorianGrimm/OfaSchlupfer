@@ -26,7 +26,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets or sets the name of the type.
         /// </summary>
-        public SqlName Name { get { return this._Name; } set { this._Name = value; } }
+        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
 
         /// <summary>
         /// Gets or sets the name of the type.

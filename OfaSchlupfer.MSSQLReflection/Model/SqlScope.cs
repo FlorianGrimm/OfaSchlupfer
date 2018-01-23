@@ -9,21 +9,6 @@
     /// a naming scope
     /// </summary>
     public class SqlScope {
-        private static SqlScope _Root;
-
-        /// <summary>
-        /// Gets the Root.
-        /// </summary>
-        public static SqlScope Root {
-            get {
-                if ((object)_Root == null) {
-                    var root = new SqlScope();
-                    System.Threading.Interlocked.CompareExchange(ref _Root, root, null);
-                }
-                return _Root;
-            }
-        }
-
         private readonly IScopeNameResolver _NameResolver;
 
         /// <summary>
@@ -46,8 +31,8 @@
         /// </summary>
         /// <param name="parent">the parent of this</param>
         /// <param name="nameResolver">resolve injection names/object.</param>
-        public SqlScope(SqlScope parent, IScopeNameResolver nameResolver = null) {
-            this.Parent = parent ?? throw new ArgumentNullException(nameof(parent));
+        public SqlScope(SqlScope parent = null, IScopeNameResolver nameResolver = null) {
+            this.Parent = parent;
             this.ChildElements = new Dictionary<SqlName, object>();
             this._NameResolver = nameResolver;
         }
@@ -60,45 +45,30 @@
         public SqlScope CreateChildScope(IScopeNameResolver nameResolver = null) => new SqlScope(this, nameResolver);
 
         /// <summary>
-        /// Gets a value indicating whether this is the root
-        /// </summary>
-        public bool IsRoot => ReferenceEquals(this, this.Parent);
-
-        /// <summary>
         /// Add the item
         /// </summary>
         /// <param name="name">the name</param>
         /// <param name="namedElement">the item</param>
         public void Add(SqlName name, object namedElement) {
-            this.ChildElements.Add(name, namedElement);
+            this.ChildElements[name] = namedElement;
         }
 
         /// <summary>
         /// Resolve the name.
         /// </summary>
         /// <param name="name">the name to find the item thats called name</param>
-        /// <param name="level">the level to find the item at.</param>
+        /// <param name="context">the resolver context.</param>
         /// <returns>the named object or null.</returns>
-        public object ResolveObject(SqlName name, ObjectLevel level) {
-            var result = this.ChildElements.GetValueOrDefault(name);
-            if ((object)result != null) { return result; }
-            if ((object)this._NameResolver != null) {
-                result = this._NameResolver.ResolveObject(name, level);
-                if ((object)result != null) { return result; }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Resolve here and in the parents.
-        /// </summary>
-        /// <param name="name">the name to search.</param>
-        /// <param name="level">the level to find the item at.</param>
-        /// <returns>the found object or null.</returns>
-        public object Resolve(SqlName name, ObjectLevel level) {
-            for (var that = this; !that.IsRoot; that = that.Parent) {
-                var result = that.ResolveObject(name, level);
-                if ((object)result != null) { return result; }
+        public object ResolveObject(SqlName name, IScopeNameResolverContext context) {
+            for (var that = this; (that != null); that = that.Parent) {
+                {
+                    var result = that.ChildElements.GetValueOrDefault(name);
+                    if ((object)result != null) { return result; }
+                }
+                if ((object)that._NameResolver != null) {
+                    var result = that._NameResolver.ResolveObject(name, context);
+                    if ((object)result != null) { return result; }
+                }
             }
             return null;
         }

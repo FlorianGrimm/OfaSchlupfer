@@ -8,7 +8,7 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     /// <summary>
     /// Scope for names
     /// </summary>
-    public sealed class SqlCodeScope {
+    public sealed class SqlCodeScope : IScopeNameResolver {
         /// <summary>
         /// the name for debugging
         /// </summary>
@@ -17,80 +17,87 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         public readonly SqlCodeScope Previous;
         public readonly ModelSqlDatabase ModelDatabase;
         public readonly bool IsDeclaration;
-        public Dictionary<SqlName, ISqlCodeType> Content;
+        public readonly IScopeNameResolverContext ScopeNameResolverContext;
+        public SqlScope Content;
 
-        private SqlCodeScope(string name, SqlCodeScope parent, bool isDeclaration, SqlCodeScope previous, ModelSqlDatabase modelDatabase) {
+        private SqlCodeScope(
+            string name,
+            SqlCodeScope parent,
+            bool isDeclaration,
+            SqlCodeScope previous,
+            ModelSqlDatabase modelDatabase,
+            IScopeNameResolverContext scopeNameResolverContext) {
             if ((object)modelDatabase == null) { throw new ArgumentNullException(nameof(modelDatabase)); }
             this.Name = name;
             this.Parent = parent;
             this.Previous = previous;
             this.ModelDatabase = modelDatabase;
             this.IsDeclaration = isDeclaration;
+            this.ScopeNameResolverContext = scopeNameResolverContext;
         }
 
-        public static SqlCodeScope CreateRoot(ModelSqlDatabase modelDatabase) {
-            var result = new SqlCodeScope("DB", null, true, null, modelDatabase);
+        public static SqlCodeScope CreateRoot(ModelSqlDatabase modelDatabase, IScopeNameResolverContext scopeNameResolverContext) {
+            var result = new SqlCodeScope("DB", null, true, null, modelDatabase, scopeNameResolverContext);
+            result.Content = new SqlScope();
             return result;
         }
 
-        public SqlCodeScope CreateChildScope(string name) {
-            var result = new SqlCodeScope(name, this, false, null, this.ModelDatabase);
+        public SqlCodeScope CreateChildScope(string name, IScopeNameResolverContext scopeNameResolverContext) {
+            var result = new SqlCodeScope(name, this, false, null, this.ModelDatabase, scopeNameResolverContext ?? this.ScopeNameResolverContext);
             return result;
         }
 
-        public SqlCodeScope CreateChildDeclarationScope(string name) {
-            var result = new SqlCodeScope(name, this, true, null, this.ModelDatabase);
+        public SqlCodeScope CreateChildDeclarationScope(string name, IScopeNameResolverContext scopeNameResolverContext) {
+            var result = new SqlCodeScope(name, this, true, null, this.ModelDatabase, scopeNameResolverContext ?? this.ScopeNameResolverContext);
+            result.Content = new SqlScope();
             return result;
         }
 
-        public SqlCodeScope CreateNextScope(string name) {
-            var result = new SqlCodeScope(name, this.Parent, false, this, this.ModelDatabase);
+        public SqlCodeScope CreateNextScope(string name, IScopeNameResolverContext scopeNameResolverContext) {
+            var result = new SqlCodeScope(name, this.Parent, false, this, this.ModelDatabase, scopeNameResolverContext ?? this.ScopeNameResolverContext);
             return result;
         }
 
-        public bool HasContent => ((this.Content != null) && (this.Content.Count > 0));
+        public bool HasContent => ((this.Content != null) && (this.Content.ChildElements.Count > 0));
 
-        public void Add(string name, ISqlCodeType type) {
-            if (this.Content == null) { this.Content = new Dictionary<SqlName, ISqlCodeType>(); }
-            var sqlName = SqlName.Parse(name);
-            this.Content.Add(sqlName, type);
+        public void Add(SqlName name, ISqlCodeType type) {
+            if (this.Content == null) { this.Content = new SqlScope(); }
+
+            this.Content.Add(name, type);
         }
 
-        public ISqlCodeType Resolve(string name) => this.Resolve(SqlName.Parse(name));
-
-        public ISqlCodeType Resolve(SqlName sqlName) {
-#warning here
-            //if (this.Content != null) {
-            //    ISqlCodeType result;
-            //    if (this.Content.TryGetValue(sqlName, out result)) {
-            //        return result;
-            //    }
-            //}
-            //if (this.Previous != null) {
-            //    return this.Parent.Resolve(sqlName);
-            //}
-            //if (this.IsDeclaration) {
-            //    if (this.ModelDatabase != null) {
-            //        var result = this.ModelDatabase.ResolveObject(sqlName);
-
-            //        // HERE
-            //    }
-            //}
-            //if (this.Parent != null) {
-            //    return this.Parent.Resolve(sqlName);
-            //}
-            //if (this.ModelDatabase != null) {
-            //    var modelType = this.ModelDatabase.ResolveObject(sqlName);
-
-            //    if (modelType != null) {
-            //        if (modelType is ModelSqlType modelSqlType) {
-            //            return modelSqlType.SqlCodeType ?? (modelSqlType.SqlCodeType = new SqlCodeTypeSingle(modelSqlType));
-            //        }
-            //        if (modelType is ModelSqlObjectWithColumns modelSqlObjectWithColumns) {
-            //            return modelSqlObjectWithColumns.SqlCodeType ?? (modelSqlObjectWithColumns.SqlCodeType = new SqlCodeTypeObjectWithColumns(modelSqlObjectWithColumns));
-            //        }
-            //    }
-            //}
+        /// <summary>
+        /// Resolve the name.
+        /// </summary>
+        /// <param name="name">the name to find the item thats called name</param>
+        /// <param name="context">the resolver context.</param>
+        /// <returns>the named object or null.</returns>
+        public object ResolveObject(SqlName name, IScopeNameResolverContext context) {
+            if (this.Content != null) {
+                var result = this.Content.ResolveObject(name, context ?? this.ScopeNameResolverContext);
+                if ((object)result != null) {
+                    return result;
+                }
+            }
+            if (this.Previous != null) {
+                return this.Parent.ResolveObject(name, context);
+            }
+            if (this.IsDeclaration) {
+                if (this.ModelDatabase != null) {
+                    var modelType = this.ModelDatabase.ResolveObject(name, context ?? this.ScopeNameResolverContext);
+                    if (modelType != null) {
+                        if (modelType is ModelSqlType modelSqlType) {
+                            return modelSqlType.SqlCodeType ?? (modelSqlType.SqlCodeType = new SqlCodeTypeSingle(modelSqlType));
+                        }
+                        if (modelType is ModelSqlObjectWithColumns modelSqlObjectWithColumns) {
+                            return modelSqlObjectWithColumns.SqlCodeType ?? (modelSqlObjectWithColumns.SqlCodeType = new SqlCodeTypeObjectWithColumns(modelSqlObjectWithColumns));
+                        }
+                    }
+                }
+            }
+            if (this.Parent != null) {
+                return this.Parent.ResolveObject(name, context);
+            }
             return null;
         }
 

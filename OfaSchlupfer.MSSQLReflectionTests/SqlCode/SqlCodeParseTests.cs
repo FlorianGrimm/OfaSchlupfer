@@ -31,10 +31,12 @@ SELECT @hugo;
 
             var analysis = parse.Analyse(fragment, modelDatabase).FirstOrDefault();
             Assert.IsNotNull(analysis);
-            var resolved = analysis.DeclarationScope.Resolve("@hugo")?.GetResolved();
+            var resolvedObject = analysis.DeclarationScope.ResolveObject(new Model.SqlName(null, "@hugo", Model.ObjectLevel.Local), null);
+            Assert.IsNotNull(resolvedObject);
+            var resolved = (resolvedObject as ISqlCodeType)?.GetResolved();
             Assert.IsNotNull(resolved);
             Assert.AreEqual("SqlCodeTypeSingle", resolved.GetType().Name);
-            Assert.AreEqual("sys.int", ((SqlCodeTypeSingle)resolved).Type.Name.GetQFullName(null,2));
+            Assert.AreEqual("sys.int", ((SqlCodeTypeSingle)resolved).Type.Name.GetQFullName(null, 2));
             //scope.Content.ContainsKey()
         }
 

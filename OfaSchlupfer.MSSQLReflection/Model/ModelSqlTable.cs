@@ -20,9 +20,9 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlTable"/> class.
         /// </summary>
-        /// <param name="ownerScope">the scope of the owner - schema</param>
-        public ModelSqlTable(SqlScope ownerScope) {
-            this._Scope = (ownerScope?.CreateChildScope()) ?? (SqlScope.Root.CreateChildScope(this));
+        /// <param name="scopeSchema">the scope of the owner - schema</param>
+        public ModelSqlTable(SqlScope scopeSchema) {
+            this._Scope = (scopeSchema?.CreateChildScope(this)) ?? (new SqlScope(null, this));
         }
 
         /// <summary>
@@ -32,7 +32,7 @@
         /// <param name="name">the name</param>
         public ModelSqlTable(ModelSqlSchema schema, string name)
             : this(schema.GetScope()) {
-            this.Name = schema.Name.Child(name);
+            this.Name = schema.Name.Child(name, ObjectLevel.Object);
             this._Schema = schema;
         }
 
@@ -58,7 +58,7 @@
         /// </summary>
         /// <returns>this scope</returns>
         public override SqlScope GetScope() {
-            return this._Scope ?? (this._Scope = SqlScope.Root.CreateChildScope(this));
+            return this._Scope ?? (this._Scope = new SqlScope(null, this));
         }
 
         public static bool operator ==(ModelSqlTable a, ModelSqlTable b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);
@@ -82,10 +82,10 @@
         /// Resolve the name.
         /// </summary>
         /// <param name="name">the name to find the item thats called name</param>
-        /// <param name="level">the level to find the item at.</param>
+        /// <param name="context">the resolver context.</param>
         /// <returns>the named object or null.</returns>
-        public override object ResolveObject(SqlName name, ObjectLevel level) {
-            var result = base.ResolveObject(name, level);
+        public override object ResolveObject(SqlName name, IScopeNameResolverContext context) {
+            var result = base.ResolveObject(name, context);
             if ((object)result != null) { return result; }
 
             return null;

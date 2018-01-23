@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// REsolves a name
+    /// Resolves a name
     /// </summary>
     public interface IScopeNameResolver {
         /// <summary>
@@ -14,8 +14,8 @@
         /// Only resolve at this level.
         /// </summary>
         /// <param name="name">the name to find the item thats called name</param>
-        /// <param name="level">the level to find the item at.</param>
+        /// <param name="context">the resolver context.</param>
         /// <returns>the found object or null</returns>
-        object ResolveObject(SqlName name, ObjectLevel level);
+        object ResolveObject(SqlName name, IScopeNameResolverContext context);
     }
 }

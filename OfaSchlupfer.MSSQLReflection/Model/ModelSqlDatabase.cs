@@ -15,6 +15,7 @@
         private readonly Dictionary<SqlName, ModelSqlProcedure> _Procedures;
         private SqlScope _Scope;
         private ModelSqlServer _SqlServer;
+        private SqlName _Name;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlDatabase"/> class.
@@ -33,7 +34,7 @@
         /// <param name="scope">the scope</param>
         public ModelSqlDatabase(SqlScope scope)
             : this() {
-            this._Scope = (scope ?? SqlScope.Root).CreateChildScope(this);
+            this._Scope = (scope?.CreateChildScope(this)) ?? (new SqlScope(null, this));
         }
 
         /// <summary>
@@ -43,14 +44,14 @@
         /// <param name="name">the name of the database</param>
         public ModelSqlDatabase(ModelSqlServer sqlServer, string name)
             : this(sqlServer.GetScope()) {
-            this.Name = sqlServer.Name.Child(name);
+            this.Name = sqlServer.Name.Child(name, ObjectLevel.Database);
             this._SqlServer = sqlServer;
         }
 
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
-        public SqlName Name { get; set; }
+        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Database); } }
 
         /// <summary>
         /// Gets the schemas.
@@ -87,34 +88,13 @@
         }
 
         /// <summary>
-        /// Gets the named object called name.
-        /// </summary>
-        /// <param name="name">the name to serach for</param>
-        /// <param name="level">the level to find the item at.</param>
-        /// <returns>the found object or null.</returns>
-        public object GetObject(SqlName name, ObjectLevel level) {
-            object result;
-
-            result = this._Schemas.GetValueOrDefault(name);
-            if ((object)result != null) { return result; }
-
-            result = this._Types.GetValueOrDefault(name);
-            if ((object)result != null) { return result; }
-
-            result = this._Tables.GetValueOrDefault(name);
-            if ((object)result != null) { return result; }
-
-            return null;
-        }
-
-        /// <summary>
         /// Resolve the name.
         /// </summary>
         /// <param name="name">the name to find the item thats called name</param>
-        /// <param name="level">the level to find the item at.</param>
+        /// <param name="context">the resolver context.</param>
         /// <returns>the named object or null.</returns>
-        public object ResolveObject(SqlName name, ObjectLevel level) {
-            if (level == ObjectLevel.Database) {
+        public object ResolveObject(SqlName name, IScopeNameResolverContext context) {
+            if (name.ObjectLevel == ObjectLevel.Database) {
                 if (name.Level == 1 && SqlNameEqualityComparer.Level1.Equals(this.Name, name)) {
                     return this;
                 }
@@ -123,7 +103,19 @@
                 }
                 return null;
             }
-            return this.GetObject(name, level);
+            {
+                var result = this._Schemas.GetValueOrDefault(name);
+                if ((object)result != null) { return result; }
+            }
+            {
+                var result = this._Types.GetValueOrDefault(name);
+                if ((object)result != null) { return result; }
+            }
+            {
+                var result = this._Tables.GetValueOrDefault(name);
+                if ((object)result != null) { return result; }
+            }
+            return null;
         }
 
         /// <summary>
@@ -177,7 +169,7 @@
         /// </summary>
         /// <returns>this scope</returns>
         public SqlScope GetScope() {
-            return this._Scope ?? (this._Scope = SqlScope.Root.CreateChildScope(this));
+            return this._Scope ?? (this._Scope = new SqlScope(null, this));
         }
     }
 }

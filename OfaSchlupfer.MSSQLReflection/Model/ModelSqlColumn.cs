@@ -12,6 +12,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         : IEquatable<ModelSqlColumn>
         , IScopeNameResolver {
         private SqlScope _Scope;
+        private SqlName _Name;
 
         public ModelSqlColumn()
             : this((SqlScope)null) {
@@ -44,7 +45,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
 
-        public SqlName Name { get; set; }
+        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Column); } }
 
         private ModelSqlObjectWithColumns _Owner;
 
@@ -75,9 +76,9 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// Resolve the name.
         /// </summary>
         /// <param name="name">the name to find the item thats called name</param>
-        /// <param name="level">the level to find the item at.</param>
+        /// <param name="context">the resolver context.</param>
         /// <returns>the named object or null.</returns>
-        public object ResolveObject(SqlName name, ObjectLevel level) {
+        public object ResolveObject(SqlName name, IScopeNameResolverContext context) {
             return null;
         }
 
@@ -95,7 +96,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         /// <returns>this scope</returns>
         public SqlScope GetScope() {
-            return this._Scope ?? (this._Scope = SqlScope.Root.CreateChildScope(this));
+            return this._Scope ?? (this._Scope = new SqlScope(null, this));
         }
 
         public static bool operator ==(ModelSqlColumn a, ModelSqlColumn b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);

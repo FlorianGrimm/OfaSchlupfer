@@ -32,7 +32,7 @@
             var sut = new Utility() { ConnectionString = TestCfg.Get().ConnectionString };
             sut.ReadAll();
             var act = sut.ModelDatabase;
-            var guest = act.Schemas.GetValueOrDefault(SqlName.Root.Child("guest"));
+            var guest = act.Schemas.GetValueOrDefault(SqlName.Root.Child("guest", ObjectLevel.Schema));
             Assert.IsNotNull(guest);
         }
     }

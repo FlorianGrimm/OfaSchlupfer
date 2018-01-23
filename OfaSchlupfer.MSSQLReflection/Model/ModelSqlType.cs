@@ -38,7 +38,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="schema">the owner schema</param>
         /// <param name="name">the name</param>
         public ModelSqlType(ModelSqlSchema schema, string name) {
-            this.Name = schema.Name.Child(name);
+            this.Name = schema.Name.Child(name, ObjectLevel.Object);
             this._Schema = schema;
         }
 
@@ -47,7 +47,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets or sets the name of the type.
         /// </summary>
-        public SqlName Name { get { return this._Name; } set { this._Name = value; } }
+        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
 
         /// <summary>
         /// Gets or sets the ColumnId hte order.

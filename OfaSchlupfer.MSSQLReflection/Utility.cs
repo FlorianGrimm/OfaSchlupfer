@@ -52,7 +52,7 @@
             if ((object)result == null) {
                 result = new ModelSqlServer();
                 if ((object)this.SysServer == null) {
-                    result.Name = SqlName.Root.ChildWellkown("localhost");
+                    result.Name = SqlName.Root.ChildWellkown("default");
                 } else {
                     result.Name = SqlName.Root.ChildWellkown(this.SysServer.servername);
                 }

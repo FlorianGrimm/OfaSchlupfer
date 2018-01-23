@@ -9,32 +9,8 @@ using System.Threading.Tasks;
 namespace OfaSchlupfer.MSSQLReflection.Model {
     [TestClass()]
     public class ModelSqlSchemaTests {
-        [TestMethod()]
+        //[TestMethod()]
         public void ModelSqlSchema_MetaInfoTest() {
-        }
-
-        [TestMethod()]
-        public void ModelSqlSchema_ModelSqlSchemaTest() {
-        }
-
-        [TestMethod()]
-        public void ModelSqlSchema_ModelSqlSchemaTest1() {
-        }
-
-        [TestMethod()]
-        public void ModelSqlSchema_EqualsTest() {
-        }
-
-        [TestMethod()]
-        public void ModelSqlSchema_EqualsTest1() {
-        }
-
-        [TestMethod()]
-        public void ModelSqlSchema_GetHashCodeTest() {
-        }
-
-        [TestMethod()]
-        public void ModelSqlSchema_ToStringTest() {
         }
     }
 }

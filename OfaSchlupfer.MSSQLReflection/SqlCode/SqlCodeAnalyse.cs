@@ -54,7 +54,7 @@
         /// <param name="modelDatabase">the model</param>
         /// <returns>think of</returns>
         public List<AnalyseResult> Analyse(OfaSchlupfer.AST.TSqlFragment fragment, ModelSqlDatabase modelDatabase) {
-            var dbScope = SqlCodeScope.CreateRoot(modelDatabase);
+            var dbScope = SqlCodeScope.CreateRoot(modelDatabase, new ScopeNameResolverContext());
             var bindVisitor = new TSqlBindVisitor(dbScope);
             var result = bindVisitor.Run(fragment);
             return result;

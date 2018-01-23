@@ -1,4 +1,5 @@
 ﻿#pragma warning disable SA1600 // Elements must be documented
+#pragma warning disable SA1131
 
 namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
@@ -10,7 +11,8 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     /// </summary>
     public sealed class SqlName : IEquatable<SqlName> {
         private static SqlName _Root;
-        private static IEqualityComparer<string> comparer = StringComparer.OrdinalIgnoreCase;
+        private static IEqualityComparer<NameLevel> nameLevelComparer = new NameLevelEqualityComparer();
+        private static IEqualityComparer<string> stringComparer = StringComparer.OrdinalIgnoreCase;
 
         /// <summary>
         /// Gets the Root.
@@ -29,12 +31,13 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// Parse
         /// </summary>
         /// <param name="names">the names</param>
+        /// <param name="objectLevel">target objectlevel.</param>
         /// <returns>the SqlName chain</returns>
-        public static SqlName Parse(string names) {
+        public static SqlName Parse(string names, ObjectLevel objectLevel) {
             if (string.IsNullOrEmpty(names)) {
                 return null;
             }
-            SqlName result = SqlName.Root;
+            var parts = new List<string>();
             int state = 0;
             int start = 0;
             int stop = 0;
@@ -63,26 +66,47 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
                         // ab.c
                         // 012345
                         // 0 2
-                        result = result.Child(names.Substring(start, idx - start).Trim());
+                        parts.Add(names.Substring(start, idx - start).Trim());
                     } else if (start == stop) {
-                        result = result.Child(names.Substring(start, idx - start));
+                        parts.Add(names.Substring(start, idx - start));
                     } else {
                         // [ab].c
                         // 012345
                         //  1 3
-                        result = result.Child(names.Substring(start, stop - start));
+                        parts.Add(names.Substring(start, stop - start));
                         state = 0;
                     }
                     stop = start = idx + 1;
                     continue;
                 }
             }
-            return result;
+            if (parts.Count == 0) {
+                return null;
+            } else {
+                if (objectLevel == ObjectLevel.Unknown) {
+                    SqlName result = null;
+                    for (int idx = 0; idx < parts.Count; idx++) {
+                        result = new SqlName(result, parts[idx], ObjectLevel.Unknown);
+                    }
+                    return result;
+                } else {
+                    SqlName result = null;
+                    for (int idx = 0; idx < parts.Count; idx++) {
+                        var ol = (int)objectLevel - idx + parts.Count - 1;
+                        var validol = ((((int)ObjectLevel.Column) <= ol) && (ol <= ((int)ObjectLevel.Server)))
+                                ? ((ObjectLevel)ol)
+                                : ObjectLevel.Unknown;
+                        result = new SqlName(result, parts[idx], validol);
+                    }
+                    return result;
+                }
+            }
         }
 
         private int _HashCode;
-        private Dictionary<string, SqlName> _Wellknown;
+        private Dictionary<NameLevel, SqlName> _Wellknown;
         public readonly int Level;
+        public readonly ObjectLevel ObjectLevel;
 
         /// <summary>
         /// Gets the name.
@@ -99,16 +123,15 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         /// <param name="parent">parent Name</param>
         /// <param name="name">the name</param>
-        public SqlName(SqlName parent, string name) {
-            if ((object)parent == null) {
-                throw new ArgumentNullException(nameof(parent));
-            }
+        /// <param name="objectLevel">the ObjectLevel.</param>
+        public SqlName(SqlName parent, string name, ObjectLevel objectLevel) {
             if ((object)name == null) {
                 throw new ArgumentNullException(nameof(name));
             }
-            this.Parent = parent;
+            this.Parent = parent ?? SqlName.Root;
             this.Name = name;
-            this.Level = parent.Level + 1;
+            this.Level = (parent == null) ? 1 : (parent.Level + 1);
+            this.ObjectLevel = objectLevel;
         }
 
         private SqlName(string name) {
@@ -118,6 +141,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             this.Parent = this;
             this.Name = name;
             this.Level = 0;
+            this.ObjectLevel = ObjectLevel.Unknown;
         }
 
         /// <summary>
@@ -125,7 +149,35 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         /// <param name="name">the name of the child</param>
         /// <returns>the new child.</returns>
-        public SqlName Child(string name) => new SqlName(this, name);
+        public SqlName Child(string name) {
+            ObjectLevel nextLevel = ObjectLevel.Unknown;
+            switch (this.ObjectLevel) {
+                case ObjectLevel.Object:
+                    nextLevel = ObjectLevel.Column;
+                    break;
+                case ObjectLevel.Schema:
+                    nextLevel = ObjectLevel.Object;
+                    break;
+                case ObjectLevel.Database:
+                    nextLevel = ObjectLevel.Schema;
+                    break;
+                case ObjectLevel.Server:
+                    nextLevel = ObjectLevel.Database;
+                    break;
+                default:
+                    nextLevel = ObjectLevel.Unknown;
+                    break;
+            }
+            return new SqlName(this, name, nextLevel);
+        }
+
+        /// <summary>
+        /// Create a child
+        /// </summary>
+        /// <param name="name">the name of the child</param>
+        /// <param name="objectLevel">the new object level,</param>
+        /// <returns>the new child.</returns>
+        public SqlName Child(string name, ObjectLevel objectLevel) => new SqlName(this, name, objectLevel);
 
         /// <summary>
         /// Creates or get a child
@@ -133,15 +185,60 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="name">the name of the child</param>
         /// <returns>an old or new child.</returns>
         public SqlName ChildWellkown(string name) {
-            if (this._Wellknown == null) { this._Wellknown = new Dictionary<string, SqlName>(comparer); }
+            ObjectLevel nextLevel = ObjectLevel.Unknown;
+            switch (this.ObjectLevel) {
+                case ObjectLevel.Object:
+                    nextLevel = ObjectLevel.Column;
+                    break;
+                case ObjectLevel.Schema:
+                    nextLevel = ObjectLevel.Object;
+                    break;
+                case ObjectLevel.Database:
+                    nextLevel = ObjectLevel.Schema;
+                    break;
+                case ObjectLevel.Server:
+                    nextLevel = ObjectLevel.Database;
+                    break;
+                default:
+                    nextLevel = ObjectLevel.Unknown;
+                    break;
+            }
+            return this.ChildWellkown(name, nextLevel);
+        }
+
+        /// <summary>
+        /// Creates or get a child
+        /// </summary>
+        /// <param name="name">the name of the child</param>
+        /// <param name="objectLevel">the level.</param>
+        /// <returns>an old or new child.</returns>
+        public SqlName ChildWellkown(string name, ObjectLevel objectLevel) {
+            if (this.IsRoot) { return new SqlName(this, name, objectLevel); }
+            if (this._Wellknown == null) { this._Wellknown = new Dictionary<NameLevel, SqlName>(nameLevelComparer); }
             SqlName result;
-            if (this._Wellknown.TryGetValue(name, out result)) {
+            var key = new NameLevel { Name = name, ObjectLevel = objectLevel };
+            if (this._Wellknown.TryGetValue(key, out result)) {
                 return result;
             } else {
-                result = new SqlName(this, name);
-                this._Wellknown[name] = result;
+                result = new SqlName(this, name, objectLevel);
+                this._Wellknown[key] = result;
                 return result;
             }
+        }
+
+        /// <summary>
+        /// Ensure the objectlevel - creates a new name if needed..
+        /// </summary>
+        /// <param name="sqlName">the name</param>
+        /// <param name="requiredObjectLevel">the objectLevel</param>
+        /// <returns>a object</returns>
+        public static SqlName AtObjectLevel(SqlName sqlName, ObjectLevel requiredObjectLevel) {
+            if ((object)sqlName == null) { return null; }
+            if (sqlName.ObjectLevel == requiredObjectLevel) {
+                return sqlName;
+            }
+            var result = sqlName.Parent.ChildWellkown(sqlName.Name, requiredObjectLevel);
+            return result;
         }
 
         /// <summary>
@@ -165,7 +262,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             var opn = ((object)other.Parent == null);
             if (tpn && opn) { return true; }
             if (tpn || opn) { return false; }
-            if (!comparer.Equals(this.Name, other.Name)) {
+            if (!stringComparer.Equals(this.Name, other.Name)) {
                 return false;
             }
             return (ReferenceEquals(this.Parent, other.Parent)) || (this.Parent.Equals(other.Parent));
@@ -179,7 +276,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
                         ((ReferenceEquals(this.Parent, this) || ReferenceEquals(this.Parent, null))
                             ? 0
                             : this.Parent.GetHashCode() << 7)
-                        ^ comparer.GetHashCode(this.Name ?? string.Empty);
+                        ^ stringComparer.GetHashCode(this.Name ?? string.Empty);
                     if (hashCode == 0) { hashCode = 1; }
                     this._HashCode = hashCode;
                     return hashCode;
@@ -193,9 +290,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// the name.
         /// </summary>
         /// <returns>Name</returns>
-        public override string ToString() {
-            return this.Name;
-        }
+        public override string ToString() => (this.Name + "-" + this.ObjectLevel.ToString());
 
         /// <summary>
         /// get Q NAme
@@ -203,7 +298,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="mode"> null @ [</param>
         /// <returns>the q name</returns>
         public string GetQName(string mode = null) {
-            if (string.IsNullOrEmpty(mode) || (string.Equals(mode, "_"))) {
+            if (string.IsNullOrWhiteSpace(mode) || (string.Equals(mode, "_"))) {
                 return this.Name;
             }
             if (string.Equals(mode, "@")) {
@@ -244,6 +339,14 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
                 }
                 return string.Join(".", items);
             }
+        }
+
+        private struct NameLevel { public string Name; public ObjectLevel ObjectLevel; }
+
+        private class NameLevelEqualityComparer : IEqualityComparer<NameLevel> {
+            public bool Equals(NameLevel x, NameLevel y) => stringComparer.Equals(x.Name, y.Name) && (x.ObjectLevel == y.ObjectLevel);
+
+            public int GetHashCode(NameLevel obj) => stringComparer.GetHashCode(obj.Name);
         }
     }
 }

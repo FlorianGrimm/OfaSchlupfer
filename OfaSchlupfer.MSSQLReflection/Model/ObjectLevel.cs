@@ -4,6 +4,11 @@
     /// </summary>
     public enum ObjectLevel {
         /// <summary>
+        /// no idead what this is.
+        /// </summary>
+        Unknown = -1,
+
+        /// <summary>
         /// Declare var in script or procedure
         /// </summary>
         Local = 0,

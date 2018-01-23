@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\IScopeNameResolver.cs" />
+    <Compile Include="Model\IScopeNameResolverContext.cs" />
     <Compile Include="Model\ModelSqlElementType.cs" />
     <Compile Include="Model\ModelSqlNamedElement.cs" />
     <Compile Include="Model\ModelSqlProcedure.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Model\ModelSqlType.cs" />
     <Compile Include="Model\ModelSqlView.cs" />
     <Compile Include="Model\ObjectLevel.cs" />
+    <Compile Include="Model\ScopeNameResolverContext.cs" />
     <Compile Include="Model\SqlNameEqualityComparer.cs" />
     <Compile Include="Model\SqlScope.cs" />
     <Compile Include="Model\SqlSys\ISqlSysTypedObject.cs" />
@@ -88,6 +90,9 @@
     <Compile Include="SqlCode\ISqlCodeType.cs" />
     <Compile Include="SqlCode\SqlCodeScope.cs" />
     <Compile Include="SqlCode\SqlCodeAnalyse.cs" />
+    <Compile Include="SqlCode\SqlCodeTypeLazy.cs" />
+    <Compile Include="SqlCode\SqlCodeTypeObjectWithColumns.cs" />
+    <Compile Include="SqlCode\SqlCodeTypeSingle.cs" />
     <Compile Include="SqlCode\TSqlAnalyseVisitor.cs" />
     <Compile Include="SqlCode\TSqlBindVisitor.cs" />
     <Compile Include="Model\SqlResolveScope.cs" />
