@@ -15,7 +15,6 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         public readonly string Name;
         public readonly SqlCodeScope Parent;
         public readonly SqlCodeScope Previous;
-        public readonly ModelSqlDatabase ModelDatabase;
         public readonly bool IsDeclaration;
         public readonly IScopeNameResolverContext ScopeNameResolverContext;
         public SqlScope Content;
@@ -25,36 +24,33 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             SqlCodeScope parent,
             bool isDeclaration,
             SqlCodeScope previous,
-            ModelSqlDatabase modelDatabase,
             IScopeNameResolverContext scopeNameResolverContext) {
-            if ((object)modelDatabase == null) { throw new ArgumentNullException(nameof(modelDatabase)); }
             this.Name = name;
             this.Parent = parent;
             this.Previous = previous;
-            this.ModelDatabase = modelDatabase;
             this.IsDeclaration = isDeclaration;
             this.ScopeNameResolverContext = scopeNameResolverContext;
         }
 
-        public static SqlCodeScope CreateRoot(ModelSqlDatabase modelDatabase, IScopeNameResolverContext scopeNameResolverContext) {
-            var result = new SqlCodeScope("DB", null, true, null, modelDatabase, scopeNameResolverContext);
+        public static SqlCodeScope CreateRoot(IScopeNameResolverContext scopeNameResolverContext) {
+            var result = new SqlCodeScope("DB", null, true, null, scopeNameResolverContext);
             result.Content = new SqlScope();
             return result;
         }
 
         public SqlCodeScope CreateChildScope(string name, IScopeNameResolverContext scopeNameResolverContext) {
-            var result = new SqlCodeScope(name, this, false, null, this.ModelDatabase, scopeNameResolverContext ?? this.ScopeNameResolverContext);
+            var result = new SqlCodeScope(name, this, false, null, scopeNameResolverContext ?? this.ScopeNameResolverContext);
             return result;
         }
 
         public SqlCodeScope CreateChildDeclarationScope(string name, IScopeNameResolverContext scopeNameResolverContext) {
-            var result = new SqlCodeScope(name, this, true, null, this.ModelDatabase, scopeNameResolverContext ?? this.ScopeNameResolverContext);
+            var result = new SqlCodeScope(name, this, true, null, scopeNameResolverContext ?? this.ScopeNameResolverContext);
             result.Content = new SqlScope();
             return result;
         }
 
         public SqlCodeScope CreateNextScope(string name, IScopeNameResolverContext scopeNameResolverContext) {
-            var result = new SqlCodeScope(name, this.Parent, false, this, this.ModelDatabase, scopeNameResolverContext ?? this.ScopeNameResolverContext);
+            var result = new SqlCodeScope(name, this.Parent, false, this, scopeNameResolverContext ?? this.ScopeNameResolverContext);
             return result;
         }
 
@@ -83,17 +79,19 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
                 return this.Parent.ResolveObject(name, context);
             }
             if (this.IsDeclaration) {
-                if (this.ModelDatabase != null) {
-                    var modelType = this.ModelDatabase.ResolveObject(name, context ?? this.ScopeNameResolverContext);
-                    if (modelType != null) {
-                        if (modelType is ModelSqlType modelSqlType) {
-                            return modelSqlType.SqlCodeType ?? (modelSqlType.SqlCodeType = new SqlCodeTypeSingle(modelSqlType));
-                        }
-                        if (modelType is ModelSqlObjectWithColumns modelSqlObjectWithColumns) {
-                            return modelSqlObjectWithColumns.SqlCodeType ?? (modelSqlObjectWithColumns.SqlCodeType = new SqlCodeTypeObjectWithColumns(modelSqlObjectWithColumns));
-                        }
+                // if (this.ModelDatabase != null) {
+                // var modelType = this.ModelDatabase.ResolveObject(name, context ?? this.ScopeNameResolverContext);
+                var modelType = this.ScopeNameResolverContext.Resolve(name);
+                if (modelType != null) {
+                    if (modelType is ModelSqlType modelSqlType) {
+                        return modelSqlType.SqlCodeType ?? (modelSqlType.SqlCodeType = new SqlCodeTypeSingle(modelSqlType));
+                    }
+                    if (modelType is ModelSqlObjectWithColumns modelSqlObjectWithColumns) {
+                        return modelSqlObjectWithColumns.SqlCodeType ?? (modelSqlObjectWithColumns.SqlCodeType = new SqlCodeTypeObjectWithColumns(modelSqlObjectWithColumns));
                     }
                 }
+
+                // }
             }
             if (this.Parent != null) {
                 return this.Parent.ResolveObject(name, context);

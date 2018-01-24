@@ -5,8 +5,8 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     using System;
 
     public interface ISqlCodeType {
-        ISqlCodeType GetResolved();
+        ISqlCodeType GetResolvedCodeType();
 
-        void SetResolved(ISqlCodeType sqlCodeType);
+        void SetResolvedCodeType(ISqlCodeType sqlCodeType);
     }
 }

@@ -116,10 +116,14 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             nodeAnalyse.SqlCodeType = lazy;
             nodeAnalyse.SqlCodeScope.Add(variableNameValue, lazy);
             base.ExplicitVisit(node);
-            var resolved = nodeAnalyse.SqlCodeType.GetResolved();
+            var resolved = nodeAnalyse.SqlCodeType.GetResolvedCodeType();
             if (resolved != null) {
                 nodeAnalyse.SqlCodeType = resolved;
             }
+        }
+
+        public override void ExplicitVisit(AssignmentSetClause node) {
+            base.ExplicitVisit(node);
         }
 
         public override void ExplicitVisit(SelectStatement node) {
@@ -147,8 +151,8 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         }
 
         public override void ExplicitVisit(NamedTableReference node) {
-            //node.Alias
-            node.SchemaObject
+            // node.Alias
+            // node.SchemaObject
             base.ExplicitVisit(node);
         }
 
@@ -160,13 +164,7 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
                 var sqlName = SqlName.Parse(name.BaseIdentifier.Value, ObjectLevel.Object);
                 var sqlSysName = SqlName.Root.Child("sys", ObjectLevel.Schema).Child(sqlName.Name, ObjectLevel.Object);
                 var sqlCodeType = this.currentScope.ResolveObject(sqlSysName, null) as ISqlCodeType;
-                if (sqlCodeType == null) {
-                    // too bad
-                } else if (nodeAnalyse.SqlCodeType == null) {
-                    nodeAnalyse.SqlCodeType = sqlCodeType;
-                } else if (nodeAnalyse.SqlCodeType is SqlCodeTypeLazy) {
-                    ((SqlCodeTypeLazy)nodeAnalyse.SqlCodeType).SetResolved(sqlCodeType);
-                }
+                SetAnalyseSqlCodeType(nodeAnalyse, sqlCodeType);
             } else {
                 if (System.Diagnostics.Debugger.IsAttached) {
                     System.Diagnostics.Debugger.Break();
@@ -198,20 +196,91 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
 
         public override void ExplicitVisit(IntegerLiteral node) {
             var nodeAnalyse = node.Related();
-
             var sys_int_name = this.GetSqlNameSys().ChildWellkown("int");
-            var sys_int_model = this._DBScope.ModelDatabase.Types.GetValueOrDefault(sys_int_name);
+
+            // this._DBScope.Resolve(sys_int_name);
+            // var sys_int_model = this._DBScope.ModelDatabase.Types.GetValueOrDefault(sys_int_name);
+            // var sys_int_model = (ISqlCodeType)this.currentScope.ResolveObject(sys_int_name, null);
+            // ??
+            var sys_int_model = (OfaSchlupfer.MSSQLReflection.Model.ModelSqlType)this.currentScope.ScopeNameResolverContext.Resolve(sys_int_name);
             ISqlCodeType sqlCodeType = new SqlCodeTypeSingle(sys_int_model);
-            nodeAnalyse.SqlCodeType = sqlCodeType;
-            nodeAnalyse.SqlCodeResult = new SqlCodeResultConst(sqlCodeType, node.Value);
+            SetAnalyseSqlCodeType(nodeAnalyse, sqlCodeType);
+            var modelSqlScalarValue = new OfaSchlupfer.MSSQLReflection.Model.ModelSqlScalarValue(sys_int_model.GetScalarType(), node.Value, true);
+            nodeAnalyse.SqlCodeResult = new SqlCodeResultConst(modelSqlScalarValue);
             base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(RealLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(MoneyLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(BinaryLiteral node) {
+            base.ExplicitVisit(node);
+        }
+        /*
+                Integer,
+        Real,
+        Money,
+        Binary,
+        String,
+        Null,
+        Default,
+        Max,
+        Odbc,
+        Identifier,
+        Numeric
+             */
+
+        public override void ExplicitVisit(StringLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(NullLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(DefaultLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(MaxLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(OdbcLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(IdentifierLiteral node) {
+            base.ExplicitVisit(node);
+        }
+        public override void ExplicitVisit(NumericLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        private static void SetAnalyseSqlCodeType(AnalyseNodeState nodeAnalyse, ISqlCodeType sqlCodeType) {
+            if (sqlCodeType == null) {
+                // too bad
+            } else if (nodeAnalyse.SqlCodeType == null) {
+                nodeAnalyse.SqlCodeType = sqlCodeType;
+            } else if (nodeAnalyse.SqlCodeType is SqlCodeTypeLazy) {
+                ((SqlCodeTypeLazy)nodeAnalyse.SqlCodeType).SetResolvedCodeType(sqlCodeType);
+            }
         }
 
         private SqlName GetSqlNameSys() {
             var sqlSysName = this._sqlSysName;
             if (sqlSysName == null) {
-                sqlSysName = SqlName.Root.ChildWellkown("sys");
-                this._sqlSysName = this._DBScope.ModelDatabase.Schemas.GetValueOrDefault(sqlSysName)?.Name ?? sqlSysName;
+                sqlSysName = SqlName.Root.Child("sys", ObjectLevel.Schema);
+
+                // think
+                // this._sqlSysName = this._DBScope.ModelDatabase.Schemas.GetValueOrDefault(sqlSysName)?.Name ?? sqlSysName;
+                // this.currentScope.ScopeNameResolverContext.Resolve(sqlSysName);
+                this._sqlSysName = this.currentScope.ScopeNameResolverContext.ModelDatabase.Schemas.GetValueOrDefault(sqlSysName)?.Name ?? sqlSysName;
             }
             return sqlSysName;
         }

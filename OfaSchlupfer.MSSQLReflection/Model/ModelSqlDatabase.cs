@@ -54,6 +54,11 @@
         public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Database); } }
 
         /// <summary>
+        /// Gets the server.
+        /// </summary>
+        public ModelSqlServer SqlServer => this._SqlServer;
+
+        /// <summary>
         /// Gets the schemas.
         /// </summary>
         public Dictionary<SqlName, ModelSqlSchema> Schemas => this._Schemas;
@@ -95,10 +100,10 @@
         /// <returns>the named object or null.</returns>
         public object ResolveObject(SqlName name, IScopeNameResolverContext context) {
             if (name.ObjectLevel == ObjectLevel.Database) {
-                if (name.Level == 1 && SqlNameEqualityComparer.Level1.Equals(this.Name, name)) {
+                if (name.LevelCount == 1 && SqlNameEqualityComparer.Level1.Equals(this.Name, name)) {
                     return this;
                 }
-                if (name.Level == 2 && this.Name.Equals(name)) {
+                if (name.LevelCount == 2 && this.Name.Equals(name)) {
                     return this;
                 }
                 return null;

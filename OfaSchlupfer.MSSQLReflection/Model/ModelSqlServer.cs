@@ -63,12 +63,49 @@
         /// <param name="context">the resolver context.</param>
         /// <returns>the named object or null.</returns>
         public object ResolveObject(SqlName name, IScopeNameResolverContext context) {
-            // if ((object)name != null)
+            ModelSqlDatabase database = null;
             {
-                if ((name.ObjectLevel == ObjectLevel.Database)
-                    || (name.ObjectLevel == ObjectLevel.Unknown)) {
+                var nameA = name.GetAncestorAtLevel(ObjectLevel.Database);
+                if ((object)nameA != null) {
+                    if ((nameA.LevelCount == 1) && (nameA.ObjectLevel == ObjectLevel.Database)) {
+                        database = this._Database.GetValueOrDefault(nameA);
+                    }
+                } else if ((nameA.LevelCount == 2) && (nameA.ObjectLevel == ObjectLevel.Database)) {
+                    if (SqlNameEqualityComparer.Level1.Equals(this.Name, nameA.Parent /* Server */)) {
+                        database = this._Database.GetValueOrDefault(nameA);
+                    } else {
+                        return null;
+                    }
+                }
+                if (ReferenceEquals(nameA, name)) { return database; }
+                if ((object)database != null) {
+                    return database.ResolveObject(name, context);
+                }
+            }
+#if false
+            {
+                if ((name.Level == 1) && (name.ObjectLevel == ObjectLevel.Database)) {
+                    return this._Database.GetValueOrDefault(name);
+                }
+                if ((name.Level == 1) && (name.ObjectLevel == ObjectLevel.Unknown)) {
                     var result = this._Database.GetValueOrDefault(name);
                     if ((object)result != null) { return result; }
+                }
+                if ((name.Level == 2) && (name.ObjectLevel == ObjectLevel.Database)) {
+                    if (SqlNameEqualityComparer.Level1.Equals(this.Name, name.Parent)) {
+                        var result = this._Database.GetValueOrDefault(name);
+                        if ((object)result != null) { return result; }
+                    } else {
+                        return null;
+                    }
+                }
+                if ((name.Level == 2) && (name.ObjectLevel == ObjectLevel.Unknown)) {
+                    if (SqlNameEqualityComparer.Level1.Equals(this.Name, name.Parent)) {
+                        var result = this._Database.GetValueOrDefault(name);
+                        if ((object)result != null) { return result; }
+                    } else {
+                        return null;
+                    }
                 }
             }
 #warning TODO check if name has 3 parts - than use the 3rd and go ahead with 2
@@ -88,6 +125,7 @@
                     }
                 }
             }
+#endif
             return null;
         }
 

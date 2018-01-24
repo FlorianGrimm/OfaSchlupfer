@@ -5,17 +5,17 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     using System;
 
     public sealed class SqlCodeTypeSingle : ISqlCodeType {
-        public readonly Model.ModelSqlType Type;
+        public readonly OfaSchlupfer.MSSQLReflection.Model.ModelSqlType Type;
 
-        public SqlCodeTypeSingle(Model.ModelSqlType type) {
+        public SqlCodeTypeSingle(OfaSchlupfer.MSSQLReflection.Model.ModelSqlType type) {
             this.Type = type;
         }
 
-        public ISqlCodeType GetResolved() {
+        public ISqlCodeType GetResolvedCodeType() {
             return this;
         }
 
-        public void SetResolved(ISqlCodeType sqlCodeType) {
+        public void SetResolvedCodeType(ISqlCodeType sqlCodeType) {
             if (ReferenceEquals(sqlCodeType, this)) { return; }
             throw new InvalidOperationException();
         }

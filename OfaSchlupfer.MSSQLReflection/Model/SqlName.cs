@@ -105,7 +105,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         private int _HashCode;
         private Dictionary<NameLevel, SqlName> _Wellknown;
-        public readonly int Level;
+        public readonly int LevelCount;
         public readonly ObjectLevel ObjectLevel;
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             }
             this.Parent = parent ?? SqlName.Root;
             this.Name = name;
-            this.Level = (parent == null) ? 1 : (parent.Level + 1);
+            this.LevelCount = (parent == null) ? 1 : (parent.LevelCount + 1);
             this.ObjectLevel = objectLevel;
         }
 
@@ -140,7 +140,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             }
             this.Parent = this;
             this.Name = name;
-            this.Level = 0;
+            this.LevelCount = 0;
             this.ObjectLevel = ObjectLevel.Unknown;
         }
 
@@ -242,6 +242,20 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         }
 
         /// <summary>
+        /// Get the this, the parent or any ancestor thats ObjectLevel is equal or greater than the <paramref name="objectLevel"/>.
+        /// </summary>
+        /// <param name="objectLevel">the minimum objectlevel.</param>
+        /// <returns>the found instance or null.</returns>
+        public SqlName GetAncestorAtLevel(ObjectLevel objectLevel) {
+            var that = this;
+            while (((object)that != null)
+                && (that.ObjectLevel < objectLevel)) {
+                that = that.Parent;
+            }
+            return that;
+        }
+
+        /// <summary>
         /// Gets a value indicating whether this is the root
         /// </summary>
         public bool IsRoot => ReferenceEquals(this.Parent, null) || ReferenceEquals(this.Parent, this);
@@ -320,7 +334,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="levels">maximum levels</param>
         /// <returns>the quoted full name</returns>
         public string GetQFullName(string mode = null, int levels = 0) {
-            var this_Level = this.Level;
+            var this_Level = this.LevelCount;
             if (this_Level == 1) {
                 return this.GetQName(mode);
             } else if (this_Level == 2 && ((levels >= 2) || (levels == 0))) {

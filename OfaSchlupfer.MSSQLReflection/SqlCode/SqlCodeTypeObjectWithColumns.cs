@@ -11,11 +11,11 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             this.ObjectWithColumns = objectWithColumns;
         }
 
-        public ISqlCodeType GetResolved() {
+        public ISqlCodeType GetResolvedCodeType() {
             return this;
         }
 
-        public void SetResolved(ISqlCodeType sqlCodeType) {
+        public void SetResolvedCodeType(ISqlCodeType sqlCodeType) {
             if (ReferenceEquals(sqlCodeType, this)) { return; }
             throw new InvalidOperationException();
         }

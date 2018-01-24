@@ -16,26 +16,26 @@
         /// <summary>
         /// column of table or view
         /// </summary>
-        Column,
+        Column = 1,
 
         /// <summary>
         /// table, view, procedure, ...
         /// </summary>
-        Object,
+        Object = 2,
 
         /// <summary>
         /// schema
         /// </summary>
-        Schema,
+        Schema = 3,
 
         /// <summary>
         /// database
         /// </summary>
-        Database,
+        Database = 4,
 
         /// <summary>
         /// server
         /// </summary>
-        Server
+        Server = 5
     }
 }
