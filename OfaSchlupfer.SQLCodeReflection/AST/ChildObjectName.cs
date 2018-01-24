@@ -3,24 +3,44 @@
 
 namespace OfaSchlupfer.AST {
     [System.Serializable]
-    //public class ChildObjectName : SchemaObjectName {
-    public sealed class ChildObjectName : MultiPartIdentifier {
-        public Identifier ChildIdentifier => this.ChooseIdentifier(1);
+    public class ChildObjectName : SchemaObjectName {
+        private const int ServerModifierNumber = 5;
 
-        public Identifier BaseIdentifier => this.ChooseIdentifier(2);
+        private const int DatabaseModifierNumber = 4;
 
-        public Identifier SchemaIdentifier => this.ChooseIdentifier(3);
+        private const int SchemaModifierNumber = 3;
 
-        public Identifier DatabaseIdentifier => this.ChooseIdentifier(4);
+        private const int BaseModifierNumber = 2;
 
-        public Identifier ServerIdentifier => this.ChooseIdentifier(5);
+        private const int ChildModifierNumber = 1;
 
-        private Identifier ChooseIdentifier(int modifier) {
-            int num = this.Identifiers.Count - modifier;
-            if (num < 0) {
-                return null;
-            } else {
-                return this.Identifiers[num];
+        public override Identifier BaseIdentifier {
+            get {
+                return base.ChooseIdentifier(2);
+            }
+        }
+
+        public override Identifier DatabaseIdentifier {
+            get {
+                return base.ChooseIdentifier(4);
+            }
+        }
+
+        public override Identifier SchemaIdentifier {
+            get {
+                return base.ChooseIdentifier(3);
+            }
+        }
+
+        public override Identifier ServerIdentifier {
+            get {
+                return base.ChooseIdentifier(5);
+            }
+        }
+
+        public virtual Identifier ChildIdentifier {
+            get {
+                return base.ChooseIdentifier(1);
             }
         }
 
