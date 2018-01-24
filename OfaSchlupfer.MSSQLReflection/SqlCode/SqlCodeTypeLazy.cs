@@ -19,17 +19,17 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             this.Fragment = fragment;
         }
 
-        public ISqlCodeType GetResolved() {
+        public ISqlCodeType GetResolvedCodeType() {
             if (this.Resolved == null) { return null; }
             var resolvedLazy = this.Resolved as SqlCodeTypeLazy;
             if (resolvedLazy != null) {
                 this.Resolved = resolvedLazy;
-                return resolvedLazy.GetResolved();
+                return resolvedLazy.GetResolvedCodeType();
             }
             return this.Resolved;
         }
 
-        public void SetResolved(ISqlCodeType sqlCodeType) {
+        public void SetResolvedCodeType(ISqlCodeType sqlCodeType) {
             if (sqlCodeType != null) {
                 if (this.Resolved == null) {
                     this.Resolved = sqlCodeType;

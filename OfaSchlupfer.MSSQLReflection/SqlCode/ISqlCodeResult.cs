@@ -5,7 +5,11 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     using System;
 
     public interface ISqlCodeResult {
-        ISqlCodeType GetSqlCodeType();
+        // ISqlCodeType GetSqlCodeType();
+
+        // ISqlCodeResult GetResolvedCodeResult();
+
+        // void SetResolvedCodeResult(ISqlCodeResult sqlCodeType);
     }
 
     public sealed class SqlCodeResultVoid : ISqlCodeResult, ISqlCodeType {
@@ -16,11 +20,13 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         private SqlCodeResultVoid() {
         }
 
-        public ISqlCodeType GetSqlCodeType() => this;
+        /*
+         public ISqlCodeType GetSqlCodeType() => this;
+         */
 
-        public ISqlCodeType GetResolved() => this;
+        public ISqlCodeType GetResolvedCodeType() => this;
 
-        public void SetResolved(ISqlCodeType sqlCodeType) {
+        public void SetResolvedCodeType(ISqlCodeType sqlCodeType) {
             if (ReferenceEquals(this, sqlCodeType)) { return; }
             throw new InvalidOperationException();
         }
@@ -30,12 +36,19 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         public SqlCodeResultLazy() {
         }
 
-        public ISqlCodeType GetSqlCodeType() {
-            return null;
-        }
+        // public ISqlCodeType GetSqlCodeType() {
+        //     return null;
+        // }
     }
 
     public sealed class SqlCodeResultConst : ISqlCodeResult {
+        public OfaSchlupfer.MSSQLReflection.Model.ModelSqlScalarValue ScalarValue;
+
+        public SqlCodeResultConst(OfaSchlupfer.MSSQLReflection.Model.ModelSqlScalarValue scalarValue) {
+            this.ScalarValue = scalarValue;
+        }
+
+        /*
         public ISqlCodeType SqlCodeType;
         public string SqlValue;
 
@@ -47,5 +60,6 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         public ISqlCodeType GetSqlCodeType() {
             return this.SqlCodeType;
         }
+        */
     }
 }

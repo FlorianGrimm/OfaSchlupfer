@@ -10,6 +10,24 @@
     /// </summary>
     public sealed class ModelSqlScalarValue {
         /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlScalarValue"/> class.
+        /// </summary>
+        public ModelSqlScalarValue() {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlScalarValue"/> class.
+        /// </summary>
+        /// <param name="type">the type</param>
+        /// <param name="value">the value</param>
+        /// <param name="isConst">const</param>
+        public ModelSqlScalarValue(ModelSqlScalarType type, object value, bool isConst) {
+            this.Type = type;
+            this.Value = value;
+            this.IsConst = isConst;
+        }
+
+        /// <summary>
         /// Gets or sets the type
         /// </summary>
         public ModelSqlScalarType Type { get; set; }

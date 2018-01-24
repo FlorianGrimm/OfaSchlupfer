@@ -53,5 +53,10 @@
         /// Gets or sets sqlCodeType
         /// </summary>
         public ISqlCodeType SqlCodeType { get; set; }
+
+        /// <summary>
+        /// Gets or sets OutputType - think of
+        /// </summary>
+        public ISqlCodeType OutputType { get; set; }
     }
 }

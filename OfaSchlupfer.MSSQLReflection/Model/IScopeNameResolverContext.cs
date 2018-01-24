@@ -1,4 +1,6 @@
-﻿namespace OfaSchlupfer.MSSQLReflection.Model {
+﻿#pragma warning disable SA1600
+
+namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -9,5 +11,10 @@
     /// dev
     /// </summary>
     public interface IScopeNameResolverContext {
+        ModelSqlDatabase ModelDatabase { get; }
+
+        ModelSqlServer ModelSqlServer { get; }
+
+        object Resolve(SqlName name);
     }
 }

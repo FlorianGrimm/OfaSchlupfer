@@ -9,7 +9,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     public sealed class ModelSqlType
         : IEquatable<ModelSqlType> {
         private SqlName _Name;
-        private int _ColumnId;
 
         private short _MaxLength;
         private byte _Precision;
@@ -49,10 +48,13 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
 
+#if thinkof
+        private int _ColumnId;
         /// <summary>
         /// Gets or sets the ColumnId hte order.
         /// </summary>
         public int ColumnId { get { return this._ColumnId; } set { this._ColumnId = value; } }
+#endif
 
         /// <summary>
         /// Gets or sets the MaxLength of char types.
@@ -86,6 +88,23 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         public void AddToParent() {
             this._Schema.AddType(this);
+        }
+
+        private ModelSqlScalarType _ScalarType;
+
+        /// <summary>
+        /// Get the scalar type.
+        /// </summary>
+        /// <returns>The scalartype or null</returns>
+        public ModelSqlScalarType GetScalarType() {
+            return this._ScalarType ?? (this._ScalarType = new ModelSqlScalarType() {
+                TypeName = this.Name,
+                MaxLength = this.MaxLength,
+                Precision = this.Precision,
+                Scale = this.Scale,
+                CollationName = this.CollationName,
+                IsNullable = this.IsNullable
+            });
         }
 
         /// <summary>

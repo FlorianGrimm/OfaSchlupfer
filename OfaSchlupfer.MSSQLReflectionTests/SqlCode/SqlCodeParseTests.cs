@@ -33,7 +33,7 @@ SELECT @hugo;
             Assert.IsNotNull(analysis);
             var resolvedObject = analysis.DeclarationScope.ResolveObject(new Model.SqlName(null, "@hugo", Model.ObjectLevel.Local), null);
             Assert.IsNotNull(resolvedObject);
-            var resolved = (resolvedObject as ISqlCodeType)?.GetResolved();
+            var resolved = (resolvedObject as ISqlCodeType)?.GetResolvedCodeType();
             Assert.IsNotNull(resolved);
             Assert.AreEqual("SqlCodeTypeSingle", resolved.GetType().Name);
             Assert.AreEqual("sys.int", ((SqlCodeTypeSingle)resolved).Type.Name.GetQFullName(null, 2));
