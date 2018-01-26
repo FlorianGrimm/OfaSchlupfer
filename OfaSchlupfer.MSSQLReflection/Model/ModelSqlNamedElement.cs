@@ -12,8 +12,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlNamedElement"/> class.
         /// </summary>
-        public ModelSqlNamedElement() {
-        }
+        public ModelSqlNamedElement() { }
 
         /// <summary>
         /// Gets or sets the name

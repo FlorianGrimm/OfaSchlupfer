@@ -7,15 +7,16 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using OfaSchlupfer.MSSQLReflection.AST;
 
     /// <summary>
     /// Lazy
     /// </summary>
     public sealed class SqlCodeTypeLazy : ISqlCodeType {
-        public readonly OfaSchlupfer.AST.TSqlFragment Fragment;
+        public readonly SqlNode Fragment;
         public ISqlCodeType Resolved;
 
-        public SqlCodeTypeLazy(OfaSchlupfer.AST.TSqlFragment fragment) {
+        public SqlCodeTypeLazy(SqlNode fragment) {
             this.Fragment = fragment;
         }
 

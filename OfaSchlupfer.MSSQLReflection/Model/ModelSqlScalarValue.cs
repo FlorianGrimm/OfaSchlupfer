@@ -12,8 +12,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlScalarValue"/> class.
         /// </summary>
-        public ModelSqlScalarValue() {
-        }
+        public ModelSqlScalarValue() { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlScalarValue"/> class.

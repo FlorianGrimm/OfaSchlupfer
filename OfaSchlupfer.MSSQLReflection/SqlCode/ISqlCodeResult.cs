@@ -17,8 +17,7 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
 
         public static SqlCodeResultVoid Instance => _Instance ?? (_Instance = new SqlCodeResultVoid());
 
-        private SqlCodeResultVoid() {
-        }
+        private SqlCodeResultVoid() { }
 
         /*
          public ISqlCodeType GetSqlCodeType() => this;
@@ -33,8 +32,7 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     }
 
     public sealed class SqlCodeResultLazy : ISqlCodeResult {
-        public SqlCodeResultLazy() {
-        }
+        public SqlCodeResultLazy() { }
 
         // public ISqlCodeType GetSqlCodeType() {
         //     return null;

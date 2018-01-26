@@ -16,8 +16,7 @@
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
         public SqlSysSchema(MetaEntityArrayProp metaData, object[] values)
-            : base(metaData, values) {
-        }
+            : base(metaData, values) { }
 
 #pragma warning disable SA1101 // Prefix local calls with this
 

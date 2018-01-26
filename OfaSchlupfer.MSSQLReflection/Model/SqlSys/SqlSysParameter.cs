@@ -15,8 +15,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
         public SqlSysParameter(MetaEntityArrayProp metaData, object[] values)
-            : base(metaData, values) {
-        }
+            : base(metaData, values) { }
 
 #pragma warning disable SA1101 // Prefix local calls with this
         public int object_id { get { return this.GetPropertyAsInt(nameof(object_id)); } }

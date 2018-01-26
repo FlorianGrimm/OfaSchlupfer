@@ -14,8 +14,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlView"/> class.
         /// </summary>
-        public ModelSqlView() {
-        }
+        public ModelSqlView() { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlView"/> class.

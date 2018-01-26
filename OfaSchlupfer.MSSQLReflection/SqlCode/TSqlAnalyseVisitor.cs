@@ -1,9 +1,9 @@
 ﻿#pragma warning disable SA1600
 
 namespace OfaSchlupfer.MSSQLReflection.SqlCode {
-    using OfaSchlupfer.AST;
+    using OfaSchlupfer.MSSQLReflection.AST;
 
-    internal class TSqlAnalyseVisitor : TSqlConcreteFragmentVisitor {
+    internal class TSqlAnalyseVisitor : SqlConcreteFragmentVisitor {
         public TSqlAnalyseVisitor() {
         }
     }

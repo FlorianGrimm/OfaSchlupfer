@@ -2,14 +2,14 @@
 
 namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     using System.Collections.Generic;
-    using OfaSchlupfer.AST;
+    using OfaSchlupfer.MSSQLReflection.AST;
     using OfaSchlupfer.MSSQLReflection.Model;
 
     /// <summary>
     /// Bind
     /// </summary>
     internal class TSqlBindVisitor
-        : OfaSchlupfer.AST.TSqlConcreteFragmentVisitor {
+        : SqlConcreteFragmentVisitor {
         private readonly Stack<SqlCodeScope> _Scopes;
         private SqlCodeScope _DBScope;
         private SqlCodeScope currentScope;
@@ -29,7 +29,7 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         /// </summary>
         /// <param name="fragment">the start node.</param>
         /// <returns>think of</returns>
-        internal List<AnalyseResult> Run(TSqlFragment fragment) {
+        internal List<AnalyseResult> Run(SqlNode fragment) {
             if ((object)fragment == null) { return null; }
             fragment.Accept(this);
             return this._AnalyseResults;
@@ -39,14 +39,13 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         /// the root
         /// </summary>
         /// <param name="node">the current node</param>
-        public override void ExplicitVisit(TSqlScript node) {
-            var nodeAnalyse = node.Related();
-            nodeAnalyse.SqlCodeScope = this._DBScope;
+        public override void ExplicitVisit(SqlScript node) {
+            node.Analyse.SqlCodeScope = this._DBScope;
             base.ExplicitVisit(node);
         }
 
-        public override void ExplicitVisit(TSqlBatch node) {
-            var nodeAnalyse = node.Related();
+        public override void ExplicitVisit(SqlBatch node) {
+            var nodeAnalyse = node.Analyse;
 
             var declarationScope = this._DBScope.CreateChildDeclarationScope("Declaration", null);
             this._Scopes.Push(declarationScope);
@@ -96,8 +95,8 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             */
         }
 
-        public override void Visit(TSqlFragment node) {
-            var nodeAnalyse = node.Related();
+        public override void Visit(SqlNode node) {
+            var nodeAnalyse = node.Analyse;
 
             if (nodeAnalyse.SqlCodeScope == null) {
                 nodeAnalyse.SqlCodeScope = this.currentScope;
@@ -107,18 +106,17 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         }
 
         public override void ExplicitVisit(DeclareVariableElement node) {
-            var nodeAnalyse = node.Related();
             var declarationScope = this.currentScope.GetDeclarationScope();
-            nodeAnalyse.SqlCodeScope = declarationScope;
+            node.Analyse.SqlCodeScope = declarationScope;
             var variableNameValue = new SqlName(null, node.VariableName.Value, ObjectLevel.Local);
             var lazy = new SqlCodeTypeLazy(node.DataType);
-            node.DataType.Related().SqlCodeType = lazy;
-            nodeAnalyse.SqlCodeType = lazy;
-            nodeAnalyse.SqlCodeScope.Add(variableNameValue, lazy);
+            node.DataType.Analyse.SqlCodeType = lazy;
+            node.Analyse.SqlCodeType = lazy;
+            node.Analyse.SqlCodeScope.Add(variableNameValue, lazy);
             base.ExplicitVisit(node);
-            var resolved = nodeAnalyse.SqlCodeType.GetResolvedCodeType();
+            var resolved = node.Analyse.SqlCodeType.GetResolvedCodeType();
             if (resolved != null) {
-                nodeAnalyse.SqlCodeType = resolved;
+                node.Analyse.SqlCodeType = resolved;
             }
         }
 
@@ -157,32 +155,29 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         }
 
         public override void ExplicitVisit(SqlDataTypeReference node) {
-            var nodeAnalyse = node.Related();
             var name = node.Name;
             var parameters = node.Parameters;
             if ((name.Identifiers.Count == 1) && (parameters.Count == 0)) {
                 var sqlName = SqlName.Parse(name.BaseIdentifier.Value, ObjectLevel.Object);
                 var sqlSysName = SqlName.Root.Child("sys", ObjectLevel.Schema).Child(sqlName.Name, ObjectLevel.Object);
                 var sqlCodeType = this.currentScope.ResolveObject(sqlSysName, null) as ISqlCodeType;
-                SetAnalyseSqlCodeType(nodeAnalyse, sqlCodeType);
+                SetAnalyseSqlCodeType(node.Analyse, sqlCodeType);
             } else {
                 if (System.Diagnostics.Debugger.IsAttached) {
                     System.Diagnostics.Debugger.Break();
                 }
-                nodeAnalyse.SqlCodeType = null;
+                node.Analyse.SqlCodeType = null;
             }
             base.ExplicitVisit(node);
         }
 
         public override void ExplicitVisit(UserDataTypeReference node) {
-            var nodeAnalyse = node.Related();
-
             var name = node.Name;
             var parameters = node.Parameters;
             if (System.Diagnostics.Debugger.IsAttached) {
                 System.Diagnostics.Debugger.Break();
             }
-            nodeAnalyse.SqlCodeType = null;
+            node.Analyse.SqlCodeType = null;
             base.ExplicitVisit(node);
         }
 
@@ -195,7 +190,6 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         }
 
         public override void ExplicitVisit(IntegerLiteral node) {
-            var nodeAnalyse = node.Related();
             var sys_int_name = this.GetSqlNameSys().ChildWellkown("int");
 
             // this._DBScope.Resolve(sys_int_name);
@@ -204,9 +198,9 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             // ??
             var sys_int_model = (OfaSchlupfer.MSSQLReflection.Model.ModelSqlType)this.currentScope.ScopeNameResolverContext.Resolve(sys_int_name);
             ISqlCodeType sqlCodeType = new SqlCodeTypeSingle(sys_int_model);
-            SetAnalyseSqlCodeType(nodeAnalyse, sqlCodeType);
+            SetAnalyseSqlCodeType(node.Analyse, sqlCodeType);
             var modelSqlScalarValue = new OfaSchlupfer.MSSQLReflection.Model.ModelSqlScalarValue(sys_int_model.GetScalarType(), node.Value, true);
-            nodeAnalyse.SqlCodeResult = new SqlCodeResultConst(modelSqlScalarValue);
+            node.Analyse.SqlCodeResult = new SqlCodeResultConst(modelSqlScalarValue);
             base.ExplicitVisit(node);
         }
 
@@ -251,13 +245,10 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             base.ExplicitVisit(node);
         }
 
-        public override void ExplicitVisit(OdbcLiteral node) {
-            base.ExplicitVisit(node);
-        }
-
         public override void ExplicitVisit(IdentifierLiteral node) {
             base.ExplicitVisit(node);
         }
+
         public override void ExplicitVisit(NumericLiteral node) {
             base.ExplicitVisit(node);
         }

@@ -15,8 +15,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         private SqlName _Name;
 
         public ModelSqlColumn()
-            : this((SqlScope)null) {
-        }
+            : this((SqlScope)null) { }
 
         public ModelSqlColumn(SqlScope ownerScope) {
             this._Scope = ownerScope;

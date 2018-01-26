@@ -1,33 +1,22 @@
 ﻿namespace OfaSchlupfer.MSSQLReflection.SqlCode {
-    using OfaSchlupfer.AST;
+    using OfaSchlupfer.MSSQLReflection.AST;
 
     /// <summary>
     /// AST bound inforamtion.
     /// </summary>
     public class AnalyseNodeState {
         /// <summary>
-        /// Get the related instance - created if needed.
+        /// Initializes a new instance of the <see cref="AnalyseNodeState"/> class.
         /// </summary>
-        /// <param name="fragment">the fragment</param>
-        /// <returns>the related instance</returns>
-        public static AnalyseNodeState Get(TSqlFragment fragment) {
-            var result = fragment.Tag as AnalyseNodeState;
-            if ((object)result == null) {
-                result = new AnalyseNodeState() {
-                    Fragment = fragment
-                };
-                fragment.Tag = result;
-            }
-            return result;
-        }
-
-        private AnalyseNodeState() {
+        /// <param name="node">the owner</param>
+        public AnalyseNodeState(SqlNode node) {
+            this.Fragment = node;
         }
 
         /// <summary>
         /// Gets or sets the Fragment
         /// </summary>
-        public TSqlFragment Fragment { get; set; }
+        public SqlNode Fragment { get; set; }
 
         /// <summary>
         /// Gets or sets the Scope.

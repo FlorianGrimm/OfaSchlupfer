@@ -53,8 +53,7 @@
         /// Initializes a new instance of the <see cref="SqlSysDatabase"/> class.
         /// </summary>
         public SqlSysDatabase()
-            : this(new MetaEntityArrayProp(), new object[0]) {
-        }
+            : this(new MetaEntityArrayProp(), new object[0]) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlSysDatabase"/> class.

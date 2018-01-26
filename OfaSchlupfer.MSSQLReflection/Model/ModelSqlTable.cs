@@ -14,8 +14,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlTable"/> class.
         /// </summary>
-        public ModelSqlTable() {
-        }
+        public ModelSqlTable() { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlTable"/> class.
@@ -50,8 +49,7 @@
         /// </summary>
         /// <param name="src">Copy source</param>
         public ModelSqlTable(ModelSqlTable src)
-            : base(src) {
-        }
+            : base(src) { }
 
         /// <summary>
         /// Get the current scope

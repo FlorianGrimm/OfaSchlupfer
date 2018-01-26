@@ -1,5 +1,5 @@
 ﻿namespace OfaSchlupfer.MSSQLReflection.SqlCode {
-    using OfaSchlupfer.AST;
+    using OfaSchlupfer.MSSQLReflection.AST;
 
     /// <summary>
     /// Result
@@ -8,7 +8,7 @@
         /// <summary>
         /// Gets or sets the Fragment
         /// </summary>
-        public TSqlFragment Fragment { get; set; }
+        public SqlNode Fragment { get; set; }
 
         /// <summary>
         /// Gets or sets the DeclarationScope.

@@ -74,8 +74,7 @@
                     this.CurrentServer = result;
                     return result;
                 }
-            } catch {
-            }
+            } catch { }
             return null;
         }
 
@@ -92,8 +91,7 @@
                     result.ForEach((item) => { this.DatabaseById[item.database_id] = item; });
                     return result;
                 }
-            } catch {
-            }
+            } catch { }
             try {
                 using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysDatabase.SELECTCurrentStatement)) {
                     var sqlResults = SqlUtility.ExecuteReader(command, false, false);
@@ -101,8 +99,7 @@
                     result.ForEach((item) => { this.DatabaseById[item.database_id] = item; });
                     return result;
                 }
-            } catch {
-            }
+            } catch { }
             return new List<SqlSysDatabase>();
         }
 

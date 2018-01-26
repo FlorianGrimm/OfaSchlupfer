@@ -18,8 +18,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         internal OfaSchlupfer.MSSQLReflection.SqlCode.ISqlCodeType SqlCodeType;
         private ModelSqlSchema _Schema;
 
-        public ModelSqlType() {
-        }
+        public ModelSqlType() { }
 
         public ModelSqlType(ModelSqlType src) {
             this.Name = src.Name;

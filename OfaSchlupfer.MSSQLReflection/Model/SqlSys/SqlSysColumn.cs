@@ -32,8 +32,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
         public SqlSysColumn(MetaEntityArrayProp metaData, object[] values)
-            : base(metaData, values) {
-        }
+            : base(metaData, values) { }
 
 #pragma warning disable SA1101 // Prefix local calls with this
         /// <summary>
