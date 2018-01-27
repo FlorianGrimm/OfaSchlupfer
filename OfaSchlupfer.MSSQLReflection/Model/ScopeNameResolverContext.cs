@@ -34,7 +34,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         // default schema?
         // handle use?
         public object Resolve(SqlName name) {
-#warning more magic needed here...
+            // TODO: more magic needed here...
             return this.ModelDatabase.ResolveObject(name, this);
         }
     }

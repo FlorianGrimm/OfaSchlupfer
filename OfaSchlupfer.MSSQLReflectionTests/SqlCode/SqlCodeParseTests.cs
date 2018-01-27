@@ -35,9 +35,103 @@ SELECT @hugo;
             Assert.IsNotNull(resolvedObject);
             var resolved = (resolvedObject as ISqlCodeType)?.GetResolvedCodeType();
             Assert.IsNotNull(resolved);
-            Assert.AreEqual("SqlCodeTypeSingle", resolved.GetType().Name);
-            Assert.AreEqual("sys.int", ((SqlCodeTypeSingle)resolved).Type.Name.GetQFullName(null, 2));
+            Assert.AreEqual("SqlCodeType", resolved.GetType().Name);
+            Assert.AreEqual("int", ((SqlCodeType)resolved).ModelType.TypeName.GetQFullName(null, 2));
             //scope.Content.ContainsKey()
+        }
+
+        [TestMethod()]
+        public void SqlCodeParse_Analyse_ALTER_PROCEDURE_Test() {
+            var modelDatabase = ReadAllCached();
+
+            var sca = new SqlCodeAnalyse();
+            var node = sca.ParseTransport(@"
+IF (OBJECT_ID('dbo.p') IS NULL) BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE dbo.p AS BEGIN SET NOCOUNT ON; END;'
+END;
+GO
+ALTER PROCEDURE dbo.p 
+(
+    @a nvarchar(255)
+)
+AS 
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @b nvarchar(max)='2';
+    SELECT answer = (@a + @b);
+END;
+GO
+DECLARE @c nvarchar(max)='4';
+EXECUTE dbo.p @c
+                ");
+            Assert.IsNotNull(node);
+
+            var analysisResults = sca.Analyse(node, modelDatabase);
+            Assert.IsNotNull(analysisResults);
+            Assert.IsTrue(analysisResults.Count > 2);
+            var analysis = analysisResults[2];
+            Assert.IsNotNull(analysis);
+            var resolvedObject = analysis.DeclarationScope.ResolveObject(new Model.SqlName(null, "@c", Model.ObjectLevel.Local), null);
+            Assert.IsNotNull(resolvedObject);
+            var resolved = (resolvedObject as ISqlCodeType)?.GetResolvedCodeType();
+            Assert.IsNotNull(resolved);
+            Assert.AreEqual("nvarchar", ((SqlCodeType)resolved).ModelType.TypeName.GetQFullName(null, 2));
+            //scope.Content.ContainsKey()
+        }
+
+        [TestMethod()]
+        public void SqlCodeParse_Analyse_OpenJson_Test() {
+            var modelDatabase = ReadAllCached();
+
+            var sca = new SqlCodeAnalyse();
+            var sql = @"
+
+DECLARE @json NVARCHAR(MAX) = N'[  
+  {  
+    ""Order"": {  
+      ""Number"":""SO43659"",  
+      ""Date"":""2011-05-31T00:00:00""  
+    },  
+    ""AccountNumber"":""AW29825"",  
+    ""Item"": {  
+      ""Price"":2024.9940,  
+      ""Quantity"":1  
+    }  
+  },  
+  {  
+    ""Order"": {  
+      ""Number"":""SO43661"",  
+      ""Date"":""2011-06-01T00:00:00""  
+    },  
+    ""AccountNumber"":""AW73565"",  
+    ""Item"": {  
+      ""Price"":2024.9940,  
+      ""Quantity"":3  
+    }  
+  }
+]';
+
+SELECT 
+    Number   
+    , Date     
+    , Customer 
+    , Quantity 
+    , [Order]  
+FROM OPENJSON ( @json )  
+WITH (   
+              Number   varchar(200)   '$.Order.Number',  
+              Date     datetime       '$.Order.Date',  
+              Customer varchar(200)   '$.AccountNumber',  
+              Quantity int            '$.Item.Quantity',  
+              [Order]  nvarchar(MAX)  AS JSON  
+);
+";
+            var node = sca.ParseTransport(sql);
+            Assert.IsNotNull(node);
+
+            var analysis = sca.Analyse(node, modelDatabase).FirstOrDefault();
+            Assert.IsNotNull(analysis);
+
         }
 
         [TestMethod()]

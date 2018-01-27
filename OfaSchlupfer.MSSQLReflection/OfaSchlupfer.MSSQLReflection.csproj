@@ -66,7 +66,6 @@
     <Compile Include="AST\Nodes\CaseExpression.cs" />
     <Compile Include="AST\Nodes\CastCall.cs" />
     <Compile Include="AST\Nodes\CheckpointStatement.cs" />
-    <Compile Include="AST\Nodes\ChildObjectName.cs" />
     <Compile Include="AST\Nodes\CloseCursorStatement.cs" />
     <Compile Include="AST\Nodes\CoalesceExpression.cs" />
     <Compile Include="AST\Nodes\ColumnDefinition.cs" />
@@ -130,7 +129,6 @@
     <Compile Include="AST\Nodes\GroupingSpecification.cs" />
     <Compile Include="AST\Nodes\HavingClause.cs" />
     <Compile Include="AST\Nodes\IAuthorization.cs" />
-    <Compile Include="AST\Nodes\ICollationSetter.cs" />
     <Compile Include="AST\Nodes\Identifier.cs" />
     <Compile Include="AST\Nodes\IdentifierOrScalarExpression.cs" />
     <Compile Include="AST\Nodes\IdentifierOrValueExpression.cs" />
@@ -171,7 +169,6 @@
     <Compile Include="AST\Nodes\OutputClause.cs" />
     <Compile Include="AST\Nodes\OutputIntoClause.cs" />
     <Compile Include="AST\Nodes\OverClause.cs" />
-    <Compile Include="AST\Nodes\ParameterizedDataTypeReference.cs" />
     <Compile Include="AST\Nodes\ParameterlessCall.cs" />
     <Compile Include="AST\Nodes\ParenthesisExpression.cs" />
     <Compile Include="AST\Nodes\ParseCall.cs" />
@@ -228,7 +225,6 @@
     <Compile Include="AST\Nodes\SimpleCaseExpression.cs" />
     <Compile Include="AST\Nodes\SimpleWhenClause.cs" />
     <Compile Include="AST\Nodes\SqlCommandIdentifier.cs" />
-    <Compile Include="AST\Nodes\SqlDataTypeReference.cs" />
     <Compile Include="AST\Nodes\StatementListSnippet.cs" />
     <Compile Include="AST\Nodes\StatementWithCtesAndXmlNamespaces.cs" />
     <Compile Include="AST\Nodes\SubqueryComparisonPredicate.cs" />
@@ -259,7 +255,6 @@
     <Compile Include="AST\Nodes\UpdateMergeAction.cs" />
     <Compile Include="AST\Nodes\UpdateTextStatement.cs" />
     <Compile Include="AST\Nodes\UseHintList.cs" />
-    <Compile Include="AST\Nodes\UserDataTypeReference.cs" />
     <Compile Include="AST\Nodes\UserDefinedTypeCallTarget.cs" />
     <Compile Include="AST\Nodes\UserDefinedTypePropertyAccess.cs" />
     <Compile Include="AST\Nodes\ValuesInsertSource.cs" />
@@ -287,15 +282,18 @@
     <Compile Include="AST\AstUtility.cs" />
     <Compile Include="Model\IScopeNameResolver.cs" />
     <Compile Include="Model\IScopeNameResolverContext.cs" />
+    <Compile Include="Model\ModelTypeColumns.cs" />
     <Compile Include="Model\ModelSqlElementType.cs" />
     <Compile Include="Model\ModelSqlNamedElement.cs" />
     <Compile Include="Model\ModelSqlProcedure.cs" />
-    <Compile Include="Model\ModelSqlScalarType.cs" />
-    <Compile Include="Model\ModelSqlScalarValue.cs" />
+    <Compile Include="Model\ModelTypeScalar.cs" />
+    <Compile Include="Model\ModelValueScalar.cs" />
     <Compile Include="Model\ModelSqlServer.cs" />
+    <Compile Include="Model\ModelSystemDataType.cs" />
     <Compile Include="Model\ModelSqlTableType.cs" />
     <Compile Include="Model\ModelSqlType.cs" />
     <Compile Include="Model\ModelSqlView.cs" />
+    <Compile Include="Model\ModelType.cs" />
     <Compile Include="Model\ObjectLevel.cs" />
     <Compile Include="Model\ScopeNameResolverContext.cs" />
     <Compile Include="Model\SqlNameEqualityComparer.cs" />
@@ -325,11 +323,11 @@
     <Compile Include="SqlCode\ISqlCodeType.cs" />
     <Compile Include="SqlCode\SqlCodeScope.cs" />
     <Compile Include="SqlCode\SqlCodeAnalyse.cs" />
+    <Compile Include="SqlCode\SqlCodeScopeReference.cs" />
     <Compile Include="SqlCode\SqlCodeTypeLazy.cs" />
-    <Compile Include="SqlCode\SqlCodeTypeObjectWithColumns.cs" />
-    <Compile Include="SqlCode\SqlCodeTypeSingle.cs" />
-    <Compile Include="SqlCode\TSqlAnalyseVisitor.cs" />
-    <Compile Include="SqlCode\TSqlBindVisitor.cs" />
+    <Compile Include="SqlCode\SqlCodeType.cs" />
+    <Compile Include="SqlCode\TypeVisitor.cs" />
+    <Compile Include="SqlCode\AnalyseVisitor.cs" />
     <Compile Include="Model\SqlResolveScope.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

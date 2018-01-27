@@ -15,7 +15,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         private byte _Scale;
         private string _CollationName;
         private bool _IsNullable;
-        internal OfaSchlupfer.MSSQLReflection.SqlCode.ISqlCodeType SqlCodeType;
         private ModelSqlSchema _Schema;
 
         public ModelSqlType() { }
@@ -89,14 +88,14 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             this._Schema.AddType(this);
         }
 
-        private ModelSqlScalarType _ScalarType;
+        private ModelTypeScalar _ScalarType;
 
         /// <summary>
         /// Get the scalar type.
         /// </summary>
         /// <returns>The scalartype or null</returns>
-        public ModelSqlScalarType GetScalarType() {
-            return this._ScalarType ?? (this._ScalarType = new ModelSqlScalarType() {
+        public ModelTypeScalar GetScalarType() {
+            return this._ScalarType ?? (this._ScalarType = new ModelTypeScalar() {
                 TypeName = this.Name,
                 MaxLength = this.MaxLength,
                 Precision = this.Precision,

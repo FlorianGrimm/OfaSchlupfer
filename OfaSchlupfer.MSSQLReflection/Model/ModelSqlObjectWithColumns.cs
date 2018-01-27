@@ -16,11 +16,6 @@
         protected Dictionary<SqlName, ModelSqlColumn> _Columns;
 
         /// <summary>
-        /// the analysis codetype
-        /// </summary>
-        internal OfaSchlupfer.MSSQLReflection.SqlCode.ISqlCodeType SqlCodeType;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlObjectWithColumns"/> class.
         /// </summary>
         public ModelSqlObjectWithColumns() {

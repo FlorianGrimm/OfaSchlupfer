@@ -81,7 +81,7 @@
         public List<AnalyseResult> Analyse(SqlNode node, ModelSqlDatabase modelDatabase) {
             var scopeNameResolverContext = new ScopeNameResolverContext(modelDatabase);
             var dbScope = SqlCodeScope.CreateRoot(scopeNameResolverContext);
-            var bindVisitor = new TSqlBindVisitor(dbScope);
+            var bindVisitor = new AnalyseVisitor(dbScope);
             var result = bindVisitor.Run(node);
             return result;
         }

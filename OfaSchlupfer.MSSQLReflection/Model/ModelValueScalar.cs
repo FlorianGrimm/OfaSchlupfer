@@ -8,19 +8,19 @@
     /// <summary>
     /// A scalar value
     /// </summary>
-    public sealed class ModelSqlScalarValue {
+    public sealed class ModelValueScalar {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ModelSqlScalarValue"/> class.
+        /// Initializes a new instance of the <see cref="ModelValueScalar"/> class.
         /// </summary>
-        public ModelSqlScalarValue() { }
+        public ModelValueScalar() { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ModelSqlScalarValue"/> class.
+        /// Initializes a new instance of the <see cref="ModelValueScalar"/> class.
         /// </summary>
         /// <param name="type">the type</param>
         /// <param name="value">the value</param>
         /// <param name="isConst">const</param>
-        public ModelSqlScalarValue(ModelSqlScalarType type, object value, bool isConst) {
+        public ModelValueScalar(ModelTypeScalar type, object value, bool isConst) {
             this.Type = type;
             this.Value = value;
             this.IsConst = isConst;
@@ -29,7 +29,7 @@
         /// <summary>
         /// Gets or sets the type
         /// </summary>
-        public ModelSqlScalarType Type { get; set; }
+        public ModelTypeScalar Type { get; set; }
 
         /// <summary>
         /// Gets or sets the value

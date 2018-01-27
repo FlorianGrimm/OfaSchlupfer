@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using OfaSchlupfer.MSSQLReflection.AST;
 
     /// <summary>
     /// Name
@@ -93,7 +94,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
                     SqlName result = null;
                     for (int idx = 0; idx < parts.Count; idx++) {
                         var ol = (int)objectLevel - idx + parts.Count - 1;
-                        var validol = ((((int)ObjectLevel.Column) <= ol) && (ol <= ((int)ObjectLevel.Server)))
+                        var validol = ((((int)ObjectLevel.Child) <= ol) && (ol <= ((int)ObjectLevel.Server)))
                                 ? ((ObjectLevel)ol)
                                 : ObjectLevel.Unknown;
                         result = new SqlName(result, parts[idx], validol);
@@ -101,6 +102,37 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
                     return result;
                 }
             }
+        }
+
+        /// <summary>
+        /// Create a SqlName from a schemaObjectname.
+        /// </summary>
+        /// <param name="name">the name to convert</param>
+        /// <returns>a SqlName or null</returns>
+        public static SqlName From(SchemaObjectName name) {
+            if (name == null) { return null; }
+            SqlName result = null;
+            if (name.ServerIdentifier != null) { result = new SqlName(result, name.ServerIdentifier.Value, ObjectLevel.Server); }
+            if ((name.DatabaseIdentifier != null) || (result != null)) { result = new SqlName(result, (name.DatabaseIdentifier?.Value) ?? string.Empty, ObjectLevel.Database); }
+            if ((name.SchemaIdentifier != null) || (result != null)) { result = new SqlName(result, (name.SchemaIdentifier?.Value) ?? string.Empty, ObjectLevel.Schema); }
+            if ((name.BaseIdentifier != null) || (result != null)) { result = new SqlName(result, (name.BaseIdentifier?.Value) ?? string.Empty, ObjectLevel.Object); }
+            return result;
+        }
+
+        /// <summary>
+        /// Create a SqlName from a ChildObjectName.
+        /// </summary>
+        /// <param name="name">the name to convert</param>
+        /// <returns>a SqlName or null</returns>
+        public static SqlName From(ChildObjectName name) {
+            if (name == null) { return null; }
+            SqlName result = null;
+            if (name.ServerIdentifier != null) { result = new SqlName(result, name.ServerIdentifier.Value, ObjectLevel.Server); }
+            if ((name.DatabaseIdentifier != null) || (result != null)) { result = new SqlName(result, (name.DatabaseIdentifier?.Value) ?? string.Empty, ObjectLevel.Database); }
+            if ((name.SchemaIdentifier != null) || (result != null)) { result = new SqlName(result, (name.SchemaIdentifier?.Value) ?? string.Empty, ObjectLevel.Schema); }
+            if ((name.BaseIdentifier != null) || (result != null)) { result = new SqlName(result, (name.BaseIdentifier?.Value) ?? string.Empty, ObjectLevel.Object); }
+            if ((name.ChildIdentifier != null) || (result != null)) { result = new SqlName(result, (name.ChildIdentifier?.Value) ?? string.Empty, ObjectLevel.Child); }
+            return result;
         }
 
         private int _HashCode;
@@ -153,7 +185,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             ObjectLevel nextLevel = ObjectLevel.Unknown;
             switch (this.ObjectLevel) {
                 case ObjectLevel.Object:
-                    nextLevel = ObjectLevel.Column;
+                    nextLevel = ObjectLevel.Child;
                     break;
                 case ObjectLevel.Schema:
                     nextLevel = ObjectLevel.Object;
@@ -188,7 +220,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             ObjectLevel nextLevel = ObjectLevel.Unknown;
             switch (this.ObjectLevel) {
                 case ObjectLevel.Object:
-                    nextLevel = ObjectLevel.Column;
+                    nextLevel = ObjectLevel.Child;
                     break;
                 case ObjectLevel.Schema:
                     nextLevel = ObjectLevel.Object;

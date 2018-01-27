@@ -4,11 +4,14 @@
 namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     using System;
 
-    public sealed class SqlCodeTypeObjectWithColumns : ISqlCodeType {
-        public readonly Model.ModelSqlObjectWithColumns ObjectWithColumns;
+    /// <summary>
+    /// add lazyness
+    /// </summary>
+    public sealed class SqlCodeType : ISqlCodeType {
+        public readonly OfaSchlupfer.MSSQLReflection.Model.ModelType ModelType;
 
-        public SqlCodeTypeObjectWithColumns(Model.ModelSqlObjectWithColumns objectWithColumns) {
-            this.ObjectWithColumns = objectWithColumns;
+        public SqlCodeType(OfaSchlupfer.MSSQLReflection.Model.ModelType modelType) {
+            this.ModelType = modelType;
         }
 
         public ISqlCodeType GetResolvedCodeType() {

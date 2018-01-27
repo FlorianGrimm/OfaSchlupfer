@@ -2,7 +2,7 @@
     using OfaSchlupfer.MSSQLReflection.AST;
 
     /// <summary>
-    /// Result
+    /// Result - schrott bis ich die richtige stucktur gefunden habe.
     /// </summary>
     public class AnalyseResult {
         /// <summary>

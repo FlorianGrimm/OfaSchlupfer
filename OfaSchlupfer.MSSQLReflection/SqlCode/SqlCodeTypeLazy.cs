@@ -31,6 +31,8 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         }
 
         public void SetResolvedCodeType(ISqlCodeType sqlCodeType) {
+            if (ReferenceEquals(this.Resolved, this)) { return; }
+            if (ReferenceEquals(this.Resolved, sqlCodeType)) { return; }
             if (sqlCodeType != null) {
                 if (this.Resolved == null) {
                     this.Resolved = sqlCodeType;
@@ -39,6 +41,8 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
                     if (System.Diagnostics.Debugger.IsAttached) {
                         System.Diagnostics.Debugger.Break();
                     }
+                    this.Resolved.SetResolvedCodeType(sqlCodeType);
+                    this.Resolved = sqlCodeType;
                 }
             }
         }

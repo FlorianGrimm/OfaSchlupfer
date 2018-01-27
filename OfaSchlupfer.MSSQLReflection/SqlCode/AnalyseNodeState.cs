@@ -5,6 +5,8 @@
     /// AST bound inforamtion.
     /// </summary>
     public class AnalyseNodeState {
+        private ISqlCodeType _SqlCodeType;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AnalyseNodeState"/> class.
         /// </summary>
@@ -36,12 +38,32 @@
         /// <summary>
         /// Gets or sets SqlCodeResult
         /// </summary>
-        public ISqlCodeResult SqlCodeResult { get; set; }
+        public ISqlCodeResult ResultValue { get; set; }
 
         /// <summary>
         /// Gets or sets sqlCodeType
         /// </summary>
-        public ISqlCodeType SqlCodeType { get; set; }
+        public ISqlCodeType ResultType {
+            get {
+                return this._SqlCodeType;
+            }
+
+            set {
+                if (this._SqlCodeType == null) {
+                    this._SqlCodeType = value;
+                } else {
+                    if (value != null) {
+                        if (this._SqlCodeType is SqlCodeTypeLazy lazy) {
+                            // if this instance is shared solve it
+                            lazy.SetResolvedCodeType(value);
+
+                            // but use the new information.
+                            this._SqlCodeType = value;
+                        }
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets OutputType - think of

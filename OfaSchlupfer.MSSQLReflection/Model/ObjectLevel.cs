@@ -16,7 +16,7 @@
         /// <summary>
         /// column of table or view
         /// </summary>
-        Column = 1,
+        Child = 1,
 
         /// <summary>
         /// table, view, procedure, ...

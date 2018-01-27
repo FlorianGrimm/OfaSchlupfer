@@ -54,6 +54,18 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             return result;
         }
 
+        /// <summary>
+        /// Get the root
+        /// </summary>
+        /// <returns>the root</returns>
+        public SqlCodeScope GetRoot() {
+            if (this.Parent == null) {
+                return this;
+            } else {
+                return this.Parent.GetRoot();
+            }
+        }
+
         public bool HasContent => ((this.Content != null) && (this.Content.ChildElements.Count > 0));
 
         public void Add(SqlName name, ISqlCodeType type) {
@@ -82,15 +94,17 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
                 // if (this.ModelDatabase != null) {
                 // var modelType = this.ModelDatabase.ResolveObject(name, context ?? this.ScopeNameResolverContext);
                 var modelType = this.ScopeNameResolverContext.Resolve(name);
-                if (modelType != null) {
-                    if (modelType is ModelSqlType modelSqlType) {
-                        return modelSqlType.SqlCodeType ?? (modelSqlType.SqlCodeType = new SqlCodeTypeSingle(modelSqlType));
-                    }
-                    if (modelType is ModelSqlObjectWithColumns modelSqlObjectWithColumns) {
-                        return modelSqlObjectWithColumns.SqlCodeType ?? (modelSqlObjectWithColumns.SqlCodeType = new SqlCodeTypeObjectWithColumns(modelSqlObjectWithColumns));
-                    }
+                if ((object)modelType != null) {
+                    return modelType;
                 }
 
+                // if (modelType != null) {
+                //     if (modelType is ModelSqlType modelSqlType) {
+                //         return modelSqlType.SqlCodeType ?? (modelSqlType.SqlCodeType = new SqlCodeType(modelSqlType));
+                //     }
+                //     if (modelType is ModelSqlObjectWithColumns modelSqlObjectWithColumns) {
+                //         return modelSqlObjectWithColumns.SqlCodeType ?? (modelSqlObjectWithColumns.SqlCodeType = new SqlCodeTypeObjectWithColumns(modelSqlObjectWithColumns));
+                //     }
                 // }
             }
             if (this.Parent != null) {

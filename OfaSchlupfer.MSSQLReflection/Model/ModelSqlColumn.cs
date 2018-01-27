@@ -44,7 +44,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
 
-        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Column); } }
+        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Child); } }
 
         private ModelSqlObjectWithColumns _Owner;
 

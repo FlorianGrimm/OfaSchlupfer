@@ -56,9 +56,9 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     public sealed class SqlDataTypeReference : ParameterizedDataTypeReference {
         public SqlDataTypeReference() : base() { }
         public SqlDataTypeReference(ScriptDom.SqlDataTypeReference src) : base(src) {
-            this.SqlDataTypeOption = (ModelSqlSystemDataType)src.SqlDataTypeOption;
+            this.SqlDataTypeOption = (ModelSystemDataType)src.SqlDataTypeOption;
         }
-        public ModelSqlSystemDataType SqlDataTypeOption;
+        public ModelSystemDataType SqlDataTypeOption;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
     }
 
