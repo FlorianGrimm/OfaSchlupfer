@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class TableNonClusteredIndexType : TableIndexType {
         public TableNonClusteredIndexType() : base() { }
         public TableNonClusteredIndexType(ScriptDom.TableNonClusteredIndexType src) : base(src) { }

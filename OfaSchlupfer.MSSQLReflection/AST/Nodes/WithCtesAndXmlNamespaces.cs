@@ -4,6 +4,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using System.Collections.Generic;
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class WithCtesAndXmlNamespaces : SqlNode {
         public WithCtesAndXmlNamespaces() : base() { }
         public WithCtesAndXmlNamespaces(ScriptDom.WithCtesAndXmlNamespaces src) : base(src) {
@@ -11,15 +12,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             Copier.CopyList(this.CommonTableExpressions, src.CommonTableExpressions);
             this.ChangeTrackingContext = Copier.Copy<ValueExpression>(src.ChangeTrackingContext);
         }
-
-        public XmlNamespaces XmlNamespaces { get; set; }
-
+        public XmlNamespaces XmlNamespaces;
         public List<CommonTableExpression> CommonTableExpressions { get; } = new List<CommonTableExpression>();
-
-        public ValueExpression ChangeTrackingContext { get; set; }
-
+        public ValueExpression ChangeTrackingContext;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.XmlNamespaces?.Accept(visitor);
             this.CommonTableExpressions.Accept(visitor);

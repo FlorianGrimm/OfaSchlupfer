@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class SetVariableStatement : SqlStatement {
         public SetVariableStatement() : base() { }
         public SetVariableStatement(ScriptDom.SetVariableStatement src) : base(src) {
@@ -17,25 +18,15 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.CursorDefinition = Copier.Copy<CursorDefinition>(src.CursorDefinition);
             this.AssignmentKind = src.AssignmentKind;
         }
-
-        public VariableReference Variable { get; set; }
-
-        public Microsoft.SqlServer.TransactSql.ScriptDom.SeparatorType SeparatorType { get; set; }
-
-        public Identifier Identifier { get; set; }
-
-        public bool FunctionCallExists { get; set; }
-
+        public VariableReference Variable;
+        public Microsoft.SqlServer.TransactSql.ScriptDom.SeparatorType SeparatorType;
+        public Identifier Identifier;
+        public bool FunctionCallExists;
         public List<ScalarExpression> Parameters { get; } = new List<ScalarExpression>();
-
-        public ScalarExpression Expression { get; set; }
-
-        public CursorDefinition CursorDefinition { get; set; }
-
-        public Microsoft.SqlServer.TransactSql.ScriptDom.AssignmentKind AssignmentKind { get; set; }
-
+        public ScalarExpression Expression;
+        public CursorDefinition CursorDefinition;
+        public Microsoft.SqlServer.TransactSql.ScriptDom.AssignmentKind AssignmentKind;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Variable?.Accept(visitor);
             this.Identifier?.Accept(visitor);

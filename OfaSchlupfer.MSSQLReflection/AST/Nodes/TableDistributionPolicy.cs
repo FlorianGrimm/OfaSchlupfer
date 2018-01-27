@@ -4,6 +4,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public abstract class TableDistributionPolicy : SqlNode {
         public TableDistributionPolicy() : base() { }
         public TableDistributionPolicy(ScriptDom.TableDistributionPolicy src)

@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class SqlCommandIdentifier : Identifier {
         public SqlCommandIdentifier() : base() { }
         public SqlCommandIdentifier(ScriptDom.SqlCommandIdentifier src) : base(src) { }

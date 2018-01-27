@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class TopRowFilter : SqlNode {
         public TopRowFilter() : base() { }
         public TopRowFilter(ScriptDom.TopRowFilter src) : base(src) {
@@ -10,13 +11,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.Percent = src.Percent;
             this.WithTies = src.WithTies;
         }
-        public ScalarExpression Expression { get; set; }
-        public bool Percent { get; set; }
-
-        public bool WithTies { get; set; }
-
+        public ScalarExpression Expression;
+        public bool Percent;
+        public bool WithTies;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Expression?.Accept(visitor);
             base.AcceptChildren(visitor);

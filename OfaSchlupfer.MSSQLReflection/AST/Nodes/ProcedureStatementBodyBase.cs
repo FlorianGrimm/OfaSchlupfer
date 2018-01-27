@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public abstract class ProcedureStatementBodyBase : SqlStatement {
         public ProcedureStatementBodyBase() : base() { }
         public ProcedureStatementBodyBase(ScriptDom.ProcedureStatementBodyBase src) : base(src) {
@@ -13,11 +14,8 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.MethodSpecifier = Copier.Copy<MethodSpecifier>(src.MethodSpecifier);
         }
         public List<ProcedureParameter> Parameters { get; } = new List<ProcedureParameter>();
-
-        public StatementList StatementList { get; set; }
-
-        public MethodSpecifier MethodSpecifier { get; set; }
-
+        public StatementList StatementList;
+        public MethodSpecifier MethodSpecifier;
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Parameters.Accept(visitor);
             this.StatementList?.Accept(visitor);

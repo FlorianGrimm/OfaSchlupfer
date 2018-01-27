@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class ThrowStatement : SqlStatement {
         public ThrowStatement() : base() { }
         public ThrowStatement(ScriptDom.ThrowStatement src) : base(src) {
@@ -10,15 +11,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.Message = Copier.Copy<ValueExpression>(src.Message);
             this.State = Copier.Copy<ValueExpression>(src.State);
         }
-
-        public ValueExpression ErrorNumber { get; set; }
-
-        public ValueExpression Message { get; set; }
-
-        public ValueExpression State { get; set; }
-
+        public ValueExpression ErrorNumber;
+        public ValueExpression Message;
+        public ValueExpression State;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.ErrorNumber?.Accept(visitor);
             this.Message?.Accept(visitor);

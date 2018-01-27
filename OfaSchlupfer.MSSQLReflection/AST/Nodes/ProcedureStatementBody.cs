@@ -5,21 +5,19 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public abstract class ProcedureStatementBody : ProcedureStatementBodyBase {
         public ProcedureStatementBody() : base() { }
         public ProcedureStatementBody(ScriptDom.ProcedureStatementBody src) : base(src) {
             this.ProcedureReference = Copier.Copy<ProcedureReference>(src.ProcedureReference);
             this.IsForReplication = src.IsForReplication;
         }
-
-        public ProcedureReference ProcedureReference { get; set; }
-
-        public bool IsForReplication { get; set; }
+        public ProcedureReference ProcedureReference;
+        public bool IsForReplication;
 
         /*
         public List<ProcedureOption> Options { get; } = new List<ProcedureOption>();
          */
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.ProcedureReference?.Accept(visitor);

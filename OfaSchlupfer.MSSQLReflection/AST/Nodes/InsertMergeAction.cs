@@ -5,19 +5,16 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class InsertMergeAction : MergeAction {
         public InsertMergeAction() : base() { }
         public InsertMergeAction(ScriptDom.InsertMergeAction src) : base(src) {
             Copier.CopyList(this.Columns, src.Columns);
             this.Source = Copier.Copy<ValuesInsertSource>(src.Source);
         }
-
         public List<ColumnReferenceExpression> Columns { get; } = new List<ColumnReferenceExpression>();
-
-        public ValuesInsertSource Source { get; set; }
-
+        public ValuesInsertSource Source;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Columns.Accept(visitor);
             this.Source?.Accept(visitor);

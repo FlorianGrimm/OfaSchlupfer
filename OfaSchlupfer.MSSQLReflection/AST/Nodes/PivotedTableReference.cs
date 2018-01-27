@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class PivotedTableReference : TableReferenceWithAlias {
         public PivotedTableReference() : base() { }
         public PivotedTableReference(ScriptDom.PivotedTableReference src) : base(src) {
@@ -14,19 +15,12 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             Copier.CopyList(this.ValueColumns, src.ValueColumns);
             this.AggregateFunctionIdentifier = Copier.Copy<MultiPartIdentifier>(src.AggregateFunctionIdentifier);
         }
-
-        public TableReference TableReference { get; set; }
-
+        public TableReference TableReference;
         public List<Identifier> InColumns { get; } = new List<Identifier>();
-
-        public ColumnReferenceExpression PivotColumn { get; set; }
-
+        public ColumnReferenceExpression PivotColumn;
         public List<ColumnReferenceExpression> ValueColumns { get; } = new List<ColumnReferenceExpression>();
-
-        public MultiPartIdentifier AggregateFunctionIdentifier { get; set; }
-
+        public MultiPartIdentifier AggregateFunctionIdentifier;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.TableReference?.Accept(visitor);

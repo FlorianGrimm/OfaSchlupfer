@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class TryParseCall : PrimaryExpression {
         public TryParseCall() : base() { }
         public TryParseCall(ScriptDom.TryParseCall src) : base(src) {
@@ -10,15 +11,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.DataType = Copier.Copy<DataTypeReference>(src.DataType);
             this.Culture = Copier.Copy<ScalarExpression>(src.Culture);
         }
-
-        public ScalarExpression StringValue { get; set; }
-
-        public DataTypeReference DataType { get; set; }
-
-        public ScalarExpression Culture { get; set; }
-
+        public ScalarExpression StringValue;
+        public DataTypeReference DataType;
+        public ScalarExpression Culture;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.StringValue?.Accept(visitor);

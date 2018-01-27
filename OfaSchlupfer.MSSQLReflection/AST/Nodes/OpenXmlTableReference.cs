@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class OpenXmlTableReference : TableReferenceWithAlias {
         public OpenXmlTableReference() : base() { }
         public OpenXmlTableReference(ScriptDom.OpenXmlTableReference src) : base(src) {
@@ -14,19 +15,12 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             Copier.CopyList(this.SchemaDeclarationItems, src.SchemaDeclarationItems);
             this.TableName = Copier.Copy<SchemaObjectName>(src.TableName);
         }
-
-        public VariableReference Variable { get; set; }
-
-        public ValueExpression RowPattern { get; set; }
-
-        public ValueExpression Flags { get; set; }
-
+        public VariableReference Variable;
+        public ValueExpression RowPattern;
+        public ValueExpression Flags;
         public List<SchemaDeclarationItem> SchemaDeclarationItems { get; } = new List<SchemaDeclarationItem>();
-
-        public SchemaObjectName TableName { get; set; }
-
+        public SchemaObjectName TableName;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Variable?.Accept(visitor);
             this.RowPattern?.Accept(visitor);

@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class LikePredicate : BooleanExpression {
         public LikePredicate() : base() { }
         public LikePredicate(ScriptDom.LikePredicate src) : base(src) {
@@ -12,18 +13,12 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.SecondExpression = Copier.Copy<ScalarExpression>(src.SecondExpression);
             this.EscapeExpression = Copier.Copy<ScalarExpression>(src.EscapeExpression);
         }
-        public ScalarExpression FirstExpression { get; set; }
-
-        public ScalarExpression SecondExpression { get; set; }
-
-        public bool NotDefined { get; set; }
-
-        public bool OdbcEscape { get; set; }
-
-        public ScalarExpression EscapeExpression { get; set; }
-
+        public ScalarExpression FirstExpression;
+        public ScalarExpression SecondExpression;
+        public bool NotDefined;
+        public bool OdbcEscape;
+        public ScalarExpression EscapeExpression;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.FirstExpression?.Accept(visitor);
             this.SecondExpression?.Accept(visitor);

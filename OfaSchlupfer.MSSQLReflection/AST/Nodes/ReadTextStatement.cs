@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class ReadTextStatement : SqlStatement {
         public ReadTextStatement() : base() { }
         public ReadTextStatement(ScriptDom.ReadTextStatement src) : base(src) {
@@ -12,19 +13,12 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.Size = Copier.Copy<ValueExpression>(src.Size);
             this.HoldLock = src.HoldLock;
         }
-
-        public ColumnReferenceExpression Column { get; set; }
-
-        public ValueExpression TextPointer { get; set; }
-
-        public ValueExpression Offset { get; set; }
-
-        public ValueExpression Size { get; set; }
-
-        public bool HoldLock { get; set; }
-
+        public ColumnReferenceExpression Column;
+        public ValueExpression TextPointer;
+        public ValueExpression Offset;
+        public ValueExpression Size;
+        public bool HoldLock;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Column?.Accept(visitor);
             this.TextPointer?.Accept(visitor);

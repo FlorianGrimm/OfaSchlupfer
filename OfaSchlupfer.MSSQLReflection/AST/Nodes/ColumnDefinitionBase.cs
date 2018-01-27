@@ -3,21 +3,18 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
-    public class ColumnDefinitionBase : SqlNode, ICollationSetter {
+    [System.Diagnostics.DebuggerNonUserCode]
+    public class ColumnDefinitionBase : SqlNode {
         public ColumnDefinitionBase() : base() { }
         public ColumnDefinitionBase(ScriptDom.ColumnDefinitionBase src) : base(src) {
             this.ColumnIdentifier = Copier.Copy<Identifier>(src.ColumnIdentifier);
             this.DataType = Copier.Copy<DataTypeReference>(src.DataType);
             this.Collation = Copier.Copy<Identifier>(src.Collation);
         }
-        public Identifier ColumnIdentifier { get; set; }
-
-        public DataTypeReference DataType { get; set; }
-
-        public Identifier Collation { get; set; }
-
+        public Identifier ColumnIdentifier;
+        public DataTypeReference DataType;
+        public Identifier Collation;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.ColumnIdentifier?.Accept(visitor);
             this.DataType?.Accept(visitor);

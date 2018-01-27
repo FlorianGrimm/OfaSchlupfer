@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class ConvertCall : PrimaryExpression {
         public ConvertCall() : base() { }
         public ConvertCall(ScriptDom.ConvertCall src) : base(src) {
@@ -10,14 +11,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.Parameter = Copier.Copy<ScalarExpression>(src.Parameter);
             this.Style = Copier.Copy<ScalarExpression>(src.Style);
         }
-        public DataTypeReference DataType { get; set; }
-
-        public ScalarExpression Parameter { get; set; }
-
-        public ScalarExpression Style { get; set; }
-
+        public DataTypeReference DataType;
+        public ScalarExpression Parameter;
+        public ScalarExpression Style;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.DataType?.Accept(visitor);

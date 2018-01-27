@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class MergeActionClause : SqlNode {
         public MergeActionClause() : base() { }
         public MergeActionClause(ScriptDom.MergeActionClause src) : base(src) {
@@ -10,14 +11,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.SearchCondition = Copier.Copy<BooleanExpression>(src.SearchCondition);
             this.Action = Copier.Copy<MergeAction>(src.Action);
         }
-        public Microsoft.SqlServer.TransactSql.ScriptDom.MergeCondition Condition { get; set; }
-
-        public BooleanExpression SearchCondition { get; set; }
-
-        public MergeAction Action { get; set; }
-
+        public Microsoft.SqlServer.TransactSql.ScriptDom.MergeCondition Condition;
+        public BooleanExpression SearchCondition;
+        public MergeAction Action;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.SearchCondition?.Accept(visitor);
             this.Action?.Accept(visitor);

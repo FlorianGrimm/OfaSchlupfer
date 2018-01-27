@@ -5,21 +5,20 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public abstract class FunctionStatementBody : ProcedureStatementBodyBase {
         public FunctionStatementBody() : base() { }
         public FunctionStatementBody(ScriptDom.FunctionStatementBody src) : base(src) {
             this.Name = Copier.Copy<SchemaObjectName>(src.Name);
             this.ReturnType = Copier.Copy<FunctionReturnType>(src.ReturnType);
         }
-        public SchemaObjectName Name { get; set; }
-
-        public FunctionReturnType ReturnType { get; set; }
+        public SchemaObjectName Name;
+        public FunctionReturnType ReturnType;
 
         /*
           public List<FunctionOption> Options { get; } = new List<FunctionOption>();
-          public OrderBulkInsertOption OrderHint { get; set; }
+          public OrderBulkInsertOption OrderHint;
         */
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.Name?.Accept(visitor);

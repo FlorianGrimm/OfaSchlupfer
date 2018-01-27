@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class CreateOrAlterViewStatement : ViewStatementBody {
         public CreateOrAlterViewStatement() : base() { }
         public CreateOrAlterViewStatement(ScriptDom.CreateOrAlterViewStatement src) : base(src) { }

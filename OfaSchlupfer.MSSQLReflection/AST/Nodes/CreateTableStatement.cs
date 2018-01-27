@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class CreateTableStatement : SqlStatement {
         public CreateTableStatement() : base() { }
         public CreateTableStatement(ScriptDom.CreateTableStatement src) : base(src) {
@@ -16,28 +17,20 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.TextImageOn = Copier.Copy<IdentifierOrValueExpression>(src.TextImageOn);
             this.FileStreamOn = Copier.Copy<IdentifierOrValueExpression>(src.FileStreamOn);
         }
-        public SchemaObjectName SchemaObjectName { get; set; }
-
-        public bool AsEdge { get; set; }
-
-        public bool AsFileTable { get; set; }
-
-        public bool AsNode { get; set; }
-
-        public TableDefinition Definition { get; set; }
+        public SchemaObjectName SchemaObjectName;
+        public bool AsEdge;
+        public bool AsFileTable;
+        public bool AsNode;
+        public TableDefinition Definition;
 
         /*
-        // public FileGroupOrPartitionScheme OnFileGroupOrPartitionScheme { get; set; }
-        // public FederationScheme FederationScheme { get; set; }
+        // public FileGroupOrPartitionScheme OnFileGroupOrPartitionScheme;
+        // public FederationScheme FederationScheme;
         // public List<TableOption> Options { get; } = new List<TableOption>();
         */
-
-        public IdentifierOrValueExpression TextImageOn { get; set; }
-
-        public IdentifierOrValueExpression FileStreamOn { get; set; }
-
+        public IdentifierOrValueExpression TextImageOn;
+        public IdentifierOrValueExpression FileStreamOn;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.SchemaObjectName?.Accept(visitor);
             this.Definition?.Accept(visitor);

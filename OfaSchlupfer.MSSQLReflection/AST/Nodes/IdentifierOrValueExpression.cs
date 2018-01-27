@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class IdentifierOrValueExpression : SqlNode {
         public IdentifierOrValueExpression() : base() { }
         public IdentifierOrValueExpression(ScriptDom.IdentifierOrValueExpression src) : base(src) {
@@ -32,12 +33,9 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
                 return null;
             }
         }
-
-        public Identifier Identifier { get; set; }
-        public ValueExpression ValueExpression { get; set; }
-
+        public Identifier Identifier;
+        public ValueExpression ValueExpression;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Identifier?.Accept(visitor);
             this.ValueExpression?.Accept(visitor);

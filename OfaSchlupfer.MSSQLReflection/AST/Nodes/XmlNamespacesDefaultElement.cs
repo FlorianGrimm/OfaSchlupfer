@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class XmlNamespacesDefaultElement : XmlNamespacesElement {
         public XmlNamespacesDefaultElement() : base() { }
         public XmlNamespacesDefaultElement(ScriptDom.XmlNamespacesDefaultElement src) : base(src) { }

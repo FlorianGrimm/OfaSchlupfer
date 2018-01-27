@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class ExecuteAsStatement : SqlStatement {
         public ExecuteAsStatement() : base() { }
         public ExecuteAsStatement(ScriptDom.ExecuteAsStatement src) : base(src) {
@@ -10,15 +11,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.Cookie = Copier.Copy<VariableReference>(src.Cookie);
             this.ExecuteContext = Copier.Copy<ExecuteContext>(src.ExecuteContext);
         }
-
-        public bool WithNoRevert { get; set; }
-
-        public VariableReference Cookie { get; set; }
-
-        public ExecuteContext ExecuteContext { get; set; }
-
+        public bool WithNoRevert;
+        public VariableReference Cookie;
+        public ExecuteContext ExecuteContext;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Cookie?.Accept(visitor);
             this.ExecuteContext?.Accept(visitor);

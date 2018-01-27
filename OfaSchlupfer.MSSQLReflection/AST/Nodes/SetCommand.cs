@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public abstract class SetCommand : SqlNode {
         public SetCommand() : base() { }
         public SetCommand(ScriptDom.SetCommand src) : base(src) { }

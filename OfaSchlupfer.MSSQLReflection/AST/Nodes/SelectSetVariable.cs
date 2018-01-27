@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class SelectSetVariable : SelectElement {
         public SelectSetVariable() : base() { }
         public SelectSetVariable(ScriptDom.SelectSetVariable src) : base(src) {
@@ -10,14 +11,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.Expression = Copier.Copy<ScalarExpression>(src.Expression);
             this.AssignmentKind = src.AssignmentKind;
         }
-        public VariableReference Variable { get; set; }
-
-        public ScalarExpression Expression { get; set; }
-
-        public Microsoft.SqlServer.TransactSql.ScriptDom.AssignmentKind AssignmentKind { get; set; }
-
+        public VariableReference Variable;
+        public ScalarExpression Expression;
+        public Microsoft.SqlServer.TransactSql.ScriptDom.AssignmentKind AssignmentKind;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Variable?.Accept(visitor);
             this.Expression?.Accept(visitor);

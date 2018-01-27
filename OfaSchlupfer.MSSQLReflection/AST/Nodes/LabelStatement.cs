@@ -3,14 +3,13 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class LabelStatement : SqlStatement {
         public LabelStatement() : base() { }
         public LabelStatement(ScriptDom.LabelStatement src) : base(src) {
             this.Value = src.Value;
         }
-
-        public string Value { get; set; }
-
+        public string Value;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
     }
 }

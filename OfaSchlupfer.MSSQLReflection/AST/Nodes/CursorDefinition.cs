@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class CursorDefinition : SqlNode {
         public CursorDefinition() : base() { }
         public CursorDefinition(ScriptDom.CursorDefinition src) : base(src) {
@@ -14,11 +15,8 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
         /*
         public List<CursorOption> Options { get; } = new List<CursorOption>();
          */
-
-        public SelectStatement Select { get; set; }
-
+        public SelectStatement Select;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             // this.Options.Accept(visitor);
             this.Select?.Accept(visitor);

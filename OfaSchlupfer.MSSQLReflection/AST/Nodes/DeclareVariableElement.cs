@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public class DeclareVariableElement : SqlNode {
         public DeclareVariableElement() : base() { }
         public DeclareVariableElement(ScriptDom.DeclareVariableElement src) : base(src) {
@@ -11,17 +12,11 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.Nullable = Copier.Copy<NullableConstraintDefinition>(src.Nullable);
             this.Value = Copier.Copy<ScalarExpression>(src.Value);
         }
-
-        public Identifier VariableName { get; set; }
-
-        public DataTypeReference DataType { get; set; }
-
-        public NullableConstraintDefinition Nullable { get; set; }
-
-        public ScalarExpression Value { get; set; }
-
+        public Identifier VariableName;
+        public DataTypeReference DataType;
+        public NullableConstraintDefinition Nullable;
+        public ScalarExpression Value;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.VariableName?.Accept(visitor);
             this.DataType?.Accept(visitor);

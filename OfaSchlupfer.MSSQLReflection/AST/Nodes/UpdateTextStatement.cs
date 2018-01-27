@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class UpdateTextStatement : TextModificationStatement {
         public UpdateTextStatement() : base() { }
         public UpdateTextStatement(ScriptDom.UpdateTextStatement src) : base(src) {
@@ -11,16 +12,11 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.SourceColumn = Copier.Copy<ColumnReferenceExpression>(src.SourceColumn);
             this.SourceParameter = Copier.Copy<ValueExpression>(src.SourceParameter);
         }
-        public ScalarExpression InsertOffset { get; set; }
-
-        public ScalarExpression DeleteLength { get; set; }
-
-        public ColumnReferenceExpression SourceColumn { get; set; }
-
-        public ValueExpression SourceParameter { get; set; }
-
+        public ScalarExpression InsertOffset;
+        public ScalarExpression DeleteLength;
+        public ColumnReferenceExpression SourceColumn;
+        public ValueExpression SourceParameter;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.InsertOffset?.Accept(visitor);
             this.DeleteLength?.Accept(visitor);

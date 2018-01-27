@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class BrowseForClause : ForClause {
         public BrowseForClause() : base() { }
         public BrowseForClause(ScriptDom.BrowseForClause src) : base(src) { }

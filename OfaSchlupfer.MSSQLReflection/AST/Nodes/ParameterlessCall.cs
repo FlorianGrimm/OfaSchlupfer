@@ -3,13 +3,13 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class ParameterlessCall : PrimaryExpression {
         public ParameterlessCall() : base() { }
         public ParameterlessCall(ScriptDom.ParameterlessCall src) : base(src) {
             this.ParameterlessCallType = src.ParameterlessCallType;
         }
-        public Microsoft.SqlServer.TransactSql.ScriptDom.ParameterlessCallType ParameterlessCallType { get; set; }
-
+        public Microsoft.SqlServer.TransactSql.ScriptDom.ParameterlessCallType ParameterlessCallType;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
     }
 }

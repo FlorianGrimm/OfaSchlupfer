@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class RaiseErrorStatement : SqlStatement {
         public RaiseErrorStatement() : base() { }
         public RaiseErrorStatement(ScriptDom.RaiseErrorStatement src) : base(src) {
@@ -14,18 +15,12 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             Copier.CopyList(this.OptionalParameters, src.OptionalParameters);
             this.RaiseErrorOptions = src.RaiseErrorOptions;
         }
-        public ScalarExpression FirstParameter { get; set; }
-
-        public ScalarExpression SecondParameter { get; set; }
-
-        public ScalarExpression ThirdParameter { get; set; }
-
+        public ScalarExpression FirstParameter;
+        public ScalarExpression SecondParameter;
+        public ScalarExpression ThirdParameter;
         public List<ScalarExpression> OptionalParameters { get; } = new List<ScalarExpression>();
-
-        public Microsoft.SqlServer.TransactSql.ScriptDom.RaiseErrorOptions RaiseErrorOptions { get; set; }
-
+        public Microsoft.SqlServer.TransactSql.ScriptDom.RaiseErrorOptions RaiseErrorOptions;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.FirstParameter?.Accept(visitor);
             this.SecondParameter?.Accept(visitor);

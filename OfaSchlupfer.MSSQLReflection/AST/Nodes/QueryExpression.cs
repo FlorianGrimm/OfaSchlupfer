@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public abstract class QueryExpression : SqlNode {
         public QueryExpression() : base() { }
         public QueryExpression(ScriptDom.QueryExpression src) : base(src) {
@@ -12,13 +13,9 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.OffsetClause = Copier.Copy<OffsetClause>(src.OffsetClause);
             this.ForClause = Copier.Copy<ForClause>(src.ForClause);
         }
-
-        public OrderByClause OrderByClause { get; set; }
-
-        public OffsetClause OffsetClause { get; set; }
-
-        public ForClause ForClause { get; set; }
-
+        public OrderByClause OrderByClause;
+        public OffsetClause OffsetClause;
+        public ForClause ForClause;
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.OrderByClause?.Accept(visitor);
             this.OffsetClause?.Accept(visitor);
@@ -28,9 +25,9 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     }
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class QuerySpecification : QueryExpression {
         public QuerySpecification() : base() { }
-
         public QuerySpecification(ScriptDom.QuerySpecification src) : base(src) {
             this.UniqueRowFilter = src.UniqueRowFilter;
             this.TopRowFilter = Copier.Copy<TopRowFilter>(src.TopRowFilter);
@@ -40,23 +37,14 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.GroupByClause = Copier.Copy<GroupByClause>(src.GroupByClause);
             this.HavingClause = Copier.Copy<HavingClause>(src.HavingClause);
         }
-
-        public Microsoft.SqlServer.TransactSql.ScriptDom.UniqueRowFilter UniqueRowFilter { get; set; }
-
-        public TopRowFilter TopRowFilter { get; set; }
-
+        public Microsoft.SqlServer.TransactSql.ScriptDom.UniqueRowFilter UniqueRowFilter;
+        public TopRowFilter TopRowFilter;
         public List<SelectElement> SelectElements { get; } = new List<SelectElement>();
-
-        public FromClause FromClause { get; set; }
-
-        public WhereClause WhereClause { get; set; }
-
-        public GroupByClause GroupByClause { get; set; }
-
-        public HavingClause HavingClause { get; set; }
-
+        public FromClause FromClause;
+        public WhereClause WhereClause;
+        public GroupByClause GroupByClause;
+        public HavingClause HavingClause;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.TopRowFilter?.Accept(visitor);
@@ -69,16 +57,14 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     }
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class QueryParenthesisExpression : QueryExpression {
         public QueryParenthesisExpression() : base() { }
         public QueryParenthesisExpression(ScriptDom.QueryParenthesisExpression src) : base(src) {
             this.QueryExpression = Copier.Copy<QueryExpression>(src.QueryExpression);
         }
-
-        public QueryExpression QueryExpression { get; set; }
-
+        public QueryExpression QueryExpression;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.QueryExpression?.Accept(visitor);
@@ -86,6 +72,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     }
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class BinaryQueryExpression : QueryExpression {
         public BinaryQueryExpression() : base() { }
         public BinaryQueryExpression(ScriptDom.BinaryQueryExpression src) : base(src) {
@@ -94,16 +81,11 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.FirstQueryExpression = Copier.Copy<QueryExpression>(src.FirstQueryExpression);
             this.SecondQueryExpression = Copier.Copy<QueryExpression>(src.SecondQueryExpression);
         }
-        public Microsoft.SqlServer.TransactSql.ScriptDom.BinaryQueryExpressionType BinaryQueryExpressionType { get; set; }
-
-        public bool All { get; set; }
-
-        public QueryExpression FirstQueryExpression { get; set; }
-
-        public QueryExpression SecondQueryExpression { get; set; }
-
+        public Microsoft.SqlServer.TransactSql.ScriptDom.BinaryQueryExpressionType BinaryQueryExpressionType;
+        public bool All;
+        public QueryExpression FirstQueryExpression;
+        public QueryExpression SecondQueryExpression;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.FirstQueryExpression?.Accept(visitor);

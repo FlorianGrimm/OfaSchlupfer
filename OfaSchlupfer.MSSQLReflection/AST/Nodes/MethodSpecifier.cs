@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class MethodSpecifier : SqlNode {
         public MethodSpecifier() : base() { }
         public MethodSpecifier(ScriptDom.MethodSpecifier src) : base(src) {
@@ -10,15 +11,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.ClassName = Copier.Copy<Identifier>(src.ClassName);
             this.MethodName = Copier.Copy<Identifier>(src.MethodName);
         }
-
-        public Identifier AssemblyName { get; set; }
-
-        public Identifier ClassName { get; set; }
-
-        public Identifier MethodName { get; set; }
-
+        public Identifier AssemblyName;
+        public Identifier ClassName;
+        public Identifier MethodName;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.AssemblyName?.Accept(visitor);
             this.ClassName?.Accept(visitor);

@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class VariableMethodCallTableReference : TableReferenceWithAliasAndColumns {
         public VariableMethodCallTableReference() : base() { }
         public VariableMethodCallTableReference(ScriptDom.VariableMethodCallTableReference src) : base(src) {
@@ -12,15 +13,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.MethodName = Copier.Copy<Identifier>(src.MethodName);
             Copier.CopyList(this.Parameters, src.Parameters);
         }
-
-        public VariableReference Variable { get; set; }
-
-        public Identifier MethodName { get; set; }
-
+        public VariableReference Variable;
+        public Identifier MethodName;
         public List<ScalarExpression> Parameters { get; } = new List<ScalarExpression>();
-
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Variable?.Accept(visitor);
             this.MethodName?.Accept(visitor);

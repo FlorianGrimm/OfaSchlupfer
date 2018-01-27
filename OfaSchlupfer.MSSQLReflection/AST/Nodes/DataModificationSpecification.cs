@@ -4,6 +4,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using System.Collections.Generic;
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public abstract class DataModificationSpecification : SqlNode {
         public DataModificationSpecification() : base() { }
         public DataModificationSpecification(ScriptDom.DataModificationSpecification src) : base(src) {
@@ -12,15 +13,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.OutputIntoClause = Copier.Copy<OutputIntoClause>(src.OutputIntoClause);
             this.OutputClause = Copier.Copy<OutputClause>(src.OutputClause);
         }
-
-        public TableReference Target { get; set; }
-
-        public TopRowFilter TopRowFilter { get; set; }
-
-        public OutputIntoClause OutputIntoClause { get; set; }
-
-        public OutputClause OutputClause { get; set; }
-
+        public TableReference Target;
+        public TopRowFilter TopRowFilter;
+        public OutputIntoClause OutputIntoClause;
+        public OutputClause OutputClause;
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Target?.Accept(visitor);
             this.TopRowFilter?.Accept(visitor);
@@ -31,17 +27,15 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     }
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public abstract class UpdateDeleteSpecificationBase : DataModificationSpecification {
         public UpdateDeleteSpecificationBase() : base() { }
         public UpdateDeleteSpecificationBase(ScriptDom.UpdateDeleteSpecificationBase src) : base(src) {
             this.FromClause = Copier.Copy<FromClause>(src.FromClause);
             this.WhereClause = Copier.Copy<WhereClause>(src.WhereClause);
         }
-
-        public FromClause FromClause { get; set; }
-
-        public WhereClause WhereClause { get; set; }
-
+        public FromClause FromClause;
+        public WhereClause WhereClause;
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.FromClause?.Accept(visitor);
@@ -50,6 +44,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     }
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class InsertSpecification : DataModificationSpecification {
         public InsertSpecification() : base() { }
         public InsertSpecification(ScriptDom.InsertSpecification src) : base(src) {
@@ -57,14 +52,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.InsertSource = Copier.Copy<InsertSource>(src.InsertSource);
             Copier.CopyList(this.Columns, src.Columns);
         }
-        public Microsoft.SqlServer.TransactSql.ScriptDom.InsertOption InsertOption { get; set; }
-
-        public InsertSource InsertSource { get; set; }
-
+        public Microsoft.SqlServer.TransactSql.ScriptDom.InsertOption InsertOption;
+        public InsertSource InsertSource;
         public List<ColumnReferenceExpression> Columns { get; } = new List<ColumnReferenceExpression>();
-
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.InsertSource?.Accept(visitor);
@@ -73,15 +64,14 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     }
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class UpdateSpecification : UpdateDeleteSpecificationBase {
         public UpdateSpecification() : base() { }
         public UpdateSpecification(ScriptDom.UpdateSpecification src) : base(src) {
             Copier.CopyList(this.SetClauses, src.SetClauses);
         }
         public List<SetClause> SetClauses { get; } = new List<SetClause>();
-
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.SetClauses.Accept(visitor);
@@ -89,6 +79,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     }
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class DeleteSpecification : UpdateDeleteSpecificationBase {
         public DeleteSpecification() : base() { }
         public DeleteSpecification(ScriptDom.DeleteSpecification src) : base(src) { }
@@ -96,6 +87,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     }
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class MergeSpecification : DataModificationSpecification {
         public MergeSpecification() : base() { }
         public MergeSpecification(ScriptDom.MergeSpecification src) : base(src) {
@@ -104,17 +96,11 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.SearchCondition = Copier.Copy<BooleanExpression>(src.SearchCondition);
             Copier.CopyList(this.ActionClauses, src.ActionClauses);
         }
-
-        public Identifier TableAlias { get; set; }
-
-        public TableReference TableReference { get; set; }
-
-        public BooleanExpression SearchCondition { get; set; }
-
+        public Identifier TableAlias;
+        public TableReference TableReference;
+        public BooleanExpression SearchCondition;
         public List<MergeActionClause> ActionClauses { get; } = new List<MergeActionClause>();
-
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.TableAlias?.Accept(visitor);
@@ -125,16 +111,14 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     }
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class InsertStatement : DataModificationStatement {
         public InsertStatement() : base() { }
         public InsertStatement(ScriptDom.InsertStatement src) : base(src) {
             this.InsertSpecification = Copier.Copy<InsertSpecification>(src.InsertSpecification);
         }
-
-        public InsertSpecification InsertSpecification { get; set; }
-
+        public InsertSpecification InsertSpecification;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.InsertSpecification?.Accept(visitor);
@@ -142,16 +126,14 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     }
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class UpdateStatement : DataModificationStatement {
         public UpdateStatement() : base() { }
         public UpdateStatement(ScriptDom.UpdateStatement src) : base(src) {
             this.UpdateSpecification = Copier.Copy<UpdateSpecification>(src.UpdateSpecification);
         }
-
-        public UpdateSpecification UpdateSpecification { get; set; }
-
+        public UpdateSpecification UpdateSpecification;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.UpdateSpecification?.Accept(visitor);
@@ -159,15 +141,14 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     }
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class DeleteStatement : DataModificationStatement {
         public DeleteStatement() : base() { }
         public DeleteStatement(ScriptDom.DeleteStatement src) : base(src) {
             this.DeleteSpecification = Copier.Copy<DeleteSpecification>(src.DeleteSpecification);
         }
-        public DeleteSpecification DeleteSpecification { get; set; }
-
+        public DeleteSpecification DeleteSpecification;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.DeleteSpecification?.Accept(visitor);
@@ -175,15 +156,14 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     }
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class MergeStatement : DataModificationStatement {
         public MergeStatement() : base() { }
         public MergeStatement(ScriptDom.MergeStatement src) : base(src) {
             this.MergeSpecification = Copier.Copy<MergeSpecification>(src.MergeSpecification);
         }
-        public MergeSpecification MergeSpecification { get; set; }
-
+        public MergeSpecification MergeSpecification;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.MergeSpecification?.Accept(visitor);

@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class IfStatement : SqlStatement {
         public IfStatement() : base() { }
         public IfStatement(ScriptDom.IfStatement src) : base(src) {
@@ -10,15 +11,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.ThenStatement = Copier.Copy<SqlStatement>(src.ThenStatement);
             this.ElseStatement = Copier.Copy<SqlStatement>(src.ElseStatement);
         }
-
-        public BooleanExpression Predicate { get; set; }
-
-        public SqlStatement ThenStatement { get; set; }
-
-        public SqlStatement ElseStatement { get; set; }
-
+        public BooleanExpression Predicate;
+        public SqlStatement ThenStatement;
+        public SqlStatement ElseStatement;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Predicate?.Accept(visitor);
             this.ThenStatement?.Accept(visitor);

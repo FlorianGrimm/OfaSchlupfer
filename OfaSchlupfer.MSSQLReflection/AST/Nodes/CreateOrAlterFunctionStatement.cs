@@ -3,11 +3,11 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class CreateOrAlterFunctionStatement : FunctionStatementBody {
         public CreateOrAlterFunctionStatement() : base() { }
         public CreateOrAlterFunctionStatement(ScriptDom.CreateOrAlterFunctionStatement src) : base(src) { }
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
             this.Parameters.Accept(visitor);

@@ -4,9 +4,9 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class OnOffOptionValue : OptionValue {
-        public Microsoft.SqlServer.TransactSql.ScriptDom.OptionState OptionState { get; set; }
-
+        public Microsoft.SqlServer.TransactSql.ScriptDom.OptionState OptionState;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
     }
 }

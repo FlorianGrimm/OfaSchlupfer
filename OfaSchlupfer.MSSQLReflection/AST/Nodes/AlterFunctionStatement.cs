@@ -7,13 +7,11 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class AlterFunctionStatement : FunctionStatementBody {
         public AlterFunctionStatement() : base() { }
-
         public AlterFunctionStatement(ScriptDom.AlterFunctionStatement src) : base(src) { }
-
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
             this.Parameters.Accept(visitor);

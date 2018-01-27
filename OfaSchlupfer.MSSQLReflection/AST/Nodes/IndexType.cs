@@ -4,13 +4,13 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class IndexType : SqlNode {
         public IndexType() : base() { }
         public IndexType(ScriptDom.IndexType src) : base(src) {
             this.IndexTypeKind = src.IndexTypeKind;
         }
-        public Microsoft.SqlServer.TransactSql.ScriptDom.IndexTypeKind? IndexTypeKind { get; set; }
-
+        public Microsoft.SqlServer.TransactSql.ScriptDom.IndexTypeKind? IndexTypeKind;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
     }
 }

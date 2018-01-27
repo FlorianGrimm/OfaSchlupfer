@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class ContinueStatement : SqlStatement {
         public ContinueStatement() : base() { }
         public ContinueStatement(ScriptDom.ContinueStatement src) : base(src) { }

@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class FunctionCall : PrimaryExpression {
         public FunctionCall() : base() { }
         public FunctionCall(ScriptDom.FunctionCall src) : base(src) {
@@ -15,20 +16,13 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.OverClause = Copier.Copy<OverClause>(src.OverClause);
             this.WithinGroupClause = Copier.Copy<WithinGroupClause>(src.WithinGroupClause);
         }
-        public CallTarget CallTarget { get; set; }
-
-        public Identifier FunctionName { get; set; }
-
+        public CallTarget CallTarget;
+        public Identifier FunctionName;
         public List<ScalarExpression> Parameters { get; } = new List<ScalarExpression>();
-
-        public Microsoft.SqlServer.TransactSql.ScriptDom.UniqueRowFilter UniqueRowFilter { get; set; }
-
-        public OverClause OverClause { get; set; }
-
-        public WithinGroupClause WithinGroupClause { get; set; }
-
+        public Microsoft.SqlServer.TransactSql.ScriptDom.UniqueRowFilter UniqueRowFilter;
+        public OverClause OverClause;
+        public WithinGroupClause WithinGroupClause;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.CallTarget?.Accept(visitor);

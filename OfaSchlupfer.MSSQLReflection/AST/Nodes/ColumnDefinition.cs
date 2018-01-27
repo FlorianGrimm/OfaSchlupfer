@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class ColumnDefinition : ColumnDefinitionBase {
         public ColumnDefinition() : base() { }
         public ColumnDefinition(ScriptDom.ColumnDefinition src) : base(src) {
@@ -17,34 +18,22 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.GeneratedAlways = src.GeneratedAlways;
             this.IsHidden = src.IsHidden;
         }
-
-        public ScalarExpression ComputedColumnExpression { get; set; }
-
-        public bool IsPersisted { get; set; }
-
-        public DefaultConstraintDefinition DefaultConstraint { get; set; }
-
-        public IdentityOptions IdentityOptions { get; set; }
-
-        public bool IsRowGuidCol { get; set; }
-
+        public ScalarExpression ComputedColumnExpression;
+        public bool IsPersisted;
+        public DefaultConstraintDefinition DefaultConstraint;
+        public IdentityOptions IdentityOptions;
+        public bool IsRowGuidCol;
         public List<ConstraintDefinition> Constraints { get; } = new List<ConstraintDefinition>();
 
-        // public ColumnStorageOptions StorageOptions { get; set; }
-        // public IndexDefinition Index { get; set; }
+        // public ColumnStorageOptions StorageOptions;
+        // public IndexDefinition Index;
+        public ScriptDom.GeneratedAlwaysType? GeneratedAlways;
+        public bool IsHidden;
 
-        public ScriptDom.GeneratedAlwaysType? GeneratedAlways { get; set; }
-
-        public bool IsHidden { get; set; }
-
-        // public ColumnEncryptionDefinition Encryption { get; set; }
-
-        public bool IsMasked { get; set; }
-
-        public StringLiteral MaskingFunction { get; set; }
-
+        // public ColumnEncryptionDefinition Encryption;
+        public bool IsMasked;
+        public StringLiteral MaskingFunction;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.ComputedColumnExpression?.Accept(visitor);

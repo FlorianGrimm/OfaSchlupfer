@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class BreakStatement : SqlStatement {
         public BreakStatement() : base() { }
         public BreakStatement(ScriptDom.BreakStatement src) : base(src) { }

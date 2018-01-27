@@ -4,6 +4,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public abstract class TableIndexType : SqlNode {
         public TableIndexType() : base() { }
         public TableIndexType(ScriptDom.TableIndexType src) : base(src) { }

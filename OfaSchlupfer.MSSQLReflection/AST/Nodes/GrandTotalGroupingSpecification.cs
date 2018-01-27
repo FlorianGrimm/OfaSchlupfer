@@ -4,6 +4,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class GrandTotalGroupingSpecification : GroupingSpecification {
         public GrandTotalGroupingSpecification() : base() { }
         public GrandTotalGroupingSpecification(ScriptDom.GrandTotalGroupingSpecification src) : base(src) { }

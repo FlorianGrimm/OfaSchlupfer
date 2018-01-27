@@ -3,13 +3,13 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public class OptimizerHint : SqlNode {
         public OptimizerHint() : base() { }
         public OptimizerHint(ScriptDom.OptimizerHint src) : base(src) {
             this.HintKind = src.HintKind;
         }
-        public Microsoft.SqlServer.TransactSql.ScriptDom.OptimizerHintKind HintKind { get; set; }
-
+        public Microsoft.SqlServer.TransactSql.ScriptDom.OptimizerHintKind HintKind;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
     }
 }

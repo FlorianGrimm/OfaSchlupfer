@@ -6,6 +6,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public class Identifier : SqlNode {
         private const string EscapedRSquareParen = "]]";
 
@@ -24,14 +25,11 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
         private string _value;
 
         private ScriptDom.QuoteType _quoteType;
-
         public Identifier() { }
-
         public Identifier(ScriptDom.Identifier src) {
             this._quoteType = src.QuoteType;
             this._value = src.Value;
         }
-
         public string Value {
             get {
                 return this._value;
@@ -41,7 +39,6 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
                 this._value = value;
             }
         }
-
         public ScriptDom.QuoteType QuoteType {
             get {
                 return this._quoteType;
@@ -51,7 +48,6 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
                 this._quoteType = value;
             }
         }
-
         public static string DecodeIdentifier(string identifier, out ScriptDom.QuoteType quote) {
             if (identifier != null && identifier.Length > 2) {
                 if (identifier.Length != 0 && (identifier[0] == '[' || identifier[0] == '"')) {
@@ -69,7 +65,6 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             quote = ScriptDom.QuoteType.NotQuoted;
             return identifier;
         }
-
         public static string EncodeIdentifier(string identifier) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("[");
@@ -77,7 +72,6 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             stringBuilder.Append("]");
             return stringBuilder.ToString();
         }
-
         public static string EncodeIdentifier(string identifier, ScriptDom.QuoteType quoteType) {
             StringBuilder stringBuilder = new StringBuilder();
             switch (quoteType) {
@@ -107,7 +101,6 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
         internal void SetIdentifier(string text) {
             this._value = Identifier.DecodeIdentifier(text, out this._quoteType);
         }
-
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
     }
 }

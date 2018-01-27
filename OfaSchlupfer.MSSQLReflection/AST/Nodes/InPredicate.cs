@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class InPredicate : BooleanExpression {
         public InPredicate() : base() { }
         public InPredicate(ScriptDom.InPredicate src) : base(src) {
@@ -13,17 +14,11 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.NotDefined = src.NotDefined;
             Copier.CopyList(this.Values, src.Values);
         }
-
-        public ScalarExpression Expression { get; set; }
-
-        public ScalarSubquery Subquery { get; set; }
-
-        public bool NotDefined { get; set; }
-
+        public ScalarExpression Expression;
+        public ScalarSubquery Subquery;
+        public bool NotDefined;
         public List<ScalarExpression> Values { get; } = new List<ScalarExpression>();
-
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Expression?.Accept(visitor);
             this.Subquery?.Accept(visitor);

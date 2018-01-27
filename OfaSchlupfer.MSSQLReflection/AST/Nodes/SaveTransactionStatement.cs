@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class SaveTransactionStatement : TransactionStatement {
         public SaveTransactionStatement() : base() { }
         public SaveTransactionStatement(ScriptDom.SaveTransactionStatement src) : base(src) { }

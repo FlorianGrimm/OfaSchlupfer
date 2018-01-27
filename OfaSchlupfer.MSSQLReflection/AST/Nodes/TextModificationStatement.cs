@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public abstract class TextModificationStatement : SqlStatement {
         public TextModificationStatement() : base() { }
         public TextModificationStatement(ScriptDom.TextModificationStatement src) : base(src) {
@@ -11,17 +12,11 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.TextId = Copier.Copy<ValueExpression>(src.TextId);
             this.WithLog = src.WithLog;
         }
-
-        public bool Bulk { get; set; }
-
-        public ColumnReferenceExpression Column { get; set; }
-
-        public ValueExpression TextId { get; set; }
-
-        public Literal Timestamp { get; set; }
-
-        public bool WithLog { get; set; }
-
+        public bool Bulk;
+        public ColumnReferenceExpression Column;
+        public ValueExpression TextId;
+        public Literal Timestamp;
+        public bool WithLog;
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Column?.Accept(visitor);
             this.TextId?.Accept(visitor);

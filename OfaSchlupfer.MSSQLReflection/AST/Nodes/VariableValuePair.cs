@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class VariableValuePair : SqlNode {
         public VariableValuePair() : base() { }
         public VariableValuePair(ScriptDom.VariableValuePair src) : base(src) {
@@ -10,14 +11,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.Value = Copier.Copy<ScalarExpression>(src.Value);
             this.IsForUnknown = src.IsForUnknown;
         }
-        public VariableReference Variable { get; set; }
-
-        public ScalarExpression Value { get; set; }
-
-        public bool IsForUnknown { get; set; }
-
+        public VariableReference Variable;
+        public ScalarExpression Value;
+        public bool IsForUnknown;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Variable?.Accept(visitor);
             this.Value?.Accept(visitor);

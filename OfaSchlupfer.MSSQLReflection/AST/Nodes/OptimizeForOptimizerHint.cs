@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class OptimizeForOptimizerHint : OptimizerHint {
         public OptimizeForOptimizerHint() : base() { }
         public OptimizeForOptimizerHint(ScriptDom.OptimizeForOptimizerHint src) : base(src) {
@@ -12,11 +13,8 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.IsForUnknown = src.IsForUnknown;
         }
         public List<VariableValuePair> Pairs { get; } = new List<VariableValuePair>();
-
-        public bool IsForUnknown { get; set; }
-
+        public bool IsForUnknown;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.Pairs.Accept(visitor);

@@ -4,6 +4,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class AssignmentSetClause : SetClause {
         public AssignmentSetClause() : base() { }
         public AssignmentSetClause(ScriptDom.AssignmentSetClause src) : base(src) {
@@ -12,16 +13,11 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.NewValue = Copier.Copy<ScalarExpression>(src.NewValue);
             this.AssignmentKind = src.AssignmentKind;
         }
-        public VariableReference Variable { get; set; }
-
-        public ColumnReferenceExpression Column { get; set; }
-
-        public ScalarExpression NewValue { get; set; }
-
-        public ScriptDom.AssignmentKind AssignmentKind { get; set; }
-
+        public VariableReference Variable;
+        public ColumnReferenceExpression Column;
+        public ScalarExpression NewValue;
+        public ScriptDom.AssignmentKind AssignmentKind;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Variable?.Accept(visitor);
             this.Column?.Accept(visitor);

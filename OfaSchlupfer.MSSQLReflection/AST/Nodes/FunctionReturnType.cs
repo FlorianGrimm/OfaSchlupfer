@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public abstract class FunctionReturnType : SqlNode {
         public FunctionReturnType() : base() { }
         public FunctionReturnType(ScriptDom.FunctionReturnType src) : base(src) { }

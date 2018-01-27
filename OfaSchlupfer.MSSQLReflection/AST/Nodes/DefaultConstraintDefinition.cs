@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class DefaultConstraintDefinition : ConstraintDefinition {
         public DefaultConstraintDefinition() : base() { }
         public DefaultConstraintDefinition(ScriptDom.DefaultConstraintDefinition src) : base(src) {
@@ -10,15 +11,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.WithValues = src.WithValues;
             this.Column = Copier.Copy<Identifier>(src.Column);
         }
-
-        public ScalarExpression Expression { get; set; }
-
-        public bool WithValues { get; set; }
-
-        public Identifier Column { get; set; }
-
+        public ScalarExpression Expression;
+        public bool WithValues;
+        public Identifier Column;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.Expression?.Accept(visitor);

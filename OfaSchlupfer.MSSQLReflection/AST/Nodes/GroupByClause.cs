@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class GroupByClause : SqlNode {
         public GroupByClause() : base() { }
         public GroupByClause(ScriptDom.GroupByClause src) : base(src) {
@@ -12,14 +13,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.All = src.All;
             Copier.CopyList(this.GroupingSpecifications, src.GroupingSpecifications);
         }
-        public Microsoft.SqlServer.TransactSql.ScriptDom.GroupByOption GroupByOption { get; set; }
-
-        public bool All { get; set; }
-
+        public Microsoft.SqlServer.TransactSql.ScriptDom.GroupByOption GroupByOption;
+        public bool All;
         public List<GroupingSpecification> GroupingSpecifications { get; } = new List<GroupingSpecification>();
-
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.GroupingSpecifications.Accept(visitor);
             base.AcceptChildren(visitor);

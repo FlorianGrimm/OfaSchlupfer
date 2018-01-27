@@ -4,15 +4,14 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class TableHashDistributionPolicy : TableDistributionPolicy {
         public TableHashDistributionPolicy() : base() { }
         public TableHashDistributionPolicy(ScriptDom.TableHashDistributionPolicy src)
             : base(src) {
             this.DistributionColumn = Copier.Copy<Identifier>(src.DistributionColumn);
         }
-
-        public Identifier DistributionColumn { get; set; }
-
+        public Identifier DistributionColumn;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
     }
 }

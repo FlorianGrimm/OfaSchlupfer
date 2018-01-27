@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class CommonTableExpression : SqlNode {
         public CommonTableExpression() : base() { }
         public CommonTableExpression(ScriptDom.CommonTableExpression src) : base(src) {
@@ -12,15 +13,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             Copier.CopyList(this.Columns, src.Columns);
             this.QueryExpression = Copier.Copy<QueryExpression>(src.QueryExpression);
         }
-
-        public Identifier ExpressionName { get; set; }
-
+        public Identifier ExpressionName;
         public List<Identifier> Columns { get; } = new List<Identifier>();
-
-        public QueryExpression QueryExpression { get; set; }
-
+        public QueryExpression QueryExpression;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.ExpressionName?.Accept(visitor);
             this.Columns.Accept(visitor);

@@ -3,13 +3,13 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class SchemaDeclarationItemOpenjson : SchemaDeclarationItem {
         public SchemaDeclarationItemOpenjson() : base() { }
         public SchemaDeclarationItemOpenjson(ScriptDom.SchemaDeclarationItemOpenjson src) : base(src) {
             this.AsJson = src.AsJson;
         }
-        public bool AsJson { get; set; }
-
+        public bool AsJson;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
     }
 }

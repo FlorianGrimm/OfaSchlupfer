@@ -5,13 +5,11 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class DropIndexStatement : SqlStatement {
         public List<DropIndexClauseBase> DropIndexClauses { get; } = new List<DropIndexClauseBase>();
-
-        public bool IsIfExists { get; set; }
-
+        public bool IsIfExists;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.DropIndexClauses.Accept(visitor);
             base.AcceptChildren(visitor);

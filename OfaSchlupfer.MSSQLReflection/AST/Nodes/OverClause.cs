@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class OverClause : SqlNode {
         public OverClause() : base() { }
         public OverClause(ScriptDom.OverClause src) : base(src) {
@@ -12,15 +13,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.OrderByClause = Copier.Copy<OrderByClause>(src.OrderByClause);
             this.WindowFrameClause = Copier.Copy<WindowFrameClause>(src.WindowFrameClause);
         }
-
         public List<ScalarExpression> Partitions { get; } = new List<ScalarExpression>();
-
-        public OrderByClause OrderByClause { get; set; }
-
-        public WindowFrameClause WindowFrameClause { get; set; }
-
+        public OrderByClause OrderByClause;
+        public WindowFrameClause WindowFrameClause;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Partitions.Accept(visitor);
             this.OrderByClause?.Accept(visitor);

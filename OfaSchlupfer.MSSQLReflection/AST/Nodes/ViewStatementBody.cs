@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public abstract class ViewStatementBody : SqlStatement {
         public ViewStatementBody() : base() { }
         public ViewStatementBody(ScriptDom.ViewStatementBody src) : base(src) {
@@ -13,14 +14,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.SelectStatement = Copier.Copy<SelectStatement>(src.SelectStatement);
             this.WithCheckOption = src.WithCheckOption;
         }
-        public SchemaObjectName SchemaObjectName { get; set; }
-
+        public SchemaObjectName SchemaObjectName;
         public List<Identifier> Columns { get; } = new List<Identifier>();
-
-        public SelectStatement SelectStatement { get; set; }
-
-        public bool WithCheckOption { get; set; }
-
+        public SelectStatement SelectStatement;
+        public bool WithCheckOption;
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.SchemaObjectName?.Accept(visitor);
             this.Columns.Accept(visitor);

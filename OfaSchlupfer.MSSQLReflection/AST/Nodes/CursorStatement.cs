@@ -3,14 +3,13 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public abstract class CursorStatement : SqlStatement {
         public CursorStatement() : base() { }
         public CursorStatement(ScriptDom.CursorStatement src) : base(src) {
             this.Cursor = Copier.Copy<CursorId>(src.Cursor);
         }
-
-        public CursorId Cursor { get; set; }
-
+        public CursorId Cursor;
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Cursor?.Accept(visitor);
             base.AcceptChildren(visitor);

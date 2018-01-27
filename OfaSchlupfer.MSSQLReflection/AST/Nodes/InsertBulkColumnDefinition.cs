@@ -3,18 +3,16 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class InsertBulkColumnDefinition : SqlNode {
         public InsertBulkColumnDefinition() : base() { }
         public InsertBulkColumnDefinition(ScriptDom.InsertBulkColumnDefinition src) : base(src) {
             this.Column = Copier.Copy<ColumnDefinitionBase>(src.Column);
             this.NullNotNull = src.NullNotNull;
         }
-        public ColumnDefinitionBase Column { get; set; }
-
-        public Microsoft.SqlServer.TransactSql.ScriptDom.NullNotNull NullNotNull { get; set; }
-
+        public ColumnDefinitionBase Column;
+        public Microsoft.SqlServer.TransactSql.ScriptDom.NullNotNull NullNotNull;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Column?.Accept(visitor);
             base.AcceptChildren(visitor);

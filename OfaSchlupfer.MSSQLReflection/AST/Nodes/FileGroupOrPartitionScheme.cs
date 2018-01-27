@@ -5,13 +5,11 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class FileGroupOrPartitionScheme : SqlNode {
-        public IdentifierOrValueExpression Name { get; set; }
-
+        public IdentifierOrValueExpression Name;
         public List<Identifier> PartitionSchemeColumns { get; } = new List<Identifier>();
-
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.Name?.Accept(visitor);
             this.PartitionSchemeColumns.Accept(visitor);

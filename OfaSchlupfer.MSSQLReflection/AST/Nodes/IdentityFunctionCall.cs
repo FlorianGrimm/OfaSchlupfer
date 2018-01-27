@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class IdentityFunctionCall : ScalarExpression {
         public IdentityFunctionCall() : base() { }
         public IdentityFunctionCall(ScriptDom.IdentityFunctionCall src) : base(src) {
@@ -10,15 +11,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.Seed = Copier.Copy<ScalarExpression>(src.Seed);
             this.Increment = Copier.Copy<ScalarExpression>(src.Increment);
         }
-
-        public DataTypeReference DataType { get; set; }
-
-        public ScalarExpression Seed { get; set; }
-
-        public ScalarExpression Increment { get; set; }
-
+        public DataTypeReference DataType;
+        public ScalarExpression Seed;
+        public ScalarExpression Increment;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.DataType?.Accept(visitor);
             this.Seed?.Accept(visitor);

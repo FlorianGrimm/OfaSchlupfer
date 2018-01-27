@@ -4,9 +4,9 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class SetStatisticsStatement : SetOnOffStatement {
-        public Microsoft.SqlServer.TransactSql.ScriptDom.SetStatisticsOptions Options { get; set; }
-
+        public Microsoft.SqlServer.TransactSql.ScriptDom.SetStatisticsOptions Options;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
     }
 }

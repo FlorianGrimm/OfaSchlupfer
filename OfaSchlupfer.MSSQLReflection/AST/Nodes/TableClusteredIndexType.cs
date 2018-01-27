@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class TableClusteredIndexType : TableIndexType {
         public TableClusteredIndexType() : base() { }
         public TableClusteredIndexType(ScriptDom.TableClusteredIndexType src) : base(src) {
@@ -12,11 +13,8 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.ColumnStore = src.ColumnStore;
         }
         public List<ColumnWithSortOrder> Columns { get; } = new List<ColumnWithSortOrder>();
-
-        public bool ColumnStore { get; set; }
-
+        public bool ColumnStore;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.Columns.Accept(visitor);

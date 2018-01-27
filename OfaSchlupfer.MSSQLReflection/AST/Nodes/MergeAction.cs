@@ -3,12 +3,14 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public abstract class MergeAction : SqlNode {
         public MergeAction() : base() { }
         public MergeAction(ScriptDom.MergeAction src) : base(src) { }
     }
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class DeleteMergeAction : MergeAction {
         public DeleteMergeAction() : base() { }
         public DeleteMergeAction(ScriptDom.DeleteMergeAction src) : base(src) { }

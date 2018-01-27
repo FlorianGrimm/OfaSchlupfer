@@ -4,6 +4,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class CloseCursorStatement : CursorStatement {
         public CloseCursorStatement() : base() { }
         public CloseCursorStatement(ScriptDom.CloseCursorStatement src) : base(src) { }

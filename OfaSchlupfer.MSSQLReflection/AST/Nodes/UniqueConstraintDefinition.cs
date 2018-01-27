@@ -5,6 +5,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class UniqueConstraintDefinition : ConstraintDefinition {
         public UniqueConstraintDefinition() : base() { }
         public UniqueConstraintDefinition(ScriptDom.UniqueConstraintDefinition src) : base(src) {
@@ -15,25 +16,17 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.IndexType = Copier.Copy<IndexType>(src.IndexType);
             this.FileStreamOn = Copier.Copy<IdentifierOrValueExpression>(src.FileStreamOn);
         }
-
-        public bool? Clustered { get; set; }
-
-        public bool IsPrimaryKey { get; set; }
-
+        public bool? Clustered;
+        public bool IsPrimaryKey;
         public List<ColumnWithSortOrder> Columns { get; } = new List<ColumnWithSortOrder>();
 
         /*
         public List<IndexOption> IndexOptions { get; } = new List<IndexOption>();
          */
-
-        public FileGroupOrPartitionScheme OnFileGroupOrPartitionScheme { get; set; }
-
-        public IndexType IndexType { get; set; }
-
-        public IdentifierOrValueExpression FileStreamOn { get; set; }
-
+        public FileGroupOrPartitionScheme OnFileGroupOrPartitionScheme;
+        public IndexType IndexType;
+        public IdentifierOrValueExpression FileStreamOn;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             base.AcceptChildren(visitor);
             this.Columns.Accept(visitor);

@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
     [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class IdentityOptions : SqlNode {
         public IdentityOptions() : base() { }
         public IdentityOptions(ScriptDom.IdentityOptions src) : base(src) {
@@ -10,14 +11,10 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.IdentityIncrement = Copier.Copy<ScalarExpression>(src.IdentityIncrement);
             this.IsIdentityNotForReplication = src.IsIdentityNotForReplication;
         }
-        public ScalarExpression IdentitySeed { get; set; }
-
-        public ScalarExpression IdentityIncrement { get; set; }
-
-        public bool IsIdentityNotForReplication { get; set; }
-
+        public ScalarExpression IdentitySeed;
+        public ScalarExpression IdentityIncrement;
+        public bool IsIdentityNotForReplication;
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
-
         public override void AcceptChildren(SqlFragmentVisitor visitor) {
             this.IdentitySeed?.Accept(visitor);
             this.IdentityIncrement?.Accept(visitor);
