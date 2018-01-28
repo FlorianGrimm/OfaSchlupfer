@@ -7,6 +7,7 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
 
     /// <summary>
     /// Scope for names
+    /// zu viel nested scopes gibt es nicht eine SSA wäre besser
     /// </summary>
     public sealed class SqlCodeScope : IScopeNameResolver {
         /// <summary>

@@ -8,6 +8,7 @@
     /// <summary>
     /// A scalar value
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("{Type}-{Value}")]
     public sealed class ModelValueScalar {
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelValueScalar"/> class.

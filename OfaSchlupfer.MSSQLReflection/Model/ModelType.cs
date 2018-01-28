@@ -2,6 +2,7 @@
     /// <summary>
     /// base we will see
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("{TypeName}")]
     public class ModelType {
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelType"/> class.

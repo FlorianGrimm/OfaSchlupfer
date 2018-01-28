@@ -10,6 +10,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     /// <summary>
     /// Name
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("{Name}-{ObjectLevel}")]
     public sealed class SqlName : IEquatable<SqlName> {
         private static SqlName _Root;
         private static IEqualityComparer<NameLevel> nameLevelComparer = new NameLevelEqualityComparer();

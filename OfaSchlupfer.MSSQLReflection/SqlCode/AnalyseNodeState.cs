@@ -8,6 +8,11 @@
         private ISqlCodeType _SqlCodeType;
 
         /// <summary>
+        /// Gets or sets the Fragment
+        /// </summary>
+        public readonly SqlNode Fragment;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AnalyseNodeState"/> class.
         /// </summary>
         /// <param name="node">the owner</param>
@@ -16,27 +21,12 @@
         }
 
         /// <summary>
-        /// Gets or sets the Fragment
-        /// </summary>
-        public SqlNode Fragment { get; set; }
-
-        /// <summary>
         /// Gets or sets the Scope.
         /// </summary>
         public SqlCodeScope SqlCodeScope { get; set; }
 
         /// <summary>
-        /// Gets or sets the DeclarationScope.
-        /// </summary>
-        public SqlCodeScope DeclarationScope { get; set; }
-
-        /// <summary>
-        /// Gets or sets the last scope.
-        /// </summary>
-        public SqlCodeScope LastScope { get; set; }
-
-        /// <summary>
-        /// Gets or sets SqlCodeResult
+        /// Gets or sets result value
         /// </summary>
         public ISqlCodeResult ResultValue { get; set; }
 
@@ -66,7 +56,7 @@
         }
 
         /// <summary>
-        /// Gets or sets OutputType - think of
+        /// Gets or sets OutputType - the outgoing data.
         /// </summary>
         public ISqlCodeType OutputType { get; set; }
     }

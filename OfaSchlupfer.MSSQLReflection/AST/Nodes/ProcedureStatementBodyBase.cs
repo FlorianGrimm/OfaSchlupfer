@@ -23,4 +23,70 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             base.AcceptChildren(visitor);
         }
     }
+
+    [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
+    public abstract class ProcedureStatementBody : ProcedureStatementBodyBase {
+        public ProcedureStatementBody() : base() { }
+        public ProcedureStatementBody(ScriptDom.ProcedureStatementBody src) : base(src) {
+            this.ProcedureReference = Copier.Copy<ProcedureReference>(src.ProcedureReference);
+            this.IsForReplication = src.IsForReplication;
+        }
+        public ProcedureReference ProcedureReference;
+        public bool IsForReplication;
+
+        /*
+        public List<ProcedureOption> Options { get; } = new List<ProcedureOption>();
+         */
+        public override void AcceptChildren(SqlFragmentVisitor visitor) {
+            base.AcceptChildren(visitor);
+            this.ProcedureReference?.Accept(visitor);
+            // this.Options.Accept(visitor);
+        }
+    }
+
+    [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
+    public sealed class CreateOrAlterProcedureStatement : ProcedureStatementBody {
+        public CreateOrAlterProcedureStatement() : base() { }
+        public CreateOrAlterProcedureStatement(ScriptDom.CreateOrAlterProcedureStatement src) : base(src) { }
+        public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+        public override void AcceptChildren(SqlFragmentVisitor visitor) {
+            this.ProcedureReference?.Accept(visitor);
+            this.Parameters.Accept(visitor);
+            // this.Options.Accept(visitor);
+            this.StatementList?.Accept(visitor);
+            this.MethodSpecifier?.Accept(visitor);
+        }
+    }
+
+    [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
+    public sealed class CreateProcedureStatement : ProcedureStatementBody {
+        public CreateProcedureStatement() : base() { }
+        public CreateProcedureStatement(ScriptDom.CreateProcedureStatement src) : base(src) { }
+        public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+        public override void AcceptChildren(SqlFragmentVisitor visitor) {
+            this.ProcedureReference?.Accept(visitor);
+            this.Parameters.Accept(visitor);
+            // this.Options.Accept(visitor);
+            this.StatementList?.Accept(visitor);
+            this.MethodSpecifier?.Accept(visitor);
+        }
+    }
+
+    [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
+    public sealed class AlterProcedureStatement : ProcedureStatementBody {
+        public AlterProcedureStatement() : base() { }
+        public AlterProcedureStatement(ScriptDom.AlterProcedureStatement src) : base(src) { }
+        public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+        public override void AcceptChildren(SqlFragmentVisitor visitor) {
+            this.ProcedureReference?.Accept(visitor);
+            this.Parameters.Accept(visitor);
+            // this.Options.Accept(visitor);
+            this.StatementList?.Accept(visitor);
+            this.MethodSpecifier?.Accept(visitor);
+        }
+    }
 }

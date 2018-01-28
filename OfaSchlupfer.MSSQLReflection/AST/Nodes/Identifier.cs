@@ -7,47 +7,39 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
 
     [System.Serializable]
     [System.Diagnostics.DebuggerNonUserCode]
+    [System.Diagnostics.DebuggerDisplay("{Value}")]
     public class Identifier : SqlNode {
         private const string EscapedRSquareParen = "]]";
-
         private const string EscapedQuote = "\"\"";
-
         private const string Quote = "\"";
-
         private const char LSquareParenChar = '[';
-
         private const char RSquareParenChar = ']';
-
         private const char QuoteChar = '"';
-
         internal const int MaxIdentifierLength = 128;
 
-        private string _value;
-
-        private ScriptDom.QuoteType _quoteType;
         public Identifier() { }
+
         public Identifier(ScriptDom.Identifier src) {
-            this._quoteType = src.QuoteType;
-            this._value = src.Value;
+            this.QuoteType = src.QuoteType;
+            this.Value = src.Value;
         }
-        public string Value {
-            get {
-                return this._value;
-            }
 
-            set {
-                this._value = value;
-            }
-        }
-        public ScriptDom.QuoteType QuoteType {
-            get {
-                return this._quoteType;
-            }
+        /// <summary>
+        /// The name.
+        /// </summary>
+        public string Value;
 
-            set {
-                this._quoteType = value;
-            }
-        }
+        /// <summary>
+        /// NotQuoted, SquareBracket, DoubleQuote
+        /// </summary>
+        public ScriptDom.QuoteType QuoteType;
+
+        /// <summary>
+        /// Decode
+        /// </summary>
+        /// <param name="identifier">the identifier</param>
+        /// <param name="quote">output quote</param>
+        /// <returns>the unquoted text</returns>
         public static string DecodeIdentifier(string identifier, out ScriptDom.QuoteType quote) {
             if (identifier != null && identifier.Length > 2) {
                 if (identifier.Length != 0 && (identifier[0] == '[' || identifier[0] == '"')) {
@@ -94,13 +86,37 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
         }
 
         internal void SetUnquotedIdentifier(string text) {
-            this._value = text;
-            this._quoteType = ScriptDom.QuoteType.NotQuoted;
+            this.Value = text;
+            this.QuoteType = ScriptDom.QuoteType.NotQuoted;
         }
 
         internal void SetIdentifier(string text) {
-            this._value = Identifier.DecodeIdentifier(text, out this._quoteType);
+            this.Value = Identifier.DecodeIdentifier(text, out this.QuoteType);
         }
+
+        /// <summary>
+        /// call Visitor.
+        /// </summary>
+        /// <param name="visitor">the visitor.</param>
+        public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+    }
+
+    [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
+    public sealed class IdentifierSnippet : Identifier {
+        public IdentifierSnippet() : base() { }
+        public IdentifierSnippet(ScriptDom.IdentifierSnippet src) : base(src) {
+            this.Script = src.Script;
+        }
+        public string Script;
+        public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+    }
+
+    [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
+    public sealed class SqlCommandIdentifier : Identifier {
+        public SqlCommandIdentifier() : base() { }
+        public SqlCommandIdentifier(ScriptDom.SqlCommandIdentifier src) : base(src) { }
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
     }
 }

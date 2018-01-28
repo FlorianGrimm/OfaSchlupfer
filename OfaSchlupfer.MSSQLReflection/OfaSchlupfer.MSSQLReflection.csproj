@@ -55,19 +55,14 @@
     <None Include="AST\AlterVisitor.cs" />
     <Compile Include="AST\Copier.cs" />
     <Compile Include="AST\Nodes\AlterFunctionStatement.cs" />
-    <Compile Include="AST\Nodes\AlterProcedureStatement.cs" />
     <Compile Include="AST\Nodes\AssignmentSetClause.cs" />
     <Compile Include="AST\Nodes\BeginEndBlockStatement.cs" />
     <Compile Include="AST\Nodes\BooleanExpression.cs" />
-    <Compile Include="AST\Nodes\BooleanExpressionSnippet.cs" />
     <Compile Include="AST\Nodes\BreakStatement.cs" />
     <Compile Include="AST\Nodes\BrowseForClause.cs" />
     <Compile Include="AST\Nodes\CallTarget.cs" />
-    <Compile Include="AST\Nodes\CaseExpression.cs" />
-    <Compile Include="AST\Nodes\CastCall.cs" />
     <Compile Include="AST\Nodes\CheckpointStatement.cs" />
     <Compile Include="AST\Nodes\CloseCursorStatement.cs" />
-    <Compile Include="AST\Nodes\CoalesceExpression.cs" />
     <Compile Include="AST\Nodes\ColumnDefinition.cs" />
     <Compile Include="AST\Nodes\ColumnDefinitionBase.cs" />
     <Compile Include="AST\Nodes\ColumnWithSortOrder.cs" />
@@ -79,12 +74,9 @@
     <Compile Include="AST\Nodes\ComputeFunction.cs" />
     <Compile Include="AST\Nodes\ConstraintDefinition.cs" />
     <Compile Include="AST\Nodes\ContinueStatement.cs" />
-    <Compile Include="AST\Nodes\ConvertCall.cs" />
     <Compile Include="AST\Nodes\CreateFunctionStatement.cs" />
     <Compile Include="AST\Nodes\CreateOrAlterFunctionStatement.cs" />
-    <Compile Include="AST\Nodes\CreateOrAlterProcedureStatement.cs" />
     <Compile Include="AST\Nodes\CreateOrAlterViewStatement.cs" />
-    <Compile Include="AST\Nodes\CreateProcedureStatement.cs" />
     <Compile Include="AST\Nodes\CreateTableStatement.cs" />
     <Compile Include="AST\Nodes\CreateViewStatement.cs" />
     <Compile Include="AST\Nodes\CursorDefinition.cs" />
@@ -111,7 +103,6 @@
     <Compile Include="AST\Nodes\ExecuteAsStatement.cs" />
     <Compile Include="AST\Nodes\ExecuteSpecification.cs" />
     <Compile Include="AST\Nodes\ExistsPredicate.cs" />
-    <Compile Include="AST\Nodes\ExpressionCallTarget.cs" />
     <Compile Include="AST\Nodes\ExpressionGroupingSpecification.cs" />
     <Compile Include="AST\Nodes\ExpressionWithSortOrder.cs" />
     <Compile Include="AST\Nodes\FetchCursorStatement.cs" />
@@ -119,7 +110,6 @@
     <Compile Include="AST\Nodes\FileGroupOrPartitionScheme.cs" />
     <Compile Include="AST\Nodes\ForClause.cs" />
     <Compile Include="AST\Nodes\FromClause.cs" />
-    <Compile Include="AST\Nodes\FunctionCall.cs" />
     <Compile Include="AST\Nodes\FunctionReturnType.cs" />
     <Compile Include="AST\Nodes\FunctionStatementBody.cs" />
     <Compile Include="AST\Nodes\GeneralSetCommand.cs" />
@@ -132,7 +122,6 @@
     <Compile Include="AST\Nodes\Identifier.cs" />
     <Compile Include="AST\Nodes\IdentifierOrScalarExpression.cs" />
     <Compile Include="AST\Nodes\IdentifierOrValueExpression.cs" />
-    <Compile Include="AST\Nodes\IdentifierSnippet.cs" />
     <Compile Include="AST\Nodes\IdentityFunctionCall.cs" />
     <Compile Include="AST\Nodes\IdentityOptions.cs" />
     <Compile Include="AST\Nodes\IfStatement.cs" />
@@ -148,18 +137,14 @@
     <Compile Include="AST\Nodes\LeftFunctionCall.cs" />
     <Compile Include="AST\Nodes\LikePredicate.cs" />
     <Compile Include="AST\Nodes\Literal.cs" />
-    <Compile Include="AST\Nodes\LiteralOptimizerHint.cs" />
     <Compile Include="AST\Nodes\LiteralRange.cs" />
     <Compile Include="AST\Nodes\MergeAction.cs" />
     <Compile Include="AST\Nodes\MergeActionClause.cs" />
     <Compile Include="AST\Nodes\MethodSpecifier.cs" />
     <Compile Include="AST\Nodes\MultiPartIdentifier.cs" />
-    <Compile Include="AST\Nodes\MultiPartIdentifierCallTarget.cs" />
     <Compile Include="AST\Nodes\NextValueForExpression.cs" />
     <Compile Include="AST\Nodes\NullableConstraintDefinition.cs" />
-    <Compile Include="AST\Nodes\NullIfExpression.cs" />
     <Compile Include="AST\Nodes\OffsetClause.cs" />
-    <Compile Include="AST\Nodes\OnOffOptionValue.cs" />
     <Compile Include="AST\Nodes\OpenCursorStatement.cs" />
     <Compile Include="AST\Nodes\OpenXmlTableReference.cs" />
     <Compile Include="AST\Nodes\OptimizeForOptimizerHint.cs" />
@@ -169,9 +154,6 @@
     <Compile Include="AST\Nodes\OutputClause.cs" />
     <Compile Include="AST\Nodes\OutputIntoClause.cs" />
     <Compile Include="AST\Nodes\OverClause.cs" />
-    <Compile Include="AST\Nodes\ParameterlessCall.cs" />
-    <Compile Include="AST\Nodes\ParenthesisExpression.cs" />
-    <Compile Include="AST\Nodes\ParseCall.cs" />
     <Compile Include="AST\Nodes\Permission.cs" />
     <Compile Include="AST\Nodes\PivotedTableReference.cs" />
     <Compile Include="AST\Nodes\PredicateSetStatement.cs" />
@@ -179,7 +161,6 @@
     <Compile Include="AST\Nodes\ProcedureParameter.cs" />
     <Compile Include="AST\Nodes\ProcedureReference.cs" />
     <Compile Include="AST\Nodes\ProcedureReferenceName.cs" />
-    <Compile Include="AST\Nodes\ProcedureStatementBody.cs" />
     <Compile Include="AST\Nodes\ProcedureStatementBodyBase.cs" />
     <Compile Include="AST\Nodes\QueryExpression.cs" />
     <Compile Include="AST\Nodes\RaiseErrorLegacyStatement.cs" />
@@ -197,7 +178,6 @@
     <Compile Include="AST\Nodes\ScalarExpression.cs" />
     <Compile Include="AST\Nodes\ScalarExpressionSnippet.cs" />
     <Compile Include="AST\Nodes\ScalarFunctionReturnType.cs" />
-    <Compile Include="AST\Nodes\ScalarSubquery.cs" />
     <Compile Include="AST\Nodes\SchemaDeclarationItem.cs" />
     <Compile Include="AST\Nodes\SchemaDeclarationItemOpenjson.cs" />
     <Compile Include="AST\Nodes\SchemaObjectFunctionTableReference.cs" />
@@ -207,9 +187,6 @@
     <Compile Include="AST\Nodes\SelectElement.cs" />
     <Compile Include="AST\Nodes\SelectFunctionReturnType.cs" />
     <Compile Include="AST\Nodes\SelectInsertSource.cs" />
-    <Compile Include="AST\Nodes\SelectScalarExpression.cs" />
-    <Compile Include="AST\Nodes\SelectSetVariable.cs" />
-    <Compile Include="AST\Nodes\SelectStatementSnippet.cs" />
     <Compile Include="AST\Nodes\SetClause.cs" />
     <Compile Include="AST\Nodes\SetCommand.cs" />
     <Compile Include="AST\Nodes\SetCommandStatement.cs" />
@@ -222,9 +199,6 @@
     <Compile Include="AST\Nodes\SetTextSizeStatement.cs" />
     <Compile Include="AST\Nodes\SetTransactionIsolationLevelStatement.cs" />
     <Compile Include="AST\Nodes\SetVariableStatement.cs" />
-    <Compile Include="AST\Nodes\SimpleCaseExpression.cs" />
-    <Compile Include="AST\Nodes\SimpleWhenClause.cs" />
-    <Compile Include="AST\Nodes\SqlCommandIdentifier.cs" />
     <Compile Include="AST\Nodes\StatementListSnippet.cs" />
     <Compile Include="AST\Nodes\StatementWithCtesAndXmlNamespaces.cs" />
     <Compile Include="AST\Nodes\SubqueryComparisonPredicate.cs" />
@@ -241,10 +215,7 @@
     <Compile Include="AST\Nodes\TopRowFilter.cs" />
     <Compile Include="AST\Nodes\TransactionStatement.cs" />
     <Compile Include="AST\Nodes\TruncateTableStatement.cs" />
-    <Compile Include="AST\Nodes\TryCastCall.cs" />
     <Compile Include="AST\Nodes\TryCatchStatement.cs" />
-    <Compile Include="AST\Nodes\TryConvertCall.cs" />
-    <Compile Include="AST\Nodes\TryParseCall.cs" />
     <Compile Include="AST\Nodes\TSEqualCall.cs" />
     <Compile Include="AST\Nodes\TSqlFragmentSnippet.cs" />
     <Compile Include="AST\Nodes\TSqlStatementSnippet.cs" />
@@ -255,7 +226,6 @@
     <Compile Include="AST\Nodes\UpdateMergeAction.cs" />
     <Compile Include="AST\Nodes\UpdateTextStatement.cs" />
     <Compile Include="AST\Nodes\UseHintList.cs" />
-    <Compile Include="AST\Nodes\UserDefinedTypeCallTarget.cs" />
     <Compile Include="AST\Nodes\UserDefinedTypePropertyAccess.cs" />
     <Compile Include="AST\Nodes\ValuesInsertSource.cs" />
     <Compile Include="AST\Nodes\VariableMethodCallTableReference.cs" />
@@ -326,6 +296,8 @@
     <Compile Include="SqlCode\SqlCodeScopeReference.cs" />
     <Compile Include="SqlCode\SqlCodeTypeLazy.cs" />
     <Compile Include="SqlCode\SqlCodeType.cs" />
+    <Compile Include="SqlCode\SqlCodeTypeSequence.cs" />
+    <Compile Include="SqlCode\SSANode.cs" />
     <Compile Include="SqlCode\TypeVisitor.cs" />
     <Compile Include="SqlCode\AnalyseVisitor.cs" />
     <Compile Include="Model\SqlResolveScope.cs" />
@@ -343,6 +315,9 @@
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="todo.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

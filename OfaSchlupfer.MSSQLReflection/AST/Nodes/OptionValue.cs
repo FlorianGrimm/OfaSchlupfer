@@ -6,4 +6,33 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     [System.Serializable]
     [System.Diagnostics.DebuggerNonUserCode]
     public abstract class OptionValue : SqlNode { }
+
+    [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
+    public sealed class OnOffOptionValue : OptionValue {
+        public Microsoft.SqlServer.TransactSql.ScriptDom.OptionState OptionState;
+        public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+    }
+
+    [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
+    public sealed class LiteralOptimizerHint : OptimizerHint {
+        public Literal Value;
+        public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+        public override void AcceptChildren(SqlFragmentVisitor visitor) {
+            base.AcceptChildren(visitor);
+            this.Value?.Accept(visitor);
+        }
+    }
+
+    [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
+    public sealed class LiteralOptionValue : OptionValue {
+        public Literal Value;
+        public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+        public override void AcceptChildren(SqlFragmentVisitor visitor) {
+            base.AcceptChildren(visitor);
+            this.Value?.Accept(visitor);
+        }
+    }
 }

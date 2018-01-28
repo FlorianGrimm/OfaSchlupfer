@@ -13,6 +13,17 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
 
     [System.Serializable]
     [System.Diagnostics.DebuggerNonUserCode]
+    public sealed class BooleanExpressionSnippet : BooleanExpression {
+        public BooleanExpressionSnippet() : base() { }
+        public BooleanExpressionSnippet(ScriptDom.BooleanExpressionSnippet src) : base(src) {
+            this.Script = src.Script;
+        }
+        public string Script;
+        public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
+    }
+
+    [System.Serializable]
+    [System.Diagnostics.DebuggerNonUserCode]
     public sealed class BooleanIsNullExpression : BooleanExpression {
         public BooleanIsNullExpression() : base() { }
         public BooleanIsNullExpression(ScriptDom.BooleanIsNullExpression src) : base(src) {

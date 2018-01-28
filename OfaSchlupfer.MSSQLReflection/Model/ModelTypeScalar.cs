@@ -8,6 +8,7 @@
     /// <summary>
     /// the scalar type of sql
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("{TypeName}-{SystemDataType}")]
     public sealed class ModelTypeScalar : ModelType {
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelTypeScalar"/> class.

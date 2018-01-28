@@ -10,6 +10,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
         protected TableReference() : base() { }
         protected TableReference(ScriptDom.TableReference src) : base(src) { }
     }
+
     [System.Serializable]
     [System.Diagnostics.DebuggerNonUserCode]
     public sealed class JoinParenthesisTableReference : TableReference {
@@ -106,6 +107,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             base.AcceptChildren(visitor);
         }
     }
+
     [System.Serializable]
     [System.Diagnostics.DebuggerNonUserCode]
     public sealed class QualifiedJoin : JoinTableReference {
@@ -124,6 +126,7 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             this.SearchCondition?.Accept(visitor);
         }
     }
+
     [System.Serializable]
     [System.Diagnostics.DebuggerNonUserCode]
     public sealed class UnqualifiedJoin : JoinTableReference {

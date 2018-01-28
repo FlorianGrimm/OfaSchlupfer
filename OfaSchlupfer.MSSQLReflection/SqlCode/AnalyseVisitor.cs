@@ -149,16 +149,119 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             System.Diagnostics.Debug.Assert(ReferenceEquals(outerPreviousScope, this.currentScopeRef.Current), "previous must be restored.");
         }
 
+        /* function */
+
         public void HandleFunction(FunctionStatementBody node) {
             var outerPreviousScope = this.currentScopeRef.Current;
             var dbScope = this.currentScopeRef.Current.GetRoot();
             var declarationScope = dbScope.CreateChildDeclarationScope("function", dbScope.ScopeNameResolverContext);
             this.currentScopeRef.Push(declarationScope);
 
+            // node.Analyse.OutputType
             this.ExplicitVisit((FunctionStatementBody)node);
 
             this.currentScopeRef.Pop();
             System.Diagnostics.Debug.Assert(ReferenceEquals(outerPreviousScope, this.currentScopeRef.Current), "previous must be restored.");
+        }
+
+        public override void ExplicitVisit(FunctionCall node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(MultiPartIdentifierCallTarget node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(ExpressionCallTarget node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(UserDefinedTypeCallTarget node) {
+            base.ExplicitVisit(node);
+        }
+
+        /* / function */
+
+        public override void ExplicitVisit(IfStatement node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(BeginEndBlockStatement node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(BinaryExpression node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(BooleanParenthesisExpression node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(SetErrorLevelStatement node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(SqlDataTypeReference node) {
+            (new TypeVisitor(this.currentScopeRef.Current)).ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(UserDataTypeReference node) {
+            (new TypeVisitor(this.currentScopeRef.Current)).ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(IntegerLiteral node) {
+            var sys_int_name = this.GetSqlNameSys().ChildWellkown("int");
+            var t = new ModelTypeScalar() {
+                TypeName = sys_int_name,
+                SystemDataType = ModelSystemDataType.Int
+            };
+            var v = new ModelValueScalar() {
+                Type = t,
+                Value = node.Value,
+                IsConst = true
+            };
+            node.Analyse.ResultType = new SqlCodeType(t);
+            node.Analyse.ResultValue = new SqlCodeResultConst(v);
+            /*
+            no need for base.ExplicitVisit(node);
+            */
+        }
+
+        public override void ExplicitVisit(RealLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(MoneyLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(BinaryLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(StringLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(NullLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(DefaultLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(MaxLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(IdentifierLiteral node) {
+            base.ExplicitVisit(node);
+        }
+
+        public override void ExplicitVisit(NumericLiteral node) {
+            base.ExplicitVisit(node);
         }
 
         public override void ExplicitVisit(AssignmentSetClause node) {
@@ -195,14 +298,6 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             base.ExplicitVisit(node);
         }
 
-        public override void ExplicitVisit(SqlDataTypeReference node) {
-            (new TypeVisitor(this.currentScopeRef.Current)).ExplicitVisit(node);
-        }
-
-        public override void ExplicitVisit(UserDataTypeReference node) {
-            (new TypeVisitor(this.currentScopeRef.Current)).ExplicitVisit(node);
-        }
-
         public override void ExplicitVisit(XmlDataTypeReference node) {
             base.ExplicitVisit(node);
         }
@@ -212,81 +307,6 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         }
 
         public override void ExplicitVisit(DeclareVariableStatement node) {
-            base.ExplicitVisit(node);
-        }
-
-        public override void ExplicitVisit(IntegerLiteral node) {
-            var sys_int_name = this.GetSqlNameSys().ChildWellkown("int");
-            var t = new ModelTypeScalar() {
-                TypeName = sys_int_name,
-                SystemDataType = ModelSystemDataType.Int
-            };
-            var v = new ModelValueScalar() {
-                Type = t,
-                Value = node.Value,
-                IsConst = true
-            };
-            node.Analyse.ResultType = new SqlCodeType(t);
-            node.Analyse.ResultValue = new SqlCodeResultConst(v);
-
-            /*
-            var sys_int_model = (OfaSchlupfer.MSSQLReflection.Model.ModelSqlType)this.currentScopeRef.Current.ScopeNameResolverContext.Resolve(sys_int_name);
-            ISqlCodeType sqlCodeType = new SqlCodeType((ModelType)sys_int_model);
-            SetAnalyseSqlCodeType(node.Analyse, sqlCodeType);
-            var modelSqlScalarValue = new OfaSchlupfer.MSSQLReflection.Model.ModelValueScalar(sys_int_model.GetScalarType(), node.Value, true);
-            node.Analyse.SqlCodeResult = new SqlCodeResultConst(modelSqlScalarValue);
-            */
-            /*
-            no need for base.ExplicitVisit(node);
-            */
-        }
-
-        public override void ExplicitVisit(RealLiteral node) {
-            base.ExplicitVisit(node);
-        }
-
-        public override void ExplicitVisit(MoneyLiteral node) {
-            base.ExplicitVisit(node);
-        }
-
-        public override void ExplicitVisit(BinaryLiteral node) {
-            base.ExplicitVisit(node);
-        }
-        /*
-                Integer,
-        Real,
-        Money,
-        Binary,
-        String,
-        Null,
-        Default,
-        Max,
-        Odbc,
-        Identifier,
-        Numeric
-             */
-
-        public override void ExplicitVisit(StringLiteral node) {
-            base.ExplicitVisit(node);
-        }
-
-        public override void ExplicitVisit(NullLiteral node) {
-            base.ExplicitVisit(node);
-        }
-
-        public override void ExplicitVisit(DefaultLiteral node) {
-            base.ExplicitVisit(node);
-        }
-
-        public override void ExplicitVisit(MaxLiteral node) {
-            base.ExplicitVisit(node);
-        }
-
-        public override void ExplicitVisit(IdentifierLiteral node) {
-            base.ExplicitVisit(node);
-        }
-
-        public override void ExplicitVisit(NumericLiteral node) {
             base.ExplicitVisit(node);
         }
 
