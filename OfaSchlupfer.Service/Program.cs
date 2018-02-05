@@ -10,6 +10,7 @@
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
+        /// <param name="args">commandline ags</param>
         public static void Main(string[] args) {
             bool debug = false;
             foreach (var arg in args) {

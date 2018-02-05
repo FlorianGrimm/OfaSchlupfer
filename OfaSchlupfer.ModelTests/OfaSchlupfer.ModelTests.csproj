@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B3CF79D8-9FA0-4302-86A5-B244786C6801}</ProjectGuid>
+    <ProjectGuid>{9D6AAFD4-228A-484A-83E0-33560434D162}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OfaSchlupfer.MSSQLReflectionTests</RootNamespace>
-    <AssemblyName>OfaSchlupfer.MSSQLReflectionTests</AssemblyName>
+    <RootNamespace>OfaSchlupfer.ModelTests</RootNamespace>
+    <AssemblyName>OfaSchlupfer.ModelTests</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -45,9 +45,6 @@
     <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.TransactSql.ScriptDom, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.SqlServer.TransactSql.ScriptDom.14.0.3811.1\lib\net40\Microsoft.SqlServer.TransactSql.ScriptDom.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.2.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
     </Reference>
@@ -58,7 +55,6 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -69,32 +65,17 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Model\ModelSqlDatabaseTests.cs" />
-    <Compile Include="Model\ModelSqlSchemaTests.cs" />
-    <Compile Include="Model\ModelSqlTableTests.cs" />
-    <Compile Include="Model\SqlNameTests.cs" />
-    <Compile Include="Model\SqlScopeTests.cs" />
-    <Compile Include="Model\SqlSys\SqlSysDatabaseTests.cs" />
+    <Compile Include="ModelRootTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlCode\SqlCodeParseTests.cs" />
-    <Compile Include="TestCfg.cs" />
-    <Compile Include="UtilityTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OfaSchlupfer.Elementary\OfaSchlupfer.Elementary.csproj">
-      <Project>{29bd4226-0efa-48fe-bfe9-1b3db2e6e877}</Project>
-      <Name>OfaSchlupfer.Elementary</Name>
+    <ProjectReference Include="..\OfaSchlupfer.Model\OfaSchlupfer.Model.csproj">
+      <Project>{094821A6-2FBE-4508-B458-D52A4BCDDA55}</Project>
+      <Name>OfaSchlupfer.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OfaSchlupfer.MSSQLReflection\OfaSchlupfer.MSSQLReflection.csproj">
-      <Project>{03C9DB9D-8BCA-4EA2-A891-5C5AAD9323FD}</Project>
-      <Name>OfaSchlupfer.MSSQLReflection</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="testDatabase.txt" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
