@@ -13,17 +13,21 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         , IScopeNameResolver {
         private readonly Dictionary<SqlName, ModelSqlType> _Types;
         private readonly Dictionary<SqlName, ModelSqlTable> _Tables;
+        private readonly Dictionary<SqlName, ModelSqlTableType> _TableTypes;
         private readonly Dictionary<SqlName, ModelSqlView> _Views;
         private readonly Dictionary<SqlName, ModelSqlProcedure> _Procedures;
+        private readonly Dictionary<SqlName, ModelSqlSynonym> _Synonyms;
         private SqlName _Name;
         private SqlScope _Scope;
         private ModelSqlDatabase _Database;
 
         public ModelSqlSchema() {
-            this._Types = new Dictionary<SqlName, ModelSqlType>(SqlNameEqualityComparer.Level1);
-            this._Tables = new Dictionary<SqlName, ModelSqlTable>(SqlNameEqualityComparer.Level1);
-            this._Views = new Dictionary<SqlName, ModelSqlView>(SqlNameEqualityComparer.Level1);
-            this._Procedures = new Dictionary<SqlName, ModelSqlProcedure>(SqlNameEqualityComparer.Level1);
+            this._Types = new Dictionary<SqlName, ModelSqlType>(SqlNameEqualityComparer.Level2);
+            this._Tables = new Dictionary<SqlName, ModelSqlTable>(SqlNameEqualityComparer.Level2);
+            this._TableTypes = new Dictionary<SqlName, ModelSqlTableType>(SqlNameEqualityComparer.Level2);
+            this._Views = new Dictionary<SqlName, ModelSqlView>(SqlNameEqualityComparer.Level2);
+            this._Procedures = new Dictionary<SqlName, ModelSqlProcedure>(SqlNameEqualityComparer.Level2);
+            this._Synonyms = new Dictionary<SqlName, ModelSqlSynonym>(SqlNameEqualityComparer.Level2);
         }
 
         /// <summary>
@@ -46,8 +50,13 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             this._Database = database;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlSchema"/> class.
+        /// </summary>
+        /// <param name="src">copy source</param>
         public ModelSqlSchema(ModelSqlSchema src) {
             this.Name = src.Name;
+            // TODO: copy properties
         }
 
         /// <summary>
@@ -79,6 +88,16 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             this._Database.AddProcedure(modelSqlProcedure);
         }
 
+        public void AddSynonym(ModelSqlSynonym modelSqlSynonym) {
+            this._Synonyms[modelSqlSynonym.Name] = modelSqlSynonym;
+            this._Database.AddSynonym(modelSqlSynonym);
+        }
+
+        public void AddTableType(ModelSqlTableType modelSqlTableType) {
+            this._TableTypes[modelSqlTableType.Name] = modelSqlTableType;
+            this._Database.AddTableType(modelSqlTableType);
+        }
+
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
 
         /// <summary>
@@ -105,6 +124,36 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public object ResolveObject(SqlName name, IScopeNameResolverContext context) {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Gets the types.
+        /// </summary>
+        public Dictionary<SqlName, ModelSqlType> Types => this._Types;
+
+        /// <summary>
+        /// Gets the tables.
+        /// </summary>
+        public Dictionary<SqlName, ModelSqlTable> Tables => this._Tables;
+
+        /// <summary>
+        /// Gets the tables.
+        /// </summary>
+        public Dictionary<SqlName, ModelSqlTableType> TableTypes => this._TableTypes;
+
+        /// <summary>
+        /// Gets the views.
+        /// </summary>
+        public Dictionary<SqlName, ModelSqlView> Views => this._Views;
+
+        /// <summary>
+        /// Gets the procedures.
+        /// </summary>
+        public Dictionary<SqlName, ModelSqlProcedure> Procedures => this._Procedures;
+
+        /// <summary>
+        /// Gets the Synonyms
+        /// </summary>
+        public Dictionary<SqlName, ModelSqlSynonym> Synonyms => this._Synonyms;
 
         public static bool operator ==(ModelSqlSchema a, ModelSqlSchema b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);
 

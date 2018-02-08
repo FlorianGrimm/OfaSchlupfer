@@ -5,14 +5,36 @@
     /// a sql alias
     /// </summary>
     public class ModelSqlSynonym
-        : IEquatable<ModelSqlSynonym> {
+        : IEquatable<ModelSqlSynonym>
+        , IScopeNameResolver {
         private SqlName _Name;
         private SqlName _For;
+        private ModelSqlSchema _Schema;
+        private SqlScope _Scope;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlSynonym"/> class.
         /// </summary>
         public ModelSqlSynonym() {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlSynonym"/> class.
+        /// </summary>
+        /// <param name="scopeSchema">the database scope</param>
+        public ModelSqlSynonym(SqlScope scopeSchema) {
+            this._Scope = (scopeSchema?.CreateChildScope(this)) ?? (new SqlScope(null, this));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlSynonym"/> class.
+        /// </summary>
+        /// <param name="schema">the owner</param>
+        /// <param name="name">the name</param>
+        public ModelSqlSynonym(ModelSqlSchema schema, string name)
+            : this(schema.GetScope()) {
+            this.Name = schema.Name.Child(name, ObjectLevel.Object);
+            this._Schema = schema;
         }
 
         /// <summary>
@@ -23,6 +45,13 @@
         public ModelSqlSynonym(ModelSqlSynonym src) {
             this._Name = src._Name;
             this._For = src._For;
+        }
+
+        /// <summary>
+        /// Add this to the parent
+        /// </summary>
+        public void AddToParent() {
+            this._Schema.AddSynonym(this);
         }
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
@@ -75,5 +104,10 @@
 
         /// <inheritdoc/>
         public override string ToString() => this.Name.ToString();
+
+        public object ResolveObject(SqlName name, IScopeNameResolverContext context) {
+            throw new NotImplementedException();
+            // TODO: ResolveObject
+        }        
     }
 }

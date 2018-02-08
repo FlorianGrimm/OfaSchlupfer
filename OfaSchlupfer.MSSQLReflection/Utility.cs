@@ -1,4 +1,6 @@
-﻿namespace OfaSchlupfer.MSSQLReflection {
+﻿#pragma warning disable SA1123 // Do not place regions within elements
+
+namespace OfaSchlupfer.MSSQLReflection {
     using System.Collections.Generic;
     using System.Linq;
     using OfaSchlupfer.Elementary;
@@ -90,7 +92,7 @@
         /// read meta from the sql db
         /// </summary>
         public void ReadAll() {
-            var sysDatabase = this.GetSource().ReadAllFromDatbase(null);
+            var sysDatabase = this.GetSource().ReadAllFromDatabase(null);
             this.ConvertSysToModel(sysDatabase, null);
         }
 
@@ -126,102 +128,164 @@
                 schemaById[src.schema_id] = dstSchema;
             }
 
-            // add types
-            foreach (var srcType in sysDatabase.Types) {
-                ModelSqlSchema modelSqlSchema;
-                if (schemaById.TryGetValue(srcType.schema_id, out modelSqlSchema)) {
-                    ModelSqlType dstType = new ModelSqlType(modelSqlSchema, srcType.name);
-                    ModelSqlType foundType = targetDatabase.Types.GetValueOrDefault(dstType.Name);
-                    dstType.MaxLength = srcType.max_length;
-                    dstType.Precision = srcType.precision;
-                    dstType.Scale = srcType.scale;
-                    dstType.CollationName = srcType.collation_name;
-                    dstType.IsNullable = srcType.is_nullable;
-                    if (((object)foundType == null) && (foundType != dstType)) {
-                        dstType.AddToParent();
-                    } else {
-                        dstType = foundType;
+            // i'm not a friend of regions but splitting make no sense...
+            #region types
+            {
+                foreach (var srcType in sysDatabase.Types) {
+                    ModelSqlSchema modelSqlSchema;
+                    if (schemaById.TryGetValue(srcType.schema_id, out modelSqlSchema)) {
+                        ModelSqlType dstType = new ModelSqlType(modelSqlSchema, srcType.name);
+                        ModelSqlType foundType = targetDatabase.Types.GetValueOrDefault(dstType.Name);
+                        dstType.MaxLength = srcType.max_length;
+                        dstType.Precision = srcType.precision;
+                        dstType.Scale = srcType.scale;
+                        dstType.CollationName = srcType.collation_name;
+                        dstType.IsNullable = srcType.is_nullable;
+                        if (((object)foundType == null) && (foundType != dstType)) {
+                            dstType.AddToParent();
+                        } else {
+                            dstType = foundType;
+                        }
+                        typeById[srcType.user_type_id] = dstType;
+                        typeByName[dstType.Name] = dstType;
                     }
-                    typeById[srcType.user_type_id] = dstType;
-                    typeByName[dstType.Name] = dstType;
                 }
             }
+            #endregion types
+            #region tabletypes
+            {
+                foreach (var srcTableType in sysDatabase.GetTableType()) {
+                    ModelSqlSchema modelSqlSchema;
+                    if (schemaById.TryGetValue(srcTableType.schema_id, out modelSqlSchema)) {
+                        var dstTableType = new ModelSqlTableType(modelSqlSchema, srcTableType.name);
+                        var foundTableType = targetDatabase.TableTypes.GetValueOrDefault(dstTableType.Name);
 
-            foreach (var srcTable in sysDatabase.GetTables()) {
-                ModelSqlSchema modelSqlSchema;
-                if (schemaById.TryGetValue(srcTable.schema_id, out modelSqlSchema)) {
-                    var dstTable = new ModelSqlTable(modelSqlSchema, srcTable.name);
-                    var foundTable = targetDatabase.Tables.GetValueOrDefault(dstTable.Name);
-
-                    // srcTable.Columns
-                    var srcTable_Columns = srcTable.Columns;
-                    if (srcTable_Columns != null) {
-                        foreach (var srcColumn in srcTable_Columns) {
-                            var dstColumn = new ModelSqlColumn(dstTable, srcColumn.name);
-                            ModelSqlColumn foundColumn = dstTable.GetColumnByName(dstColumn.Name);
-                            dstColumn.ColumnId = srcColumn.column_id;
-                            dstColumn.MaxLength = srcColumn.max_length;
-                            dstColumn.Precision = srcColumn.precision;
-                            dstColumn.Scale = srcColumn.scale;
-                            dstColumn.CollationName = srcColumn.collation_name;
-                            dstColumn.IsNullable = srcColumn.is_nullable;
-                            ModelSqlType foundSqlType = typeById.GetValueOrDefault(srcColumn.user_type_id);
-                            dstColumn.SqlType = foundSqlType;
-                            if ((foundColumn == null) || (foundColumn != dstColumn)) {
-                                dstColumn.AddToParent();
-                            } else {
-                                dstColumn = foundColumn;
+                        // srcTable.Columns
+                        var srcTableType_Columns = srcTableType.Columns;
+                        if (srcTableType_Columns != null) {
+                            foreach (var srcColumn in srcTableType_Columns) {
+                                var dstColumn = ConvertSysToModelColumn(typeById, dstTableType, srcColumn);
+                                ModelSqlColumn foundColumn = dstTableType.GetColumnByName(dstColumn.Name);
+                                if ((foundColumn == null) || (foundColumn != dstColumn)) {
+                                    dstColumn.AddToParent();
+                                } else {
+                                    dstColumn = foundColumn;
+                                }
                             }
                         }
-                    }
 
-                    // store back
-                    if (((object)foundTable == null) || (foundTable != dstTable)) {
-                        dstTable.AddToParent();
-                    } else {
-                        dstTable = foundTable;
+                        // store back
+                        if (((object)foundTableType == null) || (foundTableType != dstTableType)) {
+                            dstTableType.AddToParent();
+                        } else {
+                            dstTableType = foundTableType;
+                        }
+                        objectById[srcTableType.object_id] = dstTableType;
                     }
-                    objectById[srcTable.object_id] = dstTable;
                 }
             }
+            #endregion tabletypes
+            #region tables
+            {
+                foreach (var srcTable in sysDatabase.GetTables()) {
+                    ModelSqlSchema modelSqlSchema;
+                    if (schemaById.TryGetValue(srcTable.schema_id, out modelSqlSchema)) {
+                        var dstTable = new ModelSqlTable(modelSqlSchema, srcTable.name);
+                        var foundTable = targetDatabase.Tables.GetValueOrDefault(dstTable.Name);
 
-            foreach (var srcView in sysDatabase.GetViews()) {
-                ModelSqlSchema modelSqlSchema;
-                if (schemaById.TryGetValue(srcView.schema_id, out modelSqlSchema)) {
-                    var dstView = new ModelSqlView(modelSqlSchema, srcView.name);
-                    var foundView = targetDatabase.Views.GetValueOrDefault(dstView.Name);
-
-                    // srcTable.Columns
-                    var srcTable_Columns = srcView.Columns;
-                    if (srcTable_Columns != null) {
-                        foreach (var srcColumn in srcTable_Columns) {
-                            var dstColumn = new ModelSqlColumn(dstView, srcColumn.name);
-                            ModelSqlColumn foundColumn = dstView.GetColumnByName(dstColumn.Name);
-                            dstColumn.ColumnId = srcColumn.column_id;
-                            dstColumn.MaxLength = srcColumn.max_length;
-                            dstColumn.Precision = srcColumn.precision;
-                            dstColumn.Scale = srcColumn.scale;
-                            dstColumn.CollationName = srcColumn.collation_name;
-                            dstColumn.IsNullable = srcColumn.is_nullable;
-                            ModelSqlType foundSqlType = typeById.GetValueOrDefault(srcColumn.user_type_id);
-                            dstColumn.SqlType = foundSqlType;
-                            if ((foundColumn == null) || (foundColumn != dstColumn)) {
-                                dstColumn.AddToParent();
-                            } else {
-                                dstColumn = foundColumn;
+                        // srcTable.Columns
+                        var srcTable_Columns = srcTable.Columns;
+                        if (srcTable_Columns != null) {
+                            foreach (var srcColumn in srcTable_Columns) {
+                                var dstColumn = ConvertSysToModelColumn(typeById, dstTable, srcColumn);
+                                var foundColumn = dstTable.GetColumnByName(dstColumn.Name);
+                                if ((foundColumn == null) || (foundColumn != dstColumn)) {
+                                    dstColumn.AddToParent();
+                                } else {
+                                    dstColumn = foundColumn;
+                                }
                             }
                         }
-                    }
 
-                    // store back
-                    if (((object)foundView == null) || (foundView != dstView)) {
-                        dstView.AddToParent();
-                    } else {
-                        dstView = foundView;
+                        // store back
+                        if (((object)foundTable == null) || (foundTable != dstTable)) {
+                            dstTable.AddToParent();
+                        } else {
+                            dstTable = foundTable;
+                        }
+                        objectById[srcTable.object_id] = dstTable;
                     }
-                    objectById[srcView.object_id] = dstView;
                 }
             }
+            #endregion tables
+            #region view
+            {
+                foreach (var srcView in sysDatabase.GetViews()) {
+                    ModelSqlSchema modelSqlSchema;
+                    if (schemaById.TryGetValue(srcView.schema_id, out modelSqlSchema)) {
+                        var dstView = new ModelSqlView(modelSqlSchema, srcView.name);
+                        var foundView = targetDatabase.Views.GetValueOrDefault(dstView.Name);
+
+                        // srcTable.Columns
+                        var srcTable_Columns = srcView.Columns;
+                        if (srcTable_Columns != null) {
+                            foreach (var srcColumn in srcTable_Columns) {
+                                var dstColumn = ConvertSysToModelColumn(typeById, dstView, srcColumn);
+                                var foundColumn = dstView.GetColumnByName(dstColumn.Name);
+                                if ((foundColumn == null) || (foundColumn != dstColumn)) {
+                                    dstColumn.AddToParent();
+                                } else {
+                                    dstColumn = foundColumn;
+                                }
+                            }
+                        }
+
+                        // store back
+                        if (((object)foundView == null) || (foundView != dstView)) {
+                            dstView.AddToParent();
+                        } else {
+                            dstView = foundView;
+                        }
+                        objectById[srcView.object_id] = dstView;
+                    }
+                }
+            }
+            #endregion view
+            {
+                foreach (var srcSynonym in sysDatabase.GetSynonyms()) {
+                    ModelSqlSchema modelSqlSchema;
+                    if (schemaById.TryGetValue(srcSynonym.schema_id, out modelSqlSchema)) {
+                        var dstSynonym = new ModelSqlSynonym(modelSqlSchema, srcSynonym.name);
+                        var foundSynonym = targetDatabase.Synonyms.GetValueOrDefault(dstSynonym.Name);
+
+                        // store back
+                        if (((object)foundSynonym == null) || (foundSynonym != dstSynonym)) {
+                            dstSynonym.AddToParent();
+                        } else {
+                            dstSynonym = foundSynonym;
+                        }
+                        objectById[srcSynonym.object_id] = dstSynonym;
+                    }
+                }
+            }
+            {
+            }
+        }
+
+        private static ModelSqlColumn ConvertSysToModelColumn(
+            Dictionary<int, ModelSqlType> typeById,
+            IModelSqlObjectWithColumns dstObjectWithColumns,
+            SqlSysColumn srcColumn) {
+            var dstColumn = new ModelSqlColumn(dstObjectWithColumns, srcColumn.name);
+            dstColumn.ColumnId = srcColumn.column_id;
+            dstColumn.MaxLength = srcColumn.max_length;
+            dstColumn.Precision = srcColumn.precision;
+            dstColumn.Scale = srcColumn.scale;
+            dstColumn.CollationName = srcColumn.collation_name;
+            dstColumn.IsNullable = srcColumn.is_nullable;
+            ModelSqlType foundSqlType = typeById.GetValueOrDefault(srcColumn.user_type_id);
+            dstColumn.SqlType = foundSqlType;
+            return dstColumn;
         }
     }
 }

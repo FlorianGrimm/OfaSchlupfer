@@ -36,6 +36,13 @@
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlTable"/> class.
+        /// </summary>
+        /// <param name="src">Copy source</param>
+        public ModelSqlTable(ModelSqlTable src)
+            : base(src) { }
+
+        /// <summary>
         /// Add this to the parent
         /// </summary>
         /// <returns>this</returns>
@@ -43,13 +50,6 @@
             this._Schema.AddTable(this);
             return this;
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ModelSqlTable"/> class.
-        /// </summary>
-        /// <param name="src">Copy source</param>
-        public ModelSqlTable(ModelSqlTable src)
-            : base(src) { }
 
         /// <summary>
         /// Get the current scope

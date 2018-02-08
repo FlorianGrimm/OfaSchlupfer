@@ -7,7 +7,8 @@
     /// anything that owns columns
     /// </summary>
     public abstract class ModelSqlObjectWithColumns
-        : IScopeNameResolver {
+        : IScopeNameResolver
+        , IModelSqlObjectWithColumns {
         private SqlName _Name;
 
         /// <summary>

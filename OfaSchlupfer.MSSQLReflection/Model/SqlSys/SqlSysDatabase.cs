@@ -314,5 +314,78 @@
                 .Where(_ => string.Equals(_.type, "V ", StringComparison.Ordinal))
                 .ToList();
         }
+
+        /// <summary>
+        /// filter th object for synonym.
+        /// </summary>
+        /// <returns>a list of synonym</returns>
+        public List<SqlSysObject> GetSynonyms() {
+            return this.AllObjectsById.Values
+                .Where(_ => string.Equals(_.type, "SN", StringComparison.Ordinal))
+                .ToList();
+        }
+
+        /// <summary>
+        /// filter the objects for  SQL Stored Procedure.
+        /// </summary>
+        /// <returns>a list of  SQL Stored Procedure</returns>
+        public List<SqlSysObject> GetSqlStoredProcedures() {
+            return this.AllObjectsById.Values
+                .Where(_ => string.Equals(_.type, "P ", StringComparison.Ordinal))
+                .ToList();
+        }
+
+        /// <summary>
+        /// filter the objects for SQL scalar function.
+        /// </summary>
+        /// <returns>a list of SQL scalar function</returns>
+        public List<SqlSysObject> GetSqlScalarFunctions() {
+            return this.AllObjectsById.Values
+                .Where(_ => string.Equals(_.type, "FN", StringComparison.Ordinal))
+                .ToList();
+        }
+
+        /// <summary>
+        /// filter the objects for SQL inline table-valued function.
+        /// </summary>
+        /// <returns>a list of SQL inline table-valued functions.</returns>
+        public List<SqlSysObject> GetSqlInlineTableValuedFfunctions() {
+            return this.AllObjectsById.Values
+                .Where(_ => string.Equals(_.type, "IF", StringComparison.Ordinal))
+                .ToList();
+        }
+
+        /// <summary>
+        /// filter the objects for SQL table-valued-functions.
+        /// </summary>
+        /// <returns>a list of SQL table-valued-functions.</returns>
+        public List<SqlSysObject> GetSqlTableValuedFunction() {
+            return this.AllObjectsById.Values
+                .Where(_ => string.Equals(_.type, "TF", StringComparison.Ordinal))
+                .ToList();
+        }
+
+        /// <summary>
+        /// filter the objects for Table type.
+        /// </summary>
+        /// <returns>a list of SQL table-valued-functions.</returns>
+        public List<SqlSysObject> GetTableType() {
+            return this.AllObjectsById.Values
+                .Where(_ => string.Equals(_.type, "TT", StringComparison.Ordinal))
+                .ToList();
+        }
+
+        // TODO: add types
+        // C = CHECK constraint
+        // D = DEFAULT(constraint or stand-alone)
+        // F = FOREIGN KEY constraint
+        // PC = Assembly(CLR) stored-procedure
+        // PG = Plan guide
+        // PK = PRIMARY KEY constraint
+        // RF = Replication-filter-procedure
+        // TF = SQL table-valued-function
+        // TR = SQL DML trigger
+        // UQ = UNIQUE constraint
+        // X = Extended stored procedure
     }
 }

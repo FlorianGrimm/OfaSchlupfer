@@ -11,6 +11,7 @@
         private readonly Dictionary<SqlName, ModelSqlSchema> _Schemas;
         private readonly Dictionary<SqlName, ModelSqlType> _Types;
         private readonly Dictionary<SqlName, ModelSqlTable> _Tables;
+        private readonly Dictionary<SqlName, ModelSqlTableType> _TableTypes;
         private readonly Dictionary<SqlName, ModelSqlView> _Views;
         private readonly Dictionary<SqlName, ModelSqlProcedure> _Procedures;
         private readonly Dictionary<SqlName, ModelSqlSynonym> _Synonyms;
@@ -26,6 +27,7 @@
             this._Schemas = new Dictionary<SqlName, ModelSqlSchema>(SqlNameEqualityComparer.Level1);
             this._Types = new Dictionary<SqlName, ModelSqlType>(SqlNameEqualityComparer.Level2);
             this._Tables = new Dictionary<SqlName, ModelSqlTable>(SqlNameEqualityComparer.Level2);
+            this._TableTypes = new Dictionary<SqlName, ModelSqlTableType>(SqlNameEqualityComparer.Level2);
             this._Views = new Dictionary<SqlName, ModelSqlView>(SqlNameEqualityComparer.Level2);
             this._Procedures = new Dictionary<SqlName, ModelSqlProcedure>(SqlNameEqualityComparer.Level2);
             this._Synonyms = new Dictionary<SqlName, ModelSqlSynonym>(SqlNameEqualityComparer.Level2);
@@ -75,6 +77,11 @@
         /// Gets the tables.
         /// </summary>
         public Dictionary<SqlName, ModelSqlTable> Tables => this._Tables;
+
+        /// <summary>
+        /// Gets the tables.
+        /// </summary>
+        public Dictionary<SqlName, ModelSqlTableType> TableTypes => this._TableTypes;
 
         /// <summary>
         /// Gets the views.
@@ -175,6 +182,23 @@
         public void AddProcedure(ModelSqlProcedure procedure) {
             if ((object)procedure == null) { throw new ArgumentNullException(nameof(procedure)); }
             this.Procedures[procedure.Name] = procedure;
+        }
+
+        /// <summary>
+        /// Add the synonym
+        /// </summary>
+        /// <param name="synonym">the new item</param>
+        public void AddSynonym(ModelSqlSynonym synonym) {
+            if ((object)synonym == null) { throw new ArgumentNullException(nameof(synonym)); }
+            this.Synonyms[synonym.Name] = synonym;
+        }
+
+        /// <summary>
+        /// Add the synonym
+        /// </summary>
+        /// <param name="tableType">the new item</param>
+        public void AddTableType(ModelSqlTableType tableType) {
+            this._TableTypes[tableType.Name] = tableType;
         }
 
         /// <summary>
