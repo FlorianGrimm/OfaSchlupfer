@@ -1,31 +1,28 @@
-﻿#pragma warning disable SA1600 // Elements must be documented
-
-namespace OfaSchlupfer.MSSQLReflection.Model {
+﻿namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
 
     /// <summary>
-    /// ModelSqlProcedure
+    /// a sql alias
     /// </summary>
-    public sealed class ModelSqlProcedure
-        : IEquatable<ModelSqlProcedure> {
+    public class ModelSqlSynonym
+        : IEquatable<ModelSqlSynonym> {
         private SqlName _Name;
-        private string _Definition;
+        private SqlName _For;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ModelSqlProcedure"/> class.
+        /// Initializes a new instance of the <see cref="ModelSqlSynonym"/> class.
         /// </summary>
-        public ModelSqlProcedure() {
-            this._Definition = string.Empty;
+        public ModelSqlSynonym() {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ModelSqlProcedure"/> class.
-        /// Copy contructor.
+        /// Initializes a new instance of the <see cref="ModelSqlSynonym"/> class.
+        /// Copy constructor
         /// </summary>
         /// <param name="src">instance to copy.</param>
-        public ModelSqlProcedure(ModelSqlProcedure src) {
+        public ModelSqlSynonym(ModelSqlSynonym src) {
             this._Name = src._Name;
-            this._Definition = src._Definition;
+            this._For = src._For;
         }
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
@@ -38,7 +35,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets or sets the name of the type.
         /// </summary>
-        public string Definition { get { return this._Definition; } set { this._Definition = value ?? string.Empty; } }
+        public SqlName For { get { return this._For; } set { this._For = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
@@ -48,7 +45,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="a">a instance.</param>
         /// <param name="b">another instance</param>
         /// <returns>true if equals.</returns>
-        public static bool operator ==(ModelSqlProcedure a, ModelSqlProcedure b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);
+        public static bool operator ==(ModelSqlSynonym a, ModelSqlSynonym b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);
 
         /// <summary>
         /// not equals.
@@ -56,20 +53,20 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="a">a instance.</param>
         /// <param name="b">another instance</param>
         /// <returns>true if not equals.</returns>
-        public static bool operator !=(ModelSqlProcedure a, ModelSqlProcedure b) => !(((object)a == null) ? ((object)b == null) : a.Equals(b));
+        public static bool operator !=(ModelSqlSynonym a, ModelSqlSynonym b) => !(((object)a == null) ? ((object)b == null) : a.Equals(b));
 
         /// <inheritdoc/>
         public override bool Equals(object obj) {
-            return base.Equals(obj as ModelSqlProcedure);
+            return base.Equals(obj as ModelSqlSynonym);
         }
 
         /// <inheritdoc/>
-        public bool Equals(ModelSqlProcedure other) {
+        public bool Equals(ModelSqlSynonym other) {
             if ((object)other == null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
             ((object)null).ToString();
             return (this.Name == other.Name)
-                && (string.Equals(this.Definition, other.Definition, StringComparison.Ordinal))
+                && (this.For == other.For)
                 ;
         }
 

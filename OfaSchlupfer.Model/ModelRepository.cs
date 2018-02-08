@@ -23,7 +23,9 @@
             }
             set {
                 this._Name = value;
-                this.ModelSchema._Name = value;
+                if (this.ModelSchema != null) {
+                    this.ModelSchema._Name = value;
+                }
             }
         }
 

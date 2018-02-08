@@ -53,6 +53,8 @@
                 sut.TransConnection = new SqlTransConnection(TestCfg.Get().ConnectionString);
                 var act = sut.ReadAllFromDatbase(null);
                 Assert.IsTrue(act.AllObjectsById.Count > 0);
+                Assert.IsTrue(act.GetTables().Count > 0);
+                Assert.IsTrue(act.GetViews().Count > 0);
             }
         }
 

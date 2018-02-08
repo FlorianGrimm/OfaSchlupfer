@@ -27,13 +27,21 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         }
 
 
+
         [TestMethod()]
         public void ModelSqlDatabase_ResolveTest() {
             var sut = GetTestModelSqlDatabase();
             {
-                var act = sut.ResolveObject(SqlName.Root.Child("dbo", ObjectLevel.Schema), null);
-                Assert.IsNotNull(act as ModelSqlSchema);
+                var act = sut.ResolveObject(SqlName.Schema("dbo"), null);
+                Assert.IsNotNull(act);
+                Assert.IsInstanceOfType(act, typeof(ModelSqlSchema));
                 Assert.AreEqual("dbo", (act as ModelSqlSchema).Name.Name);
+            }
+            {
+                var act = sut.ResolveObject(SqlName.Object("dbo", "name"), null);
+                Assert.IsNotNull(act);
+                Assert.IsInstanceOfType(act, typeof(ModelSqlTable));
+                Assert.AreEqual("dbo.name", (act as ModelSqlTable).Name.GetQFullName(null, 2));
             }
             /*
             {

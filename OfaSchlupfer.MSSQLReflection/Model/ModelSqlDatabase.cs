@@ -13,6 +13,8 @@
         private readonly Dictionary<SqlName, ModelSqlTable> _Tables;
         private readonly Dictionary<SqlName, ModelSqlView> _Views;
         private readonly Dictionary<SqlName, ModelSqlProcedure> _Procedures;
+        private readonly Dictionary<SqlName, ModelSqlSynonym> _Synonyms;
+
         private SqlScope _Scope;
         private ModelSqlServer _SqlServer;
         private SqlName _Name;
@@ -26,6 +28,7 @@
             this._Tables = new Dictionary<SqlName, ModelSqlTable>(SqlNameEqualityComparer.Level2);
             this._Views = new Dictionary<SqlName, ModelSqlView>(SqlNameEqualityComparer.Level2);
             this._Procedures = new Dictionary<SqlName, ModelSqlProcedure>(SqlNameEqualityComparer.Level2);
+            this._Synonyms = new Dictionary<SqlName, ModelSqlSynonym>(SqlNameEqualityComparer.Level2);
         }
 
         /// <summary>
@@ -82,6 +85,11 @@
         /// Gets the procedures.
         /// </summary>
         public Dictionary<SqlName, ModelSqlProcedure> Procedures => this._Procedures;
+
+        /// <summary>
+        /// Gets the Synonyms
+        /// </summary>
+        public Dictionary<SqlName, ModelSqlSynonym> Synonyms => this._Synonyms;
 
         /// <summary>
         /// Add this to parent.

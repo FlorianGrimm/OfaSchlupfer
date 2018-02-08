@@ -13,13 +13,13 @@
         /// <summary>
         /// the columns
         /// </summary>
-        protected Dictionary<SqlName, ModelSqlColumn> _Columns;
+        protected List<ModelSqlColumn> _Columns;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlObjectWithColumns"/> class.
         /// </summary>
         public ModelSqlObjectWithColumns() {
-            this._Columns = new Dictionary<SqlName, ModelSqlColumn>();
+            this._Columns = new List<ModelSqlColumn>();
         }
 
         /// <summary>
@@ -30,9 +30,7 @@
             : this() {
             if ((object)src != null) {
                 this.Name = src.Name;
-                foreach (var kv in src._Columns) {
-                    this._Columns[kv.Key] = kv.Value;
-                }
+                this._Columns.AddRange(src.Columns);
             }
         }
 
@@ -53,7 +51,7 @@
         /// <summary>
         /// Gets the columns
         /// </summary>
-        public Dictionary<SqlName, ModelSqlColumn> Columns => this._Columns;
+        public List<ModelSqlColumn> Columns => this._Columns;
 
         /// <summary>
         /// Resolve the name.
@@ -62,7 +60,13 @@
         /// <param name="context">the resolver context.</param>
         /// <returns>the named object or null.</returns>
         public virtual object ResolveObject(SqlName name, IScopeNameResolverContext context) {
-            return this.Columns.GetValueOrDefault(name);
+            for (int idx = 0; idx < this.Columns.Count; idx++) {
+                var column = this.Columns[idx];
+                if (column.Name.Equals(name)) {
+                    return column;
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -70,7 +74,9 @@
         /// </summary>
         /// <param name="modelSqlColumn">the column to add</param>
         public void AddColumn(ModelSqlColumn modelSqlColumn) {
-            this.Columns[modelSqlColumn.Name] = modelSqlColumn;
+            if (modelSqlColumn != null) {
+                this.Columns.Add(modelSqlColumn);
+            }
         }
 
         /// <summary>
@@ -78,6 +84,14 @@
         /// </summary>
         /// <param name="name">the name to find</param>
         /// <returns>the column or null.</returns>
-        public ModelSqlColumn GetColumnByName(SqlName name) => this._Columns.GetValueOrDefault(name);
+        public ModelSqlColumn GetColumnByName(SqlName name) {
+            for (int idx = 0; idx < this.Columns.Count; idx++) {
+                var column = this.Columns[idx];
+                if (column.Name.Equals(name)) {
+                    return column;
+                }
+            }
+            return null;
+        }
     }
 }

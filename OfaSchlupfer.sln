@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		OfaSchlupfer.png = OfaSchlupfer.png
 		OfaSchlupfer.ruleset = OfaSchlupfer.ruleset
 		README.md = README.md
+		sql\TestDatabase.sql = sql\TestDatabase.sql
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfaSchlupfer.MSSQLReflection", "OfaSchlupfer.MSSQLReflection\OfaSchlupfer.MSSQLReflection.csproj", "{03C9DB9D-8BCA-4EA2-A891-5C5AAD9323FD}"

@@ -262,6 +262,7 @@
     <Compile Include="AST\AstUtility.cs" />
     <Compile Include="Model\IScopeNameResolver.cs" />
     <Compile Include="Model\IScopeNameResolverContext.cs" />
+    <Compile Include="Model\ModelSqlSynonym.cs" />
     <Compile Include="Model\ModelTypeColumns.cs" />
     <Compile Include="Model\ModelSqlElementType.cs" />
     <Compile Include="Model\ModelSqlNamedElement.cs" />

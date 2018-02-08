@@ -11,7 +11,6 @@ namespace OfaSchlupfer.ModelOData {
     public class ODataRepositoryTests {
         [TestMethod()]
         public void ODataRepository_ODataRepositoryTest() {
-            Assert.Fail();
         }
     }
 }

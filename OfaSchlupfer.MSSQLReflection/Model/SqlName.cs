@@ -20,6 +20,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// Gets the Root.
         /// </summary>
         public static SqlName Root {
+            [System.Diagnostics.DebuggerStepThrough]
             get {
                 if ((object)_Root == null) {
                     var root = new SqlName("%");
@@ -106,6 +107,35 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         }
 
         /// <summary>
+        /// Creates a schema - name.
+        /// </summary>
+        /// <param name="name">the name of the schema</param>
+        /// <returns>A new name.</returns>
+        [System.Diagnostics.DebuggerStepThrough]
+        public static SqlName Schema(string name) => Root.Child(name, ObjectLevel.Schema);
+
+        /// <summary>
+        /// Creates a object - name.
+        /// </summary>
+        /// <param name="schema">the name of the schema</param>
+        /// <param name="name">the name of the object</param>
+        /// <returns>A new name.</returns>
+        [System.Diagnostics.DebuggerStepThrough]
+        public static SqlName Object(string schema, string name)
+            => ((string.IsNullOrEmpty(schema))
+                ? Root
+                : Root.Child(schema, ObjectLevel.Schema))
+            .Child(name, ObjectLevel.Object);
+
+        /// <summary>
+        /// Creates a object name.
+        /// </summary>
+        /// <param name="schema">the schema</param>
+        /// <param name="name">the name</param>
+        /// <returns>a new name</returns>
+        public static SqlName Object(SqlName schema, string name) => (schema ?? Root).Child(name, ObjectLevel.Object);
+
+        /// <summary>
         /// Create a SqlName from a schemaObjectname.
         /// </summary>
         /// <param name="name">the name to convert</param>
@@ -157,6 +187,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="parent">parent Name</param>
         /// <param name="name">the name</param>
         /// <param name="objectLevel">the ObjectLevel.</param>
+        [System.Diagnostics.DebuggerStepThrough]
         public SqlName(SqlName parent, string name, ObjectLevel objectLevel) {
             if ((object)name == null) {
                 throw new ArgumentNullException(nameof(name));
@@ -182,6 +213,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         /// <param name="name">the name of the child</param>
         /// <returns>the new child.</returns>
+        [System.Diagnostics.DebuggerStepThrough]
         public SqlName Child(string name) {
             ObjectLevel nextLevel = ObjectLevel.Unknown;
             switch (this.ObjectLevel) {
@@ -210,6 +242,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="name">the name of the child</param>
         /// <param name="objectLevel">the new object level,</param>
         /// <returns>the new child.</returns>
+        [System.Diagnostics.DebuggerStepThrough]
         public SqlName Child(string name, ObjectLevel objectLevel) => new SqlName(this, name, objectLevel);
 
         /// <summary>
@@ -293,10 +326,27 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         public bool IsRoot => ReferenceEquals(this.Parent, null) || ReferenceEquals(this.Parent, this);
 
+        /// <summary>
+        /// test if equal
+        /// </summary>
+        /// <param name="a">one instance</param>
+        /// <param name="b">another instance</param>
+        /// <returns>true if equal</returns>
         public static bool operator ==(SqlName a, SqlName b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);
 
+        /// <summary>
+        /// test if equal
+        /// </summary>
+        /// <param name="a">one instance</param>
+        /// <param name="b">another instance</param>
+        /// <returns>true if false</returns>
         public static bool operator !=(SqlName a, SqlName b) => !(((object)a == null) ? ((object)b == null) : a.Equals(b));
 
+        /// <summary>
+        /// test if equal
+        /// </summary>
+        /// <param name="obj">another instance</param>
+        /// <returns>true if equal</returns>
         public override bool Equals(object obj) {
             return this.Equals(obj as SqlName);
         }
