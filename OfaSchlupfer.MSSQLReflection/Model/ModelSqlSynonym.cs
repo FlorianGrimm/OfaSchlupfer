@@ -5,9 +5,9 @@
     /// a sql alias
     /// </summary>
     public class ModelSqlSynonym
-        : IEquatable<ModelSqlSynonym>
+        : ModelSqlSchemaChild
+        , IEquatable<ModelSqlSynonym>
         , IScopeNameResolver {
-        private SqlName _Name;
         private SqlName _For;
         private ModelSqlSchema _Schema;
         private SqlScope _Scope;
@@ -59,11 +59,6 @@
         /// <summary>
         /// Gets or sets the name of the type.
         /// </summary>
-        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
-
-        /// <summary>
-        /// Gets or sets the name of the type.
-        /// </summary>
         public SqlName For { get { return this._For; } set { this._For = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
@@ -105,9 +100,15 @@
         /// <inheritdoc/>
         public override string ToString() => this.Name.ToString();
 
+        /// <summary>
+        /// Resolve the name.
+        /// </summary>
+        /// <param name="name">the name to find the item thats called name</param>
+        /// <param name="context">the resolver context.</param>
+        /// <returns>the named object or null.</returns>
         public object ResolveObject(SqlName name, IScopeNameResolverContext context) {
-            throw new NotImplementedException();
             // TODO: ResolveObject
-        }        
+            throw new NotImplementedException();
+        }
     }
 }

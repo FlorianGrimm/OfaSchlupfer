@@ -79,6 +79,8 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         public bool IsNullable { get { return this._IsNullable; } set { this._IsNullable = value; } }
 
+        public ModelSqlType BaseOnType { get; set; }
+
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
         /// <summary>
@@ -96,7 +98,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <returns>The scalartype or null</returns>
         public ModelTypeScalar GetScalarType() {
             return this._ScalarType ?? (this._ScalarType = new ModelTypeScalar() {
-                TypeName = this.Name,
+                Name = this.Name,
                 MaxLength = this.MaxLength,
                 Precision = this.Precision,
                 Scale = this.Scale,

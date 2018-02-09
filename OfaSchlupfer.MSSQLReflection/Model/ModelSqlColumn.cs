@@ -9,14 +9,22 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     /// column
     /// </summary>
     public sealed class ModelSqlColumn
-        : IEquatable<ModelSqlColumn>
+        : ModelSqlNamedElement
+        , IEquatable<ModelSqlColumn>
         , IScopeNameResolver {
         private SqlScope _Scope;
-        private SqlName _Name;
+        private IModelSqlObjectWithColumns _Owner;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlColumn"/> class.
+        /// </summary>
         public ModelSqlColumn()
             : this((SqlScope)null) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlColumn"/> class.
+        /// </summary>
+        /// <param name="ownerScope">scope</param>
         public ModelSqlColumn(SqlScope ownerScope) {
             this._Scope = ownerScope;
         }
@@ -26,7 +34,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         /// <param name="owner">the owner</param>
         /// <param name="name">the column name</param>
-        public ModelSqlColumn(ModelSqlObjectWithColumns owner, string name)
+        public ModelSqlColumn(IModelSqlObjectWithColumns owner, string name)
             : this(owner.GetScope()) {
             this.Name = owner.Name.ChildWellkown(name);
             this._Owner = owner;
@@ -43,10 +51,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         }
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
-
-        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Child); } }
-
-        private ModelSqlObjectWithColumns _Owner;
 
         public int ColumnId { get; set; }
 

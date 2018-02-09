@@ -8,7 +8,7 @@
     /// <summary>
     /// the scalar type of sql
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("{TypeName}-{SystemDataType}")]
+    [System.Diagnostics.DebuggerDisplay("{Name}-{SystemDataType}")]
     public sealed class ModelTypeScalar : ModelType {
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelTypeScalar"/> class.
@@ -20,7 +20,7 @@
         /// </summary>
         /// <returns>the name or null</returns>
         public override string GetName() {
-            return this.TypeName.GetQFullName("[");
+            return this.Name.GetQFullName("[");
         }
 
         /// <summary>
@@ -109,7 +109,7 @@
         public ModelTypeScalar(ModelTypeScalar src) {
             if ((object)src != null) {
                 this.SystemDataType = src.SystemDataType;
-                this.TypeName = src.TypeName;
+                this.Name = src.Name;
                 this.MaxLength = src.MaxLength;
                 this.Scale = src.Scale;
                 this.Precision = src.Precision;

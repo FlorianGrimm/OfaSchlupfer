@@ -55,8 +55,8 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         /// <param name="src">copy source</param>
         public ModelSqlSchema(ModelSqlSchema src) {
-            this.Name = src.Name;
             // TODO: copy properties
+            this.Name = src.Name;
         }
 
         /// <summary>

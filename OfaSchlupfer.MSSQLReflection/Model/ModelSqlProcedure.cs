@@ -7,8 +7,8 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     /// ModelSqlProcedure
     /// </summary>
     public sealed class ModelSqlProcedure
-        : IEquatable<ModelSqlProcedure> {
-        private SqlName _Name;
+        : ModelSqlSchemaChild
+        , IEquatable<ModelSqlProcedure> {
         private string _Definition;
 
         /// <summary>
@@ -29,11 +29,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         }
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
-
-        /// <summary>
-        /// Gets or sets the name of the type.
-        /// </summary>
-        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
 
         /// <summary>
         /// Gets or sets the name of the type.
@@ -74,9 +69,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         }
 
         /// <inheritdoc/>
-        public override int GetHashCode() => this.Name.GetHashCode();
-
-        /// <inheritdoc/>
-        public override string ToString() => this.Name.ToString();
+        public override int GetHashCode() => base.GetHashCode();
     }
 }

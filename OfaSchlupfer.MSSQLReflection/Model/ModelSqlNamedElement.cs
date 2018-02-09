@@ -8,16 +8,25 @@
     /// <summary>
     /// a element with an name
     /// </summary>
-    public sealed class ModelSqlNamedElement {
+    public class ModelSqlNamedElement {
+        /// <summary>
+        /// backfield for Name
+        /// </summary>
+        protected SqlName _Name;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlNamedElement"/> class.
         /// </summary>
         public ModelSqlNamedElement() { }
 
+#pragma warning disable SA1107 // Code must not contain multiple statements on one line
+
         /// <summary>
-        /// Gets or sets the name
+        /// Gets or sets the name.
         /// </summary>
-        public SqlName Name { get; set; }
+        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Child); } }
+
+#pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
         /// <summary>
         /// Gets or sets the type

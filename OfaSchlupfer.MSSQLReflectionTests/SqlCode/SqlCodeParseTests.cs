@@ -36,7 +36,7 @@ SELECT @hugo;
             var resolved = (resolvedObject as ISqlCodeType)?.GetResolvedCodeType();
             Assert.IsNotNull(resolved);
             Assert.AreEqual("SqlCodeType", resolved.GetType().Name);
-            Assert.AreEqual("int", ((SqlCodeType)resolved).ModelType.TypeName.GetQFullName(null, 2));
+            Assert.AreEqual("int", ((SqlCodeType)resolved).ModelType.Name.GetQFullName(null, 2));
             //scope.Content.ContainsKey()
         }
 
@@ -75,7 +75,7 @@ EXECUTE dbo.p @c
             Assert.IsNotNull(resolvedObject);
             var resolved = (resolvedObject as ISqlCodeType)?.GetResolvedCodeType();
             Assert.IsNotNull(resolved);
-            Assert.AreEqual("nvarchar", ((SqlCodeType)resolved).ModelType.TypeName.GetQFullName(null, 2));
+            Assert.AreEqual("nvarchar", ((SqlCodeType)resolved).ModelType.Name.GetQFullName(null, 2));
             //scope.Content.ContainsKey()
         }
 

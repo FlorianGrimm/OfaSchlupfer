@@ -13,7 +13,7 @@
         , IEquatable<ModelSqlTableType>
         , IScopeNameResolver
         , IModelSqlObjectWithColumns {
-        private readonly List<ModelSqlNamedElement> _Columns;
+        private readonly List<ModelSqlColumn> _Columns;
 
         private SqlName _Name;
         private SqlScope _Scope;
@@ -23,7 +23,7 @@
         /// Initializes a new instance of the <see cref="ModelSqlTableType"/> class.
         /// </summary>
         public ModelSqlTableType() {
-            this._Columns = new List<ModelSqlNamedElement>();
+            this._Columns = new List<ModelSqlColumn>();
         }
 
         /// <summary>
@@ -66,7 +66,7 @@
         /// <summary>
         /// Gets the Columns
         /// </summary>
-        public List<ModelSqlNamedElement> Columns => this._Columns;
+        public List<ModelSqlColumn> Columns => this._Columns;
 
         /// <summary>
         /// Add this to the parent
@@ -117,5 +117,30 @@
 
         /// <inheritdoc/>
         public override string ToString() => this.Name.ToString();
+
+        /// <summary>
+        /// Add the column
+        /// </summary>
+        /// <param name="modelSqlColumn">the column to add</param>
+        public void AddColumn(ModelSqlColumn modelSqlColumn) {
+            if (modelSqlColumn != null) {
+                this.Columns.Add(modelSqlColumn);
+            }
+        }
+
+        /// <summary>
+        /// Get the column by name
+        /// </summary>
+        /// <param name="name">the name to find</param>
+        /// <returns>the column or null.</returns>
+        public ModelSqlColumn GetColumnByName(SqlName name) {
+            for (int idx = 0; idx < this.Columns.Count; idx++) {
+                var column = this.Columns[idx];
+                if (column.Name.Equals(name)) {
+                    return column;
+                }
+            }
+            return null;
+        }
     }
 }

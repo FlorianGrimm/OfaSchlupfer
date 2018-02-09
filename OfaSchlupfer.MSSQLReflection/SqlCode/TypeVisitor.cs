@@ -41,7 +41,7 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             if (sqlDataTypeOption != ModelSystemDataType.None) {
                 // happyness
                 var scalarType = new ModelTypeScalar();
-                scalarType.TypeName = typename;
+                scalarType.Name = typename;
                 scalarType.MaxLength = (isMax) ? ((short)-1) : length;
                 scalarType.Precision = precision;
                 scalarType.Scale = scale;

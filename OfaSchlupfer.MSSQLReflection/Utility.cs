@@ -278,12 +278,14 @@ namespace OfaSchlupfer.MSSQLReflection {
             SqlSysColumn srcColumn) {
             var dstColumn = new ModelSqlColumn(dstObjectWithColumns, srcColumn.name);
             dstColumn.ColumnId = srcColumn.column_id;
-            dstColumn.MaxLength = srcColumn.max_length;
-            dstColumn.Precision = srcColumn.precision;
-            dstColumn.Scale = srcColumn.scale;
-            dstColumn.CollationName = srcColumn.collation_name;
-            dstColumn.IsNullable = srcColumn.is_nullable;
             ModelSqlType foundSqlType = typeById.GetValueOrDefault(srcColumn.user_type_id);
+            var typeScalar = new ModelSqlType();
+            typeScalar.BaseOnType = foundSqlType;
+            typeScalar.MaxLength = srcColumn.max_length;
+            typeScalar.Precision = srcColumn.precision;
+            typeScalar.Scale = srcColumn.scale;
+            typeScalar.CollationName = srcColumn.collation_name;
+            typeScalar.IsNullable = srcColumn.is_nullable;
             dstColumn.SqlType = foundSqlType;
             return dstColumn;
         }

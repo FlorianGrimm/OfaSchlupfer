@@ -18,7 +18,7 @@
         /// <summary>
         /// Gets or sets the type.
         /// </summary>
-        public virtual SqlName TypeName { get; set; }
+        public virtual SqlName Name { get; set; }
 
         /// <summary>
         /// Convert a <see cref="ModelSqlType"/> to a ModelSystemDataType
@@ -30,7 +30,7 @@
 
             // TODO: Convert name to dataType
             return new ModelTypeScalar() {
-                TypeName = modelSqlType.Name,
+                Name = modelSqlType.Name,
                 SystemDataType = dataType,
                 CollationName = modelSqlType.CollationName,
                 IsNullable = modelSqlType.IsNullable,

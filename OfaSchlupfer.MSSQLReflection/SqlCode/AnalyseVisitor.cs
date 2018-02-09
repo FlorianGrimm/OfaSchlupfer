@@ -213,7 +213,7 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         public override void ExplicitVisit(IntegerLiteral node) {
             var sys_int_name = this.GetSqlNameSys().ChildWellkown("int");
             var t = new ModelTypeScalar() {
-                TypeName = sys_int_name,
+                Name = sys_int_name,
                 SystemDataType = ModelSystemDataType.Int
             };
             var v = new ModelValueScalar() {
