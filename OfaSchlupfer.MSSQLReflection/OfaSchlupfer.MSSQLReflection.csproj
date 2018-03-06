@@ -265,6 +265,7 @@
     <Compile Include="Model\IScopeNameResolverContext.cs" />
     <Compile Include="Model\ModelSqlSchemaChild.cs" />
     <Compile Include="Model\ModelSqlSynonym.cs" />
+    <Compile Include="Model\ModelSqlTableValueFunction.cs" />
     <Compile Include="Model\ModelTypeColumns.cs" />
     <Compile Include="Model\ModelSqlElementType.cs" />
     <Compile Include="Model\ModelSqlNamedElement.cs" />
@@ -288,6 +289,7 @@
     <Compile Include="Model\SqlSys\SqlSysForeignKeysColumn.cs" />
     <Compile Include="Model\SqlSys\SqlSysIndex.cs" />
     <Compile Include="Model\SqlSys\SqlSysIndexColumn.cs" />
+    <Compile Include="Model\SqlSys\SqlSysTableType.cs" />
     <Compile Include="Model\SqlSys\SqlSysUtiltiy.cs" />
     <Compile Include="Model\SqlSys\SqlSysParameter.cs" />
     <Compile Include="Model\SqlSys\SqlSysSchema.cs" />
@@ -316,6 +318,7 @@
     <Compile Include="Model\SqlResolveScope.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Model\ClassDiagram.cd" />
     <None Include="Model\SqlSys\ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>

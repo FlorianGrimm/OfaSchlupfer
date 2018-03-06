@@ -8,7 +8,9 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     /// </summary>
     public sealed class ModelSqlProcedure
         : ModelSqlSchemaChild
-        , IEquatable<ModelSqlProcedure> {
+        , IEquatable<ModelSqlProcedure>
+        , IScopeNameResolver {
+        private SqlScope _Scope;
         private string _Definition;
 
         /// <summary>
@@ -16,6 +18,25 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         public ModelSqlProcedure() {
             this._Definition = string.Empty;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlProcedure"/> class.
+        /// </summary>
+        /// <param name="scopeSchema">the database scope</param>
+        public ModelSqlProcedure(SqlScope scopeSchema) {
+            this._Scope = (scopeSchema?.CreateChildScope(this)) ?? (new SqlScope(null, this));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelSqlProcedure"/> class.
+        /// </summary>
+        /// <param name="schema">the owner</param>
+        /// <param name="name">the name</param>
+        public ModelSqlProcedure(ModelSqlSchema schema, string name)
+            : this(schema.GetScope()) {
+            this.Name = schema.Name.Child(name, ObjectLevel.Object);
+            this._Schema = schema;
         }
 
         /// <summary>
@@ -36,6 +57,23 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public string Definition { get { return this._Definition; } set { this._Definition = value ?? string.Empty; } }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
+
+        /// <summary>
+        /// Add this to the parent
+        /// </summary>
+        public override void AddToParent() {
+            this._Schema.AddProcedure(this);
+        }
+
+        /// <summary>
+        /// Resolve the name.
+        /// </summary>
+        /// <param name="name">the name to find the item thats called name</param>
+        /// <param name="context">the resolver context.</param>
+        /// <returns>the named object or null.</returns>
+        public object ResolveObject(SqlName name, IScopeNameResolverContext context) {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// a equals b

@@ -128,7 +128,6 @@ namespace OfaSchlupfer.MSSQLReflection {
                 schemaById[src.schema_id] = dstSchema;
             }
 
-            // i'm not a friend of regions but splitting make no sense...
             #region types
             {
                 foreach (var srcType in sysDatabase.Types) {
@@ -251,6 +250,7 @@ namespace OfaSchlupfer.MSSQLReflection {
                 }
             }
             #endregion view
+            #region Synonyms
             {
                 foreach (var srcSynonym in sysDatabase.GetSynonyms()) {
                     ModelSqlSchema modelSqlSchema;
@@ -268,8 +268,26 @@ namespace OfaSchlupfer.MSSQLReflection {
                     }
                 }
             }
+            #endregion Synonyms
+            #region StoredProdedures
             {
+                foreach (var srcProcedure in sysDatabase.GetSqlStoredProcedures()) {
+                    ModelSqlSchema modelSqlSchema;
+                    if (schemaById.TryGetValue(srcProcedure.schema_id, out modelSqlSchema)) {
+                        var dstProcedure = new ModelSqlProcedure(modelSqlSchema, srcProcedure.name);
+                        var foundProcedure = targetDatabase.Procedures.GetValueOrDefault(dstProcedure.Name);
+
+                        // store back
+                        if (((object)foundProcedure == null) || (foundProcedure != dstProcedure)) {
+                            dstProcedure.AddToParent();
+                        } else {
+                            dstProcedure = foundProcedure;
+                        }
+                        objectById[srcProcedure.object_id] = dstProcedure;
+                    }
+                }
             }
+            #endregion StoredProdedures
         }
 
         private static ModelSqlColumn ConvertSysToModelColumn(

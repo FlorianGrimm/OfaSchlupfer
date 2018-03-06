@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.ModelSqlTable" Collapsed="true">
+    <Position X="15.25" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAEgAAAAAAgAAAAAIAAAEAAAAIAAiI=</HashCode>
+      <FileName>Model\ModelSqlTable.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.ModelSqlObjectWithColumns" Collapsed="true">
+    <Position X="13.75" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>IgAAAAAAAAACAAAAAAAAAAAAAAAAAAABAAAAAAoAAAA=</HashCode>
+      <FileName>Model\ModelSqlObjectWithColumns.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="_Columns" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.ModelSqlSchemaChild" Collapsed="true">
+    <Position X="8" Y="1.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAIAQAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\ModelSqlSchemaChild.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.ModelSqlTableValueFunction" Collapsed="true">
+    <Position X="0.75" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAGAAAgAAAAAAAAAAAAIAAAAAAAAAAAiA=</HashCode>
+      <FileName>Model\ModelSqlTableValueFunction.cs</FileName>
+      <NewMemberFileName>Model\ModelSqlProcedure.cs</NewMemberFileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.ModelSqlSynonym" Collapsed="true">
+    <Position X="5.5" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAEgAAAAAAgIAAAAIAAAECAAAAAAiI=</HashCode>
+      <FileName>Model\ModelSqlSynonym.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.ModelSqlView" Collapsed="true">
+    <Position X="12.5" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAEgAAAAAAgAAAAAIAAAEAAAAIAAiI=</HashCode>
+      <FileName>Model\ModelSqlView.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.ModelSqlProcedure" Collapsed="true">
+    <Position X="3.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAGAAAgAAAAAAAAAAAAIAAAAAAAAAAAiA=</HashCode>
+      <FileName>Model\ModelSqlProcedure.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.ModelSqlSchema" Collapsed="true">
+    <Position X="9.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAEAAgAAQAAAAgEkCAAcAQgAAAAAKwAAAAAAAKQRiI=</HashCode>
+      <FileName>Model\ModelSqlSchema.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="_Tables" />
+      <Field Name="_Procedures" />
+      <Field Name="_Synonyms" />
+      <Field Name="_TableTypes" />
+      <Field Name="_Types" />
+      <Field Name="_Views" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.ModelSqlServer" Collapsed="true">
+    <Position X="9.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BgAkAAAAAEBAAAAAAAAAIAQgAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Model\ModelSqlServer.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Database" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.ModelSqlDatabase" Collapsed="true">
+    <Position X="9.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAgAAQAAAAgAECAgcAwiAAAAACwAACAAAAKQxAI=</HashCode>
+      <FileName>Model\ModelSqlDatabase.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Schemas" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.ModelSqlTableType" Collapsed="true">
+    <Position X="10.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IgAAAAAAAAACAAAEgAAAAAAgAAAAAIABAEAAAAoAAiI=</HashCode>
+      <FileName>Model\ModelSqlTableType.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="_Columns" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.ModelSqlType" Collapsed="true">
+    <Position X="8" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAgAQAAAAAkCAIAgAAiAAAAAIAAAEAQAAAAOiI=</HashCode>
+      <FileName>Model\ModelSqlType.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.ModelSqlColumn" Collapsed="true">
+    <Position X="11.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAEgAEgAIAgAAgAAAAAIAAAAAQAAMAMiM=</HashCode>
+      <FileName>Model\ModelSqlColumn.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="SqlType" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OfaSchlupfer.MSSQLReflection.Model.ModelSqlElementType" Collapsed="true">
+    <Position X="8.75" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\ModelSqlElementType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

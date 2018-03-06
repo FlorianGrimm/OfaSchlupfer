@@ -18,9 +18,11 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             var result = new ModelSqlDatabase(modelSqlServer, "OfaSchlupfer").AddToParent();
             result.Name = SqlName.Root.ChildWellkown("OfaSchlupfer");
 
-            ModelSqlSchema schema = new ModelSqlSchema(result, "dbo").AddToParent();
+            ModelSqlSchema schema = new ModelSqlSchema(result, "dbo");
+            schema.AddToParent();
 
-            ModelSqlTable table = new ModelSqlTable(schema, "name").AddToParent();
+            ModelSqlTable table = new ModelSqlTable(schema, "name");
+            table.AddToParent();
 
             (new ModelSqlColumn(table, "key")).AddToParent();
             return result;

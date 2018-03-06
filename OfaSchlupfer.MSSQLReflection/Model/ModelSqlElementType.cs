@@ -8,7 +8,8 @@
     /// <summary>
     /// a type
     /// </summary>
-    public abstract class ModelSqlElementType {
+    public abstract class ModelSqlElementType
+        : ModelSqlSchemaChild {
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlElementType"/> class.
         /// </summary>

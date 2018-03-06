@@ -7,15 +7,13 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     /// ModelSqlType
     /// </summary>
     public sealed class ModelSqlType
-        : IEquatable<ModelSqlType> {
-        private SqlName _Name;
-
+        : ModelSqlElementType
+        , IEquatable<ModelSqlType> {
         private short _MaxLength;
         private byte _Precision;
         private byte _Scale;
         private string _CollationName;
         private bool _IsNullable;
-        private ModelSqlSchema _Schema;
 
         public ModelSqlType() { }
 
@@ -40,11 +38,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         }
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
-
-        /// <summary>
-        /// Gets or sets the name of the type.
-        /// </summary>
-        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
 
 #if thinkof
         private int _ColumnId;
@@ -86,7 +79,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Add this to the parent
         /// </summary>
-        public void AddToParent() {
+        public override void AddToParent() {
             this._Schema.AddType(this);
         }
 

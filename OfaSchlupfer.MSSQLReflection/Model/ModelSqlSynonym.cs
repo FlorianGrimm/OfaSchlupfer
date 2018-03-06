@@ -9,7 +9,6 @@
         , IEquatable<ModelSqlSynonym>
         , IScopeNameResolver {
         private SqlName _For;
-        private ModelSqlSchema _Schema;
         private SqlScope _Scope;
 
         /// <summary>
@@ -50,7 +49,7 @@
         /// <summary>
         /// Add this to the parent
         /// </summary>
-        public void AddToParent() {
+        public override void AddToParent() {
             this._Schema.AddSynonym(this);
         }
 

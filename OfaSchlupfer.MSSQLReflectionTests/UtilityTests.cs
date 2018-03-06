@@ -76,6 +76,10 @@
                 var p = db.Synonyms.GetValueOrDefault(SqlName.Parse("dbo.synonyma", ObjectLevel.Object));
                 Assert.IsNotNull(p);
             }
+            {
+                var p = db.TableTypes.GetValueOrDefault(SqlName.Parse("[dbo].[TVP_Name]", ObjectLevel.Object));
+                Assert.IsNotNull(p);
+            }
         }
     }
 }

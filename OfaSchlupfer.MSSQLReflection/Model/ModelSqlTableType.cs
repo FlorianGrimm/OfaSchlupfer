@@ -14,10 +14,7 @@
         , IScopeNameResolver
         , IModelSqlObjectWithColumns {
         private readonly List<ModelSqlColumn> _Columns;
-
-        private SqlName _Name;
         private SqlScope _Scope;
-        private ModelSqlSchema _Schema;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlTableType"/> class.
@@ -55,14 +52,6 @@
             this.Columns.AddRange(src.Columns);
         }
 
-#pragma warning disable SA1107 // Code must not contain multiple statements on one line
-        /// <summary>
-        /// Gets or sets the object name.
-        /// </summary>
-        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
-
-#pragma warning restore SA1107 // Code must not contain multiple statements on one line
-
         /// <summary>
         /// Gets the Columns
         /// </summary>
@@ -71,10 +60,8 @@
         /// <summary>
         /// Add this to the parent
         /// </summary>
-        /// <returns>this</returns>
-        public ModelSqlTableType AddToParent() {
+        public override void AddToParent() {
             this._Schema.AddTableType(this);
-            return this;
         }
 
         /// <summary>

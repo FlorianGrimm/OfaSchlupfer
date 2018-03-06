@@ -7,10 +7,9 @@
     /// anything that owns columns
     /// </summary>
     public abstract class ModelSqlObjectWithColumns
-        : IScopeNameResolver
+        : ModelSqlSchemaChild
+        , IScopeNameResolver
         , IModelSqlObjectWithColumns {
-        private SqlName _Name;
-
         /// <summary>
         /// the columns
         /// </summary>
@@ -34,14 +33,6 @@
                 this._Columns.AddRange(src.Columns);
             }
         }
-
-#pragma warning disable SA1107 // Code must not contain multiple statements on one line
-        /// <summary>
-        /// Gets or sets the object name.
-        /// </summary>
-        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
-
-#pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
         /// <summary>
         /// Get the current scope

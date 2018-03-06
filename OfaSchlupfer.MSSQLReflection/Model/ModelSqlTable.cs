@@ -9,7 +9,6 @@
         , IEquatable<ModelSqlTable>
         , IScopeNameResolver {
         private SqlScope _Scope;
-        private ModelSqlSchema _Schema;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlTable"/> class.
@@ -45,10 +44,8 @@
         /// <summary>
         /// Add this to the parent
         /// </summary>
-        /// <returns>this</returns>
-        public ModelSqlTable AddToParent() {
+        public override void AddToParent() {
             this._Schema.AddTable(this);
-            return this;
         }
 
         /// <summary>

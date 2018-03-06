@@ -9,7 +9,6 @@
         , IEquatable<ModelSqlView>
         , IScopeNameResolver {
         private SqlScope _Scope;
-        private ModelSqlSchema _Schema;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlView"/> class.
@@ -38,7 +37,7 @@
         /// <summary>
         /// Add this to the parent
         /// </summary>
-        public void AddToParent() {
+        public override void AddToParent() {
             this._Schema.AddView(this);
         }
 
