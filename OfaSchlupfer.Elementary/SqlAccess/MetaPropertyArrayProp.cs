@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.Elementary.SqlAccess {
+﻿namespace OfaSchlupfer.SqlAccess {
     /// <summary>
     /// MetaProperty for EntityArrayProp
     /// </summary>

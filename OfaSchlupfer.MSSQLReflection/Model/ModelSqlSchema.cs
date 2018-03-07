@@ -6,7 +6,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using OfaSchlupfer.Elementary.SqlAccess;
+    using OfaSchlupfer.SqlAccess;
 
     public sealed class ModelSqlSchema
         : IEquatable<ModelSqlSchema>

@@ -1,12 +1,12 @@
 ﻿#pragma warning disable SA1600 // Elements must be documented
 
 namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
-    using OfaSchlupfer.Elementary.SqlAccess;
+    using OfaSchlupfer.SqlAccess;
 
     /// <summary>
     /// Access for sys.types
     /// </summary>
-    public sealed class SqlSysTableType : EntityArrayProp, ISqlSysTableTypedObject {
+    public sealed class SqlSysTableType : EntityArrayProp/*, ISqlSysTableTypedObject*/ {
         /// <summary>
         /// SELECT  FROM sys.types;
         /// </summary>

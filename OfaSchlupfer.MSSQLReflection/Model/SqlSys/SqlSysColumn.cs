@@ -1,7 +1,7 @@
 ﻿#pragma warning disable SA1300 // Element must begin with upper-case letter
 
 namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
-    using OfaSchlupfer.Elementary.SqlAccess;
+    using OfaSchlupfer.SqlAccess;
 
     /// <summary>
     /// Access for sys.schema

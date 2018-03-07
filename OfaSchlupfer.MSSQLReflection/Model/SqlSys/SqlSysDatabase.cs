@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using OfaSchlupfer.Elementary;
-    using OfaSchlupfer.Elementary.SqlAccess;
+    using OfaSchlupfer.SqlAccess;
 
     // TODO:
     // SELECT * FROM sys.check_constraints;

@@ -3,7 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
     using System.Linq;
-    using OfaSchlupfer.Elementary;
+    using OfaSchlupfer.SqlAccess;
 
     /// <summary>
     /// column

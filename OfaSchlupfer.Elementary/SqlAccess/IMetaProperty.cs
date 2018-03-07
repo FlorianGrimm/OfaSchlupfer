@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.Elementary.SqlAccess {
+﻿namespace OfaSchlupfer.SqlAccess {
     /// <summary>
     /// Defines a property.
     /// </summary>

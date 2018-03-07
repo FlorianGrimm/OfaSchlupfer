@@ -1,6 +1,6 @@
 ﻿namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
     using System.Collections.Generic;
-    using OfaSchlupfer.Elementary.SqlAccess;
+    using OfaSchlupfer.SqlAccess;
 
     /// <summary>
     /// Access for sys.schema

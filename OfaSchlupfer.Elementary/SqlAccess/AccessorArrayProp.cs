@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.Elementary.SqlAccess {
+﻿namespace OfaSchlupfer.SqlAccess {
     /// <summary>
     /// the accessor to the value.
     /// </summary>

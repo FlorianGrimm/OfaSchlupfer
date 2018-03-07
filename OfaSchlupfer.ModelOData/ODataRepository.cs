@@ -7,6 +7,7 @@
     using OfaSchlupfer.Model;
 
     public class ODataRepository : IRepository {
+        //  https://m365x235962.sharepoint.com/sites/pwa/_api/projectserver
         public ODataRepository() {
         }
     }

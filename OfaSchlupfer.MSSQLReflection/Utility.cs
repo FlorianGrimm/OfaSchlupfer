@@ -6,6 +6,7 @@ namespace OfaSchlupfer.MSSQLReflection {
     using OfaSchlupfer.Elementary;
     using OfaSchlupfer.MSSQLReflection.Model;
     using OfaSchlupfer.MSSQLReflection.Model.SqlSys;
+    using OfaSchlupfer.SqlAccess;
 
     /// <summary>
     /// Utility

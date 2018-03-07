@@ -1,13 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OfaSchlupfer.MSSQLReflection.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace OfaSchlupfer.MSSQLReflection.Model {
+    using Xunit;
 
-namespace OfaSchlupfer.MSSQLReflection.Model {
-    [TestClass()]
+
     public class ModelSqlDatabaseTests {
         private static ModelSqlDatabase GetTestModelSqlDatabase() {
             ModelSqlServer modelSqlServer = new ModelSqlServer();
@@ -28,27 +22,25 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             return result;
         }
 
-
-
-        [TestMethod()]
+        [Fact]
         public void ModelSqlDatabase_ResolveTest() {
             var sut = GetTestModelSqlDatabase();
             {
                 var act = sut.ResolveObject(SqlName.Schema("dbo"), null);
-                Assert.IsNotNull(act);
-                Assert.IsInstanceOfType(act, typeof(ModelSqlSchema));
-                Assert.AreEqual("dbo", (act as ModelSqlSchema).Name.Name);
+                Assert.NotNull(act);
+                Assert.IsType<ModelSqlSchema>(act);
+                Assert.Equal("dbo", (act as ModelSqlSchema).Name.Name);
             }
             {
                 var act = sut.ResolveObject(SqlName.Object("dbo", "name"), null);
-                Assert.IsNotNull(act);
-                Assert.IsInstanceOfType(act, typeof(ModelSqlTable));
-                Assert.AreEqual("dbo.name", (act as ModelSqlTable).Name.GetQFullName(null, 2));
+                Assert.NotNull(act);
+                Assert.IsType<ModelSqlTable>(act);
+                Assert.Equal("dbo.name", (act as ModelSqlTable).Name.GetQFullName(null, 2));
             }
             /*
             {
             var act = sut.GetObject(SqlName.Root.Child("OfaSchlupfer"));
-            Assert.IsNotNull(act);
+            Assert.NotNull(act);
             }             
              */
         }
