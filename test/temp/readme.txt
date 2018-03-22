@@ -1,0 +1,1 @@
+OutputFolder in .gitignore

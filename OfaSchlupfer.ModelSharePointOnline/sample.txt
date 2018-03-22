@@ -1,0 +1,157 @@
+﻿http://wp.sjkp.dk/msonlineclaimshelper-vs-sharepointonlinecredentials/
+
+http://tomaszrabinski.pl/wordpress/2013/03/18/connecting-to-office-365-using-client-side-object-model-and-web-services/
+
+
+Connecting to Office 365 using Client Side Object Model and Web Services
+
+by zavaz on Mar.18, 2013, under Office 365
+
+
+ 
+
+
+Office 365 gives You a chance to host SharePoint in the cloud. You can use SandBox(legacy) or new App infrastructure to write custom applications running in SharePoint Online environment. If You want to connect to SP Online from external environment, then You have to use CSOM – Client Side Object Model.
+
+Office 365 uses claims-based authentication which caused many problems in the previous SP 2010 version. To connect to the service, user had to first log in to SP Online web site directly from the browser to acquire cookies that were later on used by the application to authenticate in the cloud. More about this trick You can read here.
+
+With SP 2013 Micorosft introduces a new object – SharePointOnlineCredentials. Now authentication is fully ‘automatic’ and it does not require any user action. Below is the code that reads the web site title using new SharePointOnlineCredentials object:
+ 
+var targetSite = new Uri("https://<site_url>");
+ var login = "<user@tenant>.onmicrosoft.com";
+ var password = "<password>";
+ var securePassword = new SecureString();
+ foreach (char c in password)
+ {
+ securePassword.AppendChar(c);
+ }
+ 
+var onlineCredentials = new SharePointOnlineCredentials(login, securePassword);
+ 
+using (ClientContext clientContext = new ClientContext(targetSite))
+ {
+ clientContext.Credentials = onlineCredentials;
+ Web web = clientContext.Web;
+ clientContext.Load(web,
+ webSite => webSite.Title);
+ 
+clientContext.ExecuteQuery();
+ Console.WriteLine(web.Title);
+ 
+Console.Read();
+ 
+ }
+ 
+
+That’s all. The code should work as expected and display web site title in a console window. Simple as it is. If You receive an error about mising .dll file then check this post.
+
+Different thing is when You want to connect to Web Services hosted within Office 365. Let’s assume that we want to connect to User Profiles service and get ‘AccountName’ property for our user. The code could look like this:
+ 
+
+ 
+var targetSite = new Uri("https://<site_url>");
+var login = "<user@tenant>.onmicrosoft.com";
+var password = "<password>";
+var securePassword = new SecureString();
+foreach (char c in password)
+{
+securePassword.AppendChar(c);
+}
+ 
+var onlineCredentials = new SharePointOnlineCredentials(login, securePassword);
+ 
+UserProfileServiceRef.UserProfileService ups = new UserProfileServiceRef.UserProfileService(); // Remember to add a new web reference to <target_site>/_vti_bin/UserProfileService.asmx
+ ups.UseDefaultCredentials = false;
+ups.Credentials = onlineCredentials;
+ PropertyData accName = ups.GetUserPropertyByAccountName(login, "AccountName");
+ Console.WriteLine(accName.Values[0].Value);
+ Console.Read();
+ 
+
+The code looks OK, but when You run it You will get an exception: Server was unable to process request. —> Attempted to perform an unauthorized operation. Unfortunately, You can’t use SharePointOnlineCredentials to authenticate when connecting to web service – at least at this form :)
+ The way to bypass the problem is to create authentication cookie and pass it directly to the web service:
+
+
+UserProfileServiceRef.UserProfileService ups = new UserProfileServiceRef.UserProfileService();
+ ups.UseDefaultCredentials = false;
+ string authCookieValue = onlineCredentials.GetAuthenticationCookie(targetSite);
+ ups.CookieContainer = new CookieContainer();
+ ups.CookieContainer.Add(new Cookie(
+ "FedAuth",
+ authCookieValue.TrimStart("SPOIDCRL=".ToCharArray()),// Remove the prefix from the cookie's value
+ String.Empty,
+ targetSite.Authority));
+ PropertyData accName = ups.GetUserPropertyByAccountName(login, "AccountName");
+ Console.WriteLine(accName.Values[0].Value);
+ Console.Read();
+ 
+
+Unfortunately, the above code won’t work. When You run it You should receive a SoapException that the user can’t be found. It’s because the user passed as an argument to the GetUserPropertyByAccountName method is in wrong format. As I said at the beginning if this post – SharePoint Online uses claims-based authentication, so each of the logins is encoded in the claims format, which means that each login contains prefix “i:0#.f|membership|”, e.g. “i:0#.f|membership|tomasz.rabinski@mysponline.onmicrosoft.com”. Now, when You know what was wrong, try to run the below code – it should work perfectly:
+
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+ 
+var targetSite = new Uri("https://<site_url>");
+var login = "<user@tenant>.onmicrosoft.com";
+var password = "<password>";
+var securePassword = new SecureString();
+foreach (char c in password)
+{
+securePassword.AppendChar(c);
+}
+ 
+var onlineCredentials = new SharePointOnlineCredentials(login, securePassword);
+ 
+UserProfileServiceRef.UserProfileService ups = new UserProfileServiceRef.UserProfileService();
+ 
+ups.UseDefaultCredentials = false;
+ string authCookieValue = onlineCredentials.GetAuthenticationCookie(targetSite);
+ ups.CookieContainer = new CookieContainer();
+ ups.CookieContainer.Add(new Cookie(
+ "FedAuth",
+ authCookieValue.TrimStart("SPOIDCRL=".ToCharArray()),
+ String.Empty,
+ targetSite.Authority));
+ 
+var claimsLogin = "i:0#.f|membership|" + login;
+ PropertyData accName = ups.GetUserPropertyByAccountName(claimsLogin, "AccountName");
+ Console.WriteLine(accName.Values[0].Value);
+ Console.Read();
+ 
+ 
+
+
+
+
+
+
+
+
+
+Authorization, Solutions

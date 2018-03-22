@@ -1,0 +1,5 @@
+﻿modify SqlCodeScope
+split model resolving
+scope - no stacking
+ssa
+

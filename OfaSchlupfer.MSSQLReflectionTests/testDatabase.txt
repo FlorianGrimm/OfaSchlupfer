@@ -1,0 +1,25 @@
+﻿USE [OfaSchlupfer]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[NameValue](
+	[idx] [int] NOT NULL,
+	[Name] [nvarchar](50) NOT NULL,
+	[Value] [nvarchar](max) NULL,
+	[SerialVerion] [timestamp] NOT NULL,
+ CONSTRAINT [PK_NameValue] PRIMARY KEY CLUSTERED 
+(
+	[idx] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+
+
+INSERT INTO [dbo].[NameValue]([idx],[Name],[Value]) VALUES (1,'one','Metalica');
+GO

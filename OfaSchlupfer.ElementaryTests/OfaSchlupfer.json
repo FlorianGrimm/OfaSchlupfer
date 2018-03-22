@@ -1,0 +1,9 @@
+{
+  "SolutionFolder": "e:\\github\\FlorianGrimm\\OfaSchlupfer",
+  "ConnectionString": "Data Source=Higatangan;Initial Catalog=OfaSchlupfer;Integrated Security=True",
+  "ProjectServer": {
+    "Url": "https://m365x235962.sharepoint.com/sites/pwa",
+    "User": "admin@M365x235962.onmicrosoft.com",
+    "Password": ""
+  }
+}
