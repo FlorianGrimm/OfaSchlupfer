@@ -10,26 +10,26 @@
     using OfaSchlupfer.Elementary;
     using OfaSchlupfer.Model; 
 
-    public class SqlRepositoryType : RepositoryType {
-        public SqlRepositoryType(IServiceProvider serviceProvider) : base(serviceProvider) {
+    public class SqlRepositoryModelType : ReferenceRepositoryModelType {
+        public SqlRepositoryModelType(IServiceProvider serviceProvider) : base(serviceProvider) {
             this.Name = "SPO";
             this.Description = "Read access to ShrePointOnline sources.";
         }
-        public override IRepository CreateRepository() {
+        public override IReferenceRepositoryModel CreateReferenceRepositoryModel() {
             try {
-                return this.ServiceProvider.GetRequiredService<SqlRepository>();
+                return this.ServiceProvider.GetRequiredService<SqlRepositoryModel>();
             } catch (InvalidOperationException) {
                 return new SqlRepositoryImplementation();
             }
         }
     }
 
-    public abstract class SqlRepository : RepositoryBase {
-        protected SqlRepository() {
+    public abstract class SqlRepositoryModel : ReferenceRepositoryModelBase {
+        protected SqlRepositoryModel() {
         }
     }
 
-    public class SqlRepositoryImplementation : SqlRepository, IRepository {
+    public class SqlRepositoryImplementation : SqlRepositoryModel, IReferenceRepositoryModel {
         public SqlRepositoryImplementation() {
         }
 
