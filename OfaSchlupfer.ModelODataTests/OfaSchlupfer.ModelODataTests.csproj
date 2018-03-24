@@ -5,10 +5,11 @@
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>OfaSchlupfer.ODataV3</RootNamespace>
+    <RootNamespace>OfaSchlupfer.ModelOData</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.OData" Version="5.8.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.1" />
@@ -31,7 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\OfaSchlupfer.ElementaryTests\OfaSchlupfer.ElementaryTests.csproj" />
     <ProjectReference Include="..\OfaSchlupfer.Elementary\OfaSchlupfer.Elementary.csproj" />
-    <ProjectReference Include="..\OfaSchlupfer.ODataV3\OfaSchlupfer.ODataV3.csproj" />
+    <ProjectReference Include="..\OfaSchlupfer.ModelOData\OfaSchlupfer.ModelOData.csproj" />
   </ItemGroup>
 
 </Project>

@@ -9,28 +9,32 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public interface ISPORepository : IRepository {
+    public interface ISPORepositoryModel : IReferenceRepositoryModel {
     }
 
-    public class SPORepositoryType : RepositoryType {
-        public SPORepositoryType(IServiceProvider serviceProvider) : base(serviceProvider) {
+    public class SPORepositoryModelType : ReferenceRepositoryModelType {
+        public SPORepositoryModelType(IServiceProvider serviceProvider) : base(serviceProvider) {
             this.Name = "SPO";
-            this.Description = "Read access to ShrePointOnline sources.";
+            this.Description = "Read access to SharePointOnline sources.";
         }
-        public override IRepository CreateRepository() {
+
+        public override IReferenceRepositoryModel CreateReferenceRepositoryModel() {
             try {
-                return this.ServiceProvider.GetRequiredService<ISPORepository>();
+                return this.ServiceProvider.GetRequiredService<ISPORepositoryModel>();
             } catch {
-                return new SPORepository();
+                return new SPORepositoryModel();
             }
         }
     }
 
-    public class SPORepository : ISPORepository, IRepository {
-        public SPORepository() {
+    public class SPORepositoryModel : ISPORepositoryModel, IReferenceRepositoryModel {
+        public SPORepositoryModel() {
         }
 
         public RepositoryConnectionString ConnectionString { get; set; }
+        public ModelRepository ModelRepository { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public ModelSchema ModelSchema { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public ModelDefinition ModelDefinition { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public Microsoft.ProjectServer.Client.ProjectContext GetProjectContext() {
             var projectContext = new Microsoft.ProjectServer.Client.ProjectContext(this.ConnectionString.Url);
@@ -106,6 +110,10 @@
             var executeQueryTask = projectContext.ExecuteQueryAsync();
             await executeQueryTask;
             return null;
+        }
+
+        public List<string> BuildSchema(string metadataContent) {
+            throw new NotImplementedException();
         }
     }
 }

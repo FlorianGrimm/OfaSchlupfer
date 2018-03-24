@@ -11,7 +11,7 @@
             var testCfg = TestCfg.Get();
             Assert.IsFalse(string.IsNullOrEmpty(testCfg.ProjectServer?.Url));
 
-            var sut = new SPORepository();
+            var sut = new SPORepositoryModel();
             sut.ConnectionString = testCfg.ProjectServer;
             Assert.IsTrue(sut.ConnectionString.Url.StartsWith("http"));
         }
@@ -21,7 +21,7 @@
             var testCfg = TestCfg.Get();
             Assert.IsFalse(string.IsNullOrEmpty(testCfg.ProjectServer?.Url));
 
-            var sut = new SPORepository();
+            var sut = new SPORepositoryModel();
             sut.ConnectionString = testCfg.ProjectServer;
             var list = await sut.ReadProjectListAsync(null);
             Assert.IsNotNull(list);
@@ -33,7 +33,7 @@
             var testCfg = TestCfg.Get();
             Assert.IsFalse(string.IsNullOrEmpty(testCfg.ProjectServer?.Url));
 
-            var sut = new SPORepository();
+            var sut = new SPORepositoryModel();
             sut.ConnectionString = testCfg.ProjectServer;
             var list = sut.ReadProjectList(null);
             Assert.IsNotNull(list);
