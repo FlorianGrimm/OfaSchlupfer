@@ -102,7 +102,7 @@ namespace OfaSchlupfer.ModelOData {
 
         private static string ReadMetaDataXml(TestCfg testCfg) {
             string content;
-            var metadataPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\metadata.xml");
+            var metadataPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\ProjectOnlinemetadata.xml");
             using (var reader = new System.IO.StreamReader(metadataPath)) {
                 content = reader.ReadToEnd();
             }

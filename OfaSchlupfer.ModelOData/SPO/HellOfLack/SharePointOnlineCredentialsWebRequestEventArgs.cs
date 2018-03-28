@@ -1,7 +1,8 @@
-using System;
-using System.Net;
+namespace OfaSchlupfer.ModelOData.SPO {
+    using System;
+    using System.Net;
 
-namespace OfaSchlupfer.ModelOData {
+
     public sealed class SharePointOnlineCredentialsWebRequestEventArgs : EventArgs {
         private HttpWebRequest m_webRequest;
 

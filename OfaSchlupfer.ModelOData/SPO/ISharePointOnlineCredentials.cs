@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.ModelOData {
+﻿namespace OfaSchlupfer.ModelOData.SPO {
     using System;
     using System.Net;
     using System.Net.Http;

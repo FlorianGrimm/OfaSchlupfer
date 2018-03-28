@@ -1,4 +1,4 @@
-namespace OfaSchlupfer.ModelOData {
+namespace OfaSchlupfer.ModelOData.SPO {
     using System;
     using System.Collections.Specialized;
     using System.Globalization;

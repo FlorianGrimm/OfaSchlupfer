@@ -1,4 +1,4 @@
-namespace OfaSchlupfer.ModelOData {
+namespace OfaSchlupfer.ModelOData.SPO {
     internal static class IdcrlConstants {
         public const string HEADER_IDCRL_AUTH_ACCEPTED = "X-IDCRL_ACCEPTED";
 

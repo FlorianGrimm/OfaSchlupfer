@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.ModelOData {
+﻿namespace OfaSchlupfer.ModelOData.SPO {
     using Microsoft.Extensions.DependencyInjection;
 
     public interface ISharePointOnlineCredentialsBuilder {
@@ -18,7 +18,7 @@
 }
 namespace Microsoft.Extensions.DependencyInjection {
     using System;
-    using OfaSchlupfer.ModelOData;
+    using OfaSchlupfer.ModelOData.SPO;
 
     public static class SharePointOnlineCredentialsExtension {
         public static ISharePointOnlineCredentialsBuilder AddSharePointOnlineCredentials(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) => AddSharePointOnlineCredentials(services, _ => { });

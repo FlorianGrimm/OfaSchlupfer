@@ -1,4 +1,5 @@
-namespace OfaSchlupfer.ModelOData {
+#define DontUseRegistry
+namespace OfaSchlupfer.ModelOData.SPO {
     using Microsoft.Extensions.Logging;
     using Microsoft.Win32;
     using System;
@@ -19,6 +20,7 @@ namespace OfaSchlupfer.ModelOData {
             public string Endpoint;
         }
 
+#if UseRegistry
         private static string _idcrlEnvironmentCache;
 
         private string IdcrlServiceEnvironment {
@@ -42,7 +44,7 @@ namespace OfaSchlupfer.ModelOData {
                 return text;
             }
         }
-
+#endif
         private ILogger _Logger;
 
         public SharePointOnlineAuthenticationProvider(ILogger logger) {
@@ -67,7 +69,11 @@ namespace OfaSchlupfer.ModelOData {
                 }
                 return null;
             }
+#if UseRegistry
             IdcrlEnvironment env = (IdcrlEnvironment)((string.Compare(IdcrlServiceEnvironment, "INT-MSO", StringComparison.OrdinalIgnoreCase) == 0) ? 1 : (string.Equals(IdcrlServiceEnvironment, "PPE-MSO", StringComparison.OrdinalIgnoreCase) ? 2 : 0));
+#else
+            IdcrlEnvironment env = IdcrlEnvironment.Production;
+#endif
             IdcrlAuth idcrlAuth = new IdcrlAuth(env, executingWebRequest, this._Logger);
             string password2 = SharePointOnlineAuthenticationProvider.FromSecureString(password);
             string serviceToken = idcrlAuth.GetServiceToken(username, password2, idcrlHeader.ServiceTarget, idcrlHeader.ServicePolicy);

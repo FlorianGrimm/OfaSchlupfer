@@ -7,6 +7,7 @@
     using OfaSchlupfer.Elementary;
     using OfaSchlupfer.Model;
     using Microsoft.Extensions.DependencyInjection;
+    using OfaSchlupfer.ModelOData.SPO;
 
     public class ODataRepositoryModelType : ReferenceRepositoryModelType {
         public ODataRepositoryModelType(IServiceProvider serviceProvider) : base(serviceProvider) {

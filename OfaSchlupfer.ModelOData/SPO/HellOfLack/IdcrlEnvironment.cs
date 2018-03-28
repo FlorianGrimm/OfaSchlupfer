@@ -1,4 +1,4 @@
-namespace OfaSchlupfer.ModelOData {
+namespace OfaSchlupfer.ModelOData.SPO {
     internal enum IdcrlEnvironment {
         Production,
         Int,

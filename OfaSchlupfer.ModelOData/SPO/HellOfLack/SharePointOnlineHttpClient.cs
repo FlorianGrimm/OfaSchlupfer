@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.ModelOData {
+﻿namespace OfaSchlupfer.ModelOData.SPO {
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
@@ -24,7 +24,7 @@
         public async Task<string> GetAsync(string requestUrl, Action<HttpClient> configureHttpClient) {
             if (requestUrl == null) { return null; }
             if (requestUrl.StartsWith("/")) { requestUrl = this._Url + requestUrl; }
-            var uri = new Uri(this._Url);            
+            var uri = new Uri(this._Url);
             var cookie = this._spoCred.GetAuthenticationCookie(uri, false, false);
 
             using (var httpClientHandler = new HttpClientHandler()) {

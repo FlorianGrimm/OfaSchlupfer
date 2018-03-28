@@ -48,6 +48,7 @@
     }
 
     public enum ModelEntityKind {
+        NotSet,
         Container,
         EntitySet
     }

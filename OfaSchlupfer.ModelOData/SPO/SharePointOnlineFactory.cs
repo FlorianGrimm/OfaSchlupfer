@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.ModelOData {
+﻿namespace OfaSchlupfer.ModelOData.SPO {
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using OfaSchlupfer.Elementary;
