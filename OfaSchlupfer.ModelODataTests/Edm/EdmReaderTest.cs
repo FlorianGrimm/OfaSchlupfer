@@ -1,4 +1,6 @@
-﻿namespace OfaSchlupfer.ModelOData.Edm {
+﻿#pragma warning disable xUnit2013 // Do not use equality check to check for collection size.
+
+namespace OfaSchlupfer.ModelOData.Edm {
     using System;
     using System.Collections.Generic;
     using System.Text;
@@ -23,10 +25,12 @@
             var sut = new EdmReader(serviceProvider);
             sut.MetadataResolver = cachedMetadataResolver;
 
-            var schema = sut.Read(srcPath);
-            Assert.NotNull(schema);
-            Assert.NotNull(sut.EdmxModel);
-            Assert.NotNull(sut.EdmxModel.Version);
+            var edmxModel = sut.Read(srcPath, null);
+            Assert.NotNull(edmxModel);
+            Assert.NotNull(edmxModel.Version);
+            Assert.Equal(2, edmxModel.DataServices.Count);
+            Assert.Equal(0, edmxModel.DataServices[0].EntityContainer.Count);
+            Assert.Equal(1, edmxModel.DataServices[1].EntityContainer.Count);
 
             //var schema = sut.ReadSchema(sr);
             //sut.ModelSchema = schema;
@@ -58,10 +62,46 @@
             var sut = new EdmReader(serviceProvider);
             sut.MetadataResolver = cachedMetadataResolver;
 
-            var schema = sut.Read(srcPath);
-            Assert.NotNull(schema);
-            Assert.NotNull(sut.EdmxModel);
-            Assert.NotNull(sut.EdmxModel.Version);
+            var edmxModel = sut.Read(srcPath, null);
+            Assert.NotNull(edmxModel);
+            Assert.NotNull(edmxModel.Version);
+            Assert.Equal(2, edmxModel.DataServices.Count);
+
+            //var schema = sut.ReadSchema(sr);
+            //sut.ModelSchema = schema;
+
+            //try {
+            //    string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\ODataV3RepositoryModelTest_ReadSchema.json");
+            //    System.IO.File.WriteAllText(outputPath, Newtonsoft.Json.JsonConvert.SerializeObject(
+            //        sut.ModelSchema,
+            //        Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings {
+            //            PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects
+            //        }));
+            //} catch {
+            //    throw;
+            //}
+        }
+
+
+        [Fact]
+        public void EdmReader_v4northwindmetadata_Test() {
+            var testCfg = OfaSchlupfer.TestCfg.Get();
+            IServiceCollection services = new ServiceCollection();
+            services.AddLogging((builder) => { builder.AddDebug(); });
+            var serviceProvider = services.BuildServiceProvider();
+
+            //serviceProvider.GetRequiredService<ODataV3RepositoryModel>();
+            var srcPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\v4northwindmetadata.xml");
+
+            var cachedMetadataResolver = new CachedMetadataResolver();
+            cachedMetadataResolver.SetDynamicResolution((location) => new System.IO.StreamReader(location));
+            var sut = new EdmReader(serviceProvider);
+            sut.MetadataResolver = cachedMetadataResolver;
+
+            var edmxModel = sut.Read(srcPath, null);
+            Assert.NotNull(edmxModel);
+            Assert.NotNull(edmxModel.Version);
+            Assert.Equal(2, edmxModel.DataServices.Count);
 
             //var schema = sut.ReadSchema(sr);
             //sut.ModelSchema = schema;

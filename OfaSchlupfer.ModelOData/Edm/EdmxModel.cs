@@ -3,9 +3,9 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class EdmxModel {
+    public class EdmxModel : CsdlAnnotationalModel {
         public EdmxModel() {
-            this.DataServices = new List<EdmxDataService>();
+            this.DataServices = new List<CsdlSchemaModel>();
             this.References = new List<string>();
         }
 
@@ -15,6 +15,6 @@
 
         public string DataServiceVersion;
 
-        public readonly List<EdmxDataService> DataServices;
+        public readonly List<CsdlSchemaModel> DataServices;
     }
 }

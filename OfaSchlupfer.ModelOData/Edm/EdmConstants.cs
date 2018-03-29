@@ -28,32 +28,31 @@
         private static XNamespace _NSCSDL2_0;
         public static XNamespace NSCSDL2_0 => _NSCSDL2_0 ?? (_NSCSDL2_0 = XNamespace.Get("http://schemas.microsoft.com/ado/2008/09/edm"));
 
+
         private static XNamespace _NSCSDL3_0;
         public static XNamespace NSCSDL3_0 => _NSCSDL3_0 ?? (_NSCSDL3_0 = XNamespace.Get("http://schemas.microsoft.com/ado/2009/11/edm"));
 
-        private static XNamespace _NSEdmx;
-        public static XNamespace NSEdmx => _NSEdmx ?? (_NSEdmx = XNamespace.Get("http://schemas.microsoft.com/ado/2007/06/edmx"));
+        private static XNamespace _NSCSDL4_0;
+        public static XNamespace NSCSDL4_0 => _NSCSDL4_0 ?? (_NSCSDL4_0 = XNamespace.Get("http://docs.oasis-open.org/odata/ns/edm"));
+
+        private static XNamespace _NSEdmxV3;
+        public static XNamespace NSEdmxV3 => _NSEdmxV3 ?? (_NSEdmxV3 = XNamespace.Get("http://schemas.microsoft.com/ado/2007/06/edmx"));
+
+
+        private static XNamespace _NSEdmxV4;
+        public static XNamespace NSEdmxV4 => _NSEdmxV4 ?? (_NSEdmxV4 = XNamespace.Get("http://docs.oasis-open.org/odata/ns/edmx"));
 
         private static XNamespace _NSDataservicesMetadata;
         public static XNamespace NSDataservicesMetadata => _NSDataservicesMetadata ?? (_NSDataservicesMetadata = XNamespace.Get("http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"));
 
-        private static XName _EdmxDocument;
-        public static XName EdmxDocument => _EdmxDocument ?? (_EdmxDocument = (NSEdmx + "Edmx"));
+        private static XName _EdmxV3Document;
+        public static XName EdmxV3Document => _EdmxV3Document ?? (_EdmxV3Document = (NSEdmxV3 + "Edmx"));
+
+        private static XName _EdmxV4Document;
+        public static XName EdmxV4Document => _EdmxV4Document ?? (_EdmxV4Document = (NSEdmxV4 + "Edmx"));
 
         private static XNamespace _NSEdmAnnotation;
         public static XNamespace NSEdmAnnotation => _NSEdmAnnotation ?? (_NSEdmAnnotation = XNamespace.Get("http://schemas.microsoft.com/ado/2009/02/edm/annotation"));
-
-        private static XName _EdmxAnnotationsReference;
-        public static XName EdmxAnnotationsReference => _EdmxAnnotationsReference ?? (_EdmxAnnotationsReference = (NSEdmx + "AnnotationsReference"));
-
-        private static XName _EdmxDataServices;
-        public static XName EdmxDataServices => _EdmxDataServices ?? (_EdmxDataServices = (NSEdmx + "DataServices"));
-
-        private static XName _DataServiceVersion;
-        public static XName DataServiceVersion => _DataServiceVersion ?? (_DataServiceVersion = (NSDataservicesMetadata + "DataServiceVersion"));
-
-        private static XName _EdmxReference;
-        public static XName EdmxReference => _EdmxReference ?? (_EdmxReference = (NSEdmx + "Reference"));
 
         private static XName _AttrAbstract;
         public static XName AttrAbstract => _AttrAbstract ?? (_AttrAbstract = XName.Get("Abstract"));
@@ -110,8 +109,12 @@
         private static XName _AttrVersion;
         public static XName AttrVersion => _AttrVersion ?? (_AttrVersion = XName.Get("Version"));
 
-        private static XName _AttrX;
-        public static XName AttrX => _AttrX ?? (_AttrX = XName.Get("x"));
+        private static XName _AttrPartner;
+        public static XName AttrPartner => _AttrPartner ?? (_AttrPartner = XName.Get("Partner"));
+
+        private static XName _AttrNamespace;
+        public static XName AttrNamespace => _AttrNamespace ?? (_AttrNamespace = XName.Get("Namespace"));
+
 
         /*
          * 
@@ -136,18 +139,52 @@
         private static CSDLConstants _CSDL1_2;
         private static CSDLConstants _CSDL2_0;
         private static CSDLConstants _CSDL3_0;
+        private static CSDLConstants _CSDL4_0;
 
-        public static CSDLConstants CSDL1_0 => _CSDL1_0 ?? (_CSDL1_0 = new CSDLConstants(NSCSDL1_0));
-        public static CSDLConstants CSDL1_1 => _CSDL1_1 ?? (_CSDL1_1 = new CSDLConstants(NSCSDL1_1));
-        public static CSDLConstants CSDL1_2 => _CSDL1_2 ?? (_CSDL1_2 = new CSDLConstants(NSCSDL1_2));
-        public static CSDLConstants CSDL2_0 => _CSDL2_0 ?? (_CSDL2_0 = new CSDLConstants(NSCSDL2_0));
-        public static CSDLConstants CSDL3_0 => _CSDL3_0 ?? (_CSDL3_0 = new CSDLConstants(NSCSDL3_0));
+        public static CSDLConstants CSDL1_0 => _CSDL1_0 ?? (_CSDL1_0 = new CSDLConstants(NSCSDL1_0, 10, NSDataservicesMetadata));
+        public static CSDLConstants CSDL1_1 => _CSDL1_1 ?? (_CSDL1_1 = new CSDLConstants(NSCSDL1_1, 11, NSDataservicesMetadata));
+        public static CSDLConstants CSDL1_2 => _CSDL1_2 ?? (_CSDL1_2 = new CSDLConstants(NSCSDL1_2, 12, NSDataservicesMetadata));
+        public static CSDLConstants CSDL2_0 => _CSDL2_0 ?? (_CSDL2_0 = new CSDLConstants(NSCSDL2_0, 20, NSDataservicesMetadata));
+        public static CSDLConstants CSDL3_0 => _CSDL3_0 ?? (_CSDL3_0 = new CSDLConstants(NSCSDL3_0, 30, NSDataservicesMetadata));
+        public static CSDLConstants CSDL4_0 => _CSDL4_0 ?? (_CSDL4_0 = new CSDLConstants(NSCSDL4_0, 40, NSDataservicesMetadata));
+
+        private static EdmxConstants _EdmxV3;
+        public static EdmxConstants EdmxV3 => _EdmxV3 ?? (_EdmxV3 = new EdmxConstants(NSEdmxV3, NSDataservicesMetadata));
+
+        private static EdmxConstants _EdmxV4;
+        public static EdmxConstants EdmxV4 => _EdmxV4 ?? (_EdmxV4 = new EdmxConstants(NSEdmxV4, NSEdmxV4));
+
+        public class EdmxConstants {
+            public readonly XNamespace EdmxNamespace;
+            public readonly XNamespace DataservicesMetadataNamespace;
+
+            public EdmxConstants(XNamespace edmxNamespace, XNamespace nsDataservicesMetadata) {
+                this.EdmxNamespace = edmxNamespace;
+                this.DataservicesMetadataNamespace = nsDataservicesMetadata;
+            }
+
+            private XName _EdmxAnnotationsReference;
+            public XName EdmxAnnotationsReference => _EdmxAnnotationsReference ?? (_EdmxAnnotationsReference = (EdmxNamespace + "AnnotationsReference"));
+
+            private XName _EdmxDataServices;
+            public XName EdmxDataServices => _EdmxDataServices ?? (_EdmxDataServices = (EdmxNamespace + "DataServices"));
+
+            private XName _EdmxReference;
+            public XName EdmxReference => _EdmxReference ?? (_EdmxReference = (EdmxNamespace + "Reference"));
+
+            private XName _AttrDataServiceVersion;
+            public XName AttrDataServiceVersion => _AttrDataServiceVersion ?? (_AttrDataServiceVersion = (DataservicesMetadataNamespace + "DataServiceVersion"));
+        }
 
         public class CSDLConstants {
             public readonly XNamespace Namespace;
+            public readonly XNamespace DataservicesMetadataNamespace;
+            public readonly int Version;
 
-            public CSDLConstants(XNamespace xNamespace) {
+            public CSDLConstants(XNamespace xNamespace, int version, XNamespace nsDataservicesMetadata) {
                 this.Namespace = xNamespace;
+                this.Version = version;
+                this.DataservicesMetadataNamespace = nsDataservicesMetadata;
             }
 
             private XName _Schema;
@@ -211,6 +248,9 @@
 
             private XName _Dependent;
             public XName Dependent => _Dependent ?? (_Dependent = (Namespace + "Dependent"));
+
+            private XName _AttrIsDefaultEntityContainer;
+            public XName AttrIsDefaultEntityContainer => _AttrIsDefaultEntityContainer ?? (_AttrIsDefaultEntityContainer = (this.DataservicesMetadataNamespace + "IsDefaultEntityContainer"));
 
             /*
             private XName _Y;

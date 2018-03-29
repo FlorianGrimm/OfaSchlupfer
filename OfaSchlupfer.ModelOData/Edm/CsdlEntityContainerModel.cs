@@ -1,13 +1,53 @@
-﻿using System.Collections.Generic;
+﻿namespace OfaSchlupfer.ModelOData.Edm {
+    using System.Collections.Generic;
 
-namespace OfaSchlupfer.ModelOData.Edm {
-    public class CsdlEntityContainerModel {
+    [System.Diagnostics.DebuggerDisplay("{Name}")]
+    public class CsdlEntityContainerModel : CsdlAnnotationalModel {
+        private CsdlSchemaModel _SchemaModel;
+
         public CsdlEntityContainerModel() {
-            this.EntitySet = new List<CsdlEntitySetModel>();
-            this.AssociationSet = new List<CsdlAssociationSetModel>();
+            this.EntitySet = new CsdlCollection<CsdlEntitySetModel>((item) => { item.SchemaModel = this.SchemaModel; });
+            this.AssociationSet = new CsdlCollection<CsdlAssociationSetModel>((item) => { item.SchemaModel = this.SchemaModel; });
+        }
+        public string Name;
+        public bool IsDefaultEntityContainer;
+        public readonly CsdlCollection<CsdlEntitySetModel> EntitySet;
+        public readonly CsdlCollection<CsdlAssociationSetModel> AssociationSet;
+
+
+        [System.Diagnostics.DebuggerHidden]
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        public CsdlSchemaModel SchemaModel {
+            get {
+                return this._SchemaModel;
+            }
+            internal set {
+                if (ReferenceEquals(this._SchemaModel, value)) { return; }
+                this._SchemaModel = value;
+                if ((object)value != null) {
+                    this.EntitySet.Broadcast();
+                    this.AssociationSet.Broadcast();
+                }
+            }
         }
 
-        public readonly List<CsdlEntitySetModel> EntitySet;
-        public readonly List<CsdlAssociationSetModel> AssociationSet;
+        public void BuildNameResolver(CsdlNameResolver nameResolver) {
+            nameResolver.AddEntityContainer(this.SchemaModel.Namespace, this.Name, this);
+            foreach (var entitySet in this.EntitySet) {
+                entitySet.BuildNameResolver(this, nameResolver);
+            }
+            foreach (var associationSet in this.AssociationSet) {
+                associationSet.BuildNameResolver(this, nameResolver);
+            }
+        }
+
+        public void ResolveNames(CsdlNameResolver nameResolver) {
+            foreach (var entitySet in this.EntitySet) {
+                entitySet.ResolveNames(nameResolver);
+            }
+            foreach (var associationSet in this.AssociationSet) {
+                associationSet.ResolveNames(nameResolver);
+            }
+        }
     }
 }
