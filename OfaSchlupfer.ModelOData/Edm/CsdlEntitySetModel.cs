@@ -54,6 +54,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
                 }
             }
             set {
+                if (value == string.Empty) { value = null; }
                 if (string.Equals(this._EntityTypeName, value, StringComparison.OrdinalIgnoreCase)) { return; }
                 this._EntityTypeName = value;
                 this._EntityTypeModelObject = null;

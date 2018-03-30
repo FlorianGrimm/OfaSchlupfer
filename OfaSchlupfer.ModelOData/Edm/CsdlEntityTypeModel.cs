@@ -61,5 +61,17 @@
                 key.ResolveNames(edmxModel, schemaModel, this, errors);
             }
         }
+
+        public List<CsdlPropertyModel> FindProperty(string name) {
+            var result = new List<CsdlPropertyModel>();
+
+            foreach (var property in this.Property) {
+                if (string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase)) {
+                    result.Add(property);
+                }
+            }
+
+            return result;
+        }
     }
 }

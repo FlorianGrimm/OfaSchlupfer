@@ -42,7 +42,7 @@
 
         public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schemaModel, CsdlAssociationModel associationModel, CsdlReferentialConstraintModel referentialConstraintModel, CsdlErrors errors) {
             foreach (var propertyRef in this.PropertyRef) {
-                propertyRef.ResolveNames(edmxModel, schemaModel, associationModel, this, referentialConstraintModel, errors);
+                propertyRef.ResolveNames(edmxModel, schemaModel, associationModel, referentialConstraintModel, this, errors);
             }
         }
     }
