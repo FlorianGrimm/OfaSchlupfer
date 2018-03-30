@@ -483,9 +483,7 @@
         public static bool ConvertToBoolean(string value, bool defaultValue = false) => string.IsNullOrEmpty(value) ? defaultValue : string.Equals(value, "true", StringComparison.InvariantCultureIgnoreCase);
 
         public void ResolveNames(EdmxModel edmxModel, List<string> errors) {
-            foreach (var schema in edmxModel.DataServices) {
-                schema.ResolveNames(edmxModel, errors);
-            }
+            edmxModel.ResolveNames(errors);
             // build names
             //var nameResolver = new CsdlNameResolver();
             //nameResolver.AddCoreElements();
@@ -497,6 +495,7 @@
             //    schema.ResolveNames(nameResolver);
             //}
         }
+
         public static void AddError(List<string> errors, string msg, params XObject[] args) {
             var sb = new StringBuilder();
             if (!string.IsNullOrEmpty(msg)) {

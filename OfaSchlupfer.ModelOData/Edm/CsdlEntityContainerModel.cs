@@ -31,22 +31,12 @@
             }
         }
 
-        public void BuildNameResolver(CsdlNameResolver nameResolver) {
-            nameResolver.AddEntityContainer(this.SchemaModel.Namespace, this.Name, this);
+        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schema, List<string> errors) {
             foreach (var entitySet in this.EntitySet) {
-                entitySet.BuildNameResolver(this, nameResolver);
+                entitySet.ResolveNames(edmxModel, schema, this, errors);
             }
             foreach (var associationSet in this.AssociationSet) {
-                associationSet.BuildNameResolver(this, nameResolver);
-            }
-        }
-
-        public void ResolveNames(CsdlNameResolver nameResolver) {
-            foreach (var entitySet in this.EntitySet) {
-                entitySet.ResolveNames(nameResolver);
-            }
-            foreach (var associationSet in this.AssociationSet) {
-                associationSet.ResolveNames(nameResolver);
+                associationSet.ResolveNames(edmxModel, schema, this, errors);
             }
         }
     }

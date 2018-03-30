@@ -7,6 +7,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
         public readonly CsdlCollection<CsdlEntityContainerModel> EntityContainer;
         public readonly CsdlCollection<CsdlAssociationModel> Association;
         public string Namespace;
+        public EdmxModel EdmxModel;
 
         public CsdlSchemaModel() {
             this.EntityType = new CsdlCollection<CsdlEntityTypeModel>((item) => { item.SchemaModel = this; });
@@ -14,31 +15,6 @@ namespace OfaSchlupfer.ModelOData.Edm {
             this.Association = new CsdlCollection<CsdlAssociationModel>((item) => { item.SchemaModel = this; });
         }
 
-        public void BuildNameResolver(CsdlNameResolver nameResolver) {
-            foreach (var entityType in this.EntityType) {
-                entityType.BuildNameResolver(nameResolver);
-            }
-            foreach (var entityContainer in this.EntityContainer) {
-                entityContainer.BuildNameResolver(nameResolver);
-            }
-            foreach (var association in this.Association) {
-                association.BuildNameResolver(nameResolver);
-            }
-        }
-
-        public void ResolveNames(CsdlNameResolver nameResolver) {
-            foreach (var entityType in this.EntityType) {
-                entityType.ResolveNames(nameResolver);
-            }
-            foreach (var entityContainer in this.EntityContainer) {
-                entityContainer.ResolveNames(nameResolver);
-            }
-            foreach (var association in this.Association) {
-                association.ResolveNames(nameResolver);
-            }
-        }
-
-        // 
         public void ResolveNames(EdmxModel edmxModel, List<string> errors) {
             foreach (var entityType in this.EntityType) {
                 entityType.ResolveNames(edmxModel, this, errors);
@@ -49,6 +25,16 @@ namespace OfaSchlupfer.ModelOData.Edm {
             foreach (var association in this.Association) {
                 association.ResolveNames(edmxModel, this, errors);
             }
+        }
+
+        public List<CsdlEntityTypeModel> FindEntityType(string entityTypeName) {
+            var result = new List<CsdlEntityTypeModel>();
+            foreach (var entityType in this.EntityType) {
+                if (string.Equals(entityType.Name, entityTypeName, StringComparison.OrdinalIgnoreCase)) {
+                    result.Add(entityType);
+                }
+            }
+            return result;
         }
     }
 }

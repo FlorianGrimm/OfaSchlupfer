@@ -1,4 +1,7 @@
-﻿namespace OfaSchlupfer.ModelOData.Edm {
+﻿using System;
+using System.Collections.Generic;
+
+namespace OfaSchlupfer.ModelOData.Edm {
     public class CsdlReferentialConstraintModel {
         private CsdlReferentialConstraintPartnerModel _Principal;
         private CsdlReferentialConstraintPartnerModel _Dependent;
@@ -55,6 +58,9 @@
         public void ResolveNames(CsdlNameResolver nameResolver) {
             this.Principal?.ResolveNames(nameResolver);
             this.Dependent?.ResolveNames(nameResolver);
+        }
+
+        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel csdlSchemaModel, CsdlAssociationModel csdlAssociationModel, List<string> errors) {
         }
     }
 }

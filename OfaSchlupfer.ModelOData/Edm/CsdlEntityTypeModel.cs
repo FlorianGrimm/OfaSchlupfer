@@ -50,8 +50,7 @@
             //foreach (var key in this.Keys) { }
         }
 
-        internal void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel csdlSchemaModel, List<string> errors) {
-            throw new NotImplementedException();
+        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel csdlSchemaModel, List<string> errors) {
         }
 
         public void ResolveNames(CsdlNameResolver nameResolver) {

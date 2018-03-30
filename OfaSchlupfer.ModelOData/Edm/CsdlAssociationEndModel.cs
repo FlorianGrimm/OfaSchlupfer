@@ -1,4 +1,7 @@
-﻿namespace OfaSchlupfer.ModelOData.Edm {
+﻿using System;
+using System.Collections.Generic;
+
+namespace OfaSchlupfer.ModelOData.Edm {
     [System.Diagnostics.DebuggerDisplay("{Role}")]
     public class CsdlAssociationEndModel : CsdlAnnotationalModel {
         public CsdlAssociationEndModel() {
@@ -16,6 +19,9 @@
 
         public void ResolveNames(CsdlNameResolver nameResolver) {
             // TODO: resolve
+        }
+
+        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel csdlSchemaModel, CsdlAssociationModel csdlAssociationModel, List<string> errors) {
         }
     }
 }

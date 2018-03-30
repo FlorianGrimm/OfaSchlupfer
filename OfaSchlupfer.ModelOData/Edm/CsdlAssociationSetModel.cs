@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace OfaSchlupfer.ModelOData.Edm {
     [System.Diagnostics.DebuggerDisplay("{Name}")]
@@ -18,7 +19,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             nameResolver.AddAssociationSet(this.SchemaModel.Namespace, entityContainer.Name, this.Name, this);
         }
 
-        public void ResolveNames(CsdlNameResolver nameResolver) {
+        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schema, CsdlEntityContainerModel entityContainer, List<string> errors) {
             // TODO: resolve
         }
     }

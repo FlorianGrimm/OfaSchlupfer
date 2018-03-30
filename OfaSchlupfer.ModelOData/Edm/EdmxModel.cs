@@ -5,7 +5,7 @@
 
     public class EdmxModel : CsdlAnnotationalModel {
         public EdmxModel() {
-            this.DataServices = new List<CsdlSchemaModel>();
+            this.DataServices = new CsdlCollection<CsdlSchemaModel>((schemaModel) => { schemaModel.EdmxModel = this; });
             this.References = new List<string>();
         }
 
@@ -15,6 +15,39 @@
 
         public string DataServiceVersion;
 
-        public readonly List<CsdlSchemaModel> DataServices;
+        public readonly CsdlCollection<CsdlSchemaModel> DataServices;
+
+        public List<CsdlSchemaModel> Find(string name) {
+            var result = new List<CsdlSchemaModel>();
+            foreach (var schema in this.DataServices) {
+                if (string.Equals(schema.Namespace, name, StringComparison.OrdinalIgnoreCase)) {
+                    result.Add(schema);
+                    continue;
+                }
+            }
+            return result;
+        }
+
+        public List<Tuple<string, CsdlSchemaModel>> FindStart(string name) {
+            var result = new List<Tuple<string, CsdlSchemaModel>>();
+            foreach (var schema in this.DataServices) {
+                var val = schema.Namespace;
+                var len = val.Length;
+                if (name.StartsWith(val)) {
+                    if (name.Length == len) {
+                        result.Add(Tuple.Create<string, CsdlSchemaModel>(string.Empty, schema));
+                    } else if (name[len] == '.') {
+                        result.Add(Tuple.Create<string, CsdlSchemaModel>(name.Substring(len + 1), schema));
+                    }
+                }
+            }
+            return result;
+        }
+
+        public void ResolveNames(List<string> errors) {
+            foreach (var schema in this.DataServices) {
+                schema.ResolveNames(this, errors);
+            }
+        }
     }
 }

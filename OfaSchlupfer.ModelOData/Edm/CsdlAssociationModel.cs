@@ -33,12 +33,12 @@
             nameResolver.AddAssociation(this.SchemaModel.Namespace, this.Name, this);
         }
 
-        public void ResolveNames(CsdlNameResolver nameResolver) {
+        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel csdlSchemaModel, List<string> errors) {
             foreach (var associationEnd in this.AssociationEnd) {
-                associationEnd.ResolveNames(nameResolver);
+                associationEnd.ResolveNames(edmxModel, csdlSchemaModel, this, errors);
             }
             foreach (var referentialConstraint in this.ReferentialConstraint) {
-                referentialConstraint.ResolveNames(nameResolver);
+                referentialConstraint.ResolveNames(edmxModel, csdlSchemaModel, this, errors);
             }
         }
     }
