@@ -6,8 +6,8 @@
         private CsdlSchemaModel _SchemaModel;
 
         public CsdlAssociationModel() {
-            this.AssociationEnd = new CsdlCollection<CsdlAssociationEndModel>((item) => { item.SchemaModel = this.SchemaModel; });
-            this.ReferentialConstraint = new CsdlCollection<CsdlReferentialConstraintModel>((item) => { item.SchemaModel = this.SchemaModel; });
+            this.AssociationEnd = new CsdlCollection<CsdlAssociationEndModel>((item) => { item.OwnerAssociationModel = this; });
+            this.ReferentialConstraint = new CsdlCollection<CsdlReferentialConstraintModel>((item) => { item.OwnerAssociationModel = this; });
         }
         public string Name;
         public readonly CsdlCollection<CsdlAssociationEndModel> AssociationEnd;
@@ -19,13 +19,11 @@
             get {
                 return this._SchemaModel;
             }
-            internal set {
+            set {
                 if (ReferenceEquals(this._SchemaModel, value)) { return; }
                 this._SchemaModel = value;
-                if ((object)value != null) {
-                    this.AssociationEnd.Broadcast();
-                    this.ReferentialConstraint.Broadcast();
-                }
+                this.AssociationEnd.Broadcast();
+                this.ReferentialConstraint.Broadcast();
             }
         }
 
@@ -33,7 +31,7 @@
             nameResolver.AddAssociation(this.SchemaModel.Namespace, this.Name, this);
         }
 
-        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel csdlSchemaModel, List<string> errors) {
+        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel csdlSchemaModel, CsdlErrors errors) {
             foreach (var associationEnd in this.AssociationEnd) {
                 associationEnd.ResolveNames(edmxModel, csdlSchemaModel, this, errors);
             }

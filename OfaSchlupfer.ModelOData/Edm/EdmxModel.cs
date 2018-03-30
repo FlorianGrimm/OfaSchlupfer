@@ -44,7 +44,7 @@
             return result;
         }
 
-        public void ResolveNames(List<string> errors) {
+        public void ResolveNames(CsdlErrors errors) {
             foreach (var schema in this.DataServices) {
                 schema.ResolveNames(this, errors);
             }

@@ -1,13 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#define NoDevAsserts
 
 namespace OfaSchlupfer.ModelOData.Edm {
+    using System;
+
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlEntitySetModel : CsdlAnnotationalModel {
+        // parents
+        private CsdlSchemaModel _SchemaModel;
+        private CsdlEntityContainerModel _OwnerEntityContainerModel;
+
         private string _EntityTypeName;
         private CsdlEntityTypeModel _EntityTypeModelObject;
         public string Name;
 
+        // set by add
         public CsdlEntityContainerModel EntityContainer;
 
         public CsdlEntitySetModel() {
@@ -15,14 +21,36 @@ namespace OfaSchlupfer.ModelOData.Edm {
 
         [System.Diagnostics.DebuggerHidden]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel { get; internal set; }
+        public CsdlSchemaModel SchemaModel {
+            get {
+                return this._SchemaModel;
+            }
+            set {
+                if (ReferenceEquals(this._SchemaModel, value)) { return; }
+                this._SchemaModel = value;
+                if (!ReferenceEquals(value, this._OwnerEntityContainerModel?.SchemaModel)) {
+                    this._OwnerEntityContainerModel = null;
+                }
+            }
+        }
+
+        public CsdlEntityContainerModel OwnerEntityContainerModel {
+            get {
+                return this._OwnerEntityContainerModel;
+            }
+            set {
+                this._OwnerEntityContainerModel = value;
+                this._SchemaModel = value?.SchemaModel;
+            }
+        }
 
         public string EntityTypeName {
             get {
-                if (this._EntityTypeModelObject == null) {
+                var etmo = this._EntityTypeModelObject;
+                if (etmo == null) {
                     return this._EntityTypeName;
                 } else {
-                    return this._EntityTypeModelObject.Name;
+                    return (etmo.SchemaModel.Namespace ?? string.Empty) + "." + (etmo.Name ?? string.Empty);
                 }
             }
             set {
@@ -53,22 +81,31 @@ namespace OfaSchlupfer.ModelOData.Edm {
             }
         }
 
-        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schema, CsdlEntityContainerModel entityContainer, List<string> errors) {
+        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schema, CsdlEntityContainerModel entityContainer, CsdlErrors errors) {
             var lstNS = edmxModel.FindStart(this.EntityTypeName);
             if (lstNS.Count == 1) {
                 (var localName, var schemaFound) = lstNS[0];
                 var lstFound = schemaFound.FindEntityType(localName);
                 if (lstFound.Count == 1) {
+#if DevAsserts
+                    var oldEntityTypeName = this.EntityTypeName;
                     this.EntityTypeModelObject = lstFound[0];
+                    var newEntityTypeName = this.EntityTypeName;
+                    if (!string.Equals(oldEntityTypeName, newEntityTypeName, StringComparison.Ordinal)) {
+                        throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
+                    }
+#else
+                    this.EntityTypeModelObject = lstFound[0];
+#endif
                 } else if (lstFound.Count == 0) {
-                    EdmReader.AddError(errors, $"{this._EntityTypeName} not found");
+                    errors.AddError($"{this._EntityTypeName} not found");
                 } else {
-                    EdmReader.AddError(errors, $"{this._EntityTypeName} found #{lstFound.Count} times.");
+                    errors.AddError($"{this._EntityTypeName} found #{lstFound.Count} times.");
                 }
             } else if (lstNS.Count == 0) {
-                EdmReader.AddError(errors, $"{this._EntityTypeName} namespace not found");
+                errors.AddError($"{this._EntityTypeName} namespace not found");
             } else {
-                EdmReader.AddError(errors, $"{this._EntityTypeName} namespace found #{lstNS.Count} times.");
+                errors.AddError($"{this._EntityTypeName} namespace found #{lstNS.Count} times.");
             }
         }
     }

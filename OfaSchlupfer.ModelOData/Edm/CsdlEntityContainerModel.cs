@@ -6,8 +6,8 @@
         private CsdlSchemaModel _SchemaModel;
 
         public CsdlEntityContainerModel() {
-            this.EntitySet = new CsdlCollection<CsdlEntitySetModel>((item) => { item.SchemaModel = this.SchemaModel; });
-            this.AssociationSet = new CsdlCollection<CsdlAssociationSetModel>((item) => { item.SchemaModel = this.SchemaModel; });
+            this.EntitySet = new CsdlCollection<CsdlEntitySetModel>((item) => { item.OwnerEntityContainerModel = this; });
+            this.AssociationSet = new CsdlCollection<CsdlAssociationSetModel>((item) => { item.OwnerEntityContainerModel = this; });
         }
         public string Name;
         public bool IsDefaultEntityContainer;
@@ -21,7 +21,7 @@
             get {
                 return this._SchemaModel;
             }
-            internal set {
+            set {
                 if (ReferenceEquals(this._SchemaModel, value)) { return; }
                 this._SchemaModel = value;
                 if ((object)value != null) {
@@ -31,7 +31,7 @@
             }
         }
 
-        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schema, List<string> errors) {
+        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schema, CsdlErrors errors) {
             foreach (var entitySet in this.EntitySet) {
                 entitySet.ResolveNames(edmxModel, schema, this, errors);
             }

@@ -7,9 +7,9 @@
         private CsdlSchemaModel _SchemaModel;
 
         public CsdlEntityTypeModel() {
-            this.Property = new CsdlCollection<CsdlPropertyModel>((item) => { item.SchemaModel = this.SchemaModel; });
-            this.NavigationProperty = new CsdlCollection<CsdlNavigationPropertyModel>((item) => { item.SchemaModel = this.SchemaModel; });
-            this.Keys = new CsdlCollection<CsdlPropertyRefModel>((item) => { item.SchemaModel = this.SchemaModel; });
+            this.Property = new CsdlCollection<CsdlPropertyModel>((item) => { item.ÒwnerEntityTypeModel = this; });
+            this.NavigationProperty = new CsdlCollection<CsdlNavigationPropertyModel>((item) => { item.OwnerEntityTypeModel = this; });
+            this.Keys = new CsdlCollection<CsdlPropertyRefModel>((item) => { item.OwnerEntityTypeModel = this; });
         }
 
         public string Name;
@@ -27,7 +27,7 @@
             get {
                 return this._SchemaModel;
             }
-            internal set {
+            set {
                 if (ReferenceEquals(this._SchemaModel, value)) { return; }
                 this._SchemaModel = value;
                 if ((object)value != null) {
@@ -50,18 +50,15 @@
             //foreach (var key in this.Keys) { }
         }
 
-        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel csdlSchemaModel, List<string> errors) {
-        }
-
-        public void ResolveNames(CsdlNameResolver nameResolver) {
+        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schemaModel, CsdlErrors errors) {
             foreach (var property in this.Property) {
-                property.ResolveNames(nameResolver);
+                property.ResolveNames(edmxModel, schemaModel, this, errors);
             }
             foreach (var navigationProperty in this.NavigationProperty) {
-                navigationProperty.ResolveNames(nameResolver);
+                navigationProperty.ResolveNames(edmxModel, schemaModel, this, errors);
             }
             foreach (var key in this.Keys) {
-                key.ResolveNames(nameResolver);
+                key.ResolveNames(edmxModel, schemaModel, this, errors);
             }
         }
     }

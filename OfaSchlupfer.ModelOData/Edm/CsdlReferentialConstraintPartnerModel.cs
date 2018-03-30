@@ -1,14 +1,14 @@
 ﻿namespace OfaSchlupfer.ModelOData.Edm {
-    using System.Collections.Generic;
-
     [System.Diagnostics.DebuggerDisplay("{Role}")]
     public class CsdlReferentialConstraintPartnerModel : CsdlAnnotationalModel {
         public readonly CsdlCollection<CsdlPropertyRefModel> PropertyRef;
-        public string Role;
         private CsdlSchemaModel _SchemaModel;
+        private CsdlReferentialConstraintModel _OwnerReferentialConstraintModel;
+
+        public string Role;
 
         public CsdlReferentialConstraintPartnerModel() {
-            this.PropertyRef = new CsdlCollection<CsdlPropertyRefModel>((item) => { item.SchemaModel = this.SchemaModel; });
+            this.PropertyRef = new CsdlCollection<CsdlPropertyRefModel>((item) => { item.OwnerReferentialConstraintPartnerModel = this; });
         }
 
         [System.Diagnostics.DebuggerHidden]
@@ -17,18 +17,32 @@
             get {
                 return this._SchemaModel;
             }
-            internal set {
+            set {
                 if (ReferenceEquals(this._SchemaModel, value)) { return; }
                 this._SchemaModel = value;
+                if (!ReferenceEquals(value, this._OwnerReferentialConstraintModel?.SchemaModel)) {
+                    this._OwnerReferentialConstraintModel = null;
+                }
                 if ((object)value != null) {
                     this.PropertyRef.Broadcast();
                 }
             }
         }
 
-        public void ResolveNames(CsdlNameResolver nameResolver) {
+        public CsdlReferentialConstraintModel OwnerReferentialConstraintModel {
+            get {
+                return this._OwnerReferentialConstraintModel;
+            }
+            set {
+                if (ReferenceEquals(this._OwnerReferentialConstraintModel, value)) { return; }
+                this._OwnerReferentialConstraintModel = value;
+                this.SchemaModel = value?.SchemaModel;
+            }
+        }
+
+        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schemaModel, CsdlAssociationModel associationModel, CsdlReferentialConstraintModel referentialConstraintModel, CsdlErrors errors) {
             foreach (var propertyRef in this.PropertyRef) {
-                propertyRef.ResolveNames(nameResolver);
+                propertyRef.ResolveNames(edmxModel, schemaModel, associationModel, this, referentialConstraintModel, errors);
             }
         }
     }

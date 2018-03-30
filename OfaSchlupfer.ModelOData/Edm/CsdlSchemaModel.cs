@@ -15,7 +15,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             this.Association = new CsdlCollection<CsdlAssociationModel>((item) => { item.SchemaModel = this; });
         }
 
-        public void ResolveNames(EdmxModel edmxModel, List<string> errors) {
+        public void ResolveNames(EdmxModel edmxModel, CsdlErrors errors) {
             foreach (var entityType in this.EntityType) {
                 entityType.ResolveNames(edmxModel, this, errors);
             }

@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace OfaSchlupfer.ModelOData.Edm {
+﻿namespace OfaSchlupfer.ModelOData.Edm {
     public class CsdlReferentialConstraintModel {
+        private CsdlSchemaModel _SchemaModel;
+        private CsdlAssociationModel _OwnerAssociationModel;
+
         private CsdlReferentialConstraintPartnerModel _Principal;
         private CsdlReferentialConstraintPartnerModel _Dependent;
-        private CsdlSchemaModel _SchemaModel;
 
         public CsdlReferentialConstraintModel() {
         }
-
-
 
         [System.Diagnostics.DebuggerHidden]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
@@ -23,10 +20,10 @@ namespace OfaSchlupfer.ModelOData.Edm {
                 this._SchemaModel = value;
                 if ((object)value != null) {
                     if ((object)this.Principal != null) {
-                        this.Principal.SchemaModel = value;
+                        this.Principal.OwnerReferentialConstraintModel = this;
                     }
                     if ((object)this.Dependent != null) {
-                        this.Dependent.SchemaModel = value;
+                        this.Dependent.OwnerReferentialConstraintModel = this;
                     }
                 }
             }
@@ -35,32 +32,38 @@ namespace OfaSchlupfer.ModelOData.Edm {
         public CsdlReferentialConstraintPartnerModel Principal {
             get { return this._Principal; }
             set {
+                if(ReferenceEquals(this._Principal, value)) { return; }
                 this._Principal = value;
+                this.SchemaModel = value?.SchemaModel;
                 if (value != null) {
-                    if ((object)this.SchemaModel != null) {
-                        value.SchemaModel = this.SchemaModel;
-                    }
+                    value.OwnerReferentialConstraintModel = this;
                 }
             }
         }
         public CsdlReferentialConstraintPartnerModel Dependent {
             get { return this._Dependent; }
             set {
+                if (ReferenceEquals(this._Dependent, value)) { return; }
                 this._Dependent = value;
                 if (value != null) {
-                    if ((object)this.SchemaModel != null) {
-                        value.SchemaModel = this.SchemaModel;
-                    }
+                    value.OwnerReferentialConstraintModel = this;
                 }
             }
         }
 
-        public void ResolveNames(CsdlNameResolver nameResolver) {
-            this.Principal?.ResolveNames(nameResolver);
-            this.Dependent?.ResolveNames(nameResolver);
+        public CsdlAssociationModel OwnerAssociationModel {
+            get {
+                return this._OwnerAssociationModel;
+            }
+            set {
+                this._OwnerAssociationModel = value;
+                this.SchemaModel = value?.SchemaModel;
+            }
         }
 
-        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel csdlSchemaModel, CsdlAssociationModel csdlAssociationModel, List<string> errors) {
+        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schemaModel, CsdlAssociationModel associationModel, CsdlErrors errors) {
+            this.Principal?.ResolveNames(edmxModel, schemaModel, associationModel, this, errors);
+            this.Dependent?.ResolveNames(edmxModel, schemaModel, associationModel, this, errors);
         }
     }
 }
