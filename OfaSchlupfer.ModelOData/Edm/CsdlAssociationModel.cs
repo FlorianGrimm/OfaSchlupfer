@@ -26,17 +26,13 @@
                 this.ReferentialConstraint.Broadcast();
             }
         }
-
-        public void BuildNameResolver(CsdlNameResolver nameResolver) {
-            nameResolver.AddAssociation(this.SchemaModel.Namespace, this.Name, this);
-        }
-
-        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel csdlSchemaModel, CsdlErrors errors) {
+        
+        public void ResolveNames(CsdlErrors errors) {
             foreach (var associationEnd in this.AssociationEnd) {
-                associationEnd.ResolveNames(edmxModel, csdlSchemaModel, this, errors);
+                associationEnd.ResolveNames(errors);
             }
             foreach (var referentialConstraint in this.ReferentialConstraint) {
-                referentialConstraint.ResolveNames(edmxModel, csdlSchemaModel, this, errors);
+                referentialConstraint.ResolveNames(errors);
             }
         }
     }

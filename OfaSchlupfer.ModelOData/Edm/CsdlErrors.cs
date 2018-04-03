@@ -6,13 +6,24 @@
 
     public class CsdlErrors {
         public readonly List<string> Errors;
-        public CsdlErrors() {
+
+        public CsdlErrors(bool ignoreance=false) {
+            if (ignoreance) {
+                this.Errors = null;
+            } else {
             this.Errors = new List<string>();
+            }
+        }
+        
+        public static CsdlErrors GetIgnorance() {
+            var result = new CsdlErrors(true);
+            return result;
         }
     }
 
     public static class CsdlErrorsExtension {
         public static void AddError(this CsdlErrors errors, string msg, params XObject[] args) {
+            if (errors != null && errors.Errors == null) { return; }
             var sb = new StringBuilder();
             if (!string.IsNullOrEmpty(msg)) {
                 sb.Append(msg);
@@ -31,7 +42,7 @@
             if ((object)errors == null) {
                 throw new NotImplementedException(sb.ToString());
             } else {
-                errors.Errors.Add(sb.ToString());
+                errors.Errors?.Add(sb.ToString());
             }
         }
     }

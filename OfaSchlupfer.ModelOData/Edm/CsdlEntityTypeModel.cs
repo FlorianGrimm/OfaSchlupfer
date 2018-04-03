@@ -9,7 +9,7 @@
         public CsdlEntityTypeModel() {
             this.Property = new CsdlCollection<CsdlPropertyModel>((item) => { item.ÒwnerEntityTypeModel = this; });
             this.NavigationProperty = new CsdlCollection<CsdlNavigationPropertyModel>((item) => { item.OwnerEntityTypeModel = this; });
-            this.Keys = new CsdlCollection<CsdlPropertyRefModel>((item) => { item.OwnerEntityTypeModel = this; });
+            this.Keys = new CsdlCollection<CsdlPrimaryKeyModel>((item) => { item.OwnerEntityTypeModel = this; });
         }
 
         public string Name;
@@ -19,7 +19,7 @@
         public bool HasStream;
         public readonly CsdlCollection<CsdlPropertyModel> Property;
         public readonly CsdlCollection<CsdlNavigationPropertyModel> NavigationProperty;
-        public readonly CsdlCollection<CsdlPropertyRefModel> Keys;
+        public readonly CsdlCollection<CsdlPrimaryKeyModel> Keys;
 
         [System.Diagnostics.DebuggerHidden]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
@@ -37,28 +37,16 @@
                 }
             }
         }
-
-        public void BuildNameResolver(CsdlNameResolver nameResolver) {
-            nameResolver.AddEntityType(this.SchemaModel.Namespace, this.Name, this);
-
+        
+        public void ResolveNames(CsdlErrors errors) {
             foreach (var property in this.Property) {
-                property.BuildNameResolver(this, nameResolver);
+                property.ResolveNames(errors);
             }
             foreach (var navigationProperty in this.NavigationProperty) {
-                navigationProperty.BuildNameResolver(this, nameResolver);
-            }
-            //foreach (var key in this.Keys) { }
-        }
-
-        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schemaModel, CsdlErrors errors) {
-            foreach (var property in this.Property) {
-                property.ResolveNames(edmxModel, schemaModel, this, errors);
-            }
-            foreach (var navigationProperty in this.NavigationProperty) {
-                navigationProperty.ResolveNames(edmxModel, schemaModel, this, errors);
+                navigationProperty.ResolveNames(errors);
             }
             foreach (var key in this.Keys) {
-                key.ResolveNames(edmxModel, schemaModel, this, errors);
+                key.ResolveNames(errors);
             }
         }
 

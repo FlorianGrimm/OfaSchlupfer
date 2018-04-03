@@ -31,13 +31,23 @@
             }
         }
 
-        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schema, CsdlErrors errors) {
+        public void ResolveNames(CsdlErrors errors) {
             foreach (var entitySet in this.EntitySet) {
-                entitySet.ResolveNames(edmxModel, schema, this, errors);
+                entitySet.ResolveNames(errors);
             }
             foreach (var associationSet in this.AssociationSet) {
-                associationSet.ResolveNames(edmxModel, schema, this, errors);
+                associationSet.ResolveNames(errors);
             }
+        }
+
+        public List<CsdlEntitySetModel> FindEntitySet(string localName) {
+            var result = new List<CsdlEntitySetModel>();
+            foreach (var entitySet in this.EntitySet) {
+                if (string.Equals(entitySet.Name, localName, System.StringComparison.OrdinalIgnoreCase)) {
+                    result.Add(entitySet);
+                }
+            }
+            return result;
         }
     }
 }

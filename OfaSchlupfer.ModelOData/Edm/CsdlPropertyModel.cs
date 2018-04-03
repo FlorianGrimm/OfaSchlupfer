@@ -7,6 +7,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
         private CsdlSchemaModel _SchemaModel;
         private CsdlEntityTypeModel _OwnerEntityTypeModel;
         private string _TypeName;
+        private CsdlScalarTypeModel _ScalarType;
         public string Name;
 
         public bool Nullable;
@@ -53,19 +54,60 @@ namespace OfaSchlupfer.ModelOData.Edm {
         // TODO: Collection(Edm.DateTime)
         public string TypeName {
             get {
-                return this._TypeName;
+                if (this._ScalarType != null) {
+                    return this._ScalarType.FullName;
+                } else {
+                    return this._TypeName;
+                }
             }
             set {
                 this._TypeName = value;
+                this._ScalarType = null;
             }
         }
 
-        public void BuildNameResolver(CsdlEntityTypeModel entityType, CsdlNameResolver nameResolver) {
-            nameResolver.AddProperty(this.SchemaModel.Namespace, entityType.Name, this.Name, this);
+        public CsdlScalarTypeModel ScalarType {
+            get {
+                if (this._ScalarType == null) {
+                    this.ResolveNames(CsdlErrors.GetIgnorance());
+                }
+                return this._ScalarType;
+            }
+            set {
+                this._ScalarType = value;
+                this._TypeName = null;
+            }
         }
 
-        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schemaModel, CsdlEntityTypeModel entityTypeModel, CsdlErrors errors) {
-            // TODO: resolve this.TypeName
+        public void ResolveNames(CsdlErrors errors) {
+            EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
+            if ((edmxModel != null) && (this.ÒwnerEntityTypeModel != null)) {
+                var lstNS = edmxModel.FindStart(this.TypeName);
+                if (lstNS.Count == 1) {
+                    (var localName, var schemaFound) = lstNS[0];
+                    var lstFound = schemaFound.FindScalarType(localName);
+                    if (lstFound.Count == 1) {
+#if DevAsserts
+                    var oldEntityTypeName = this.TypeName;
+                    this.ScalarType = lstFound[0];
+                    var newEntityTypeName = this.TypeName;
+                    if (!string.Equals(oldEntityTypeName, newEntityTypeName, StringComparison.Ordinal)) {
+                        throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
+                    }
+#else
+                        this.ScalarType = lstFound[0];
+#endif
+                    } else if (lstFound.Count == 0) {
+                        errors.AddError($"{this.TypeName} not found");
+                    } else {
+                        errors.AddError($"{this.TypeName} found #{lstFound.Count} times.");
+                    }
+                } else if (lstNS.Count == 0) {
+                    errors.AddError($"{this.TypeName} namespace not found");
+                } else {
+                    errors.AddError($"{this.TypeName} namespace found #{lstNS.Count} times.");
+                }
+            }
         }
     }
 }

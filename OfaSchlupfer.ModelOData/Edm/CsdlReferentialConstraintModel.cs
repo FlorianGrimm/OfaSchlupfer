@@ -61,9 +61,9 @@
             }
         }
 
-        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schemaModel, CsdlAssociationModel associationModel, CsdlErrors errors) {
-            this.Principal?.ResolveNames(edmxModel, schemaModel, associationModel, this, errors);
-            this.Dependent?.ResolveNames(edmxModel, schemaModel, associationModel, this, errors);
+        public void ResolveNames(CsdlErrors errors) {
+            this.Principal?.ResolveNames(errors);
+            this.Dependent?.ResolveNames(errors);
         }
     }
 }

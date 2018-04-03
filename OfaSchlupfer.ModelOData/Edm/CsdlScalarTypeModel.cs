@@ -7,5 +7,8 @@
             this.Namespace = @namespace;
             this.Name = name;
         }
+
+        public CsdlSchemaModel SchemaModel { get; set; }
+        public string FullName => this.Namespace + "." + this.Name;
     }
 }

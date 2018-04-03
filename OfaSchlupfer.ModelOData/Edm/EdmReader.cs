@@ -175,9 +175,9 @@
                             if (attr.IsNamespaceDeclaration) {
                                 //
                             } else if (attr.Name == EdmConstants.AttrRole) {
-                                associationEnd.Role = attr.Value;
-                            } else if (attr.Name == EdmConstants.AttrEntitySet) {
-                                associationEnd.EntitySetName = attr.Value;
+                                associationEnd.RoleName = attr.Value;
+                            //} else if (attr.Name == EdmConstants.AttrEntitySet) {
+                            //    associationEnd.EntitySetName = attr.Value;
                             } else if (attr.Name == EdmConstants.AttrType) {
                                 associationEnd.TypeName = attr.Value;
                             } else if (attr.Name == EdmConstants.AttrMultiplicity) {
@@ -200,7 +200,7 @@
                             if (ele3.HasAttributes) {
                                 foreach (var attr in ele3.Attributes()) {
                                     if (attr.Name == EdmConstants.AttrRole) {
-                                        referentialConstraintPartner.Role = attr.Value;
+                                        referentialConstraintPartner.RoleName = attr.Value;
                                     } else if (CheckAndAddAnnotation(attr, referentialConstraintPartner)) {
                                     } else {
                                        errors.AddError("ReadCSDLDocument", ele1, ele2, ele3, attr);
@@ -298,7 +298,7 @@
                             } else if (attr.Name == EdmConstants.AttrName) {
                                 associationSet.Name = attr.Value;
                             } else if (attr.Name == EdmConstants.AttrAssociation) {
-                                associationSet.Association = attr.Value;
+                                associationSet.AssociationName = attr.Value;
                             } else if (CheckAndAddAnnotation(attr, associationSet)) {
                             } else {
                                errors.AddError("ReadCSDLDocument", ele1, ele2, attr);
@@ -306,6 +306,28 @@
                         }
                     }
                     entityContainer.AssociationSet.Add(associationSet);
+                    foreach (var ele3 in ele2.Elements()) {
+                        if (ele3.Name == csdlConstants.End) {
+                            var associationSetEndModel = new CsdlAssociationSetEndModel();
+                            if (ele3.HasAttributes) {
+                                foreach (var attr in ele3.Attributes()) {
+                                    if (attr.IsNamespaceDeclaration) {
+                                        //
+                                    } else if (attr.Name == EdmConstants.AttrRole) {
+                                        associationSetEndModel.RoleName = attr.Value;
+                                    } else if (attr.Name == EdmConstants.AttrEntitySet) {
+                                        associationSetEndModel.EntitySetName = attr.Value;
+                                    } else if (CheckAndAddAnnotation(attr, associationSet)) {
+                                    } else {
+                                        errors.AddError("ReadCSDLDocument", ele1, ele2, attr);
+                                    }
+                                }
+                            }
+                            associationSet.End.Add(associationSetEndModel);
+                        } else {
+                            errors.AddError("ReadCSDLDocument", ele1, ele2, ele3);
+                        }
+                    }
                 } else {
                    errors.AddError("ReadCSDLDocument", ele1, ele2);
                 }
@@ -344,7 +366,7 @@
             foreach (var ele2 in eleEntityType.Elements()) {
                 if (ele2.Name == csdlConstants.Key) {
                     foreach (var ele3 in ele2.Elements()) {
-                        var propertyRef = new CsdlPropertyRefModel();
+                        var propertyRef = new CsdlPrimaryKeyModel();
                         if (ele3.Name == csdlConstants.PropertyRef) {
                             if (ele3.HasAttributes) {
                                 foreach (var attr in ele3.Attributes()) {

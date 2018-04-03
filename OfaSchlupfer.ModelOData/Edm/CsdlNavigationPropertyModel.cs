@@ -46,12 +46,8 @@
             }
         }
 
-        public void BuildNameResolver(CsdlEntityTypeModel entityType, CsdlNameResolver nameResolver) {
-            nameResolver.AddNavigationProperty(this.SchemaModel.Namespace, entityType.Name, this.Name, this);
-        }
-
-        public void ResolveNames(EdmxModel edmxModel, CsdlSchemaModel schemaModel, CsdlEntityTypeModel entityTypeModel, CsdlErrors errors) {
-            // TODO: resolve
+        public void ResolveNames(CsdlErrors errors) {
+           // TODO
         }
     }
 }

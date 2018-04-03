@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.ModelOData.Edm {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
@@ -28,10 +29,43 @@ namespace OfaSchlupfer.ModelOData.Edm {
             var edmxModel = sut.Read(srcPath, null);
             Assert.NotNull(edmxModel);
             Assert.NotNull(edmxModel.Version);
-            Assert.Equal(2, edmxModel.DataServices.Count);
+            Assert.Equal(3, edmxModel.DataServices.Count);
             Assert.Equal(0, edmxModel.DataServices[0].EntityContainer.Count);
             Assert.Equal(1, edmxModel.DataServices[1].EntityContainer.Count);
 
+            var entitySets = edmxModel.DataServices
+                .SelectMany((schema) => schema.EntityContainer)
+                .SelectMany((entityContainer) => entityContainer.EntitySet).ToArray();
+            foreach (var entitySet in entitySets) {
+                Assert.NotNull(entitySet.EntityTypeModel);
+            }
+
+            var properties = entitySets
+                .SelectMany((entitySet)=> entitySet.EntityTypeModel.Property)
+                .ToArray();
+            foreach (var property in properties) {
+                Assert.NotNull(property.TypeName);
+            }
+
+            var associationSets = edmxModel.DataServices
+                .SelectMany((schema) => schema.EntityContainer)
+                .SelectMany((entityContainer) => entityContainer.AssociationSet).ToArray();
+            foreach (var associationSet in associationSets) {
+                Assert.NotNull(associationSet.Name);
+                Assert.NotNull(associationSet.AssociationName);
+                Assert.NotNull(associationSet.AssociationModel);
+            }
+
+            var associationSetEnds = edmxModel.DataServices
+                .SelectMany((schema) => schema.EntityContainer)
+                .SelectMany((entityContainer) => entityContainer.AssociationSet)
+                .SelectMany((associationSet) => associationSet.End)
+                .ToArray();
+            foreach (var end in associationSetEnds) {
+                Assert.NotNull(end);
+                Assert.NotNull(end.EntitySetName);
+                Assert.NotNull(end.EntitySetModel);
+            }
             //var schema = sut.ReadSchema(sr);
             //sut.ModelSchema = schema;
 
@@ -65,7 +99,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             var edmxModel = sut.Read(srcPath, null);
             Assert.NotNull(edmxModel);
             Assert.NotNull(edmxModel.Version);
-            Assert.Equal(2, edmxModel.DataServices.Count);
+            Assert.Equal(3, edmxModel.DataServices.Count);
 
             //var schema = sut.ReadSchema(sr);
             //sut.ModelSchema = schema;
@@ -101,7 +135,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             var edmxModel = sut.Read(srcPath, null);
             Assert.NotNull(edmxModel);
             Assert.NotNull(edmxModel.Version);
-            Assert.Equal(2, edmxModel.DataServices.Count);
+            Assert.Equal(3, edmxModel.DataServices.Count);
 
             //var schema = sut.ReadSchema(sr);
             //sut.ModelSchema = schema;
