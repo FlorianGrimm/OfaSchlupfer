@@ -47,6 +47,8 @@ namespace OfaSchlupfer.ModelOData.Edm {
                 return this._RoleName;
             }
             set {
+                if (value == string.Empty) { value = null; }
+                if (string.Equals(this._RoleName, value, StringComparison.Ordinal)) { return; }
                 this._RoleName = value;
                 this._RoleEnd = null;
             }
@@ -74,7 +76,16 @@ namespace OfaSchlupfer.ModelOData.Edm {
 
         public void ResolveNameRoleEnd(CsdlErrors errors) {
             if (this._RoleEnd == null && this._RoleName != null) {
-                //this.OwnerReferentialConstraintModel.f
+                var referentialConstraintModel = this.OwnerReferentialConstraintModel;
+                var associationModel = referentialConstraintModel.OwnerAssociationModel;
+                if (associationModel != null) {
+                    var end = associationModel.FindAssociationEnd(this._RoleName);
+                    if (end != null) {
+                        this.RoleEnd = end;
+                    } else {
+                        errors.AddError($"Role {this._RoleName} not found in {associationModel.FullName}.");
+                    }
+                }
             }
         }
     }

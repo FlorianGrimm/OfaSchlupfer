@@ -1,58 +1,49 @@
-﻿#define NoDevAsserts
-
-namespace OfaSchlupfer.ModelOData.Edm {
+﻿namespace OfaSchlupfer.ModelOData.Edm {
     using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using System.Text.RegularExpressions;
 
-    [System.Diagnostics.DebuggerDisplay("{Name}")]
-    public class CsdlEntitySetModel : CsdlAnnotationalModel {
+    public class CsdlEntityCollectionTypeModel {
+        private static Regex regexIsCollection;
+        public static string IsCollection(string typename) {
+            Regex regex = regexIsCollection ?? (regexIsCollection = new Regex(@"^Collection\(([^()]+)\)$", RegexOptions.Compiled));
+            var match = regex.Match(typename);
+            if (match.Success) {
+                return match.Groups[1].Value;
+            } else {
+                return null;
+            }
+        }
+        public static CsdlEntityCollectionTypeModel Create(string collection, CsdlEntityTypeModel ownerEntityTypeModel) {
+            var entityTypeName = IsCollection(collection);
+            if (entityTypeName != null) {
+                var result = new CsdlEntityCollectionTypeModel();
+                result.OwnerEntityTypeModel = ownerEntityTypeModel;
+                result.EntityTypeName = entityTypeName;
+                return result;
+            }
+            return null;
+        }
+
         // parents
         private CsdlSchemaModel _SchemaModel;
-        private CsdlEntityContainerModel _OwnerEntityContainerModel;
-
-        private string _Name;
+        private CsdlEntityTypeModel _OwnerEntityTypeModel;
 
         private string _EntityTypeName;
         private CsdlEntityTypeModel _EntityTypeModel;
 
-        // set by add
-        public CsdlEntityContainerModel EntityContainer;
 
-        public CsdlEntitySetModel() {
-        }
+        public CsdlEntityCollectionTypeModel() { }
 
-        [System.Diagnostics.DebuggerHidden]
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel {
+
+        public CsdlEntityTypeModel OwnerEntityTypeModel {
             get {
-                return this._SchemaModel;
+                return this._OwnerEntityTypeModel;
             }
             set {
-                if (ReferenceEquals(this._SchemaModel, value)) { return; }
-                this._SchemaModel = value;
-                if (!ReferenceEquals(value, this._OwnerEntityContainerModel?.SchemaModel)) {
-                    this._OwnerEntityContainerModel = null;
-                }
-            }
-        }
-
-        public CsdlEntityContainerModel OwnerEntityContainerModel {
-            get {
-                return this._OwnerEntityContainerModel;
-            }
-            set {
-                this._OwnerEntityContainerModel = value;
+                this._OwnerEntityTypeModel = value;
                 this._SchemaModel = value?.SchemaModel;
-            }
-        }
-
-        public string Name {
-            get {
-                return this._Name;
-            }
-            set {
-                if (value == string.Empty) { value = null; }
-                if (string.Equals(this._Name, value, StringComparison.Ordinal)) { return; }
-                this._Name = value;
             }
         }
 
@@ -76,13 +67,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
         public CsdlEntityTypeModel EntityTypeModel {
             get {
                 if (this._EntityTypeModel == null && this._EntityTypeName != null) {
-                    var entityContainer = this.EntityContainer;
-                    var schema = entityContainer?.SchemaModel;
-                    var edmxModel = schema?.EdmxModel;
-                    if (edmxModel != null) {
-                        this.ResolveNames(CsdlErrors.GetIgnorance());
-                    }
-
+                    this.ResolveNames(CsdlErrors.GetIgnorance());
                 }
                 return this._EntityTypeModel;
             }
@@ -94,7 +79,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
 
         public void ResolveNames(CsdlErrors errors) {
             if (this._EntityTypeModel == null && this._EntityTypeName != null) {
-                EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
+                EdmxModel edmxModel = this._SchemaModel?.EdmxModel;
                 if ((edmxModel != null)) {
                     var lstNS = edmxModel.FindStart(this.EntityTypeName);
                     if (lstNS.Count == 1) {
@@ -102,12 +87,12 @@ namespace OfaSchlupfer.ModelOData.Edm {
                         var lstFound = schemaFound.FindEntityType(localName);
                         if (lstFound.Count == 1) {
 #if DevAsserts
-                    var oldEntityTypeName = this.EntityTypeName;
-                    this.EntityTypeModel = lstFound[0];
-                    var newEntityTypeName = this.EntityTypeName;
-                    if (!string.Equals(oldEntityTypeName, newEntityTypeName, StringComparison.Ordinal)) {
-                        throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
-                    }
+                        var oldEntityTypeName = this.EntityTypeName;
+                        this.EntityTypeModel = lstFound[0];
+                        var newEntityTypeName = this.EntityTypeName;
+                        if (!string.Equals(oldEntityTypeName, newEntityTypeName, StringComparison.Ordinal)) {
+                            throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
+                        }
 #else
                             this.EntityTypeModel = lstFound[0];
 #endif

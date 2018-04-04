@@ -432,18 +432,18 @@
                             } else if (attr.Name == EdmConstants.AttrName) {
                                 navigationProperty.Name = attr.Value;
                             } else if (attr.Name == EdmConstants.AttrRelationship) {
-                                navigationProperty.Relationship = attr.Value;
+                                navigationProperty.RelationshipName = attr.Value;
                             } else if (attr.Name == EdmConstants.AttrFromRole) {
-                                navigationProperty.FromRole = attr.Value;
+                                navigationProperty.FromRoleName = attr.Value;
                             } else if (attr.Name == EdmConstants.AttrToRole) {
-                                navigationProperty.ToRole = attr.Value;
+                                navigationProperty.ToRoleName = attr.Value;
                             } else if (attr.Name == EdmConstants.AttrContainsTarget) {
                                 navigationProperty.ContainsTarget = ConvertToBoolean(attr.Value, false);
 
                             } else if (attr.Name == EdmConstants.AttrType) {
                                 navigationProperty.TypeName = attr.Value;
                             } else if (attr.Name == EdmConstants.AttrPartner) {
-                                navigationProperty.Partner = attr.Value;
+                                navigationProperty.PartnerName = attr.Value;
                             } else if (attr.Name == EdmConstants.AttrNullable) {
                                 navigationProperty.Nullable = ConvertToBoolean(attr.Value, true);
 

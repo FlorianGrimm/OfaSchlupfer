@@ -41,13 +41,9 @@
             }
             set {
                 if (value == string.Empty) { value = null; }
-                if (string.Equals(this._Name, value, StringComparison.OrdinalIgnoreCase)) { return; }
+                if (string.Equals(this._Name, value, StringComparison.Ordinal)) { return; }
                 this._Name = value;
-                if ((object)this._Property != null) {
-                    if (string.Equals(this._Name, this.Property.Name, StringComparison.OrdinalIgnoreCase)) {
-                        this._Property = null;
-                    }
-                }
+                this._Property = null;
             }
         }
 
@@ -68,25 +64,21 @@
         }
 
         public void ResolveNames(CsdlErrors errors) {
-            // TODO: resolve this.Name
-            //associationModel.AssociationEnd[0].
-            //referentialConstraintPartnerModel.RoleName
-
-            //associationModel.FindRoleName(this.csdlReferentialConstraintPartnerModel.)
-            //foreach (var associationEnd in associationModel.AssociationEnd) {
-            //    if( associationEnd.RoleName 
-            //}
-            //associationModel.
-
-            //var lstProperty = entityTypeModel.FindProperty(this.Name);
-            //if (lstProperty.Count == 1) {
-            //    this.Property = lstProperty[0];
-            //} else if (lstProperty.Count == 0) {
-            //    errors.AddError("TODO");
-            //} else {
-            //    errors.AddError("TODO");
-            //}
-            //throw new Exception(this.Name);
+            if (this._Property == null && this._Name != null) {
+                var referentialConstraintPartnerModel = this.OwnerReferentialConstraintPartnerModel;
+                var roleEnd = referentialConstraintPartnerModel?.RoleEnd;
+                var roleTypeModel = roleEnd?.TypeModel;
+                if (roleTypeModel != null) {
+                    var lstProperty = roleTypeModel.FindProperty(this._Name);
+                    if (lstProperty.Count == 1) {
+                        this.Property = lstProperty[0];
+                    } else if (lstProperty.Count == 0) {
+                        errors.AddError($"Property '{this.Name}' not found in {roleTypeModel.FullName}.");
+                    } else {
+                        errors.AddError($"Property '{this.Name}' found #{lstProperty.Count} times in {roleTypeModel.FullName}.");
+                    }
+                }
+            }
         }
     }
 }

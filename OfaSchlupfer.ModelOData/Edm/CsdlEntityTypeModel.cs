@@ -37,7 +37,9 @@
                 }
             }
         }
-        
+
+        public string FullName => (this.SchemaModel?.Namespace ?? string.Empty) + "." + (this.Name ?? string.Empty);
+
         public void ResolveNames(CsdlErrors errors) {
             foreach (var property in this.Property) {
                 property.ResolveNames(errors);

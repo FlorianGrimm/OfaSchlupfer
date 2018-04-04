@@ -24,7 +24,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             }
             set {
                 if (value == string.Empty) { value = null; }
-                if (string.Equals(this._Name, value, StringComparison.OrdinalIgnoreCase)) { return; }
+                if (string.Equals(this._Name, value, StringComparison.Ordinal)) { return; }
                 this._Name = value;
             }
         }
@@ -65,7 +65,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             }
             set {
                 if (value == string.Empty) { value = null; }
-                if (string.Equals(this._AssociationName, value, StringComparison.OrdinalIgnoreCase)) { return; }
+                if (string.Equals(this._AssociationName, value, StringComparison.Ordinal)) { return; }
                 this._AssociationName = value;
                 this._AssociationModel = null;
             }
@@ -78,7 +78,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
                         var schemaModel = this.OwnerEntityContainerModel?.SchemaModel;
                         var edmxModel = schemaModel?.EdmxModel;
                         if (edmxModel != null) {
-                            this.ResolveNames(CsdlErrors.GetIgnorance());
+                            this.ResolveNamesAssociation(CsdlErrors.GetIgnorance());
                         }
                     }
 
@@ -93,20 +93,21 @@ namespace OfaSchlupfer.ModelOData.Edm {
         }
 
         public void ResolveNames(CsdlErrors errors) {
-            this.ResolveNamesAssociationName(errors);
+            this.ResolveNamesAssociation(errors);
             foreach (var end in this.End) {
                 end.ResolveNames(errors);
             }
         }
 
-        public void ResolveNamesAssociationName(CsdlErrors errors) {
-            EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
-            if ((edmxModel != null)) {
-                var lstNS = edmxModel.FindStart(this.AssociationName);
-                if (lstNS.Count == 1) {
-                    (var localName, var schemaFound) = lstNS[0];
-                    var lstFound = schemaFound.FindAssociation(localName);
-                    if (lstFound.Count == 1) {
+        public void ResolveNamesAssociation(CsdlErrors errors) {
+            if (this._AssociationModel == null && this._AssociationName != null) {
+                EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
+                if ((edmxModel != null)) {
+                    var lstNS = edmxModel.FindStart(this.AssociationName);
+                    if (lstNS.Count == 1) {
+                        (var localName, var schemaFound) = lstNS[0];
+                        var lstFound = schemaFound.FindAssociation(localName);
+                        if (lstFound.Count == 1) {
 #if DevAsserts
                     var oldEntityTypeName = this.EntityTypeName;
                     this.EntityTypeModelObject = lstFound[0];
@@ -115,17 +116,18 @@ namespace OfaSchlupfer.ModelOData.Edm {
                         throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
                     }
 #else
-                        this.AssociationModel = lstFound[0];
+                            this.AssociationModel = lstFound[0];
 #endif
-                    } else if (lstFound.Count == 0) {
-                        errors.AddError($"{this._AssociationName} not found");
+                        } else if (lstFound.Count == 0) {
+                            errors.AddError($"{this._AssociationName} not found");
+                        } else {
+                            errors.AddError($"{this._AssociationName} found #{lstFound.Count} times.");
+                        }
+                    } else if (lstNS.Count == 0) {
+                        errors.AddError($"{this._AssociationName} namespace not found");
                     } else {
-                        errors.AddError($"{this._AssociationName} found #{lstFound.Count} times.");
+                        errors.AddError($"{this._AssociationName} namespace found #{lstNS.Count} times.");
                     }
-                } else if (lstNS.Count == 0) {
-                    errors.AddError($"{this._AssociationName} namespace not found");
-                } else {
-                    errors.AddError($"{this._AssociationName} namespace found #{lstNS.Count} times.");
                 }
             }
         }

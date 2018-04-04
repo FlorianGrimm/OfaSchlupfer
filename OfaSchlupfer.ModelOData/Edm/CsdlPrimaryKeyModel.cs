@@ -38,21 +38,18 @@
 
         public string Name {
             get {
-                if (this._Property != null) {
-                    return this._Property.Name;
+                var property1 = this._Property;
+                if (property1 != null) {
+                    return property1.Name;
                 } else {
                     return this._Name;
                 }
             }
             set {
                 if (value == string.Empty) { value = null; }
-                if (string.Equals(this._Name, value, StringComparison.OrdinalIgnoreCase)) { return; }
+                if (string.Equals(this._Name, value, StringComparison.Ordinal)) { return; }
                 this._Name = value;
-                if ((object)this._Property != null) {
-                    if (string.Equals(this._Name, this.Property.Name, StringComparison.OrdinalIgnoreCase)) {
-                        this._Property = null;
-                    }
-                }
+                this._Property = null;
             }
         }
 
@@ -74,14 +71,16 @@
 
 
         public void ResolveNames(CsdlErrors errors) {
-            if ((object)this._OwnerEntityTypeModel != null) {
-                var lstProperty = this._OwnerEntityTypeModel.FindProperty(this.Name);
-                if (lstProperty.Count == 1) {
-                    this.Property = lstProperty[0];
-                } else if (lstProperty.Count == 0) {
-                    errors.AddError("TODO");
-                } else {
-                    errors.AddError("TODO");
+            if (this._Property == null && this._Name != null) {
+                if ((object)this._OwnerEntityTypeModel != null) {
+                    var lstProperty = this._OwnerEntityTypeModel.FindProperty(this.Name);
+                    if (lstProperty.Count == 1) {
+                        this.Property = lstProperty[0];
+                    } else if (lstProperty.Count == 0) {
+                        errors.AddError($"Property '{this.Name}' not found in {this.OwnerEntityTypeModel.FullName}.");
+                    } else {
+                        errors.AddError($"Property '{this.Name}' found #{lstProperty.Count} times in {this.OwnerEntityTypeModel.FullName}.");
+                    }
                 }
             }
         }

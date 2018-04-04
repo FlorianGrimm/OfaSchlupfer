@@ -61,6 +61,8 @@ namespace OfaSchlupfer.ModelOData.Edm {
                 }
             }
             set {
+                if (value == string.Empty) { value = null; }
+                if (string.Equals(this._TypeName, value, StringComparison.Ordinal)) { return; }
                 this._TypeName = value;
                 this._ScalarType = null;
             }
@@ -80,13 +82,14 @@ namespace OfaSchlupfer.ModelOData.Edm {
         }
 
         public void ResolveNames(CsdlErrors errors) {
-            EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
-            if ((edmxModel != null) && (this.ÒwnerEntityTypeModel != null)) {
-                var lstNS = edmxModel.FindStart(this.TypeName);
-                if (lstNS.Count == 1) {
-                    (var localName, var schemaFound) = lstNS[0];
-                    var lstFound = schemaFound.FindScalarType(localName);
-                    if (lstFound.Count == 1) {
+            if (this._ScalarType == null && this._TypeName != null) {
+                EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
+                if ((edmxModel != null) && (this.ÒwnerEntityTypeModel != null)) {
+                    var lstNS = edmxModel.FindStart(this.TypeName);
+                    if (lstNS.Count == 1) {
+                        (var localName, var schemaFound) = lstNS[0];
+                        var lstFound = schemaFound.FindScalarType(localName);
+                        if (lstFound.Count == 1) {
 #if DevAsserts
                     var oldEntityTypeName = this.TypeName;
                     this.ScalarType = lstFound[0];
@@ -95,17 +98,18 @@ namespace OfaSchlupfer.ModelOData.Edm {
                         throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
                     }
 #else
-                        this.ScalarType = lstFound[0];
+                            this.ScalarType = lstFound[0];
 #endif
-                    } else if (lstFound.Count == 0) {
-                        errors.AddError($"{this.TypeName} not found");
+                        } else if (lstFound.Count == 0) {
+                            errors.AddError($"{this.TypeName} not found");
+                        } else {
+                            errors.AddError($"{this.TypeName} found #{lstFound.Count} times.");
+                        }
+                    } else if (lstNS.Count == 0) {
+                        errors.AddError($"{this.TypeName} namespace not found");
                     } else {
-                        errors.AddError($"{this.TypeName} found #{lstFound.Count} times.");
+                        errors.AddError($"{this.TypeName} namespace found #{lstNS.Count} times.");
                     }
-                } else if (lstNS.Count == 0) {
-                    errors.AddError($"{this.TypeName} namespace not found");
-                } else {
-                    errors.AddError($"{this.TypeName} namespace found #{lstNS.Count} times.");
                 }
             }
         }

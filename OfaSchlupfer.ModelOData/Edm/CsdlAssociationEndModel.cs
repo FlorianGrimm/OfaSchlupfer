@@ -51,12 +51,12 @@
                 if (entityTypeModel == null) {
                     return this._TypeName;
                 } else {
-                    return (entityTypeModel.SchemaModel.Namespace ?? string.Empty) + "." + (entityTypeModel.Name ?? string.Empty);
+                    return entityTypeModel.FullName;
                 }
             }
             set {
                 if (value == string.Empty) { value = null; }
-                if (string.Equals(this._TypeName, value, StringComparison.OrdinalIgnoreCase)) { return; }
+                if (string.Equals(this._TypeName, value, StringComparison.Ordinal)) { return; }
                 this._TypeName = value;
                 this._TypeModel = null;
             }
@@ -81,13 +81,14 @@
         }
 
         public void ResolveNames(CsdlErrors errors) {
-            EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
-            if ((edmxModel != null)) {
-                var lstNS = edmxModel.FindStart(this.TypeName);
-                if (lstNS.Count == 1) {
-                    (var localName, var schemaFound) = lstNS[0];
-                    var lstFound = schemaFound.FindEntityType(localName);
-                    if (lstFound.Count == 1) {
+            if (this._TypeModel == null && this._TypeName != null) {
+                EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
+                if ((edmxModel != null)) {
+                    var lstNS = edmxModel.FindStart(this.TypeName);
+                    if (lstNS.Count == 1) {
+                        (var localName, var schemaFound) = lstNS[0];
+                        var lstFound = schemaFound.FindEntityType(localName);
+                        if (lstFound.Count == 1) {
 #if DevAsserts
                     var oldEntityTypeName = this.EntityTypeName;
                     this.EntityTypeModel = lstFound[0];
@@ -96,17 +97,18 @@
                         throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
                     }
 #else
-                        this.TypeModel = lstFound[0];
+                            this.TypeModel = lstFound[0];
 #endif
-                    } else if (lstFound.Count == 0) {
-                        errors.AddError($"{this._TypeName} not found");
+                        } else if (lstFound.Count == 0) {
+                            errors.AddError($"{this._TypeName} not found");
+                        } else {
+                            errors.AddError($"{this._TypeName} found #{lstFound.Count} times.");
+                        }
+                    } else if (lstNS.Count == 0) {
+                        errors.AddError($"{this._TypeName} namespace not found");
                     } else {
-                        errors.AddError($"{this._TypeName} found #{lstFound.Count} times.");
+                        errors.AddError($"{this._TypeName} namespace found #{lstNS.Count} times.");
                     }
-                } else if (lstNS.Count == 0) {
-                    errors.AddError($"{this._TypeName} namespace not found");
-                } else {
-                    errors.AddError($"{this._TypeName} namespace found #{lstNS.Count} times.");
                 }
             }
         }

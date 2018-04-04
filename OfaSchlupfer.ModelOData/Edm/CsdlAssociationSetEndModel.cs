@@ -8,8 +8,6 @@
         private string _EntitySetName;
         private CsdlEntitySetModel _EntitySetModel;
 
-        public string Role;
-
         public CsdlAssociationSetEndModel() {
         }
 
@@ -34,6 +32,8 @@
                 }
             }
             set {
+                if (value == string.Empty) { value = null; }
+                if (string.Equals(this._EntitySetName, value, StringComparison.Ordinal)) { return; }
                 this._EntitySetName = value;
                 this._EntitySetModel = null;
             }
@@ -62,10 +62,11 @@
         }
 
         public void ResolveNamesEntitySetName(CsdlErrors errors) {
-            var entityContainer = this.OwnerAssociationSet?.OwnerEntityContainerModel;
-            if ((entityContainer != null)) {
-                var lstFound = entityContainer.FindEntitySet(this.EntitySetName);
-                if (lstFound.Count == 1) {
+            if (this._EntitySetModel == null && this._EntitySetName != null) {
+                var entityContainer = this.OwnerAssociationSet?.OwnerEntityContainerModel;
+                if ((entityContainer != null)) {
+                    var lstFound = entityContainer.FindEntitySet(this.EntitySetName);
+                    if (lstFound.Count == 1) {
 #if DevAsserts
                     var oldEntityTypeName = this.EntityTypeName;
                     this.EntityTypeModelObject = lstFound[0];
@@ -74,12 +75,13 @@
                         throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
                     }
 #else
-                    this.EntitySetModel = lstFound[0];
+                        this.EntitySetModel = lstFound[0];
 #endif
-                } else if (lstFound.Count == 0) {
-                    errors.AddError($"{this._EntitySetName} not found");
-                } else {
-                    errors.AddError($"{this._EntitySetName} found #{lstFound.Count} times.");
+                    } else if (lstFound.Count == 0) {
+                        errors.AddError($"{this._EntitySetName} not found");
+                    } else {
+                        errors.AddError($"{this._EntitySetName} found #{lstFound.Count} times.");
+                    }
                 }
             }
         }
