@@ -172,6 +172,80 @@ namespace OfaSchlupfer.ModelOData.Edm {
             Assert.NotNull(edmxModel.Version);
             Assert.Equal(3, edmxModel.DataServices.Count);
 
+            var schemaModels = edmxModel.DataServices.ToArray();
+
+            var entityContainers = schemaModels
+                .SelectMany((schema) => schema.EntityContainer)
+                .ToArray();
+
+            var entitySets = entityContainers
+                .SelectMany((entityContainer) => entityContainer.EntitySet)
+                .ToArray();
+            foreach (var entitySet in entitySets) {
+                Assert.NotNull(entitySet.EntityTypeModel);
+            }
+
+            var properties = entitySets
+                .SelectMany((entitySet) => entitySet.EntityTypeModel.Property)
+                .ToArray();
+            foreach (var property in properties) {
+                Assert.NotNull(property.TypeName);
+            }
+
+            var associationSets = entityContainers
+                .SelectMany((entityContainer) => entityContainer.AssociationSet)
+                .ToArray();
+            foreach (var associationSet in associationSets) {
+                Assert.NotNull(associationSet.AssociationModel);
+            }
+
+            var associationSetEnds = associationSets
+                .SelectMany((associationSet) => associationSet.End)
+                .ToArray();
+            foreach (var end in associationSetEnds) {
+                Assert.NotNull(end);
+                Assert.NotNull(end.EntitySetName);
+                Assert.NotNull(end.EntitySetModel);
+                Assert.NotNull(end.OwnerAssociationSet.AssociationModel.FindAssociationEnd(end.RoleName));
+            }
+
+            var entityTypes = schemaModels
+                .SelectMany((schemaModel) => schemaModel.EntityType)
+                .ToArray();
+
+            foreach (var entityType in entityTypes) {
+                foreach (var property in entityType.Property) {
+                    Assert.NotNull(property.ScalarType);
+                }
+                foreach (var key in entityType.Keys) {
+                    Assert.NotNull(key.Property);
+                }
+                foreach (var navigationProperty in entityType.NavigationProperty) {
+                    Assert.Null(navigationProperty.RelationshipName);
+                    Assert.Null(navigationProperty.FromRoleName);
+                    Assert.Null(navigationProperty.ToRoleName);
+
+                    if (navigationProperty.TypeName != null) {
+                        Assert.NotNull(navigationProperty.TypeName);
+                        Assert.NotNull(navigationProperty.TypeModel);
+                        Assert.NotNull(navigationProperty.PartnerName);
+                        Assert.NotNull(navigationProperty.PartnerModel);
+                    }
+
+                    //foreach(var end in property.en)
+                }
+
+            }
+
+
+            var associations = schemaModels
+                .SelectMany((schemaModel) => schemaModel.Association)
+                .ToArray();
+
+            foreach (var association in associations) {
+                Assert.NotNull(association.Name);
+            }
+
             //var schema = sut.ReadSchema(sr);
             //sut.ModelSchema = schema;
 

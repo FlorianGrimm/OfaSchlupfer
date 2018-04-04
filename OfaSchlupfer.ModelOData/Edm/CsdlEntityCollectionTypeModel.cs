@@ -4,7 +4,7 @@
     using System.Text;
     using System.Text.RegularExpressions;
 
-    public class CsdlEntityCollectionTypeModel {
+    public class CsdlEntityCollectionTypeModel : ICsdlTypeModel {
         private static Regex regexIsCollection;
         public static string IsCollection(string typename) {
             Regex regex = regexIsCollection ?? (regexIsCollection = new Regex(@"^Collection\(([^()]+)\)$", RegexOptions.Compiled));
@@ -47,13 +47,16 @@
             }
         }
 
+        public string FullName => $"Collection({ this.EntityTypeName })";
+        CsdlEntityTypeModel ICsdlTypeModel.GetEntityTypeModel() => this.EntityTypeModel;
+
         public string EntityTypeName {
             get {
                 var entityTypeModel = this._EntityTypeModel;
                 if (entityTypeModel == null) {
                     return this._EntityTypeName;
                 } else {
-                    return (entityTypeModel.SchemaModel.Namespace ?? string.Empty) + "." + (entityTypeModel.Name ?? string.Empty);
+                    return entityTypeModel.FullName;
                 }
             }
             set {

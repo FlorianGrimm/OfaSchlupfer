@@ -3,7 +3,7 @@
     using System.Collections.Generic;
 
     [System.Diagnostics.DebuggerDisplay("{Name}")]
-    public class CsdlEntityTypeModel : CsdlAnnotationalModel {
+    public class CsdlEntityTypeModel : CsdlAnnotationalModel, ICsdlTypeModel {
         private CsdlSchemaModel _SchemaModel;
 
         public CsdlEntityTypeModel() {
@@ -40,6 +40,8 @@
 
         public string FullName => (this.SchemaModel?.Namespace ?? string.Empty) + "." + (this.Name ?? string.Empty);
 
+        CsdlEntityTypeModel ICsdlTypeModel.GetEntityTypeModel() => this;
+
         public void ResolveNames(CsdlErrors errors) {
             foreach (var property in this.Property) {
                 property.ResolveNames(errors);
@@ -56,6 +58,18 @@
             var result = new List<CsdlPropertyModel>();
 
             foreach (var property in this.Property) {
+                if (string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase)) {
+                    result.Add(property);
+                }
+            }
+
+            return result;
+        }
+
+        public List<CsdlNavigationPropertyModel> FindNavigationProperty(string name) {
+            var result = new List<CsdlNavigationPropertyModel>();
+
+            foreach (var property in this.NavigationProperty) {
                 if (string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase)) {
                     result.Add(property);
                 }
