@@ -3,27 +3,11 @@
 
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlPrimaryKeyModel : CsdlAnnotationalModel {
-        private CsdlSchemaModel _SchemaModel;
         private CsdlEntityTypeModel _OwnerEntityTypeModel;
         private string _Name;
         private CsdlPropertyModel _Property;
 
         public CsdlPrimaryKeyModel() {
-        }
-
-        [System.Diagnostics.DebuggerHidden]
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel {
-            get {
-                return this._SchemaModel;
-            }
-            set {
-                if (ReferenceEquals(this._SchemaModel, value)) { return; }
-                this._SchemaModel = value;
-                if (!ReferenceEquals(value, this._OwnerEntityTypeModel?.SchemaModel)) {
-                    this._OwnerEntityTypeModel = null;
-                }
-            }
         }
 
         public CsdlEntityTypeModel OwnerEntityTypeModel {
@@ -32,7 +16,6 @@
             }
             set {
                 this._OwnerEntityTypeModel = value;
-                this._SchemaModel = value?.SchemaModel;
             }
         }
 

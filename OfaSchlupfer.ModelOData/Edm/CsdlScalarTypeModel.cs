@@ -9,6 +9,7 @@
         }
 
         public CsdlSchemaModel SchemaModel { get; set; }
+
         public string FullName => this.Namespace + "." + this.Name;
         CsdlEntityTypeModel ICsdlTypeModel.GetEntityTypeModel() => null;
     }

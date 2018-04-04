@@ -6,7 +6,6 @@ namespace OfaSchlupfer.ModelOData.Edm {
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlEntitySetModel : CsdlAnnotationalModel {
         // parents
-        private CsdlSchemaModel _SchemaModel;
         private CsdlEntityContainerModel _OwnerEntityContainerModel;
 
         private string _Name;
@@ -14,26 +13,15 @@ namespace OfaSchlupfer.ModelOData.Edm {
         private string _EntityTypeName;
         private CsdlEntityTypeModel _EntityTypeModel;
 
-        // set by add
-        public CsdlEntityContainerModel EntityContainer;
+        public readonly CsdlCollection<CsdlNavigationPropertyBindingModel> NavigationPropertyBinding;
 
         public CsdlEntitySetModel() {
+            this.NavigationPropertyBinding = new CsdlCollection<CsdlNavigationPropertyBindingModel>((item) => { item.OwnerEntitySetModel = this; });
         }
 
         [System.Diagnostics.DebuggerHidden]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel {
-            get {
-                return this._SchemaModel;
-            }
-            set {
-                if (ReferenceEquals(this._SchemaModel, value)) { return; }
-                this._SchemaModel = value;
-                if (!ReferenceEquals(value, this._OwnerEntityContainerModel?.SchemaModel)) {
-                    this._OwnerEntityContainerModel = null;
-                }
-            }
-        }
+        public CsdlSchemaModel SchemaModel => this.OwnerEntityContainerModel.SchemaModel;
 
         public CsdlEntityContainerModel OwnerEntityContainerModel {
             get {
@@ -41,7 +29,6 @@ namespace OfaSchlupfer.ModelOData.Edm {
             }
             set {
                 this._OwnerEntityContainerModel = value;
-                this._SchemaModel = value?.SchemaModel;
             }
         }
 
@@ -76,7 +63,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
         public CsdlEntityTypeModel EntityTypeModel {
             get {
                 if (this._EntityTypeModel == null && this._EntityTypeName != null) {
-                    var entityContainer = this.EntityContainer;
+                    var entityContainer = this.OwnerEntityContainerModel;
                     var schema = entityContainer?.SchemaModel;
                     var edmxModel = schema?.EdmxModel;
                     if (edmxModel != null) {
@@ -93,6 +80,13 @@ namespace OfaSchlupfer.ModelOData.Edm {
         }
 
         public void ResolveNames(CsdlErrors errors) {
+            this.ResolveNamesEntityType(errors);
+            foreach (var navigationPropertyBinding in this.NavigationPropertyBinding) {
+                navigationPropertyBinding.ResolveNames(errors);
+            }
+        }
+
+        public void ResolveNamesEntityType(CsdlErrors errors) {
             if (this._EntityTypeModel == null && this._EntityTypeName != null) {
                 EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
                 if ((edmxModel != null)) {
@@ -102,12 +96,12 @@ namespace OfaSchlupfer.ModelOData.Edm {
                         var lstFound = schemaFound.FindEntityType(localName);
                         if (lstFound.Count == 1) {
 #if DevAsserts
-                    var oldEntityTypeName = this.EntityTypeName;
-                    this.EntityTypeModel = lstFound[0];
-                    var newEntityTypeName = this.EntityTypeName;
-                    if (!string.Equals(oldEntityTypeName, newEntityTypeName, StringComparison.Ordinal)) {
-                        throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
-                    }
+                        var oldEntityTypeName = this.EntityTypeName;
+                        this.EntityTypeModel = lstFound[0];
+                        var newEntityTypeName = this.EntityTypeName;
+                        if (!string.Equals(oldEntityTypeName, newEntityTypeName, StringComparison.Ordinal)) {
+                            throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
+                        }
 #else
                             this.EntityTypeModel = lstFound[0];
 #endif

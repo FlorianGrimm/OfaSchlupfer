@@ -5,7 +5,6 @@
     [System.Diagnostics.DebuggerDisplay("{Role}")]
     public class CsdlAssociationEndModel : CsdlAnnotationalModel {
         // parents
-        private CsdlSchemaModel _SchemaModel;
         private CsdlAssociationModel _OwnerAssociationModel;
 
         private string _TypeName;
@@ -21,18 +20,7 @@
 
         [System.Diagnostics.DebuggerHidden]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel {
-            get {
-                return this._SchemaModel;
-            }
-            set {
-                if (ReferenceEquals(this._SchemaModel, value)) { return; }
-                this._SchemaModel = value;
-                if (!ReferenceEquals(value, this._OwnerAssociationModel?.SchemaModel)) {
-                    this._OwnerAssociationModel = null;
-                }
-            }
-        }
+        public CsdlSchemaModel SchemaModel => this._OwnerAssociationModel?.SchemaModel;
 
         public CsdlAssociationModel OwnerAssociationModel {
             get {
@@ -40,7 +28,6 @@
             }
             set {
                 this._OwnerAssociationModel = value;
-                this._SchemaModel = value?.SchemaModel;
             }
         }
 

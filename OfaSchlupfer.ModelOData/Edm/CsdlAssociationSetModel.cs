@@ -5,7 +5,6 @@ namespace OfaSchlupfer.ModelOData.Edm {
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlAssociationSetModel : CsdlAnnotationalModel {
         // parents
-        private CsdlSchemaModel _SchemaModel;
         private CsdlEntityContainerModel _OwnerEntityContainerModel;
 
         private string _Name;
@@ -31,18 +30,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
 
         [System.Diagnostics.DebuggerHidden]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel {
-            get {
-                return this._SchemaModel;
-            }
-            set {
-                if (ReferenceEquals(this._SchemaModel, value)) { return; }
-                this._SchemaModel = value;
-                if (!ReferenceEquals(value, this._OwnerEntityContainerModel?.SchemaModel)) {
-                    this._OwnerEntityContainerModel = null;
-                }
-            }
-        }
+        public CsdlSchemaModel SchemaModel => this._OwnerEntityContainerModel?.SchemaModel;
 
         public CsdlEntityContainerModel OwnerEntityContainerModel {
             get {
@@ -50,7 +38,6 @@ namespace OfaSchlupfer.ModelOData.Edm {
             }
             set {
                 this._OwnerEntityContainerModel = value;
-                this._SchemaModel = value?.SchemaModel;
             }
         }
 

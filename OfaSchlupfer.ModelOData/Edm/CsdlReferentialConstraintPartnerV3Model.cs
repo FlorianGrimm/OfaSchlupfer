@@ -4,31 +4,12 @@ namespace OfaSchlupfer.ModelOData.Edm {
     [System.Diagnostics.DebuggerDisplay("{Role}")]
     public class CsdlReferentialConstraintPartnerV3Model : CsdlAnnotationalModel {
         public readonly CsdlCollection<CsdlPropertyRefModel> PropertyRef;
-        private CsdlSchemaModel _SchemaModel;
         private CsdlReferentialConstraintV3Model _OwnerReferentialConstraintModel;
         private string _RoleName;
         private CsdlAssociationEndModel _RoleEnd;
 
         public CsdlReferentialConstraintPartnerV3Model() {
             this.PropertyRef = new CsdlCollection<CsdlPropertyRefModel>((item) => { item.OwnerReferentialConstraintPartnerModel = this; });
-        }
-
-        [System.Diagnostics.DebuggerHidden]
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel {
-            get {
-                return this._SchemaModel;
-            }
-            set {
-                if (ReferenceEquals(this._SchemaModel, value)) { return; }
-                this._SchemaModel = value;
-                if (!ReferenceEquals(value, this._OwnerReferentialConstraintModel?.SchemaModel)) {
-                    this._OwnerReferentialConstraintModel = null;
-                }
-                if ((object)value != null) {
-                    this.PropertyRef.Broadcast();
-                }
-            }
         }
 
         public CsdlReferentialConstraintV3Model OwnerReferentialConstraintModel {
@@ -38,7 +19,6 @@ namespace OfaSchlupfer.ModelOData.Edm {
             set {
                 if (ReferenceEquals(this._OwnerReferentialConstraintModel, value)) { return; }
                 this._OwnerReferentialConstraintModel = value;
-                this.SchemaModel = value?.SchemaModel;
             }
         }
 

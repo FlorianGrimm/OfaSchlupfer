@@ -7,14 +7,14 @@
     public class CsdlErrors {
         public readonly List<string> Errors;
 
-        public CsdlErrors(bool ignoreance=false) {
+        public CsdlErrors(bool ignoreance = false) {
             if (ignoreance) {
                 this.Errors = null;
             } else {
-            this.Errors = new List<string>();
+                this.Errors = new List<string>();
             }
         }
-        
+
         public static CsdlErrors GetIgnorance() {
             var result = new CsdlErrors(true);
             return result;
@@ -40,7 +40,7 @@
                 }
             }
             if ((object)errors == null) {
-                throw new NotImplementedException(sb.ToString());
+                throw new InvalidOperationException(sb.ToString());
             } else {
                 errors.Errors?.Add(sb.ToString());
             }

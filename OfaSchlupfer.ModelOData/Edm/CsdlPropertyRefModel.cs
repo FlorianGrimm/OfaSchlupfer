@@ -3,27 +3,11 @@
 
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlPropertyRefModel : CsdlAnnotationalModel {
-        private CsdlSchemaModel _SchemaModel;
         private CsdlReferentialConstraintPartnerV3Model _OwnerReferentialConstraintPartnerModel;
-        private string _Name;
-        private CsdlPropertyModel _Property;
+        private string _PropertyName;
+        private CsdlPropertyModel _PropertyModel;
 
         public CsdlPropertyRefModel() {
-        }
-
-        [System.Diagnostics.DebuggerHidden]
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel {
-            get {
-                return this._SchemaModel;
-            }
-            set {
-                if (ReferenceEquals(this._SchemaModel, value)) { return; }
-                this._SchemaModel = value;
-                if (!ReferenceEquals(value, this._OwnerReferentialConstraintPartnerModel?.SchemaModel)) {
-                    this._OwnerReferentialConstraintPartnerModel = null;
-                }
-            }
         }
 
         public CsdlReferentialConstraintPartnerV3Model OwnerReferentialConstraintPartnerModel {
@@ -32,50 +16,49 @@
             }
             set {
                 this._OwnerReferentialConstraintPartnerModel = value;
-                this.SchemaModel = value?.SchemaModel;
             }
         }
-        public string Name {
+        public string PropertyName {
             get {
-                return this._Name;
+                return this._PropertyName;
             }
             set {
                 if (value == string.Empty) { value = null; }
-                if (string.Equals(this._Name, value, StringComparison.Ordinal)) { return; }
-                this._Name = value;
-                this._Property = null;
+                if (string.Equals(this._PropertyName, value, StringComparison.Ordinal)) { return; }
+                this._PropertyName = value;
+                this._PropertyModel = null;
             }
         }
 
-        public CsdlPropertyModel Property {
+        public CsdlPropertyModel PropertyModel {
             get {
-                if (((object)this._Name != null) && ((object)this._Property == null)) {
+                if (((object)this._PropertyName != null) && ((object)this._PropertyModel == null)) {
                     if ((object)this._OwnerReferentialConstraintPartnerModel != null) {
                         this.ResolveNames(CsdlErrors.GetIgnorance());
                     }
                 }
-                return this._Property;
+                return this._PropertyModel;
             }
             set {
-                if (ReferenceEquals(this._Property, value)) { return; }
-                this._Property = value;
-                this._Name = value?.Name;
+                if (ReferenceEquals(this._PropertyModel, value)) { return; }
+                this._PropertyModel = value;
+                this._PropertyName = value?.Name;
             }
         }
 
         public void ResolveNames(CsdlErrors errors) {
-            if (this._Property == null && this._Name != null) {
+            if (this._PropertyModel == null && this._PropertyName != null) {
                 var referentialConstraintPartnerModel = this.OwnerReferentialConstraintPartnerModel;
                 var roleEnd = referentialConstraintPartnerModel?.RoleEnd;
                 var roleTypeModel = roleEnd?.TypeModel;
                 if (roleTypeModel != null) {
-                    var lstProperty = roleTypeModel.FindProperty(this._Name);
+                    var lstProperty = roleTypeModel.FindProperty(this._PropertyName);
                     if (lstProperty.Count == 1) {
-                        this.Property = lstProperty[0];
+                        this.PropertyModel = lstProperty[0];
                     } else if (lstProperty.Count == 0) {
-                        errors.AddError($"Property '{this.Name}' not found in {roleTypeModel.FullName}.");
+                        errors.AddError($"Property '{this.PropertyName}' not found in {roleTypeModel.FullName}.");
                     } else {
-                        errors.AddError($"Property '{this.Name}' found #{lstProperty.Count} times in {roleTypeModel.FullName}.");
+                        errors.AddError($"Property '{this.PropertyName}' found #{lstProperty.Count} times in {roleTypeModel.FullName}.");
                     }
                 }
             }

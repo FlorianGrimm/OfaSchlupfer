@@ -4,7 +4,6 @@ namespace OfaSchlupfer.ModelOData.Edm {
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlPropertyModel : CsdlAnnotationalModel {
         // parents
-        private CsdlSchemaModel _SchemaModel;
         private CsdlEntityTypeModel _OwnerEntityTypeModel;
         private string _TypeName;
         private CsdlScalarTypeModel _ScalarType;
@@ -26,28 +25,12 @@ namespace OfaSchlupfer.ModelOData.Edm {
             this.Unicode = true;
         }
 
-        [System.Diagnostics.DebuggerHidden]
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel {
-            get {
-                return this._SchemaModel;
-            }
-            set {
-                if (ReferenceEquals(this._SchemaModel, value)) { return; }
-                this._SchemaModel = value;
-                if (!ReferenceEquals(value, this._OwnerEntityTypeModel?.SchemaModel)) {
-                    this._OwnerEntityTypeModel = null;
-                }
-            }
-        }
-
         public CsdlEntityTypeModel ÒwnerEntityTypeModel {
             get {
                 return this._OwnerEntityTypeModel;
             }
             set {
                 this._OwnerEntityTypeModel = value;
-                this._SchemaModel = value?.SchemaModel;
             }
         }
 
@@ -83,20 +66,20 @@ namespace OfaSchlupfer.ModelOData.Edm {
 
         public void ResolveNames(CsdlErrors errors) {
             if (this._ScalarType == null && this._TypeName != null) {
-                EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
-                if ((edmxModel != null) && (this.ÒwnerEntityTypeModel != null)) {
+                EdmxModel edmxModel = this._OwnerEntityTypeModel?.SchemaModel?.EdmxModel;
+                if (edmxModel != null) {
                     var lstNS = edmxModel.FindStart(this.TypeName);
                     if (lstNS.Count == 1) {
                         (var localName, var schemaFound) = lstNS[0];
                         var lstFound = schemaFound.FindScalarType(localName);
                         if (lstFound.Count == 1) {
 #if DevAsserts
-                    var oldEntityTypeName = this.TypeName;
-                    this.ScalarType = lstFound[0];
-                    var newEntityTypeName = this.TypeName;
-                    if (!string.Equals(oldEntityTypeName, newEntityTypeName, StringComparison.Ordinal)) {
-                        throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
-                    }
+                            var oldEntityTypeName = this.TypeName;
+                            this.ScalarType = lstFound[0];
+                            var newEntityTypeName = this.TypeName;
+                            if (!string.Equals(oldEntityTypeName, newEntityTypeName, StringComparison.Ordinal)) {
+                                throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
+                            }
 #else
                             this.ScalarType = lstFound[0];
 #endif

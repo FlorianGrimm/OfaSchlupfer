@@ -4,7 +4,6 @@
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlNavigationPropertyModel {
         // parents
-        private CsdlSchemaModel _SchemaModel;
         private CsdlEntityTypeModel _OwnerEntityTypeModel;
 
         // V3
@@ -45,6 +44,7 @@
                 this._RelationshipModel = null;
             }
         }
+
         public CsdlAssociationModel RelationshipModel {
             get {
                 if (this._RelationshipModel == null && this._RelationshipName != null) {
@@ -184,7 +184,7 @@
 
         [System.Diagnostics.DebuggerHidden]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel => this._SchemaModel;
+        public CsdlSchemaModel SchemaModel => this._OwnerEntityTypeModel.SchemaModel;
 
         [System.Diagnostics.DebuggerHidden]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
@@ -194,7 +194,6 @@
             }
             set {
                 this._OwnerEntityTypeModel = value;
-                this._SchemaModel = value?.SchemaModel;
             }
         }
 

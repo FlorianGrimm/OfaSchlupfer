@@ -2,7 +2,6 @@
 
 namespace OfaSchlupfer.ModelOData.Edm {
     public class CsdlReferentialConstraintV4Model : CsdlAnnotationalModel {
-        private CsdlSchemaModel _SchemaModel;
         private CsdlNavigationPropertyModel _OwnerNavigationProperty;
         //V4
         private string _PropertyName;
@@ -13,17 +12,12 @@ namespace OfaSchlupfer.ModelOData.Edm {
         public CsdlReferentialConstraintV4Model() {
         }
 
-        [System.Diagnostics.DebuggerHidden]
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel => this._SchemaModel;
-
         public CsdlNavigationPropertyModel OwnerNavigationProperty {
             get {
                 return this._OwnerNavigationProperty;
             }
             set {
                 this._OwnerNavigationProperty = value;
-                this._SchemaModel = value?.SchemaModel;
             }
         }
 

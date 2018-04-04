@@ -109,8 +109,14 @@
         private static XName _AttrVersion;
         public static XName AttrVersion => _AttrVersion ?? (_AttrVersion = XName.Get("Version"));
 
+        private static XName _AttrPath;
+        public static XName AttrPath => _AttrPath ?? (_AttrPath = XName.Get("Path"));
+
         private static XName _AttrPartner;
         public static XName AttrPartner => _AttrPartner ?? (_AttrPartner = XName.Get("Partner"));
+
+        private static XName _AttrTarget;
+        public static XName AttrTarget => _AttrTarget ?? (_AttrTarget = XName.Get("Target"));
 
         private static XName _AttrNamespace;
         public static XName AttrNamespace => _AttrNamespace ?? (_AttrNamespace = XName.Get("Namespace"));
@@ -233,6 +239,8 @@
             private XName _NavigationProperty;
             public XName NavigationProperty => _NavigationProperty ?? (_NavigationProperty = (Namespace + "NavigationProperty"));
 
+            private XName _NavigationPropertyBinding;
+            public XName NavigationPropertyBinding => _NavigationPropertyBinding ?? (_NavigationPropertyBinding = (Namespace + "NavigationPropertyBinding"));
 
             private XName _End;
             public XName End => _End ?? (_End = (Namespace + "End"));
