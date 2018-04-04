@@ -91,11 +91,11 @@
                         } else if (eleSchema.Name == EdmConstants.CSDL4_0.Schema) {
                             ReadCSDLDocument(edmxModel, eleSchema, EdmConstants.CSDL4_0, errors);
                         } else {
-                           errors.AddError("ReadEdmxDocument-EdmxDataServices", ele1, eleSchema);
+                            errors.AddError("ReadEdmxDocument-EdmxDataServices", ele1, eleSchema);
                         }
                     }
                 } else {
-                   errors.AddError("ReadEdmxDocument", ele1);
+                    errors.AddError("ReadEdmxDocument", ele1);
                 }
             }
             //  <edmx:DataServices xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" m:DataServiceVersion="2.0">
@@ -115,7 +115,7 @@
                         //    association.IsDefaultEntityContainer = ConvertToBoolean(attr.Value);
                     } else if (CheckAndAddAnnotation(attr, schemaModel)) {
                     } else {
-                       errors.AddError("ReadCSDLDocument", eleSchema, attr);
+                        errors.AddError("ReadCSDLDocument", eleSchema, attr);
                     }
                 }
             }
@@ -151,10 +151,10 @@
             throw new NotImplementedException(ele1.Name.ToString());
         }
 
-        public void ReadCsdlAssociation(CsdlSchemaModel schemaModel, XElement ele1, EdmConstants.CSDLConstants csdlConstants, CsdlErrors errors) {
+        public void ReadCsdlAssociation(CsdlSchemaModel schemaModel, XElement eleAssociation, EdmConstants.CSDLConstants csdlConstants, CsdlErrors errors) {
             var association = new CsdlAssociationModel();
-            if (ele1.HasAttributes) {
-                foreach (var attr in ele1.Attributes()) {
+            if (eleAssociation.HasAttributes) {
+                foreach (var attr in eleAssociation.Attributes()) {
                     if (attr.IsNamespaceDeclaration) {
                         //
                     } else if (attr.Name == EdmConstants.AttrName) {
@@ -163,11 +163,11 @@
                         //    association.IsDefaultEntityContainer = ConvertToBoolean(attr.Value);
                     } else if (CheckAndAddAnnotation(attr, association)) {
                     } else {
-                       errors.AddError("ReadCSDLDocument", ele1, attr);
+                        errors.AddError("ReadCSDLDocument", eleAssociation, attr);
                     }
                 }
             }
-            foreach (var ele2 in ele1.Elements()) {
+            foreach (var ele2 in eleAssociation.Elements()) {
                 if (ele2.Name == csdlConstants.End) {
                     var associationEnd = new CsdlAssociationEndModel();
                     if (ele2.HasAttributes) {
@@ -176,34 +176,44 @@
                                 //
                             } else if (attr.Name == EdmConstants.AttrRole) {
                                 associationEnd.RoleName = attr.Value;
-                            //} else if (attr.Name == EdmConstants.AttrEntitySet) {
-                            //    associationEnd.EntitySetName = attr.Value;
+                                //} else if (attr.Name == EdmConstants.AttrEntitySet) {
+                                //    associationEnd.EntitySetName = attr.Value;
                             } else if (attr.Name == EdmConstants.AttrType) {
                                 associationEnd.TypeName = attr.Value;
                             } else if (attr.Name == EdmConstants.AttrMultiplicity) {
                                 associationEnd.Multiplicity = attr.Value;
                             } else if (CheckAndAddAnnotation(attr, associationEnd)) {
                             } else {
-                               errors.AddError("ReadCSDLDocument", ele1, ele2, attr);
+                                errors.AddError("ReadCSDLDocument", eleAssociation, ele2, attr);
                             }
                         }
                     }
                     association.AssociationEnd.Add(associationEnd);
 
                 } else if (ele2.Name == csdlConstants.ReferentialConstraint) {
-                    var referentialConstraint = new CsdlReferentialConstraintModel();
+                    var referentialConstraint = new CsdlReferentialConstraintV3Model();
+                    if (ele2.HasAttributes) {
+                        foreach (var attr in ele2.Attributes()) {
+                            if (attr.IsNamespaceDeclaration) {
+                                //
+                            } else if (CheckAndAddAnnotation(attr, referentialConstraint)) {
+                            } else {
+                                errors.AddError("ReadCSDLDocument", eleAssociation, ele2, attr);
+                            }
+                        }
+                    }
                     foreach (var ele3 in ele2.Elements()) {
                         var isPrincipal = (ele3.Name == csdlConstants.Principal);
                         var isDependent = (ele3.Name == csdlConstants.Dependent);
                         if (isPrincipal || isDependent) {
-                            var referentialConstraintPartner = new CsdlReferentialConstraintPartnerModel();
+                            var referentialConstraintPartner = new CsdlReferentialConstraintPartnerV3Model();
                             if (ele3.HasAttributes) {
                                 foreach (var attr in ele3.Attributes()) {
                                     if (attr.Name == EdmConstants.AttrRole) {
                                         referentialConstraintPartner.RoleName = attr.Value;
                                     } else if (CheckAndAddAnnotation(attr, referentialConstraintPartner)) {
                                     } else {
-                                       errors.AddError("ReadCSDLDocument", ele1, ele2, ele3, attr);
+                                        errors.AddError("ReadCSDLDocument", eleAssociation, ele2, ele3, attr);
                                     }
                                 }
                             }
@@ -216,13 +226,13 @@
                                                 propertyRef.Name = attr.Value;
                                             } else if (CheckAndAddAnnotation(attr, propertyRef)) {
                                             } else {
-                                               errors.AddError("ReadCSDLDocument", ele1, ele2, ele3, ele4, attr);
+                                                errors.AddError("ReadCSDLDocument", eleAssociation, ele2, ele3, ele4, attr);
                                             }
                                         }
                                     }
                                     referentialConstraintPartner.PropertyRef.Add(propertyRef);
                                 } else {
-                                   errors.AddError("ReadCSDLDocument", ele1, ele2, ele3, ele4);
+                                    errors.AddError("ReadCSDLDocument", eleAssociation, ele2, ele3, ele4);
                                 }
                             }
 
@@ -231,15 +241,15 @@
                             } else if (isDependent) {
                                 referentialConstraint.Dependent = referentialConstraintPartner;
                             } else {
-                               errors.AddError("ReadCSDLDocument", ele1, ele2, ele3);
+                                errors.AddError("ReadCSDLDocument", eleAssociation, ele2, ele3);
                             }
                         } else {
-                           errors.AddError("ReadCSDLDocument", ele1, ele2, ele3);
+                            errors.AddError("ReadCSDLDocument", eleAssociation, ele2, ele3);
                         }
                     }
                     association.ReferentialConstraint.Add(referentialConstraint);
                 } else {
-                   errors.AddError("ReadCSDLDocument", ele1, ele2);
+                    errors.AddError("ReadCSDLDocument", eleAssociation, ele2);
                 }
             }
             schemaModel.Association.Add(association);
@@ -267,7 +277,7 @@
                         entityContainer.IsDefaultEntityContainer = ConvertToBoolean(attr.Value);
                     } else if (CheckAndAddAnnotation(attr, entityContainer)) {
                     } else {
-                       errors.AddError("ReadCSDLDocument", ele1, attr);
+                        errors.AddError("ReadCSDLDocument", ele1, attr);
                     }
                 }
             }
@@ -284,7 +294,7 @@
                                 entitySet.EntityTypeName = attr.Value;
                             } else if (CheckAndAddAnnotation(attr, entitySet)) {
                             } else {
-                               errors.AddError("ReadCSDLDocument", ele1, ele2, attr);
+                                errors.AddError("ReadCSDLDocument", ele1, ele2, attr);
                             }
                         }
                     }
@@ -301,7 +311,7 @@
                                 associationSet.AssociationName = attr.Value;
                             } else if (CheckAndAddAnnotation(attr, associationSet)) {
                             } else {
-                               errors.AddError("ReadCSDLDocument", ele1, ele2, attr);
+                                errors.AddError("ReadCSDLDocument", ele1, ele2, attr);
                             }
                         }
                     }
@@ -329,7 +339,7 @@
                         }
                     }
                 } else {
-                   errors.AddError("ReadCSDLDocument", ele1, ele2);
+                    errors.AddError("ReadCSDLDocument", ele1, ele2);
                 }
             }
             schemaModel.EntityContainer.Add(entityContainer);
@@ -357,7 +367,7 @@
                         entityType.HasStream = ConvertToBoolean(attr.Value);
                     } else if (CheckAndAddAnnotation(attr, entityType)) {
                     } else {
-                       errors.AddError("ReadCSDLDocument", eleEntityType, attr);
+                        errors.AddError("ReadCSDLDocument", eleEntityType, attr);
                     }
                 }
             }
@@ -365,6 +375,15 @@
 
             foreach (var ele2 in eleEntityType.Elements()) {
                 if (ele2.Name == csdlConstants.Key) {
+                    if (ele2.HasAttributes) {
+                        foreach (var attr in ele2.Attributes()) {
+                            if (attr.IsNamespaceDeclaration) {
+                                //
+                            } else {
+                                errors.AddError("ReadCSDLDocument", eleEntityType, ele2, attr);
+                            }
+                        }
+                    }
                     foreach (var ele3 in ele2.Elements()) {
                         var propertyRef = new CsdlPrimaryKeyModel();
                         if (ele3.Name == csdlConstants.PropertyRef) {
@@ -376,12 +395,12 @@
                                         propertyRef.Name = attr.Value;
                                     } else if (CheckAndAddAnnotation(attr, propertyRef)) {
                                     } else {
-                                       errors.AddError("ReadCSDLDocument", eleEntityType, ele2, ele3, attr);
+                                        errors.AddError("ReadCSDLDocument", eleEntityType, ele2, ele3, attr);
                                     }
                                 }
                             }
                         } else {
-                           errors.AddError("ReadCSDLDocument", eleEntityType, ele2, ele3);
+                            errors.AddError("ReadCSDLDocument", eleEntityType, ele2, ele3);
                         }
                         entityType.Keys.Add(propertyRef);
                     }
@@ -417,7 +436,7 @@
                                 property.ConcurrencyMode = attr.Value;
                             } else if (CheckAndAddAnnotation(attr, property)) {
                             } else {
-                               errors.AddError("ReadCSDLDocument", eleEntityType, ele2, attr);
+                                errors.AddError("ReadCSDLDocument", eleEntityType, ele2, attr);
                             }
                         }
                     }
@@ -448,13 +467,37 @@
                                 navigationProperty.Nullable = ConvertToBoolean(attr.Value, true);
 
                             } else {
-                               errors.AddError("ReadCSDLDocument", eleEntityType, ele2, attr);
+                                errors.AddError("ReadCSDLDocument", eleEntityType, ele2, attr);
                             }
                         }
                     }
                     entityType.NavigationProperty.Add(navigationProperty);
+
+                    foreach (var ele3 in ele2.Elements()) {
+                        var referentialConstraint = new CsdlReferentialConstraintV4Model();
+                        //var propertyRef = new CsdlPrimaryKeyModel();
+                        if (ele3.Name == csdlConstants.ReferentialConstraint) {
+                            if (ele3.HasAttributes) {
+                                foreach (var attr in ele3.Attributes()) {
+                                    if (attr.IsNamespaceDeclaration) {
+                                        //
+                                    } else if (attr.Name == EdmConstants.AttrProperty) {
+                                        referentialConstraint.PropertyName = attr.Value;
+                                    } else if (attr.Name == EdmConstants.AttrReferencedProperty) {
+                                        referentialConstraint.ReferencedPropertyName = attr.Value;
+                                    } else if (CheckAndAddAnnotation(attr, referentialConstraint)) {
+                                    } else {
+                                        errors.AddError("ReadCSDLDocument", eleEntityType, ele2, ele3, attr);
+                                    }
+                                }
+                            }
+                        } else {
+                            errors.AddError("ReadCSDLDocument", eleEntityType, ele2, ele3);
+                        }
+                        navigationProperty.ReferentialConstraint.Add(referentialConstraint);
+                    }
                 } else {
-                   errors.AddError("ReadCSDLDocument", eleEntityType, ele2);
+                    errors.AddError("ReadCSDLDocument", eleEntityType, ele2);
                 }
             }
         }
@@ -516,6 +559,6 @@
             //}
         }
 
-        
+
     }
 }

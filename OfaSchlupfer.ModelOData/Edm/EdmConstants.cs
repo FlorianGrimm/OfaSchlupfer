@@ -116,9 +116,15 @@
         public static XName AttrNamespace => _AttrNamespace ?? (_AttrNamespace = XName.Get("Namespace"));
 
 
+        private static XName _AttrProperty;
+        public static XName AttrProperty => _AttrProperty ?? (_AttrProperty = XName.Get("Property"));
+
+        private static XName _AttrReferencedProperty;
+        public static XName AttrReferencedProperty => _AttrReferencedProperty ?? (_AttrReferencedProperty = XName.Get("ReferencedProperty"));
+
+
         /*
          * 
-
 
             private static XName _AttrX;
             public static XName AttrX => _AttrX ?? (_AttrX = XName.Get("x"));

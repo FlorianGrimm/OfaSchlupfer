@@ -232,6 +232,11 @@ namespace OfaSchlupfer.ModelOData.Edm {
                         Assert.NotNull(navigationProperty.PartnerModel);
                     }
 
+                    foreach (var referentialConstraint in navigationProperty.ReferentialConstraint) {
+                        Assert.NotNull(referentialConstraint.Property);
+                        Assert.NotNull(referentialConstraint.ReferencedProperty);
+                    }
+
                     //foreach(var end in property.en)
                 }
 

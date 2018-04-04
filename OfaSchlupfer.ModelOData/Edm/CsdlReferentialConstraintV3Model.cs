@@ -1,12 +1,13 @@
 ﻿namespace OfaSchlupfer.ModelOData.Edm {
-    public class CsdlReferentialConstraintModel {
+    public class CsdlReferentialConstraintV3Model : CsdlAnnotationalModel {
         private CsdlSchemaModel _SchemaModel;
         private CsdlAssociationModel _OwnerAssociationModel;
 
-        private CsdlReferentialConstraintPartnerModel _Principal;
-        private CsdlReferentialConstraintPartnerModel _Dependent;
+        // V3
+        private CsdlReferentialConstraintPartnerV3Model _Principal;
+        private CsdlReferentialConstraintPartnerV3Model _Dependent;
 
-        public CsdlReferentialConstraintModel() {
+        public CsdlReferentialConstraintV3Model() {
         }
 
         [System.Diagnostics.DebuggerHidden]
@@ -15,7 +16,7 @@
             get {
                 return this._SchemaModel;
             }
-            internal set {
+            set {
                 if (ReferenceEquals(this._SchemaModel, value)) { return; }
                 this._SchemaModel = value;
                 if ((object)value != null) {
@@ -29,10 +30,10 @@
             }
         }
 
-        public CsdlReferentialConstraintPartnerModel Principal {
+        public CsdlReferentialConstraintPartnerV3Model Principal {
             get { return this._Principal; }
             set {
-                if(ReferenceEquals(this._Principal, value)) { return; }
+                if (ReferenceEquals(this._Principal, value)) { return; }
                 this._Principal = value;
                 this.SchemaModel = value?.SchemaModel;
                 if (value != null) {
@@ -40,7 +41,7 @@
                 }
             }
         }
-        public CsdlReferentialConstraintPartnerModel Dependent {
+        public CsdlReferentialConstraintPartnerV3Model Dependent {
             get { return this._Dependent; }
             set {
                 if (ReferenceEquals(this._Dependent, value)) { return; }

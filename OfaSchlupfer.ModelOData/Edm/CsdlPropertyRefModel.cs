@@ -4,7 +4,7 @@
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlPropertyRefModel : CsdlAnnotationalModel {
         private CsdlSchemaModel _SchemaModel;
-        private CsdlReferentialConstraintPartnerModel _OwnerReferentialConstraintPartnerModel;
+        private CsdlReferentialConstraintPartnerV3Model _OwnerReferentialConstraintPartnerModel;
         private string _Name;
         private CsdlPropertyModel _Property;
 
@@ -26,7 +26,7 @@
             }
         }
 
-        public CsdlReferentialConstraintPartnerModel OwnerReferentialConstraintPartnerModel {
+        public CsdlReferentialConstraintPartnerV3Model OwnerReferentialConstraintPartnerModel {
             get {
                 return this._OwnerReferentialConstraintPartnerModel;
             }

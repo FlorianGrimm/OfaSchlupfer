@@ -23,7 +23,10 @@
 
         public string Name;
 
+        public CsdlCollection<CsdlReferentialConstraintV4Model> ReferentialConstraint;
+
         public CsdlNavigationPropertyModel() {
+            this.ReferentialConstraint = new CsdlCollection<CsdlReferentialConstraintV4Model>((item) => { item.OwnerNavigationProperty = this; });
         }
 
         // V3
@@ -196,12 +199,14 @@
         }
 
         public void ResolveNames(CsdlErrors errors) {
-            // TODO
             this.ResolveNamesRelationship(errors);
             this.ResolveNamesFromRole(errors);
             this.ResolveNamesToRole(errors);
             this.ResolveNamesType(errors);
             this.ResolveNamesPartner(errors);
+            foreach (var referentialConstraint in this.ReferentialConstraint) {
+                referentialConstraint.ResolveNames(errors);
+            }
         }
 
         public void ResolveNamesRelationship(CsdlErrors errors) {
@@ -276,7 +281,6 @@
                     collection.ResolveNames(errors);
                     this.TypeModel = collection;
                     return;
-#warning here
                 } else {
                     EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
                     if ((edmxModel != null)) {
@@ -309,6 +313,7 @@
                 }
             }
         }
+
         public void ResolveNamesPartner(CsdlErrors errors) {
             if (this._PartnerModel == null && this._PartnerName != null) {
                 var typeModel = this._TypeModel;

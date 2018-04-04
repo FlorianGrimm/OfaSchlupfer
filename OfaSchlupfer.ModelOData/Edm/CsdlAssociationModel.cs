@@ -8,11 +8,11 @@
 
         public CsdlAssociationModel() {
             this.AssociationEnd = new CsdlCollection<CsdlAssociationEndModel>((item) => { item.OwnerAssociationModel = this; });
-            this.ReferentialConstraint = new CsdlCollection<CsdlReferentialConstraintModel>((item) => { item.OwnerAssociationModel = this; });
+            this.ReferentialConstraint = new CsdlCollection<CsdlReferentialConstraintV3Model>((item) => { item.OwnerAssociationModel = this; });
         }
         public string Name;
         public readonly CsdlCollection<CsdlAssociationEndModel> AssociationEnd;
-        public readonly CsdlCollection<CsdlReferentialConstraintModel> ReferentialConstraint;
+        public readonly CsdlCollection<CsdlReferentialConstraintV3Model> ReferentialConstraint;
 
         public string FullName => (this.SchemaModel?.Namespace ?? string.Empty) + "." + this.Name;
 
