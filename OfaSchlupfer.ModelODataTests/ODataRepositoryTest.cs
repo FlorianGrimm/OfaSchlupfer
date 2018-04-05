@@ -51,7 +51,7 @@ namespace OfaSchlupfer.ModelOData {
             Assert.False(string.IsNullOrEmpty(testCfg.ProjectServer?.Url));
 
             var sut = new ODataRepositoryImplementation(null);
-            sut.ConnectionString = testCfg.ProjectServer;
+            sut.SetConnectionString(testCfg.ProjectServer, "/_api/ProjectData/[en-us]");
             Assert.NotEqual("", sut.GetUrlMetadata());
             Assert.StartsWith("http", sut.GetUrlMetadata());
             Assert.EndsWith("$metadata", sut.GetUrlMetadata());
@@ -66,7 +66,7 @@ namespace OfaSchlupfer.ModelOData {
             var modelRepository = new ModelRepository();
             var sut = new ODataRepositoryImplementation(null);
             modelRepository.ReferenceRepositoryModel = sut;
-            sut.ConnectionString = testCfg.ProjectServer;
+            sut.SetConnectionString(testCfg.ProjectServer, "/_api/ProjectData/[en-us]");
             sut.BuildSchema(contentMetaDataXml);
             try {
                 string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\ODataRepository_GetMetadata.json");
@@ -79,26 +79,6 @@ namespace OfaSchlupfer.ModelOData {
                 throw;
             }
         }
-
-#if longrunning
-        [Fact]
-        public async Task ODataRepository_GetMetadataFromSPO() {
-            var testCfg = TestCfg.Get();
-            Assert.False(string.IsNullOrEmpty(testCfg.ProjectServer?.Url));
-
-            IServiceCollection services = new ServiceCollection();
-            services.AddLogging((builder) => { builder.AddDebug(); });
-            services.AddSharePointOnlineCredentials();
-            services.AddTransient<ODataRepository>();
-            var serviceProvider = services.BuildServiceProvider();
-
-            var sut = serviceProvider.GetService<ODataRepository>();
-            sut.ConnectionString = testCfg.ProjectServer;
-            var metadataContent = await sut.GetMetadataAsync();
-            Assert.StartsWith("<", metadataContent);
-            sut.ReadSchema(new System.IO.StringReader(metadataContent));
-        }
-#endif
 
         private static string ReadMetaDataXml(TestCfg testCfg) {
             string content;

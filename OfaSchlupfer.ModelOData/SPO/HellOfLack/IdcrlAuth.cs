@@ -8,6 +8,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
     using System.Xml;
     using System.Xml.Linq;
     using Microsoft.Extensions.Logging;
+    using OfaSchlupfer.HttpAccess;
 
     internal class IdcrlAuth {
         private class UserRealmInfo {
@@ -75,12 +76,14 @@ namespace OfaSchlupfer.ModelOData.SPO {
         }
 
         private ILogger _Logger;
+#if UseRegistry
         private IdcrlEnvironment m_env;
+#endif
         private string m_userRealmServiceUrl;
         private string m_securityTokenServiceUrl;
         private string m_federationTokenIssuer;
 
-        private EventHandler<SharePointOnlineCredentialsWebRequestEventArgs> m_executingWebRequest;
+        private EventHandler<WebRequestEventArgs> m_executingWebRequest;
 
         private static Dictionary<string, int> s_partnerSoapErrorMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
         {
@@ -132,25 +135,14 @@ namespace OfaSchlupfer.ModelOData.SPO {
 
         private static FederationProviderInfoCache s_FederationProviderInfoCache = new FederationProviderInfoCache();
 
-        private string UserRealmServiceUrl {
-            get {
-                return this.m_userRealmServiceUrl;
-            }
-        }
+        private string UserRealmServiceUrl => this.m_userRealmServiceUrl;
 
-        private string ServiceTokenUrl {
-            get {
-                return this.m_securityTokenServiceUrl;
-            }
-        }
+        private string ServiceTokenUrl => this.m_securityTokenServiceUrl;
 
-        private string FederationTokenIssuer {
-            get {
-                return this.m_federationTokenIssuer;
-            }
-        }
+        private string FederationTokenIssuer => this.m_federationTokenIssuer;
 
-        public IdcrlAuth(IdcrlEnvironment env, EventHandler<SharePointOnlineCredentialsWebRequestEventArgs> executingWebRequest, ILogger logger) {
+#if UseRegistry
+        public IdcrlAuth(IdcrlEnvironment env, EventHandler<WebRequestEventArgs> executingWebRequest, ILogger logger) {
             this.m_env = env;
             this._Logger = logger;
             this._Logger.LogInformation("IDCRL Environment {0}", env);
@@ -169,6 +161,16 @@ namespace OfaSchlupfer.ModelOData.SPO {
             }
             this.m_executingWebRequest = executingWebRequest;
         }
+#else
+        public IdcrlAuth(EventHandler<WebRequestEventArgs> executingWebRequest, ILogger logger) {
+            this._Logger = logger;
+            this.m_userRealmServiceUrl = IdcrlMessageConstants.UserRealmServiceUrl_Prod;
+            this.m_securityTokenServiceUrl = IdcrlMessageConstants.SecurityTokenServiceUrl_Prod;
+            this.m_federationTokenIssuer = IdcrlMessageConstants.FederationTokenIssuer_Prod;
+            this.m_executingWebRequest = executingWebRequest;
+        }
+#endif
+
 
 
         public string GetServiceToken(string username, string password, string serviceTarget, string servicePolicy) {
@@ -196,11 +198,11 @@ namespace OfaSchlupfer.ModelOData.SPO {
                 throw new ArgumentNullException("login");
             }
             string userRealmServiceUrl = this.UserRealmServiceUrl;
-            string body = string.Format(CultureInfo.InvariantCulture, "login={0}&xml=1", new object[1]
+            string body = string.Format(CultureInfo.InvariantCulture, IdcrlMessageConstants.GetUserRealmMessage, new object[1]
             {
                 Uri.EscapeDataString(login)
             });
-            XDocument xDocument = this.DoPost(userRealmServiceUrl, "application/x-www-form-urlencoded", body, null);
+            XDocument xDocument = this.DoPost(userRealmServiceUrl, IdcrlMessageConstants.GetUserRealmContentType, body, null);
             XAttribute xAttribute = xDocument.Root.Attribute("Success");
             if (xAttribute != null && string.Compare(xAttribute.Value, "true", StringComparison.OrdinalIgnoreCase) == 0) {
                 XElement xElement = xDocument.Root.Element("NameSpaceType");
@@ -230,8 +232,20 @@ namespace OfaSchlupfer.ModelOData.SPO {
         }
 
         private string GetPartnerTicketFromAdfs(string adfsUrl, string username, string password) {
-            string body = string.Format(CultureInfo.InvariantCulture, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<s:Envelope xmlns:s=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\" xmlns:saml=\"urn:oasis:names:tc:SAML:1.0:assertion\" xmlns:wsp=\"http://schemas.xmlsoap.org/ws/2004/09/policy\" xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\" xmlns:wsa=\"http://www.w3.org/2005/08/addressing\" xmlns:wssc=\"http://schemas.xmlsoap.org/ws/2005/02/sc\" xmlns:wst=\"http://schemas.xmlsoap.org/ws/2005/02/trust\">\r\n    <s:Header>\r\n        <wsa:Action s:mustUnderstand=\"1\">http://schemas.xmlsoap.org/ws/2005/02/trust/RST/Issue</wsa:Action>\r\n        <wsa:To s:mustUnderstand=\"1\">{0}</wsa:To>\r\n        <wsa:MessageID>{1}</wsa:MessageID>\r\n        <ps:AuthInfo xmlns:ps=\"http://schemas.microsoft.com/Passport/SoapServices/PPCRL\" Id=\"PPAuthInfo\">\r\n            <ps:HostingApp>Managed IDCRL</ps:HostingApp>\r\n            <ps:BinaryVersion>6</ps:BinaryVersion>\r\n            <ps:UIVersion>1</ps:UIVersion>\r\n            <ps:Cookies></ps:Cookies>\r\n            <ps:RequestParams>AQAAAAIAAABsYwQAAAAxMDMz</ps:RequestParams>\r\n        </ps:AuthInfo>\r\n        <wsse:Security>\r\n            <wsse:UsernameToken wsu:Id=\"user\">\r\n                <wsse:Username>{2}</wsse:Username>\r\n                <wsse:Password>{3}</wsse:Password>\r\n            </wsse:UsernameToken>\r\n            <wsu:Timestamp Id=\"Timestamp\">\r\n                <wsu:Created>{4}</wsu:Created>\r\n                <wsu:Expires>{5}</wsu:Expires>\r\n            </wsu:Timestamp>\r\n        </wsse:Security>\r\n    </s:Header>\r\n    <s:Body>\r\n        <wst:RequestSecurityToken Id=\"RST0\">\r\n            <wst:RequestType>http://schemas.xmlsoap.org/ws/2005/02/trust/Issue</wst:RequestType>\r\n            <wsp:AppliesTo>\r\n                <wsa:EndpointReference>\r\n                    <wsa:Address>{6}</wsa:Address>\r\n                </wsa:EndpointReference>\r\n            </wsp:AppliesTo>\r\n            <wst:KeyType>http://schemas.xmlsoap.org/ws/2005/05/identity/NoProofKey</wst:KeyType>\r\n        </wst:RequestSecurityToken>\r\n    </s:Body>\r\n</s:Envelope>", IdcrlUtility.XmlValueEncode(adfsUrl), Guid.NewGuid().ToString(), IdcrlUtility.XmlValueEncode(username), IdcrlUtility.XmlValueEncode(password), DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture), DateTime.UtcNow.AddMinutes(10.0).ToString("o", CultureInfo.InvariantCulture), this.FederationTokenIssuer);
-            XDocument xDocument = this.DoPost(adfsUrl, "application/soap+xml; charset=utf-8", body, this.HandleWebException);
+            string body = string.Format(
+                CultureInfo.InvariantCulture,
+                /*
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><s:Envelope xmlns:s=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\" xmlns:saml=\"urn:oasis:names:tc:SAML:1.0:assertion\" xmlns:wsp=\"http://schemas.xmlsoap.org/ws/2004/09/policy\" xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\" xmlns:wsa=\"http://www.w3.org/2005/08/addressing\" xmlns:wssc=\"http://schemas.xmlsoap.org/ws/2005/02/sc\" xmlns:wst=\"http://schemas.xmlsoap.org/ws/2005/02/trust\"><s:Header><wsa:Action s:mustUnderstand=\"1\">http://schemas.xmlsoap.org/ws/2005/02/trust/RST/Issue</wsa:Action><wsa:To s:mustUnderstand=\"1\">{0}</wsa:To><wsa:MessageID>{1}</wsa:MessageID><ps:AuthInfo xmlns:ps=\"http://schemas.microsoft.com/Passport/SoapServices/PPCRL\" Id=\"PPAuthInfo\"><ps:HostingApp>Managed IDCRL</ps:HostingApp><ps:BinaryVersion>6</ps:BinaryVersion><ps:UIVersion>1</ps:UIVersion><ps:Cookies></ps:Cookies><ps:RequestParams>AQAAAAIAAABsYwQAAAAxMDMz</ps:RequestParams></ps:AuthInfo><wsse:Security><wsse:UsernameToken wsu:Id=\"user\"><wsse:Username>{2}</wsse:Username><wsse:Password>{3}</wsse:Password></wsse:UsernameToken><wsu:Timestamp Id=\"Timestamp\"><wsu:Created>{4}</wsu:Created><wsu:Expires>{5}</wsu:Expires></wsu:Timestamp></wsse:Security></s:Header><s:Body><wst:RequestSecurityToken Id=\"RST0\"><wst:RequestType>http://schemas.xmlsoap.org/ws/2005/02/trust/Issue</wst:RequestType><wsp:AppliesTo><wsa:EndpointReference><wsa:Address>{6}</wsa:Address></wsa:EndpointReference></wsp:AppliesTo><wst:KeyType>http://schemas.xmlsoap.org/ws/2005/05/identity/NoProofKey</wst:KeyType></wst:RequestSecurityToken></s:Body></s:Envelope>",
+                 */
+                IdcrlMessageConstants.AdfsAuthMessage,
+                IdcrlUtility.XmlValueEncode(adfsUrl),
+                Guid.NewGuid().ToString(),
+                IdcrlUtility.XmlValueEncode(username),
+                IdcrlUtility.XmlValueEncode(password),
+                DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture),
+                DateTime.UtcNow.AddMinutes(10.0).ToString("o", CultureInfo.InvariantCulture),
+                this.FederationTokenIssuer);
+            XDocument xDocument = this.DoPost(adfsUrl, IdcrlMessageConstants.SoapContentType, body, this.HandleWebException);
             Exception soapException = this.GetSoapException(xDocument);
             if (soapException != null) {
                 this._Logger.LogError("SOAP error from {0}. Exception={1}", adfsUrl, soapException);
@@ -251,8 +265,17 @@ namespace OfaSchlupfer.ModelOData.SPO {
             if (!string.IsNullOrEmpty(servicePolicy)) {
                 text = string.Format(CultureInfo.InvariantCulture, "<wsp:PolicyReference URI=\"{0}\"></wsp:PolicyReference>", new object[1] { servicePolicy });
             }
-            string body = string.Format(CultureInfo.InvariantCulture, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<S:Envelope xmlns:S=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\" xmlns:wsp=\"http://schemas.xmlsoap.org/ws/2004/09/policy\" xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\" xmlns:wsa=\"http://www.w3.org/2005/08/addressing\" xmlns:wst=\"http://schemas.xmlsoap.org/ws/2005/02/trust\">\r\n  <S:Header>\r\n    <wsa:Action S:mustUnderstand=\"1\">http://schemas.xmlsoap.org/ws/2005/02/trust/RST/Issue</wsa:Action>\r\n    <wsa:To S:mustUnderstand=\"1\">{0}</wsa:To>\r\n    <ps:AuthInfo xmlns:ps=\"http://schemas.microsoft.com/LiveID/SoapServices/v1\" Id=\"PPAuthInfo\">\r\n      <ps:BinaryVersion>5</ps:BinaryVersion>\r\n      <ps:HostingApp>Managed IDCRL</ps:HostingApp>\r\n    </ps:AuthInfo>\r\n    <wsse:Security>{1}</wsse:Security>\r\n  </S:Header>\r\n  <S:Body>\r\n    <wst:RequestSecurityToken xmlns:wst=\"http://schemas.xmlsoap.org/ws/2005/02/trust\" Id=\"RST0\">\r\n      <wst:RequestType>http://schemas.xmlsoap.org/ws/2005/02/trust/Issue</wst:RequestType>\r\n      <wsp:AppliesTo>\r\n        <wsa:EndpointReference>\r\n          <wsa:Address>{2}</wsa:Address>\r\n        </wsa:EndpointReference>\r\n      </wsp:AppliesTo>\r\n      {3}\r\n    </wst:RequestSecurityToken>\r\n  </S:Body>\r\n</S:Envelope>\r\n", IdcrlUtility.XmlValueEncode(serviceTokenUrl), securityXml, IdcrlUtility.XmlValueEncode(serviceTarget), text);
-            XDocument xDocument = this.DoPost(serviceTokenUrl, "application/soap+xml; charset=utf-8", body, this.HandleWebException);
+            string body = string.Format(
+                CultureInfo.InvariantCulture,
+                /*
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><S:Envelope xmlns:S=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\" xmlns:wsp=\"http://schemas.xmlsoap.org/ws/2004/09/policy\" xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\" xmlns:wsa=\"http://www.w3.org/2005/08/addressing\" xmlns:wst=\"http://schemas.xmlsoap.org/ws/2005/02/trust\"><S:Header><wsa:Action S:mustUnderstand=\"1\">http://schemas.xmlsoap.org/ws/2005/02/trust/RST/Issue</wsa:Action><wsa:To S:mustUnderstand=\"1\">{0}</wsa:To><ps:AuthInfo xmlns:ps=\"http://schemas.microsoft.com/LiveID/SoapServices/v1\" Id=\"PPAuthInfo\"><ps:BinaryVersion>5</ps:BinaryVersion><ps:HostingApp>Managed IDCRL</ps:HostingApp></ps:AuthInfo><wsse:Security>{1}</wsse:Security></S:Header><S:Body><wst:RequestSecurityToken xmlns:wst=\"http://schemas.xmlsoap.org/ws/2005/02/trust\" Id=\"RST0\"><wst:RequestType>http://schemas.xmlsoap.org/ws/2005/02/trust/Issue</wst:RequestType><wsp:AppliesTo><wsa:EndpointReference><wsa:Address>{2}</wsa:Address></wsa:EndpointReference></wsp:AppliesTo>{3}</wst:RequestSecurityToken></S:Body></S:Envelope>\r\n",
+                */
+                IdcrlMessageConstants.AuthMessage,
+                IdcrlUtility.XmlValueEncode(serviceTokenUrl),
+                securityXml,
+                IdcrlUtility.XmlValueEncode(serviceTarget),
+                text);
+            XDocument xDocument = this.DoPost(serviceTokenUrl, IdcrlMessageConstants.SoapContentType, body, this.HandleWebException);
             Exception soapException = GetSoapException(xDocument);
             if (soapException != null) {
                 this._Logger.LogError("Soap error from {0}. Exception={1}", serviceTokenUrl, soapException);
@@ -268,7 +291,13 @@ namespace OfaSchlupfer.ModelOData.SPO {
 
         private string BuildWsSecurityUsingUsernamePassword(string username, string password) {
             DateTime utcNow = DateTime.UtcNow;
-            return string.Format(CultureInfo.InvariantCulture, "\r\n            <wsse:UsernameToken wsu:Id=\"user\">\r\n                <wsse:Username>{0}</wsse:Username>\r\n                <wsse:Password>{1}</wsse:Password>\r\n            </wsse:UsernameToken>\r\n            <wsu:Timestamp Id=\"Timestamp\">\r\n                <wsu:Created>{2}</wsu:Created>\r\n                <wsu:Expires>{3}</wsu:Expires>\r\n            </wsu:Timestamp>\r\n", IdcrlUtility.XmlValueEncode(username), IdcrlUtility.XmlValueEncode(password), utcNow.ToString("o", CultureInfo.InvariantCulture), utcNow.AddDays(1.0).ToString("o", CultureInfo.InvariantCulture));
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "<wsse:UsernameToken wsu:Id=\"user\"><wsse:Username>{0}</wsse:Username><wsse:Password>{1}</wsse:Password></wsse:UsernameToken><wsu:Timestamp Id=\"Timestamp\"><wsu:Created>{2}</wsu:Created><wsu:Expires>{3}</wsu:Expires></wsu:Timestamp>\r\n",
+                IdcrlUtility.XmlValueEncode(username),
+                IdcrlUtility.XmlValueEncode(password),
+                utcNow.ToString("o", CultureInfo.InvariantCulture),
+                utcNow.AddDays(1.0).ToString("o", CultureInfo.InvariantCulture));
         }
 
         private XDocument DoPost(string url, string contentType, string body, Func<WebException, Exception> webExceptionHandler) {
@@ -277,7 +306,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
             httpWebRequest.ContentType = contentType;
             this._Logger.LogDebug("Sending POST request to {0}", url);
             if (this.m_executingWebRequest != null) {
-                this.m_executingWebRequest(this, new SharePointOnlineCredentialsWebRequestEventArgs(httpWebRequest));
+                this.m_executingWebRequest(this, new WebRequestEventArgs(httpWebRequest));
             }
             using (Stream stream = httpWebRequest.GetRequestStream()) {
                 if (body != null) {
@@ -450,7 +479,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
         }
 
         private string ParseFPDomainName(XDocument xdoc) {
-            XElement elementAtPath = IdcrlUtility.GetElementAtPath(xdoc.Root, "FPDOMAINNAME");
+            XElement elementAtPath = IdcrlUtility.GetElementAtPath(xdoc.Root, IdcrlMessageConstants.FPDOMAINNAME);
             if (elementAtPath == null) {
                 this._Logger.LogError("Cannot find FPDOMAINNAME element");
                 throw IdcrlAuth.CreateIdcrlException(-2147186646);
@@ -461,9 +490,9 @@ namespace OfaSchlupfer.ModelOData.SPO {
         private FederationProviderInfo ParseFederationProviderInfo(XDocument xdoc, string fpDomainName) {
             foreach (XElement item in xdoc.Root.Elements("FP")) {
                 if (item.Attribute("DomainName") != null && string.Equals(item.Attribute("DomainName").Value, fpDomainName, StringComparison.OrdinalIgnoreCase)) {
-                    XElement elementAtPath = IdcrlUtility.GetElementAtPath(item, "URL", "GETUSERREALM");
-                    XElement elementAtPath2 = IdcrlUtility.GetElementAtPath(item, "URL", "RST2");
-                    XElement elementAtPath3 = IdcrlUtility.GetElementAtPath(item, "URL", "ENTITYID");
+                    XElement elementAtPath = IdcrlUtility.GetElementAtPath(item, IdcrlMessageConstants.URL, IdcrlMessageConstants.GETUSERREALM);
+                    XElement elementAtPath2 = IdcrlUtility.GetElementAtPath(item, IdcrlMessageConstants.URL, IdcrlMessageConstants.RST2);
+                    XElement elementAtPath3 = IdcrlUtility.GetElementAtPath(item, IdcrlMessageConstants.URL, IdcrlMessageConstants.ENTITYID);
                     if (elementAtPath != null && elementAtPath2 != null && elementAtPath3 != null) {
                         this._Logger.LogError("Find federation provider information for federation provider domain name {0}. UserRealmServiceUrl={1}, SecurityTokenServiceUrl={2}, FederationTokenIssuer={3}", fpDomainName, elementAtPath.Value, elementAtPath2.Value, elementAtPath3.Value);
                         FederationProviderInfo federationProviderInfo = new FederationProviderInfo();
@@ -485,7 +514,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
             httpWebRequest.Method = "GET";
             this._Logger.LogDebug("Sending GET request to {0}", url);
             if (this.m_executingWebRequest != null) {
-                this.m_executingWebRequest(this, new SharePointOnlineCredentialsWebRequestEventArgs(httpWebRequest));
+                this.m_executingWebRequest(this, new WebRequestEventArgs(httpWebRequest));
             }
             HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
             if (httpWebResponse == null) {

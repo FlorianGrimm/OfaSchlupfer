@@ -10,6 +10,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
 
         public const string False = "f";
 
+#if UseRegistry
         public const string REGKEY_MSOIdentityCRL = "SOFTWARE\\Microsoft\\MSOIdentityCRL";
 
         public const string REGVAL_ServiceEnvironment = "ServiceEnvironment";
@@ -19,6 +20,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
         public const string ENV_PPE_MSO = "PPE-MSO";
 
         public const string ENV_PRODUCTION = "production";
+#endif
 
         public const string BPOSIDCRL_AUTHORIZATION_HEADER_PREFIX = "BPOSIDCRL ";
 

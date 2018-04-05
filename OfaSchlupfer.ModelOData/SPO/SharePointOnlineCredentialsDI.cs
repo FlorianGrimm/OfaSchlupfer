@@ -24,7 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection {
         public static ISharePointOnlineCredentialsBuilder AddSharePointOnlineCredentials(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) => AddSharePointOnlineCredentials(services, _ => { });
         public static ISharePointOnlineCredentialsBuilder AddSharePointOnlineCredentials(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Action<SharePointOnlineCredentialsOptions> configure) {
             services.Configure(configure);
-            services.AddSingleton(typeof(ISharePointOnlineFactory), typeof(SharePointOnlineFactory));
+            services.AddSingleton(typeof(ISharePointOnlineClientFactory), typeof(SharePointOnlineFactory));
             return new SharePointOnlineCredentialsBuilder(services);
         }
     }

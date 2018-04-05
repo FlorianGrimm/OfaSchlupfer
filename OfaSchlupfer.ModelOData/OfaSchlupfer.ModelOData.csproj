@@ -8,9 +8,11 @@
     <Compile Remove="ISharePointOnlineCredentials.cs" />
     <Compile Remove="SharePointOnlineCredentialsBuilder.cs" />
     <Compile Remove="SharePointOnlineFactory.cs" />
+    <Compile Remove="SPO\HellOfLack\STSSoapFaultCodes.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="SPO\HellOfLack\STSSoapFaultCodes.cs" />
     <None Include="SPO\ISharePointOnlineCredentials.cs" />
     <None Include="SPO\SharePointOnlineCredentialsDI.cs" />
     <None Include="SPO\SharePointOnlineFactory.cs" />

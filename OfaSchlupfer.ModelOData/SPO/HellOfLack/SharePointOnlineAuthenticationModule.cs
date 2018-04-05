@@ -7,7 +7,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
 
         private static object s_lock = new object();
 
-        private static SharePointOnlineAuthenticationModule s_instance;
+        private static SharePointOnlineAuthenticationModule _Instance;
 
         public string AuthenticationType => "SPOIDCRL";
 
@@ -18,7 +18,8 @@ namespace OfaSchlupfer.ModelOData.SPO {
 
         public Authorization Authenticate(string challenge, WebRequest request, ICredentials credentials) {
             SharePointOnlineCredentials sharePointOnlineCredentials = credentials as SharePointOnlineCredentials;
-            if (sharePointOnlineCredentials != null && this.GetSpoAuthCookieAndUpdateRequest(request, sharePointOnlineCredentials, false)) {
+            if (sharePointOnlineCredentials != null
+                && this.GetSpoAuthCookieAndUpdateRequest(request, sharePointOnlineCredentials, false)) {
                 return new Authorization(" ");
             }
             return null;
@@ -68,11 +69,11 @@ namespace OfaSchlupfer.ModelOData.SPO {
         }
 
         internal static void EnsureRegistered() {
-            if (SharePointOnlineAuthenticationModule.s_instance == null) {
+            if (SharePointOnlineAuthenticationModule._Instance == null) {
                 lock (SharePointOnlineAuthenticationModule.s_lock) {
-                    if (SharePointOnlineAuthenticationModule.s_instance == null) {
-                        SharePointOnlineAuthenticationModule.s_instance = new SharePointOnlineAuthenticationModule();
-                        AuthenticationManager.Register(SharePointOnlineAuthenticationModule.s_instance);
+                    if (SharePointOnlineAuthenticationModule._Instance == null) {
+                        SharePointOnlineAuthenticationModule._Instance = new SharePointOnlineAuthenticationModule();
+                        AuthenticationManager.Register(SharePointOnlineAuthenticationModule._Instance);
                     }
                 }
             }

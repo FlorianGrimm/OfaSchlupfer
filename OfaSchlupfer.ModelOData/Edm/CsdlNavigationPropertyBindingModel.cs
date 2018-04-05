@@ -1,6 +1,6 @@
-﻿using System;
+﻿namespace OfaSchlupfer.ModelOData.Edm {
+    using System;
 
-namespace OfaSchlupfer.ModelOData.Edm {
     public class CsdlNavigationPropertyBindingModel : CsdlAnnotationalModel {
         private string _TargetName;
         private CsdlNavigationPropertyModel _PathName;

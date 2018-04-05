@@ -4,26 +4,30 @@
     using System.Net.Http;
     using System.Threading.Tasks;
     using OfaSchlupfer.Elementary;
+    using OfaSchlupfer.HttpAccess;
 
-    public interface ISharePointOnlineFactory {
-        ISharePointOnlineCredentials CreateCredentials(string username, System.Security.SecureString password);
+    public interface ISharePointOnlineClientFactory : IHttpClientFactory, IHttpClientTypedFactory {
+        // weichei
+        //ISharePointOnlineCredentials CreateCredentials(string username, string password);
 
-        ISharePointOnlineHttpClient CreateHttpClient(RepositoryConnectionString connectionString);
+        //weichei
+        //ISharePointOnlineHttpClient CreateSPOHttpClient(RepositoryConnectionString connectionString);
     }
 
-    public interface ISharePointOnlineCredentials : ICredentials {
-        string GetAuthenticationCookie(Uri url);
+    public interface ISharePointOnlineCredentials : ICredentials, ICookieCredentials {
+        // weichei
+        //string GetAuthenticationCookie(Uri url);
+        //string GetAuthenticationCookie(Uri url, bool alwaysThrowOnFailure);
 
-        string GetAuthenticationCookie(Uri url, bool alwaysThrowOnFailure);
+        //string GetAuthenticationCookie(Uri url, bool refresh, bool alwaysThrowOnFailure);
 
-        string GetAuthenticationCookie(Uri url, bool refresh, bool alwaysThrowOnFailure);
-
-        event EventHandler<SharePointOnlineCredentialsWebRequestEventArgs> ExecutingWebRequest;
+        //event EventHandler<WebRequestEventArgs> ExecutingWebRequest;
     }
 
-    public interface ISharePointOnlineHttpClient : System.IDisposable {
-        bool AuthenticateAsync();
+    public interface ISharePointOnlineHttpClient : IHttpClient, System.IDisposable {
+        // weichei
+        // bool Authenticate();
 
-        Task<string> GetAsync(string requestUrl, Action<HttpClient> configureHttpClient);
+        //Task<string> GetAsStringAsync(string requestUrl, Action<HttpClient> configureHttpClient);
     }
 }

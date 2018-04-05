@@ -8,6 +8,7 @@
     using OfaSchlupfer.Model;
     using Microsoft.Extensions.DependencyInjection;
     using OfaSchlupfer.ModelOData.SPO;
+    using OfaSchlupfer.HttpAccess;
 
     public class ODataRepositoryModelType : ReferenceRepositoryModelType {
         public ODataRepositoryModelType(IServiceProvider serviceProvider) : base(serviceProvider) {
@@ -19,7 +20,7 @@
             try {
                 return this.ServiceProvider.GetRequiredService<ODataRepository>();
             } catch (InvalidOperationException) {
-                return new ODataRepositoryImplementation(this.ServiceProvider.GetRequiredService<ISharePointOnlineFactory>());
+                return new ODataRepositoryImplementation(this.ServiceProvider.GetRequiredService<ISharePointOnlineClientFactory>());
             }
         }
     }
@@ -29,40 +30,60 @@
 
         public RepositoryConnectionString ConnectionString { get; set; }
 
+        public virtual void SetConnectionString(RepositoryConnectionString connectionString, string suffix) {
+            if (string.IsNullOrEmpty(suffix)) {
+                this.ConnectionString = connectionString;
+            } else {
+                this.ConnectionString = connectionString.CreateSuffix(suffix);
+            }
+        }
+
+        public abstract string GetUrlMetadata();
+        public abstract Task<string> GetMetadataAsync();
         //public IEdmModel EdmModel { get; set; }
     }
 
     public class ODataRepositoryImplementation : ODataRepository, IReferenceRepositoryModel {
         //  https://m365x235962.sharepoint.com/sites/pwa/_api/projectserver
         // https://code.msdn.microsoft.com/office/Invoke-SharePoint-REST-API-078a0638/sourcecode?fileId=136158&pathId=613790383
-        private ISharePointOnlineFactory _SharePointOnlineCredentialsFactory;
+        private IHttpClientFactory _ClientFactory;
+        // IODataClientFactory
 
         public ODataRepositoryImplementation(
-            ISharePointOnlineFactory sharePointOnlineCredentialsFactory
+            IHttpClientFactory clientFactory
             ) {
-            this._SharePointOnlineCredentialsFactory = sharePointOnlineCredentialsFactory;
+            this._ClientFactory = clientFactory;
         }
 
         [System.Diagnostics.DebuggerStepThrough]
-        public string GetUrlMetadata() {
+        public override string GetUrlMetadata() {
             var url = this.ConnectionString?.GetUrlNormalized();
             if (string.IsNullOrEmpty(url)) {
                 return null;
             } else {
-                return $"{url}/_api/ProjectData/[en-us]/$metadata";
+                return $"{url}/$metadata";
             }
         }
 
-        public async Task<string> GetMetadataAsync() {
+        public override async Task<string> GetMetadataAsync() {
             //this._SharePointOnlineCredentialsFactory.Create
 
-            var client = this._SharePointOnlineCredentialsFactory.CreateHttpClient(this.ConnectionString);
+            var client = this._ClientFactory.CreateHttpClient(this.ConnectionString);
             var requestUrl = this.GetUrlMetadata();
-            var t = client.GetAsync(requestUrl, (httpClient) => {
-                httpClient.DefaultRequestHeaders.Accept.Clear();
-                httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/xml"));
-            });
-            return await t;
+            var t = client.GetAsStringAsync(
+                requestUrl,
+                (httpClient) => {
+                    httpClient.DefaultRequestHeaders.Accept.Clear();
+                    httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/xml"));
+                },
+                null);
+            string result;
+            try {
+                result = await t;
+            } catch (Exception err) {
+                throw err;
+            }
+            return result;
         }
 
         public override List<string> BuildSchema(string metadataContent) {

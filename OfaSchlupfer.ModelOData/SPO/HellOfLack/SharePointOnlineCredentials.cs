@@ -5,6 +5,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
     using System.Security;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
+    using OfaSchlupfer.HttpAccess;
 
     internal sealed class SharePointOnlineCredentials : ICredentials, ISharePointOnlineCredentials {
         private class CookieCacheEntry {
@@ -22,29 +23,33 @@ namespace OfaSchlupfer.ModelOData.SPO {
         private const int CacheHours = 1;
 
         private ILogger _Logger;
+
         private string _UserName;
 
-        private SecureString _Password;
+        private string _Password;
 
-        private Hashtable _CachedCookies = new Hashtable();
+        private Hashtable _CachedCookies;
 
         public string UserName => this._UserName;
 
-        internal SecureString Password => this._Password;
+        public bool IsSupportedGetAuthenticationCookie => true;
 
-        public event EventHandler<SharePointOnlineCredentialsWebRequestEventArgs> ExecutingWebRequest;
+        public bool IsSupportedGetAuthenticationCookieAsync => false;
 
-        public SharePointOnlineCredentials(string username, SecureString password, ILogger logger) {
+        public event EventHandler<WebRequestEventArgs> ExecutingWebRequest;
+
+        public SharePointOnlineCredentials(string username, string password, ILogger logger) {
             if (string.IsNullOrEmpty(username)) {
                 throw new ArgumentNullException(nameof(username));
             }
             this._Logger = logger;
+            this._CachedCookies = new Hashtable();
             int num = username.IndexOf('@');
             if (num >= 0 && num != username.Length - 1) {
                 if (password == null) {
                     throw new ArgumentNullException(nameof(password));
                 }
-                SharePointOnlineAuthenticationModule.EnsureRegistered();
+                // SharePointOnlineAuthenticationModule.EnsureRegistered();
                 this._UserName = username;
                 this._Password = password;
             } else {
@@ -54,9 +59,8 @@ namespace OfaSchlupfer.ModelOData.SPO {
 
         public NetworkCredential GetCredential(Uri uri, string authType) => null;
 
-        public string GetAuthenticationCookie(Uri url) => this.GetAuthenticationCookie(url, false, false);
-
-        public string GetAuthenticationCookie(Uri url, bool alwaysThrowOnFailure) => this.GetAuthenticationCookie(url, true, alwaysThrowOnFailure);
+        //public string GetAuthenticationCookie(Uri url) => this.GetAuthenticationCookie(url, false, false);
+        //public string GetAuthenticationCookie(Uri url, bool alwaysThrowOnFailure) => this.GetAuthenticationCookie(url, true, alwaysThrowOnFailure);
 
         public string GetAuthenticationCookie(Uri url, bool refresh, bool alwaysThrowOnFailure) {
             if (url == (Uri)null) {
@@ -91,6 +95,11 @@ namespace OfaSchlupfer.ModelOData.SPO {
                 }
             }
             return string.Empty;
+        }
+
+        public Task<string> GetAuthenticationCookieAsync(Uri url, bool refresh, bool alwaysThrowOnFailure) {
+            var result = this.GetAuthenticationCookie(url, refresh, alwaysThrowOnFailure);
+            return Task.FromResult(result);
         }
     }
 }

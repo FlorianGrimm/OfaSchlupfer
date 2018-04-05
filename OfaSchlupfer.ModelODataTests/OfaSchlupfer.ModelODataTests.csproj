@@ -8,6 +8,10 @@
     <RootNamespace>OfaSchlupfer.ModelOData</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NoLongRunning</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.OData" Version="5.8.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.1" />
@@ -35,4 +39,11 @@
     <ProjectReference Include="..\OfaSchlupfer.ModelOData\OfaSchlupfer.ModelOData.csproj" />
   </ItemGroup>
 
+<Target Name="xUnitTests">
+    <!-- For debug builds: skipping long integration tests -->
+    <xunit Condition="'$(Configuration)' == 'Debug'" ExcludeTraits="Category=LongRunning" Assemblies="@(TestAssemblies)" />
+
+    <!-- For release builds: run them all -->
+    <xunit Condition="'$(Configuration)' == 'Release'" Assemblies="@(TestAssemblies)" />
+</Target>
 </Project>

@@ -2,6 +2,7 @@
 namespace OfaSchlupfer.ModelOData.SPO {
     using Microsoft.Extensions.Logging;
     using Microsoft.Win32;
+    using OfaSchlupfer.HttpAccess;
     using System;
     using System.Collections.Specialized;
     using System.Net;
@@ -27,13 +28,13 @@ namespace OfaSchlupfer.ModelOData.SPO {
             get {
                 string text = SharePointOnlineAuthenticationProvider._idcrlEnvironmentCache;
                 if (text == null) {
-                    text = "production";
-                    RegistryKey registryKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\MSOIdentityCRL");
+                    text = IdcrlConstants.ENV_PRODUCTION;
+                    RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(IdcrlConstants.REGKEY_MSOIdentityCRL);
                     if (registryKey != null) {
-                        string text2 = (string)registryKey.GetValue("ServiceEnvironment", null);
-                        if (string.Compare(text2, "INT-MSO", StringComparison.OrdinalIgnoreCase) == 0) {
+                        string text2 = (string)registryKey.GetValue(IdcrlConstants.REGVAL_ServiceEnvironment, null);
+                        if (string.Compare(text2, IdcrlConstants.ENV_INT_MSO, StringComparison.OrdinalIgnoreCase) == 0) {
                             text = "INT-MSO";
-                        } else if (string.Equals(text2, "PPE-MSO", StringComparison.OrdinalIgnoreCase)) {
+                        } else if (string.Equals(text2, IdcrlConstants.ENV_PPE_MSO, StringComparison.OrdinalIgnoreCase)) {
                             text = "PPE-MSO";
                         }
                         registryKey.Close();
@@ -51,7 +52,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
             this._Logger = logger;
 
         }
-        public string GetAuthenticationCookie(Uri url, string username, SecureString password, bool alwaysThrowOnFailure, EventHandler<SharePointOnlineCredentialsWebRequestEventArgs> executingWebRequest) {
+        public string GetAuthenticationCookie(Uri url, string username, string password, bool alwaysThrowOnFailure, EventHandler<WebRequestEventArgs> executingWebRequest) {
             if (url == (Uri)null) {
                 throw new ArgumentNullException("url");
             }
@@ -71,12 +72,12 @@ namespace OfaSchlupfer.ModelOData.SPO {
             }
 #if UseRegistry
             IdcrlEnvironment env = (IdcrlEnvironment)((string.Compare(IdcrlServiceEnvironment, "INT-MSO", StringComparison.OrdinalIgnoreCase) == 0) ? 1 : (string.Equals(IdcrlServiceEnvironment, "PPE-MSO", StringComparison.OrdinalIgnoreCase) ? 2 : 0));
-#else
-            IdcrlEnvironment env = IdcrlEnvironment.Production;
-#endif
             IdcrlAuth idcrlAuth = new IdcrlAuth(env, executingWebRequest, this._Logger);
-            string password2 = SharePointOnlineAuthenticationProvider.FromSecureString(password);
-            string serviceToken = idcrlAuth.GetServiceToken(username, password2, idcrlHeader.ServiceTarget, idcrlHeader.ServicePolicy);
+#else
+            IdcrlAuth idcrlAuth = new IdcrlAuth(executingWebRequest, this._Logger);
+#endif
+            //string password2 = SharePointOnlineAuthenticationProvider.FromSecureString(password);
+            string serviceToken = idcrlAuth.GetServiceToken(username, password, idcrlHeader.ServiceTarget, idcrlHeader.ServicePolicy);
             if (string.IsNullOrEmpty(serviceToken)) {
                 this._Logger.LogWarning("Cannot get IDCRL ticket for username {0}", username);
                 if (alwaysThrowOnFailure) {
@@ -87,14 +88,14 @@ namespace OfaSchlupfer.ModelOData.SPO {
             return this.GetCookie(url, idcrlHeader.Endpoint, serviceToken, alwaysThrowOnFailure, executingWebRequest);
         }
 
-        private string GetCookie(Uri url, string endpoint, string ticket, bool throwIfFail, EventHandler<SharePointOnlineCredentialsWebRequestEventArgs> executingWebRequest) {
+        private string GetCookie(Uri url, string endpoint, string ticket, bool throwIfFail, EventHandler<WebRequestEventArgs> executingWebRequest) {
             Uri uri = new Uri(url, endpoint);
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(uri);
             CookieContainer cookieContainer2 = httpWebRequest.CookieContainer = new CookieContainer();
-            httpWebRequest.Headers[HttpRequestHeader.Authorization] = "BPOSIDCRL " + ticket;
-            ((NameValueCollection)httpWebRequest.Headers)["X-IDCRL_ACCEPTED"] = "t";
+            httpWebRequest.Headers[HttpRequestHeader.Authorization] = IdcrlConstants.BPOSIDCRL_AUTHORIZATION_HEADER_PREFIX + ticket;
+            ((NameValueCollection)httpWebRequest.Headers)[IdcrlConstants.HEADER_IDCRL_AUTH_ACCEPTED] = "t";
             if (executingWebRequest != null) {
-                executingWebRequest(this, new SharePointOnlineCredentialsWebRequestEventArgs(httpWebRequest));
+                executingWebRequest(this, new WebRequestEventArgs(httpWebRequest));
             }
             WebResponse response = httpWebRequest.GetResponse();
             string cookieHeader = cookieContainer2.GetCookieHeader(uri);
@@ -117,12 +118,12 @@ namespace OfaSchlupfer.ModelOData.SPO {
             return cookieHeader;
         }
 
-        private IdcrlHeader GetIdcrlHeader(Uri url, bool alwaysThrowOnFailure, EventHandler<SharePointOnlineCredentialsWebRequestEventArgs> executingWebRequest) {
+        private IdcrlHeader GetIdcrlHeader(Uri url, bool alwaysThrowOnFailure, EventHandler<WebRequestEventArgs> executingWebRequest) {
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-            ((NameValueCollection)httpWebRequest.Headers)["X-IDCRL_ACCEPTED"] = "t";
+            ((NameValueCollection)httpWebRequest.Headers)[IdcrlConstants.HEADER_IDCRL_AUTH_ACCEPTED] = "t";
             httpWebRequest.AuthenticationLevel = AuthenticationLevel.None;
             if (executingWebRequest != null) {
-                executingWebRequest(this, new SharePointOnlineCredentialsWebRequestEventArgs(httpWebRequest));
+                executingWebRequest(this, new WebRequestEventArgs(httpWebRequest));
             }
             HttpWebResponse httpWebResponse = null;
             try {
@@ -154,7 +155,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
             string webResponseHeader = IdcrlUtility.GetWebResponseHeader(httpWebResponse);
             HttpStatusCode statusCode = httpWebResponse.StatusCode;
             this._Logger.LogWarning("Response.StatusCode={0}, Headers={1}", statusCode, webResponseHeader);
-            string text = ((NameValueCollection)httpWebResponse.Headers)["X-IDCRL_AUTH_PARAMS_V1"];
+            string text = ((NameValueCollection)httpWebResponse.Headers)[IdcrlConstants.HEADER_IDCRL_AUTH_PARAMS_V1];
             if (string.IsNullOrEmpty(text)) {
                 text = httpWebResponse.Headers[HttpResponseHeader.WwwAuthenticate];
             }
@@ -180,22 +181,25 @@ namespace OfaSchlupfer.ModelOData.SPO {
                     array2[0] = array2[0].Trim().ToUpperInvariant();
                     array2[1] = array2[1].Trim(' ', '"');
                     switch (array2[0]) {
-                        case "IDCRL TYPE":
+                        case IdcrlConstants.IDCRL_PARAM_IDCRL_TYPE/*"IDCRL TYPE"*/:
                             idcrlHeader.IdcrlType = array2[1];
                             break;
-                        case "ENDPOINT":
+                        case IdcrlConstants.IDCRL_PARAM_ENDPOINT /*"ENDPOINT"*/:
                             idcrlHeader.Endpoint = array2[1];
                             break;
-                        case "ROOTDOMAIN":
+                        case IdcrlConstants.IDCRL_PARAM_ROOTDOMAIN /* "ROOTDOMAIN" */:
                             idcrlHeader.ServiceTarget = array2[1];
                             break;
-                        case "POLICY":
+                        case IdcrlConstants.IDCRL_PARAM_POLICY /* "POLICY" */:
                             idcrlHeader.ServicePolicy = array2[1];
                             break;
                     }
                 }
             }
-            if (idcrlHeader.IdcrlType != "BPOSIDCRL" || string.IsNullOrEmpty(idcrlHeader.ServicePolicy) || string.IsNullOrEmpty(idcrlHeader.ServiceTarget) || string.IsNullOrEmpty(idcrlHeader.Endpoint)) {
+            if (idcrlHeader.IdcrlType != IdcrlConstants.IDCRLTYPE_BPOSIDRL
+                || string.IsNullOrEmpty(idcrlHeader.ServicePolicy)
+                || string.IsNullOrEmpty(idcrlHeader.ServiceTarget)
+                || string.IsNullOrEmpty(idcrlHeader.Endpoint)) {
                 this._Logger.LogWarning("Cannot extract required information from IDCRL header. Header={0}, IdcrlType={1}, ServicePolicy={2}, ServiceTarget={3}, Endpoint={4}", headerValue, idcrlHeader.IdcrlType, idcrlHeader.ServicePolicy, idcrlHeader.ServiceTarget, idcrlHeader.Endpoint);
                 if (alwaysThrowOnFailure) {
                     throw new ClientRequestException($"Invalid IDCRL Header {url.OriginalString}, {headerValue}, {statusCode}, {allResponseHeaders}");
@@ -224,4 +228,11 @@ namespace OfaSchlupfer.ModelOData.SPO {
             return this.GetIdcrlHeader(uri, true, null) != null;
         }
     }
+#if UseRegistry
+    internal enum IdcrlEnvironment {
+        Production,
+        Int,
+        Ppe
+    }
+#endif
 }
