@@ -6,13 +6,14 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using OfaSchlupfer.Elementary;
 
     public class HttpClientImplementation : IHttpClient {
         protected int _MaximumRetries;
         protected string _Url;
-        protected ICredentials _Credentials;
+        protected IHttpClientCredentials _Credentials;
 
-        public HttpClientImplementation(string url, ICredentials credentials) {
+        public HttpClientImplementation(string url, IHttpClientCredentials credentials) {
             this._Url = url;
             this._Credentials = credentials;
         }
@@ -31,26 +32,25 @@
             if (requestUrl == null) { throw new ArgumentNullException(nameof(requestUrl)); }
             if (requestUrl.StartsWith("/")) { requestUrl = this._Url + requestUrl; }
             var uri = new Uri(this._Url);
-            var cookieCredentials = this._Credentials as ICookieCredentials;
-            string cookie = null;
-            if ((object)cookieCredentials != null) {
-                cookie = await GetAuthenticationCookie(uri, cookieCredentials, false);
+            var credentials = this._Credentials;
+            var netCredentials = credentials as System.Net.ICredentials;
+
+            IHttpClientCredentialsData httpClientCredentialsData = null;
+            if (credentials != null) {
+                httpClientCredentialsData = await GetAuthenticationMayAsync(uri, credentials, false);
             }
+
             bool authenticationRetryAllowed = true;
             int reties = 0;
 
             while (reties <= _MaximumRetries) {
                 using (var httpClientHandler = new HttpClientHandler()) {
-                    if (this._Credentials != null) {
-                        httpClientHandler.Credentials = this._Credentials;
-                    }
-                    if (cookie != null) {
-                        httpClientHandler.CookieContainer.SetCookies(uri, cookie);
-                    }
+                    credentials?.ConfigureHttpClientHandler(httpClientHandler, httpClientCredentialsData);
                     using (var httpClient = new System.Net.Http.HttpClient(httpClientHandler)) {
                         if (configureHttpClient != null) {
                             configureHttpClient(httpClient);
                         }
+                        credentials?.ConfigureHttpClient(httpClient, httpClientCredentialsData);
                         HttpResponseMessage response;
                         Task<HttpResponseMessage> responseTask;
                         if (executeAsync == null) {
@@ -66,9 +66,9 @@
                         using (response) {
                             if (!response.IsSuccessStatusCode) {
                                 if ((response.StatusCode == System.Net.HttpStatusCode.Unauthorized) || (response.StatusCode == System.Net.HttpStatusCode.Forbidden)) {
-                                    if (authenticationRetryAllowed && ((object)cookieCredentials != null)) {
+                                    if (authenticationRetryAllowed && ((object)credentials != null)) {
                                         authenticationRetryAllowed = false;
-                                        cookie = await this.GetAuthenticationCookie(uri, cookieCredentials, true);
+                                        httpClientCredentialsData = await this.GetAuthenticationMayAsync(uri, credentials, true);
                                         continue;
                                     }
                                 }
@@ -112,12 +112,14 @@
                 null);
         }
 
-        protected virtual async Task<string> GetAuthenticationCookie(Uri uri, ICookieCredentials cookieCredentials, bool refresh) {
-            if (cookieCredentials.IsSupportedGetAuthenticationCookieAsync) {
-                var cookieTask = cookieCredentials.GetAuthenticationCookieAsync(uri, refresh, false);
+        protected virtual async Task<IHttpClientCredentialsData> GetAuthenticationMayAsync(Uri uri, IHttpClientCredentials cookieCredentials, bool refresh) {
+            if (cookieCredentials.IsSupportedGetAuthenticationAsync) {
+                var cookieTask = cookieCredentials.GetAuthenticationAsync(uri, refresh, false);
                 return await (cookieTask);
+            } else if (cookieCredentials.IsSupportedGetAuthentication) {
+                return cookieCredentials.GetAuthentication(uri, refresh, false);
             } else {
-                return cookieCredentials.GetAuthenticationCookie(uri, refresh, false);
+                return null;
             }
         }
     }

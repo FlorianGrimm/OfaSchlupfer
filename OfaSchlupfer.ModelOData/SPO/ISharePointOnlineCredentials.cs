@@ -14,7 +14,7 @@
         //ISharePointOnlineHttpClient CreateSPOHttpClient(RepositoryConnectionString connectionString);
     }
 
-    public interface ISharePointOnlineCredentials : ICredentials, ICookieCredentials {
+    public interface ISharePointOnlineCredentials : ICredentials, IHttpClientCookieCredentials {
         // weichei
         //string GetAuthenticationCookie(Uri url);
         //string GetAuthenticationCookie(Uri url, bool alwaysThrowOnFailure);

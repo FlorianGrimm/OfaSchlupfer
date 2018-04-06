@@ -8,7 +8,7 @@
 
 
     public interface IHttpClientFactory {
-        IHttpClient CreateHttpClient(RepositoryConnectionString connectionString);
+        IHttpClient CreateHttpClient(RepositoryConnectionString connectionString, IHttpClientCredentials credentials);
     }
 
     public interface IHttpClientTypedFactory : IHttpClientFactory {
@@ -16,17 +16,46 @@
     }
 
     public interface IHttpClientDispatcherFactory : IHttpClientFactory {
+        IHttpClient CreateHttpClient(RepositoryConnectionString connectionString);
+    }
+
+    //ICookieCredentials
+    public interface IHttpClientCredentialsFactory {
+        IHttpClientCredentials CreateHttpClientCredentials(RepositoryConnectionString connectionString);
+    }
+
+    public interface IHttpClientCredentialsTypedFactory : IHttpClientCredentialsFactory {
+        string GetAuthenticationMode();
+    }
+
+    public interface IHttpClientCredentialsDispatcherFactory : IHttpClientCredentialsFactory {
 
     }
 
-    public interface ICookieCredentials : ICredentials {
-        bool IsSupportedGetAuthenticationCookie { get; }
-        bool IsSupportedGetAuthenticationCookieAsync { get; }
+    public interface IHttpClientCredentials {
+        bool IsSupportedGetAuthenticationAsync { get; }
+        bool IsSupportedGetAuthentication { get; }
 
-        string GetAuthenticationCookie(Uri url, bool refresh, bool alwaysThrowOnFailure);
-        Task<string> GetAuthenticationCookieAsync(Uri url, bool refresh, bool alwaysThrowOnFailure);
+        Task<IHttpClientCredentialsData> GetAuthenticationAsync(Uri uri, bool refresh, bool alwaysThrowOnFailure);
+        IHttpClientCredentialsData GetAuthentication(Uri uri, bool refresh, bool alwaysThrowOnFailure);
+
+        void ConfigureHttpClientHandler(HttpClientHandler httpClientHandler, IHttpClientCredentialsData data);
 
         event EventHandler<WebRequestEventArgs> ExecutingWebRequest;
+
+        void ConfigureHttpClient(HttpClient httpClient, IHttpClientCredentialsData httpClientCredentialsData);
+    }
+
+    public interface IHttpClientCredentialsData {
+    }
+
+        //HttpClientCookieCredentialsData
+    public interface IHttpClientCookieCredentials : ICredentials, IHttpClientCredentials {
+        //bool IsSupportedGetAuthenticationCookie { get; }
+        //bool IsSupportedGetAuthenticationCookieAsync { get; }
+
+        //IHttpClientCredentialsData GetAuthenticationCookie(Uri url, bool refresh, bool alwaysThrowOnFailure);
+        //Task<IHttpClientCredentialsData> GetAuthenticationCookieAsync(Uri url, bool refresh, bool alwaysThrowOnFailure);
     }
 
 

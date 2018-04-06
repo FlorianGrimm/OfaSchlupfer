@@ -29,13 +29,16 @@
         protected ODataRepository() { }
 
         public RepositoryConnectionString ConnectionString { get; set; }
-
+        
         public virtual void SetConnectionString(RepositoryConnectionString connectionString, string suffix) {
             if (string.IsNullOrEmpty(suffix)) {
                 this.ConnectionString = connectionString;
             } else {
                 this.ConnectionString = connectionString.CreateSuffix(suffix);
             }
+        }
+
+        public virtual void x() {
         }
 
         public abstract string GetUrlMetadata();
@@ -67,8 +70,8 @@
 
         public override async Task<string> GetMetadataAsync() {
             //this._SharePointOnlineCredentialsFactory.Create
-
-            var client = this._ClientFactory.CreateHttpClient(this.ConnectionString);
+#warning HERE
+            var client = this._ClientFactory.CreateHttpClient(this.ConnectionString, null);
             var requestUrl = this.GetUrlMetadata();
             var t = client.GetAsStringAsync(
                 requestUrl,

@@ -27,10 +27,15 @@
         //    return new SharePointOnlineCredentials(username, password, logger);
         //}
 
-        public IHttpClient CreateHttpClient(RepositoryConnectionString connectionString) {
+#warning HERE
+        public IHttpClient CreateHttpClient(RepositoryConnectionString connectionString, IHttpClientCredentials credentials) {
             var logger = this._Logger ?? (this._Logger = this._LoggerFactory.CreateLogger("Authentication"));
-            var spoCred = new SharePointOnlineCredentials(connectionString.User, connectionString.Password, logger);
-            return new HttpClientImplementation(connectionString.GetUrlNormalized(), spoCred);
+            if (credentials == null) {
+                var spoCred = new SharePointOnlineCredentials(connectionString.User, connectionString.Password, logger);
+                return new HttpClientImplementation(connectionString.GetUrlNormalized(), spoCred);
+            } else {
+                return new HttpClientImplementation(connectionString.GetUrlNormalized(), (SharePointOnlineCredentials) credentials);
+            }
         }
 
         // weichei
