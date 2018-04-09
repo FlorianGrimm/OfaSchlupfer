@@ -8,6 +8,9 @@
 
 
     public interface IHttpClientFactory {
+
+        IHttpClientCredentials CreateHttpClientCredentials(RepositoryConnectionString connectionString);
+
         IHttpClient CreateHttpClient(RepositoryConnectionString connectionString, IHttpClientCredentials credentials);
     }
 
@@ -17,19 +20,6 @@
 
     public interface IHttpClientDispatcherFactory : IHttpClientFactory {
         IHttpClient CreateHttpClient(RepositoryConnectionString connectionString);
-    }
-
-    //ICookieCredentials
-    public interface IHttpClientCredentialsFactory {
-        IHttpClientCredentials CreateHttpClientCredentials(RepositoryConnectionString connectionString);
-    }
-
-    public interface IHttpClientCredentialsTypedFactory : IHttpClientCredentialsFactory {
-        string GetAuthenticationMode();
-    }
-
-    public interface IHttpClientCredentialsDispatcherFactory : IHttpClientCredentialsFactory {
-
     }
 
     public interface IHttpClientCredentials {

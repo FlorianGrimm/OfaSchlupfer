@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Text;
     using Microsoft.Extensions.DependencyInjection;
+    using OfaSchlupfer.HttpAccess;
 
     public interface IReferenceRepositoryModel {
         ModelRepository ModelRepository { get; set; }
@@ -90,9 +91,11 @@
 
     public class ReferenceRepositoryModelType : IReferenceRepositoryModelType {
         public readonly IServiceProvider ServiceProvider;
+        public readonly IHttpClientDispatcherFactory HttpClientDispatcherFactory;
 
-        public ReferenceRepositoryModelType(IServiceProvider serviceProvider) {
+        public ReferenceRepositoryModelType(IServiceProvider serviceProvider, IHttpClientDispatcherFactory httpClientDispatcherFactory) {
             this.ServiceProvider = serviceProvider;
+            this.HttpClientDispatcherFactory = httpClientDispatcherFactory;
             this.Description = this.Name = this.GetType().Name;
         }
 

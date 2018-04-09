@@ -3,6 +3,7 @@
     using Microsoft.SharePoint.Client;
 
     using OfaSchlupfer.Elementary;
+    using OfaSchlupfer.HttpAccess;
     using OfaSchlupfer.Model;
 
     using System;
@@ -13,7 +14,10 @@
     }
 
     public class SPORepositoryModelType : ReferenceRepositoryModelType {
-        public SPORepositoryModelType(IServiceProvider serviceProvider) : base(serviceProvider) {
+        public SPORepositoryModelType(
+            IServiceProvider serviceProvider, 
+            IHttpClientDispatcherFactory httpClientDispatcherFactory
+            ) : base(serviceProvider, httpClientDispatcherFactory) {
             this.Name = "SPO";
             this.Description = "Read access to SharePointOnline sources.";
         }

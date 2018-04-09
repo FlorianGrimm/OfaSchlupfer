@@ -8,10 +8,14 @@
     using Microsoft.Extensions.DependencyInjection;
 
     using OfaSchlupfer.Elementary;
+    using OfaSchlupfer.HttpAccess;
     using OfaSchlupfer.Model; 
 
     public class SqlRepositoryModelType : ReferenceRepositoryModelType {
-        public SqlRepositoryModelType(IServiceProvider serviceProvider) : base(serviceProvider) {
+        public SqlRepositoryModelType(
+            IServiceProvider serviceProvider, 
+            IHttpClientDispatcherFactory httpClientDispatcherFactory
+            ) : base(serviceProvider, httpClientDispatcherFactory) {
             this.Name = "SPO";
             this.Description = "Read access to ShrePointOnline sources.";
         }

@@ -21,28 +21,20 @@
 
         public string GetAuthenticationMode() => "SPOIDCRL";
 
-        // weichei
-        //public ISharePointOnlineCredentials CreateCredentials(string username, string password) {
-        //    var logger = this._Logger ?? (this._Logger = this._LoggerFactory.CreateLogger("Authentication"));
-        //    return new SharePointOnlineCredentials(username, password, logger);
-        //}
-
-#warning HERE
-        public IHttpClient CreateHttpClient(RepositoryConnectionString connectionString, IHttpClientCredentials credentials) {
+        public IHttpClientCredentials CreateHttpClientCredentials(RepositoryConnectionString connectionString) {
             var logger = this._Logger ?? (this._Logger = this._LoggerFactory.CreateLogger("Authentication"));
+            return new SharePointOnlineCredentials(connectionString.User, connectionString.Password, logger);
+        }
+
+        public IHttpClient CreateHttpClient(RepositoryConnectionString connectionString, IHttpClientCredentials credentials) {
             if (credentials == null) {
-                var spoCred = new SharePointOnlineCredentials(connectionString.User, connectionString.Password, logger);
+                var spoCred = this.CreateHttpClientCredentials(connectionString);
                 return new HttpClientImplementation(connectionString.GetUrlNormalized(), spoCred);
             } else {
                 return new HttpClientImplementation(connectionString.GetUrlNormalized(), (SharePointOnlineCredentials) credentials);
             }
         }
 
-        // weichei
-        //public ISharePointOnlineHttpClient CreateSPOHttpClient(RepositoryConnectionString connectionString) {
-        //    var logger = this._Logger ?? (this._Logger = this._LoggerFactory.CreateLogger("Authentication"));
-        //    var spoCred = new SharePointOnlineCredentials(connectionString.User, connectionString.Password, logger);
-        //    return new SharePointOnlineHttpClient(connectionString.GetUrlNormalized(), spoCred);
-        //}
+        
     }
 }

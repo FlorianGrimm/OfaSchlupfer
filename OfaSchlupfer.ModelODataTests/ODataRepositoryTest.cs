@@ -15,8 +15,14 @@ namespace OfaSchlupfer.ModelOData {
 
             IServiceCollection services = new ServiceCollection();
             services.AddLogging((builder) => { builder.AddDebug(); });
+            services.AddHttpClient((builder) => {
+                // builder.Logger= 
+#warning TODO Add Credentials
+                //builder.AddSharePointOnlineCredentials
+            });
             services.AddSharePointOnlineCredentials();
             services.AddODataRepository();
+
             var serviceProvider = services.BuildServiceProvider();
 
             var modelRoot = new ModelRoot();

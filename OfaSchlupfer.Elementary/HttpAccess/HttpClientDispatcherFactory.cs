@@ -7,20 +7,17 @@
     using System.Linq;
     using System.Net;
 
-    public class HttpClientDispatcherFactory 
-        : IHttpClientDispatcherFactory 
-        , IHttpClientCredentialsDispatcherFactory {
+    public class HttpClientDispatcherFactory
+        : IHttpClientDispatcherFactory        {
         public readonly IServiceProvider ServiceProvider;
         private IHttpClientTypedFactory[] _HttpClientFactories;
-        private IHttpClientCredentialsTypedFactory[] _HttpClientCredentialsFactories;
         private Dictionary<string, IHttpClientTypedFactory> _HttpClientFactoryByAuthenticationMode;
-        private Dictionary<string, IHttpClientCredentialsTypedFactory> _HttpClientCredentialsTypedFactoryByAuthenticationMode;
-        // 
+
         public HttpClientDispatcherFactory(IServiceProvider serviceProvider) {
             this.ServiceProvider = serviceProvider;
         }
 
-        public IHttpClientTypedFactory GetHttpClientTypedFactoryByAuthenticationMode (string authenticationMode) {
+        public IHttpClientTypedFactory GetHttpClientTypedFactoryByAuthenticationMode(string authenticationMode) {
             if (this._HttpClientFactoryByAuthenticationMode == null) {
                 var httpClientFactories = this._HttpClientFactories
                     ?? (this._HttpClientFactories = this.ServiceProvider.GetServices<IHttpClientTypedFactory>().ToArray());
@@ -36,32 +33,34 @@
             return result;
         }
 
-        public IHttpClientCredentialsTypedFactory GetHttpClientCredentialsTypedFactoryByAuthenticationMode(string authenticationMode) {
-            if (this._HttpClientCredentialsTypedFactoryByAuthenticationMode == null) {
-                var httpClientCredentialsFactories = this._HttpClientCredentialsFactories
-                    ?? (this._HttpClientCredentialsFactories = this.ServiceProvider.GetServices<IHttpClientCredentialsTypedFactory>().ToArray());
-                var dict = new Dictionary<string, IHttpClientCredentialsTypedFactory>(StringComparer.OrdinalIgnoreCase);
-                foreach (var httpClientCredentialsFactory in httpClientCredentialsFactories) {
-                    var key = httpClientCredentialsFactory.GetAuthenticationMode();
-                    dict[key] = httpClientCredentialsFactory;
-                }
-                this._HttpClientCredentialsTypedFactoryByAuthenticationMode = dict;
+        public IHttpClientCredentials CreateHttpClientCredentials(RepositoryConnectionString connectionString) {
+            if (connectionString == null) { return null; }
+            var factory = this.GetHttpClientTypedFactoryByAuthenticationMode(connectionString.AuthenticationMode);
+            if (factory != null) {
+                return factory.CreateHttpClientCredentials(connectionString);
+            } else {
+#warning HERE
+                //factory = this.GetHttpClientTypedFactoryByAuthenticationMode("Default");
+                //if (factory != null) {
+                //    return factory.CreateHttpClientCredentials(connectionString);
+                //} else {
+                //    //return new HttpClientImplementation(connectionString);
+                //    return null;
+                //}
             }
-            IHttpClientCredentialsTypedFactory result = null;
-            this._HttpClientCredentialsTypedFactoryByAuthenticationMode.TryGetValue(authenticationMode, out result);
-            return result;
+            throw new NotImplementedException();
         }
 
         public IHttpClient CreateHttpClient(RepositoryConnectionString connectionString) {
             if (connectionString == null) { return null; }
             var factory = this.GetHttpClientTypedFactoryByAuthenticationMode(connectionString.AuthenticationMode);
-            IHttpClientCredentials todo = null;
+            IHttpClientCredentials credentials = null;
             if (factory != null) {
-                return factory.CreateHttpClient(connectionString, todo);
+                return factory.CreateHttpClient(connectionString, credentials);
             } else {
                 factory = this.GetHttpClientTypedFactoryByAuthenticationMode("Default");
                 if (factory != null) {
-                    return factory.CreateHttpClient(connectionString, todo);
+                    return factory.CreateHttpClient(connectionString, credentials);
                 } else {
                     //return new HttpClientImplementation(connectionString);
                     return null;
@@ -69,16 +68,35 @@
             }
         }
 
-        public IHttpClientCredentials CreateHttpClientCredentials(RepositoryConnectionString connectionString) {
-            throw new NotImplementedException();
-        }
-
         public IHttpClient CreateHttpClient(RepositoryConnectionString connectionString, IHttpClientCredentials credentials) {
-            throw new NotImplementedException();
+            if (connectionString == null) { return null; }
+            var factory = this.GetHttpClientTypedFactoryByAuthenticationMode(connectionString.AuthenticationMode);
+            if (factory != null) {
+                if (credentials != null) {
+                    credentials = factory.CreateHttpClientCredentials(connectionString);
+                }
+                return factory.CreateHttpClient(connectionString, credentials);
+            } else {
+                factory = this.GetHttpClientTypedFactoryByAuthenticationMode("Default");
+                if (factory != null) {
+                    return factory.CreateHttpClient(connectionString, credentials);
+                } else {
+                    //return new HttpClientImplementation(connectionString);
+                    return null;
+                }
+            }
         }
     }
 
     public class HttpClientDefaultFactory : IHttpClientTypedFactory {
+
+        public HttpClientDefaultFactory() {
+
+        }
+
+        public IHttpClientCredentials CreateHttpClientCredentials(RepositoryConnectionString connectionString) {
+            throw new NotImplementedException();
+        }
 
         public IHttpClient CreateHttpClient(RepositoryConnectionString connectionString, IHttpClientCredentials credentials) {
             var url = connectionString.GetUrlNormalized();
