@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.SqlAccess {
+﻿namespace OfaSchlupfer.Entitiy {
     /// <summary>
     /// a Entity
     /// </summary>

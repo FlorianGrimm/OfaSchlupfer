@@ -59,12 +59,5 @@
                 }
             }
         }
-
-        //public void AddRelation(ModelRelation modelRelation) {
-        //    this.Relations.Add(modelRelation);
-        //    //if (modelRelation.Master != null) {
-        //    //    modelRelation.Master.
-        //    //}
-        //}
     }
 }

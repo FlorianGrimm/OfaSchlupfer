@@ -44,8 +44,9 @@ namespace OfaSchlupfer.Elementary {
             return this._PasswordAsSecureString;
         }
 #endif
-        public RepositoryConnectionString CreateSuffix(string suffix) {
+        public RepositoryConnectionString CreateWithSuffix(string suffix) {
             var result = new RepositoryConnectionString();
+            result.AuthenticationMode = this.AuthenticationMode;
             result.Url = this.Url;
             result.Suffix = suffix;
             result.User = this.User;

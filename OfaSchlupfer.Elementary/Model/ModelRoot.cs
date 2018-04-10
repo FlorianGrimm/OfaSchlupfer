@@ -1,5 +1,6 @@
 ﻿namespace OfaSchlupfer.Model {
     using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -10,14 +11,37 @@
     /// Tenant global root of all models.
     /// </summary>
     [JsonObject]
-    public class ModelRoot {
-        public readonly List<ModelRepository> Repositories;
-        public readonly List<MappingRepository> RepositoryMappings;
+    public class ModelRoot
+        : FreezeableObject
+        , IMappingNamedObject<string> {
+        [JsonIgnore]
+        private string _Name;
 
-        public string Name;
+        [JsonIgnore]
+        private readonly FreezeableOwnedCollection<ModelRoot, ModelRepository> _Repositories;
+
+        [JsonIgnore]
+        private readonly FreezeableOwnedCollection<ModelRoot, MappingRepository> _RepositoryMappings;
+
+        public IList<ModelRepository> Repositories => this._Repositories;
+
+        public IList<MappingRepository> RepositoryMappings => this._RepositoryMappings;
+
         public ModelRoot() {
-            this.Repositories = new List<ModelRepository>();
-            this.RepositoryMappings = new List<MappingRepository>();
+            this._Repositories = new FreezeableOwnedCollection<ModelRoot, ModelRepository>(this, (that, item) => { item.Owner = that; });
+            this._RepositoryMappings = new FreezeableOwnedCollection<ModelRoot, MappingRepository>(this, (that, item) => { item.Owner = that; });
+        }
+
+
+        [JsonProperty]
+        public string Name {
+            get {
+                return this._Name;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Name = value;
+            }
         }
 
         public void UpdateNames() {
@@ -45,6 +69,8 @@
             if (name == null) { return null; }
             return this.Repositories.FirstOrDefault(_ => name.Equals(_.Name));
         }
+
+        public string GetName() => this._Name;
 
         public class Current {
             public readonly ModelRoot ModelRoot;

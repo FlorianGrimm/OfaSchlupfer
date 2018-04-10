@@ -31,13 +31,9 @@ namespace OfaSchlupfer.ModelOData.SPO {
 
         public string UserName { get; }
 
-        public bool IsSupportedGetAuthenticationCookie => true;
+        public bool IsSupportedGetAuthenticationAsync => false;
 
-        public bool IsSupportedGetAuthenticationCookieAsync => false;
-
-        public bool IsSupportedGetAuthenticationAsync => throw new NotImplementedException();
-
-        public bool IsSupportedGetAuthentication => throw new NotImplementedException();
+        public bool IsSupportedGetAuthentication => true;
 
         public event EventHandler<WebRequestEventArgs> ExecutingWebRequest;
 
@@ -111,7 +107,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
         }
 
         public void ConfigureHttpClientHandler(HttpClientHandler httpClientHandler, IHttpClientCredentialsData data) {
-            var spoData=(SharePointOnlineCredentialsData)data;
+            var spoData = (SharePointOnlineCredentialsData)data;
             httpClientHandler.Credentials = this;
             httpClientHandler.CookieContainer.SetCookies(spoData.Uri, spoData.Cookie);
         }

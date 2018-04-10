@@ -116,7 +116,7 @@
            HttpRequestMessage request,
            Action<System.Net.Http.HttpClient> configureHttpClient,
            CancellationToken cancellationToken,
-           Func<System.Net.Http.HttpClient, string, CancellationToken, Task<HttpResponseMessage>> executeAsync,
+           Func<System.Net.Http.HttpClient, System.Net.Http.HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> executeAsync,
            Func<HttpContent, Task<R>> readAsync,
            Func<HttpResponseMessage, int, bool> shouldRetry
            ) {
@@ -145,8 +145,12 @@
                         HttpResponseMessage response;
                         Task<HttpResponseMessage> responseTask;
 
-                        responseTask = httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, cancellationToken);
-                        
+                        if (executeAsync == null) {
+                            responseTask = httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, cancellationToken);
+                        } else {
+                            responseTask = executeAsync(httpClient, request, cancellationToken);
+                        }
+
                         try {
                             response = await responseTask.ConfigureAwait(false);
                         } catch (Exception exc) {

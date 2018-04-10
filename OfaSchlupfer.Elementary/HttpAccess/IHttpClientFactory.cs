@@ -39,7 +39,7 @@
     public interface IHttpClientCredentialsData {
     }
 
-        //HttpClientCookieCredentialsData
+    //HttpClientCookieCredentialsData
     public interface IHttpClientCookieCredentials : ICredentials, IHttpClientCredentials {
         //bool IsSupportedGetAuthenticationCookie { get; }
         //bool IsSupportedGetAuthenticationCookieAsync { get; }
@@ -61,6 +61,15 @@
            Action<System.Net.Http.HttpClient> configureHttpClient,
            CancellationToken cancellationToken,
            Func<System.Net.Http.HttpClient, string, CancellationToken, Task<HttpResponseMessage>> executeAsync,
+           Func<HttpContent, Task<R>> readAsync,
+           Func<HttpResponseMessage, int, bool> shouldRetry
+           );
+
+        Task<R> SendAsync<R>(
+           HttpRequestMessage request,
+           Action<System.Net.Http.HttpClient> configureHttpClient,
+           CancellationToken cancellationToken,
+           Func<System.Net.Http.HttpClient, System.Net.Http.HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> executeAsync,
            Func<HttpContent, Task<R>> readAsync,
            Func<HttpResponseMessage, int, bool> shouldRetry
            );

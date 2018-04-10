@@ -1,5 +1,6 @@
 ﻿namespace OfaSchlupfer.Model {
     using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -7,7 +8,9 @@
     using System.Threading.Tasks;
 
     [JsonObject]
-    public class MappingSchema {
+    public class MappingSchema
+        : FreezeableObject {
+
         public ModelEntityName SourceName;
         public ModelEntityName TargetName;
         [JsonIgnore]

@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.SqlAccess {
+﻿namespace OfaSchlupfer.Entitiy {
     /// <summary>
     /// An entity that project properties
     /// </summary>

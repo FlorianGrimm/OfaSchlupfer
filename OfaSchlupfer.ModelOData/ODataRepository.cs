@@ -45,7 +45,7 @@
             if (string.IsNullOrEmpty(suffix)) {
                 this.ConnectionString = connectionString;
             } else {
-                this.ConnectionString = connectionString.CreateSuffix(suffix);
+                this.ConnectionString = connectionString.CreateWithSuffix(suffix);
             }
         }
 

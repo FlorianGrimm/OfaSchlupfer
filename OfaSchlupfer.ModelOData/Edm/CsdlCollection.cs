@@ -8,6 +8,7 @@
 
     public class CsdlCollection<T> : Collection<T> {
         private readonly Action<T> _ActionOnInsertSet;
+
         public CsdlCollection(Action<T> actionOnInsertSet) {
             this._ActionOnInsertSet = actionOnInsertSet;
         }

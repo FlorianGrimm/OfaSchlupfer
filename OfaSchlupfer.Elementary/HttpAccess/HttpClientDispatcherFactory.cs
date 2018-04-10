@@ -8,7 +8,7 @@
     using System.Net;
 
     public class HttpClientDispatcherFactory
-        : IHttpClientDispatcherFactory        {
+        : IHttpClientDispatcherFactory {
         public readonly IServiceProvider ServiceProvider;
         private IHttpClientTypedFactory[] _HttpClientFactories;
         private Dictionary<string, IHttpClientTypedFactory> _HttpClientFactoryByAuthenticationMode;
@@ -47,8 +47,8 @@
                 //    //return new HttpClientImplementation(connectionString);
                 //    return null;
                 //}
+                throw new NotImplementedException("CreateHttpClientCredentials");
             }
-            throw new NotImplementedException();
         }
 
         public IHttpClient CreateHttpClient(RepositoryConnectionString connectionString) {
@@ -72,7 +72,7 @@
             if (connectionString == null) { return null; }
             var factory = this.GetHttpClientTypedFactoryByAuthenticationMode(connectionString.AuthenticationMode);
             if (factory != null) {
-                if (credentials != null) {
+                if (credentials == null) {
                     credentials = factory.CreateHttpClientCredentials(connectionString);
                 }
                 return factory.CreateHttpClient(connectionString, credentials);

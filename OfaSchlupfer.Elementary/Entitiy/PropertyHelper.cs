@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.SqlAccess {
+﻿namespace OfaSchlupfer.Entitiy {
     using System;
     using System.Collections.Generic;
     using System.Linq;

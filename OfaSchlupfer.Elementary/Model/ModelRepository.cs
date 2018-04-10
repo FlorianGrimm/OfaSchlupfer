@@ -1,22 +1,30 @@
 ﻿namespace OfaSchlupfer.Model {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
 
+    using OfaSchlupfer.Freezable;
+
     [JsonObject]
-    public class ModelRepository {
+    public class ModelRepository
+        : FreezeableObject {
         [JsonIgnore]
         private ModelEntityName _Name;
 
         [JsonIgnore]
         private IReferenceRepositoryModel _ReferenceRepositoryModel;
 
-        public ModelRepository() {
-        }
+        [JsonIgnore]
+        private ModelDefinition _ModelDefinition;
+
+        [JsonIgnore]
+        private string _RepositoryType;
+
+        [JsonIgnore]
+        private ModelSchema _ModelSchema;
+
+        public ModelRepository() { }
 
         [JsonProperty]
         public ModelEntityName Name {
@@ -24,6 +32,7 @@
                 return this._Name;
             }
             set {
+                this.ThrowIfFrozen();
                 this._Name = value;
                 if (this.ModelSchema != null) {
                     this.ModelSchema._Name = value;
@@ -32,13 +41,37 @@
         }
 
         [JsonProperty]
-        public ModelDefinition ModelDefinition { get; set; }
+        public ModelDefinition ModelDefinition {
+            get {
+                return this._ModelDefinition;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._ModelDefinition = value;
+            }
+        }
 
         [JsonProperty]
-        public string RepositoryType { get; set; }
+        public string RepositoryType {
+            get {
+                return this._RepositoryType;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._RepositoryType = value;
+            }
+        }
 
         [JsonProperty]
-        public ModelSchema ModelSchema { get; set; }
+        public ModelSchema ModelSchema {
+            get {
+                return this._ModelSchema;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._ModelSchema = value;
+            }
+        }
 
         [JsonIgnore]
         public IReferenceRepositoryModel ReferenceRepositoryModel {
@@ -46,9 +79,13 @@
                 return this._ReferenceRepositoryModel;
             }
             set {
+                this.ThrowIfFrozen();
                 this._ReferenceRepositoryModel = value;
             }
         }
+
+        [JsonIgnore]
+        public ModelRoot Owner { get; internal set; }
 
         public IReferenceRepositoryModel GetReferenceRepositoryModel(IServiceProvider serviceProvider) {
             if (this.ReferenceRepositoryModel != null) { return this.ReferenceRepositoryModel; }

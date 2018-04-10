@@ -1,8 +1,11 @@
 ﻿namespace OfaSchlupfer.Model {
-    using Newtonsoft.Json;
     using System;
     using System.Collections;
     using System.Collections.Generic;
+
+    using Newtonsoft.Json;
+
+    using OfaSchlupfer.Freezable;
 
     public class ModelEntityNameConverter : JsonConverter {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
@@ -12,7 +15,7 @@
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
             ModelEntityName modelEntityName = new ModelEntityName();
-            modelEntityName.SetJsonValue ( (string)reader.Value);
+            modelEntityName.SetJsonValue((string)reader.Value);
 
             return modelEntityName;
         }
@@ -24,19 +27,24 @@
 
     [JsonConverter(typeof(ModelEntityNameConverter))]
     [JsonObject]
-    public sealed class ModelEntityName : IEquatable<ModelEntityName> {
+    public sealed class ModelEntityName
+        : FreezeableObject
+        , IMappingNamedObject<string>
+        , IEquatable<ModelEntityName> {
+        [JsonIgnore]
         private string _NamespaceUri;
-        //private string _FullName;
+
+        [JsonIgnore]
         private string _Name;
+
+        [JsonIgnore]
         private int _HashCode;
 
         public ModelEntityName(string namespaceUri = null, string fullname = null, string name = null) {
             this._NamespaceUri = namespaceUri;
-            //this._FullName = fullname;
             this._Name = name;
         }
 
-        //[JsonProperty("NS")]
         [JsonIgnore]
         public string NamespaceUri {
             get {
@@ -46,25 +54,11 @@
                 if (value == string.Empty) { value = null; }
                 if (ModelUtility.Instance.StringComparer.Equals(this._NamespaceUri, value)) { return; }
                 if (this._NamespaceUri != null) { throw new ArgumentException("is already set"); }
+                this.ThrowIfFrozen();
                 this._NamespaceUri = value;
             }
         }
 
-#if false
-        [JsonProperty("FN")]
-        public string FullName {
-            get {
-                return this._FullName;
-            }
-            set {
-                if (value == string.Empty) { value = null; }
-                if (ModelUtility.Instance.StringComparer.Equals(this._FullName, value)) { return; }
-                if (this._FullName != null) { throw new ArgumentException("is already set"); }
-                this._FullName = value;
-            }
-        }
-#endif
-        //[JsonProperty("Name")]
         [JsonIgnore]
         public string Name {
             get {
@@ -74,9 +68,12 @@
                 if (value == string.Empty) { value = null; }
                 if (ModelUtility.Instance.StringComparer.Equals(this._Name, value)) { return; }
                 if (this._Name != null) { throw new ArgumentException("is already set"); }
+                this.ThrowIfFrozen();
                 this._Name = value;
             }
         }
+
+        public string GetName() => this._Name;
 
         public override bool Equals(object obj)
             => this.Equals(obj as ModelEntityName);
@@ -85,7 +82,6 @@
             if (ReferenceEquals(other, null)) { return false; }
             var stringComparer = ModelUtility.Instance.StringComparer;
             return stringComparer.Equals(this._Name, other._Name)
-                //&& stringComparer.Equals(this._FullName, other._FullName)
                 && stringComparer.Equals(this._NamespaceUri, other._NamespaceUri)
                 ;
         }
@@ -103,11 +99,6 @@
         }
 
         public override string ToString() {
-            //if (this._FullName != null) {
-            //    return this._FullName;
-            //} else {
-            //return $"{this._NamespaceUri} {this._Name}";
-            //}
             return "{" + (this.NamespaceUri ?? string.Empty) + "}" + (this.Name ?? string.Empty);
         }
 
@@ -115,10 +106,10 @@
             return "{" + (this.NamespaceUri ?? string.Empty) + "}" + (this.Name ?? string.Empty);
         }
 
-        private static readonly System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex("^{([^}]*)}([^{}]*)$"); 
+        private static readonly System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex("^{([^}]*)}([^{}]*)$");
         public void SetJsonValue(string value) {
             if (!string.IsNullOrEmpty(value)) {
-                var match=r.Match(value);
+                var match = r.Match(value);
                 if (match.Success) {
                     this._NamespaceUri = match.Groups[1].Value;
                     this._Name = match.Groups[2].Value;

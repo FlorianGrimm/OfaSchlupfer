@@ -1,12 +1,16 @@
-﻿using System;
-using System.Net.Http;
+﻿namespace OfaSchlupfer.ModelOData.ODataAccess {
+    using System;
+    using System.Net.Http;
 
-namespace OfaSchlupfer.ModelOData.ODataAccess {
     public class ODataRequest {
-        public HttpRequestMessage CreateHttpRequest() {
-            HttpRequestMessage result = new HttpRequestMessage();
-            result.RequestUri = new Uri("/");
+        public virtual HttpRequestMessage CreateHttpRequest(string requestUri) {
+            HttpRequestMessage result = new HttpRequestMessage(HttpMethod.Get, requestUri);
             return result;
+        }
+
+        public virtual bool ShouldResponceReadStream { get; set; }
+
+        public virtual void ConfigureHttpClient(HttpClient httpClient) {
         }
     }
 }

@@ -18,13 +18,15 @@
 }
 namespace Microsoft.Extensions.DependencyInjection {
     using System;
+    using OfaSchlupfer.HttpAccess;
     using OfaSchlupfer.ModelOData.SPO;
 
     public static class SharePointOnlineCredentialsExtension {
         public static ISharePointOnlineCredentialsBuilder AddSharePointOnlineCredentials(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) => AddSharePointOnlineCredentials(services, _ => { });
         public static ISharePointOnlineCredentialsBuilder AddSharePointOnlineCredentials(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Action<SharePointOnlineCredentialsOptions> configure) {
             services.Configure(configure);
-            services.AddSingleton(typeof(ISharePointOnlineClientFactory), typeof(SharePointOnlineFactory));
+            services.AddTransient(typeof(ISharePointOnlineClientFactory), typeof(SharePointOnlineFactory));
+            services.AddTransient(typeof(IHttpClientTypedFactory), typeof(SharePointOnlineFactory));
             return new SharePointOnlineCredentialsBuilder(services);
         }
     }

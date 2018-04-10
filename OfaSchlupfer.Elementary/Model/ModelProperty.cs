@@ -1,17 +1,41 @@
 ﻿namespace OfaSchlupfer.Model {
     using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+
+    using OfaSchlupfer.Freezable;
 
     [JsonObject]
-    public class ModelProperty {
-        public string Name;
-        public ModelType Type;
+    public class ModelProperty
+        : FreezeableObject
+        , IMappingNamedObject<string> {
 
-        public ModelProperty() {
+        [JsonIgnore]
+        private string _Name;
+
+        [JsonIgnore]
+        private ModelType _Type;
+
+        public ModelProperty() { }
+
+        public string Name {
+            get {
+                return this._Name;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Name = value;
+            }
         }
+
+        public ModelType Type {
+            get {
+                return this._Type;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Type = value;
+            }
+        }
+
+        public string GetName() => this._Name;
     }
 }

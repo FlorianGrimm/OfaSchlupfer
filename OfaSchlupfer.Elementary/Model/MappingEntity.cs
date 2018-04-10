@@ -1,5 +1,6 @@
 ﻿namespace OfaSchlupfer.Model {
     using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -7,21 +8,90 @@
     using System.Threading.Tasks;
 
     [JsonObject]
-    public class MappingEntity {
-        public ModelEntityName SourceName;
-        public ModelEntityName TargetName;
+    public class MappingEntity
+        : FreezeableObject
+        , IMappingNamedObject<string> {
         [JsonIgnore]
-        public ModelEntity Source;
+        private ModelEntityName _SourceName;
+
         [JsonIgnore]
-        public ModelEntity Target;
-        public readonly List<MappingProperty> PropertyMappings;
-        public readonly List<MappingConstraint> ConstraintMappings;
-        public string Name;
+        private ModelEntity _Source;
+
+        [JsonIgnore]
+        private ModelEntityName _TargetName;
+
+        [JsonIgnore]
+        private ModelEntity _Target;
+
+        [JsonIgnore]
+        private string _Name;
 
         public MappingEntity() {
             this.PropertyMappings = new List<MappingProperty>();
             this.ConstraintMappings = new List<MappingConstraint>();
         }
+
+        [JsonProperty]
+        public ModelEntityName SourceName {
+            get {
+                return this._SourceName;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._SourceName = value;
+            }
+        }
+
+
+        [JsonProperty]
+        public ModelEntityName TargetName {
+            get {
+                return this._TargetName;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._TargetName = value;
+            }
+        }
+
+        [JsonIgnore]
+        public ModelEntity Source {
+            get {
+                return this._Source;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Source = value;
+            }
+        }
+
+        [JsonIgnore]
+        public ModelEntity Target {
+            get {
+                return this._Target;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Target = value;
+            }
+        }
+
+
+        public readonly List<MappingProperty> PropertyMappings;
+        public readonly List<MappingConstraint> ConstraintMappings;
+
+        [JsonProperty]
+        public string Name {
+            get {
+                return this._Name;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Name = value;
+            }
+        }
+
+        public string GetName() => this._Name;
 
         internal void UpdateNames(ModelRoot.Current current, ModelSchema.Current sourceCurrent, ModelSchema.Current targetCurrent) {
             if (this.Source != null) {

@@ -1,7 +1,8 @@
-﻿namespace OfaSchlupfer.SqlAccess {
+﻿namespace OfaSchlupfer.Entitiy {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using OfaSchlupfer.SqlAccess;
 
     /// <summary>
     /// An entity that stores it's data in an array.

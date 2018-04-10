@@ -1,5 +1,6 @@
 ﻿namespace OfaSchlupfer.Model {
     using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -10,7 +11,9 @@
     /// Maps 2 repositories
     /// </summary>
     [JsonObject]
-    public class MappingRepository {
+    public class MappingRepository
+        : FreezeableObject {
+
         [JsonIgnore]
         public ModelRepository Source;
         [JsonIgnore]
@@ -24,6 +27,9 @@
 
         [JsonProperty]
         public MappingSchema Mapping;
+
+        [JsonIgnore]
+        public ModelRoot Owner { get; internal set; }
 
         public MappingRepository() {
         }

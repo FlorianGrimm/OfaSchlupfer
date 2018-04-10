@@ -1,18 +1,27 @@
 ﻿namespace OfaSchlupfer.Model {
     using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+
+    using OfaSchlupfer.Freezable;
 
     [JsonObject]
-    public class ModelScalarType : ModelType {
+    public class ModelScalarType
+        : ModelType {
+        [JsonIgnore]
+        private bool _IsNullable;
+
         public ModelScalarType() {
             this.IsNullable = true;
         }
 
         [JsonProperty(Order = 2)]
-        public bool IsNullable { get; set; }
+        public bool IsNullable {
+            get {
+                return this._IsNullable;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._IsNullable = value;
+            }
+        }
     }
 }

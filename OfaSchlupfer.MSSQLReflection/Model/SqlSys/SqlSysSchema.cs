@@ -1,4 +1,5 @@
 ﻿namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
+    using OfaSchlupfer.Entitiy;
     using OfaSchlupfer.SqlAccess;
 
     /// <summary>
