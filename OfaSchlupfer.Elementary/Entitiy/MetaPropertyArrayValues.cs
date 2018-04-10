@@ -2,7 +2,7 @@
     /// <summary>
     /// MetaProperty for EntityArrayProp
     /// </summary>
-    public class MetaPropertyArrayProp : MetaProperty {
+    public class MetaPropertyArrayValues : MetaProperty {
         private int _Index;
 
         /// <summary>
@@ -11,11 +11,11 @@
         public int Index { get { return this._Index; } set { this._Index = value; } }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MetaPropertyArrayProp"/> class.
+        /// Initializes a new instance of the <see cref="MetaPropertyArrayValues"/> class.
         /// </summary>
         /// <param name="name">the name</param>
         /// <param name="idx">the index</param>
-        public MetaPropertyArrayProp(string name, int idx) {
+        public MetaPropertyArrayValues(string name, int idx) {
             this.Name = name;
             this._Index = idx;
         }
@@ -26,7 +26,7 @@
         /// <param name="entity">the entity</param>
         /// <returns>the accessor.</returns>
         public override IAccessor GetAccessor(object entity) {
-            return new AccessorArrayProp(this, entity);
+            return new AccessorArrayValues(this, entity);
         }
     }
 }

@@ -8,7 +8,12 @@
 
     [JsonObject]
     public class ModelRepository
-        : FreezeableObject {
+        : FreezeableObject
+        , IMappingNamedObject<string>
+        , IMappingNamedObject<ModelEntityName> {
+        [JsonIgnore]
+        private ModelRoot _Owner;
+
         [JsonIgnore]
         private ModelEntityName _Name;
 
@@ -85,7 +90,25 @@
         }
 
         [JsonIgnore]
-        public ModelRoot Owner { get; internal set; }
+        public ModelRoot Owner {
+            get {
+                return this._Owner;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Owner = value;
+            }
+        }
+
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this.Name?.Freeze();
+                this.ModelDefinition?.Freeze();
+                this.ModelSchema?.Freeze();
+            }
+            return result;
+        }
 
         public IReferenceRepositoryModel GetReferenceRepositoryModel(IServiceProvider serviceProvider) {
             if (this.ReferenceRepositoryModel != null) { return this.ReferenceRepositoryModel; }
@@ -103,5 +126,9 @@
                 }
             }
         }
+
+        ModelEntityName IMappingNamedObject<ModelEntityName>.GetName() => this._Name;
+
+        string IMappingNamedObject<string>.GetName() => this._Name.GetName();
     }
 }

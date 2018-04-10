@@ -12,28 +12,55 @@
     /// </summary>
     [JsonObject]
     public class MappingRepository
-        : FreezeableObject {
+        : MappingObject<string, ModelEntityName, ModelRepository> {
+        [JsonIgnore]
+        private MappingSchema _Mapping;
 
         [JsonIgnore]
-        public ModelRepository Source;
+        private ModelRoot _Owner;
+
+        [JsonProperty]
+        public MappingSchema Mapping {
+            get {
+                return this._Mapping;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Mapping = value;
+            }
+        }
+
         [JsonIgnore]
-        public ModelRepository Target;
-
-        [JsonProperty]
-        public ModelEntityName SourceName;
-
-        [JsonProperty]
-        public ModelEntityName TargetName;
-
-        [JsonProperty]
-        public MappingSchema Mapping;
-
-        [JsonIgnore]
-        public ModelRoot Owner { get; internal set; }
+        public ModelRoot Owner {
+            get {
+                return this._Owner;
+            }
+            internal set {
+                this.ThrowIfFrozen();
+                this._Owner = value;
+            }
+        }
 
         public MappingRepository() {
         }
 
+        protected override bool AreSourceNamesEqual(ModelEntityName sourceName, ref ModelEntityName value) => MappingObjectHelper.AreNamesEqual(sourceName, ref value);
+
+        protected override bool AreTargetNamesEqual(ModelEntityName targetName, ref ModelEntityName value) => MappingObjectHelper.AreNamesEqual(targetName, ref value);
+
+        protected override bool AreThisNamesEqual(string thisName, ref string value) => MappingObjectHelper.AreNamesEqual(thisName, ref value);
+
+        public override void ResolveNameSource() {
+            if (((object)this._Source == null) && ((object)this._SourceName != null)) {
+#warning TODO ResolveNameSource
+            }
+        }
+
+        public override void ResolveNameTarget() {
+            if (((object)this._Target == null) && ((object)this._TargetName != null)) {
+#warning TODO ResolveNameTarget
+            }
+        }
 
         internal void UpdateNames(ModelRoot.Current current) {
             if (this.Source != null) {

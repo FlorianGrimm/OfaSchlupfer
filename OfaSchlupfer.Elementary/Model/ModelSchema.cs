@@ -1,5 +1,6 @@
 ﻿namespace OfaSchlupfer.Model {
     using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -10,32 +11,67 @@
     /// The schema, classes, or entity projection
     /// </summary>
     [JsonObject]
-    public class ModelSchema {
+    public class ModelSchema
+        : FreezeableObject
+        , IMappingNamedObject<ModelEntityName> {
+        [JsonIgnore]
+        private ModelEntityName _RootEntityName;
+
         [JsonIgnore]
         internal ModelEntityName _Name;
 
+        [JsonIgnore]
+        private readonly FreezeableOwnedCollection<ModelSchema, ModelComplexType> _ComplexTypes;
+
+        [JsonIgnore]
+        private readonly FreezeableOwnedCollection<ModelSchema, ModelEntity> _Entities;
+
+        [JsonIgnore]
+        private readonly FreezeableOwnedCollection<ModelSchema, ModelRelation> _Relations;
+
         [JsonProperty(Order = 2)]
-        public ModelEntityName RootEntityName { get; set; }
+        public ModelEntityName RootEntityName {
+            get {
+                return this._RootEntityName;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._RootEntityName = value;
+            }
+        }
+
 
         [JsonProperty(Order = 3)]
-        public readonly List<ModelComplexType> ComplexTypes;
+        public IList<ModelComplexType> ComplexTypes => this._ComplexTypes;
 
         [JsonProperty(Order = 4)]
-        public readonly List<ModelEntity> Entities;
+        public IList<ModelEntity> Entities => this._Entities;
 
         [JsonProperty(Order = 5)]
-        public readonly List<ModelRelation> Relations;
+        public IList<ModelRelation> Relations => this._Relations;
 
         public ModelSchema() {
-            this.ComplexTypes = new List<ModelComplexType>();
-            this.Entities = new List<ModelEntity>();
-            this.Relations = new List<ModelRelation>();
+            this._ComplexTypes = new FreezeableOwnedCollection<ModelSchema, ModelComplexType>(this, (owner, item) => { item.Owner = owner; });
+            this._Entities = new FreezeableOwnedCollection<ModelSchema, ModelEntity>(this, (owner, item) => { item.Owner = owner; });
+            this._Relations = new FreezeableOwnedCollection<ModelSchema, ModelRelation>(this, (owner, item) => { item.Owner = owner; });
         }
 
         [JsonIgnore]
         public ModelEntityName Name => this._Name;
 
         public void PostDeserialize() {
+        }
+
+        public ModelEntityName GetName() => this._Name;
+
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._ComplexTypes.Freeze();
+                this._Entities.Freeze();
+                this._Relations.Freeze();
+            }
+            return result;
         }
 
         public class Current {

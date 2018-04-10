@@ -7,7 +7,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
     /// <summary>
     /// Access for sys.schema
     /// </summary>
-    public sealed class SqlSysColumn : EntityArrayProp, ISqlSysTypedObject {
+    public sealed class SqlSysColumn : EntityArrayValues, ISqlSysTypedObject {
 #if false
         public const string SELECTStatement = @"
         SELECT c.object_id, c.name, c.column_id, c.system_type_id, c.user_type_id, c.max_length, c.precision, c.scale, c.collation_name, c.is_nullable 
@@ -29,7 +29,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
         /// </summary>
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
-        public SqlSysColumn(MetaEntityArrayProp metaData, object[] values)
+        public SqlSysColumn(MetaEntityArrayValues metaData, object[] values)
             : base(metaData, values) { }
 
 #pragma warning disable SA1101 // Prefix local calls with this
@@ -89,7 +89,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
         /// <returns>a new instance</returns>
-        public static SqlSysColumn Factory(MetaEntityArrayProp metaData, object[] values) {
+        public static SqlSysColumn Factory(MetaEntityArrayValues metaData, object[] values) {
             return new SqlSysColumn(metaData, values);
         }
     }

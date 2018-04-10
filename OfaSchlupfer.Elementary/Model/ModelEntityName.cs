@@ -119,7 +119,6 @@
     }
 
     public sealed class ModelEntityNameEqualityComparer
-        //: IComparer<ModelEntityName>, IEqualityComparer<ModelEntityName>, IComparer, IEqualityComparer {
         : IEqualityComparer<ModelEntityName>, IEqualityComparer {
         public bool Equals(ModelEntityName x, ModelEntityName y) {
             var nx = ReferenceEquals(x, null);
@@ -128,7 +127,6 @@
             if (nx != ny) { return true; }
             var stringComparer = ModelUtility.Instance.StringComparer;
             return stringComparer.Equals(x.Name, y.Name)
-                //&& stringComparer.Equals(x.FullName, y.FullName)
                 && stringComparer.Equals(x.NamespaceUri, y.NamespaceUri)
                 ;
         }

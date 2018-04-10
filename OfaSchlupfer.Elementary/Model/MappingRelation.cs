@@ -9,85 +9,16 @@
 
     [JsonObject]
     public class MappingRelation
-        : FreezeableObject
+        : MappingObjectString<ModelRelation>
         , IMappingNamedObject<string> {
         [JsonIgnore]
-        private string _Name;
+        private MappingSchema _Owner;
 
         [JsonIgnore]
         private bool _Enabled;
 
-        [JsonIgnore]
-        private string _SourceName;
-
-        [JsonIgnore]
-        private string _TargetName;
-
-        [JsonIgnore]
-        private ModelRelation _Source;
-
-        [JsonIgnore]
-        private ModelRelation _Target;
-
         public MappingRelation() {
         }
-
-        [JsonProperty]
-        public string SourceName {
-            get {
-                return this._SourceName;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._SourceName = value;
-            }
-        }
-
-        [JsonProperty]
-        public string TargetName {
-            get {
-                return this._TargetName;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._TargetName = value;
-            }
-        }
-
-        [JsonIgnore]
-        public ModelRelation Source {
-            get {
-                return this._Source;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Source = value;
-            }
-        }
-
-        [JsonIgnore]
-        public ModelRelation Target {
-            get {
-                return this._Target;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Target = value;
-            }
-        }
-
-        [JsonProperty]
-        public string Name {
-            get {
-                return this._Name;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Name = value;
-            }
-        }
-
-        public string GetName() => this._Name;
 
         [JsonProperty]
         public bool Enabled {
@@ -99,6 +30,36 @@
                 this._Enabled = value;
             }
         }
+
+        [JsonIgnore]
+        public MappingSchema Owner {
+            get {
+                return this._Owner;
+            }
+            internal set {
+                this.ThrowIfFrozen();
+                this._Owner = value;
+            }
+        }
+
+        protected override bool AreSourceNamesEqual(string sourceName, ref string value) => MappingObjectHelper.AreNamesEqual(sourceName, ref value);
+
+        protected override bool AreTargetNamesEqual(string targetName, ref string value) => MappingObjectHelper.AreNamesEqual(targetName, ref value);
+
+        protected override bool AreThisNamesEqual(string thisName, ref string value) => MappingObjectHelper.AreNamesEqual(thisName, ref value);
+
+        public override void ResolveNameSource() {
+            if (((object)this._Source == null) && ((object)this._SourceName != null)) {
+#warning TODO ResolveNameSource
+            }
+        }
+
+        public override void ResolveNameTarget() {
+            if (((object)this._Target == null) && ((object)this._TargetName != null)) {
+#warning TODO ResolveNameTarget
+            }
+        }
+
         internal void UpdateNames(ModelRoot.Current current, ModelSchema.Current sourceCurrent, ModelSchema.Current targetCurrent) {
             throw new NotImplementedException();
         }

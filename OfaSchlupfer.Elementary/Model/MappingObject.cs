@@ -126,19 +126,24 @@
     public class MappingObjectString<TValue>
         : MappingObject<string, string, TValue>
         where TValue : class, IMappingNamedObject<string> {
-        protected override bool AreSourceNamesEqual(string sourceName, ref string value) {
-            if (value == string.Empty) { value = null; }
-            return (string.Equals(sourceName, value, StringComparison.Ordinal));
-        }
+        protected override bool AreSourceNamesEqual(string sourceName, ref string value)
+            => MappingObjectHelper.AreNamesEqual(sourceName, ref value);
 
-        protected override bool AreTargetNamesEqual(string targetName, ref string value) {
-            if (value == string.Empty) { value = null; }
-            return (string.Equals(targetName, value, StringComparison.Ordinal));
-        }
+        protected override bool AreTargetNamesEqual(string targetName, ref string value)
+            => MappingObjectHelper.AreNamesEqual(targetName, ref value);
 
-        protected override bool AreThisNamesEqual(string thisName, ref string value) {
+        protected override bool AreThisNamesEqual(string thisName, ref string value)
+            => MappingObjectHelper.AreNamesEqual(thisName, ref value);
+    }
+
+    public static class MappingObjectHelper {
+        public static bool AreNamesEqual(string thisName, ref string value) {
             if (value == string.Empty) { value = null; }
             return (string.Equals(thisName, value, StringComparison.Ordinal));
+        }
+
+        public static bool AreNamesEqual(ModelEntityName thisName, ref ModelEntityName value) {
+            return ModelUtility.Instance.ModelEntityNameEqualityComparer.Equals(thisName, value);
         }
     }
 }

@@ -9,89 +9,55 @@
 
     [JsonObject]
     public class MappingEntity
-        : FreezeableObject
+        : MappingObject<string, ModelEntityName, ModelEntity>
         , IMappingNamedObject<string> {
         [JsonIgnore]
-        private ModelEntityName _SourceName;
+        private MappingSchema _Owner;
 
         [JsonIgnore]
-        private ModelEntity _Source;
+        private readonly FreezeableOwnedCollection<MappingEntity, MappingProperty> _PropertyMappings;
 
         [JsonIgnore]
-        private ModelEntityName _TargetName;
-
-        [JsonIgnore]
-        private ModelEntity _Target;
-
-        [JsonIgnore]
-        private string _Name;
+        private readonly FreezeableOwnedCollection<MappingEntity, MappingConstraint> _ConstraintMappings;
 
         public MappingEntity() {
-            this.PropertyMappings = new List<MappingProperty>();
-            this.ConstraintMappings = new List<MappingConstraint>();
+            this._PropertyMappings = new FreezeableOwnedCollection<MappingEntity, MappingProperty>(this, (owner, item) => { item.Owner = owner; });
+            this._ConstraintMappings = new FreezeableOwnedCollection<MappingEntity, MappingConstraint>(this, (owner, item) => { item.Owner = owner; });
         }
 
-        [JsonProperty]
-        public ModelEntityName SourceName {
-            get {
-                return this._SourceName;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._SourceName = value;
-            }
-        }
+        public IList<MappingProperty> PropertyMappings => this._PropertyMappings;
 
+        public IList<MappingConstraint> ConstraintMappings => this._ConstraintMappings;
 
-        [JsonProperty]
-        public ModelEntityName TargetName {
-            get {
-                return this._TargetName;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._TargetName = value;
-            }
-        }
 
         [JsonIgnore]
-        public ModelEntity Source {
+        public MappingSchema Owner {
             get {
-                return this._Source;
+                return this._Owner;
             }
             set {
                 this.ThrowIfFrozen();
-                this._Source = value;
+                this._Owner = value;
             }
         }
 
-        [JsonIgnore]
-        public ModelEntity Target {
-            get {
-                return this._Target;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Target = value;
-            }
-        }
+        protected override bool AreSourceNamesEqual(ModelEntityName sourceName, ref ModelEntityName value) => MappingObjectHelper.AreNamesEqual(sourceName, ref value);
 
+        protected override bool AreTargetNamesEqual(ModelEntityName targetName, ref ModelEntityName value) => MappingObjectHelper.AreNamesEqual(targetName, ref value);
 
-        public readonly List<MappingProperty> PropertyMappings;
-        public readonly List<MappingConstraint> ConstraintMappings;
+        protected override bool AreThisNamesEqual(string thisName, ref string value) => MappingObjectHelper.AreNamesEqual(thisName, ref value);
 
-        [JsonProperty]
-        public string Name {
-            get {
-                return this._Name;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Name = value;
+        public override void ResolveNameSource() {
+            if (((object)this._Source == null) && ((object)this._SourceName != null)) {
+#warning TODO ResolveNameSource
             }
         }
 
-        public string GetName() => this._Name;
+        public override void ResolveNameTarget() {
+            if (((object)this._Target == null) && ((object)this._TargetName != null)) {
+#warning TODO ResolveNameTarget
+            }
+        }
 
         internal void UpdateNames(ModelRoot.Current current, ModelSchema.Current sourceCurrent, ModelSchema.Current targetCurrent) {
             if (this.Source != null) {

@@ -7,7 +7,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
     /// <summary>
     /// Access for sys.types
     /// </summary>
-    public sealed class SqlSysType : EntityArrayProp, ISqlSysTypedObject {
+    public sealed class SqlSysType : EntityArrayValues, ISqlSysTypedObject {
         /// <summary>
         /// SELECT  FROM sys.types;
         /// </summary>
@@ -18,7 +18,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
         /// </summary>
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
-        public SqlSysType(MetaEntityArrayProp metaData, object[] values)
+        public SqlSysType(MetaEntityArrayValues metaData, object[] values)
             : base(metaData, values) { }
 
 #pragma warning disable SA1101 // Prefix local calls with this
@@ -49,7 +49,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
         /// <returns>a new instance</returns>
-        public static SqlSysType Factory(MetaEntityArrayProp metaData, object[] values) {
+        public static SqlSysType Factory(MetaEntityArrayValues metaData, object[] values) {
             return new SqlSysType(metaData, values);
         }
     }

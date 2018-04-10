@@ -7,7 +7,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
     /// <summary>
     /// Access for sys.schema
     /// </summary>
-    public sealed class SqlSysParameter : EntityArrayProp, ISqlSysTypedObject {
+    public sealed class SqlSysParameter : EntityArrayValues, ISqlSysTypedObject {
         public const string SELECTStatement = "SELECT object_id, name, parameter_id, system_type_id, user_type_id , max_length, precision, scale ,is_output, has_default_value, default_value, is_nullable FROM sys.parameters;";
 
         /// <summary>
@@ -15,7 +15,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
         /// </summary>
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
-        public SqlSysParameter(MetaEntityArrayProp metaData, object[] values)
+        public SqlSysParameter(MetaEntityArrayValues metaData, object[] values)
             : base(metaData, values) { }
 
 #pragma warning disable SA1101 // Prefix local calls with this
@@ -52,7 +52,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
         /// <returns>a new instance</returns>
-        public static SqlSysParameter Factory(MetaEntityArrayProp metaData, object[] values) {
+        public static SqlSysParameter Factory(MetaEntityArrayValues metaData, object[] values) {
             return new SqlSysParameter(metaData, values);
         }
     }

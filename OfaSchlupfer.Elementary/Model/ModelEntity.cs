@@ -7,7 +7,11 @@
     using OfaSchlupfer.Freezable;
 
     [JsonObject()]
-    public class ModelEntity : ModelType {
+    public class ModelEntity
+        : ModelType {
+        [JsonIgnore]
+        private ModelSchema _Owner;
+
         [JsonIgnore]
         private ModelComplexType _EntityType;
 
@@ -17,11 +21,14 @@
         [JsonIgnore]
         private ModelEntityKind _Kind;
 
+        [JsonIgnore]
+        private readonly FreezeableOwnedCollection<ModelEntity, ModelConstraint> _Constraints;
+
         [JsonProperty(Order = 5)]
-        public readonly List<ModelConstraint> Constraints;
+        public IList<ModelConstraint> Constraints => this._Constraints;
 
         public ModelEntity() {
-            this.Constraints = new List<ModelConstraint>();
+            this._Constraints = new FreezeableOwnedCollection<ModelEntity, ModelConstraint>(this, (owner, item) => { item.Owner = owner; });
         }
 
         [JsonProperty(Order = 2)]
@@ -59,6 +66,27 @@
                     this._EntityTypeNáme = value.Name;
                 }
             }
+        }
+
+        [JsonIgnore]
+        public ModelSchema Owner {
+            get {
+                return this._Owner;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Owner = value;
+            }
+        }
+
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._Constraints.Freeze();
+                this.EntityTypeNáme?.Freeze();
+                this.EntityType?.Freeze();
+            }
+            return result;
         }
     }
 

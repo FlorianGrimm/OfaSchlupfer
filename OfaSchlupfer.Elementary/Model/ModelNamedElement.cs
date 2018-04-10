@@ -4,7 +4,9 @@
     using OfaSchlupfer.Freezable;
 
     [JsonObject]
-    public class ModelNamedElement : FreezeableObject {
+    public class ModelNamedElement
+        : FreezeableObject
+        , IMappingNamedObject<ModelEntityName> {
         private ModelEntityName _Name;
 
         public ModelNamedElement() { }
@@ -23,5 +25,7 @@
         public override string ToString() {
             return (this.Name == null) ? this.GetType().Name : this.Name.ToString();
         }
+
+        ModelEntityName IMappingNamedObject<ModelEntityName>.GetName() => this._Name;
     }
 }

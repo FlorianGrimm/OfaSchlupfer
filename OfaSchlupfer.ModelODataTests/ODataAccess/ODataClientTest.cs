@@ -12,13 +12,14 @@
     using Xunit;
 
     public class ODataClientTest {
-        /*
+#if LongRunning
         [Fact]
         [Trait("Category", "hot")]
         public async Task ODataClient_1_Test() {
             await _ODataClient_1_Test();
         }
-        */
+#endif
+
         private async Task _ODataClient_1_Test() {
             var testCfg = OfaSchlupfer.TestCfg.Get();
             var repCSProjectServer = testCfg.ProjectServer.CreateWithSuffix("");
@@ -94,7 +95,5 @@
             oDataResponce.Parse(oDataClient, oDataRequest);
             //var httpClient = clientFactory.CreateHttpClient(repCSProjectServer)
         }
-
-
     }
 }

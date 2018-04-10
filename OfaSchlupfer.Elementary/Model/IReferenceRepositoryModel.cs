@@ -5,14 +5,16 @@
     using System.Text;
     using Microsoft.Extensions.DependencyInjection;
     using OfaSchlupfer.HttpAccess;
+    using OfaSchlupfer.Freezable;
 
-    public interface IReferenceRepositoryModel {
+    public interface IReferenceRepositoryModel
+        : IFreezeable {
+
         ModelRepository ModelRepository { get; set; }
 
         ModelSchema ModelSchema { get; set; }
 
         ModelDefinition ModelDefinition { get; set; }
-
 
         // subject to change.
 
@@ -30,7 +32,9 @@
         IReferenceRepositoryModel CreateReferenceRepositoryModel();
     }
 
-    public abstract class ReferenceRepositoryModelBase : IReferenceRepositoryModel {
+    public abstract class ReferenceRepositoryModelBase
+        : FreezeableObject
+        , IReferenceRepositoryModel {
         protected ModelRepository _ModelRepository;
 
         protected ModelSchema _ModelSchema;
@@ -44,9 +48,8 @@
                 return this._ModelRepository;
             }
             set {
-                if (ReferenceEquals(this._ModelRepository, value)) {
-                    return;
-                }
+                if (ReferenceEquals(this._ModelRepository, value)) { return; }
+                this.ThrowIfFrozen();
                 if ((object)this._ModelRepository != null) {
                     if (ReferenceEquals(this._ModelRepository.ReferenceRepositoryModel, this)) {
                         this._ModelRepository.ReferenceRepositoryModel = null;
@@ -66,9 +69,8 @@
                 return this._ModelSchema;
             }
             set {
-                if (ReferenceEquals(this._ModelSchema, value)) {
-                    return;
-                }
+                if (ReferenceEquals(this._ModelSchema, value)) { return; }
+                this.ThrowIfFrozen();
                 this._ModelSchema = value;
             }
         }
@@ -78,15 +80,23 @@
                 return this._ModelDefinition;
             }
             set {
-                if (ReferenceEquals(this._ModelDefinition, value)) {
-                    return;
-                }
+                if (ReferenceEquals(this._ModelDefinition, value)) { return; }
+                this.ThrowIfFrozen();
                 this._ModelDefinition = value;
             }
         }
 
         public abstract List<string> BuildSchema(string metadataContent);
 
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._ModelRepository?.Freeze();
+                this._ModelSchema?.Freeze();
+                this._ModelDefinition?.Freeze();
+            }
+            return result;
+        }
     }
 
     public class ReferenceRepositoryModelType : IReferenceRepositoryModelType {

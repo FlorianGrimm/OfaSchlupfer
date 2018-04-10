@@ -7,7 +7,7 @@
     /// <summary>
     /// An entity that stores it's data in an array.
     /// </summary>
-    public class EntityArrayProp : IEntity {
+    public class EntityArrayValues : IEntity {
         /// <summary>
         /// Convert the rows to ProjectChange
         /// </summary>
@@ -15,10 +15,10 @@
         /// <param name="sqlResult">the read values</param>
         /// <param name="factory">a factory for the target instances</param>
         /// <returns>the list of read items.</returns>
-        public static List<T> ConvertFromSqlResult<T>(SqlReadResult sqlResult, Func<MetaEntityArrayProp /*metaData*/, object[] /*values*/, T> factory)
-            where T : EntityArrayProp {
+        public static List<T> ConvertFromSqlResult<T>(SqlReadResult sqlResult, Func<MetaEntityArrayValues /*metaData*/, object[] /*values*/, T> factory)
+            where T : EntityArrayValues {
             var result = new List<T>(sqlResult.Rows.Count);
-            var meta = new MetaEntityArrayProp(sqlResult.FieldNames);
+            var meta = new MetaEntityArrayValues(sqlResult.FieldNames);
             var length = sqlResult.FieldNames.Length;
             foreach (var row in sqlResult.Rows) {
                 result.Add(factory(meta, row));
@@ -31,7 +31,7 @@
             return new EntityArrayProp(metaData, values);
         }
         */
-        private MetaEntityArrayProp _MetaData;
+        private MetaEntityArrayValues _MetaData;
 
         /// <summary>
         /// Gets the metadata.
@@ -44,11 +44,11 @@
         public object[] Values { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EntityArrayProp"/> class.
+        /// Initializes a new instance of the <see cref="EntityArrayValues"/> class.
         /// </summary>
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
-        public EntityArrayProp(MetaEntityArrayProp metaData, object[] values) {
+        public EntityArrayValues(MetaEntityArrayValues metaData, object[] values) {
             this._MetaData = metaData;
             this.Values = values;
         }

@@ -12,6 +12,9 @@
         : FreezeableObject
         , IMappingNamedObject<string> {
         [JsonIgnore]
+        private ModelSchema _Owner;
+
+        [JsonIgnore]
         private string _Name;
 
         [JsonIgnore]
@@ -45,7 +48,11 @@
         [JsonProperty(Order = 2)]
         public ModelEntityName MasterName {
             get {
-                return this._MasterName;
+                if ((object)this._MasterEntity != null) {
+                    return this._MasterEntity.Name;
+                } else {
+                    return this._MasterName;
+                }
             }
             set {
                 this.ThrowIfFrozen();
@@ -56,23 +63,28 @@
         [JsonIgnore]
         public ModelEntity MasterEntity {
             get {
+                if (((object)this._MasterEntity == null)
+                    && ((object)this._MasterName != null)) {
+                    this.ResolveNamesMasterEntity();
+                }
                 return this._MasterEntity;
             }
             set {
                 this.ThrowIfFrozen();
                 this._MasterEntity = value;
-                if (value == null) {
-                    this.MasterName = null;
-                } else {
-                    this.MasterName = value.Name;
-                }
+                this._MasterName = null;
             }
         }
+
 
         [JsonProperty(Order = 3)]
         public ModelEntityName ForeignName {
             get {
-                return this._ForeignName;
+                if ((object)this._ForeignEntity != null) {
+                    return this._ForeignEntity.Name;
+                } else {
+                    return this._ForeignName;
+                }
             }
             set {
                 this.ThrowIfFrozen();
@@ -83,17 +95,55 @@
         [JsonIgnore]
         public ModelEntity ForeignEntity {
             get {
+                if (((object)this._ForeignEntity == null)
+                   && ((object)this._ForeignName != null)) {
+                    this.ResolveNamesForeignEntity();
+                }
                 return this._ForeignEntity;
             }
             set {
                 this.ThrowIfFrozen();
                 this._ForeignEntity = value;
-                if (value == null) {
-                    this.ForeignName = null;
-                } else {
-                    this.ForeignName = value.Name;
-                }
+                this._ForeignName = null;
             }
+        }
+
+        [JsonIgnore]
+        public ModelSchema Owner {
+            get {
+                return this._Owner;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Owner = value;
+            }
+        }
+
+
+        private void ResolveNamesMasterEntity() {
+            if (((object)this._MasterEntity == null)
+                    && ((object)this._MasterName != null)) {
+#warning TODO ResolveNamesMasterEntity
+            }
+        }
+
+
+        private void ResolveNamesForeignEntity() {
+            if (((object)this._ForeignEntity == null)
+                    && ((object)this._ForeignName != null)) {
+#warning TODO ResolveNamesForeignEntity
+            }
+        }
+
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this.MasterName?.Freeze();
+                this.MasterEntity?.Freeze();
+                this.ForeignName?.Freeze();
+                this.ForeignEntity?.Freeze();
+            }
+            return result;
         }
     }
 }

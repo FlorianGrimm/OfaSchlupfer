@@ -8,6 +8,8 @@
     [JsonObject]
     public class MappingProperty
         : MappingObjectString<ModelProperty> {
+        [JsonIgnore]
+        private MappingEntity _Owner;
 
         [JsonIgnore]
         private bool _Enabled;
@@ -39,6 +41,23 @@
                 this._Conversion = value;
             }
         }
+
+        [JsonIgnore]
+        public MappingEntity Owner {
+            get {
+                return this._Owner;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Owner = value;
+            }
+        }
+
+        protected override bool AreSourceNamesEqual(string sourceName, ref string value) => MappingObjectHelper.AreNamesEqual(sourceName, ref value);
+
+        protected override bool AreTargetNamesEqual(string targetName, ref string value) => MappingObjectHelper.AreNamesEqual(targetName, ref value);
+
+        protected override bool AreThisNamesEqual(string thisName, ref string value) => MappingObjectHelper.AreNamesEqual(thisName, ref value);
 
         public override void ResolveNameSource() {
             if (((object)this._Source == null) && ((object)this._SourceName != null)) {

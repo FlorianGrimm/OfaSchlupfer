@@ -6,28 +6,28 @@
     /// <summary>
     /// MetaData for EntityArrayProp
     /// </summary>
-    public class MetaEntityArrayProp : IMetaEntity {
-        private List<MetaPropertyArrayProp> _PropertyByIndex;
-        private Dictionary<string, MetaPropertyArrayProp> _PropertyByName;
+    public class MetaEntityArrayValues : IMetaEntity {
+        private List<MetaPropertyArrayValues> _PropertyByIndex;
+        private Dictionary<string, MetaPropertyArrayValues> _PropertyByName;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MetaEntityArrayProp"/> class.
+        /// Initializes a new instance of the <see cref="MetaEntityArrayValues"/> class.
         /// </summary>
-        public MetaEntityArrayProp() {
-            this._PropertyByIndex = new List<MetaPropertyArrayProp>();
-            this._PropertyByName = new Dictionary<string, MetaPropertyArrayProp>();
+        public MetaEntityArrayValues() {
+            this._PropertyByIndex = new List<MetaPropertyArrayValues>();
+            this._PropertyByName = new Dictionary<string, MetaPropertyArrayValues>();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MetaEntityArrayProp"/> class.
+        /// Initializes a new instance of the <see cref="MetaEntityArrayValues"/> class.
         /// </summary>
         /// <param name="names">names of properties.</param>
-        public MetaEntityArrayProp(IEnumerable<string> names)
+        public MetaEntityArrayValues(IEnumerable<string> names)
             : this() {
             if (names != null) {
                 int idx = 0;
                 foreach (var name in names) {
-                    this.AddProperty(new MetaPropertyArrayProp(name, idx));
+                    this.AddProperty(new MetaPropertyArrayValues(name, idx));
                     idx++;
                 }
             }
@@ -36,18 +36,18 @@
         /// <summary>
         /// Gets the property by index.
         /// </summary>
-        public List<MetaPropertyArrayProp> PropertyByIndex { get { return this._PropertyByIndex; } }
+        public List<MetaPropertyArrayValues> PropertyByIndex { get { return this._PropertyByIndex; } }
 
         /// <summary>
         /// Gets the property by name.
         /// </summary>
-        public Dictionary<string, MetaPropertyArrayProp> PropertyByName { get { return this._PropertyByName; } }
+        public Dictionary<string, MetaPropertyArrayValues> PropertyByName { get { return this._PropertyByName; } }
 
         /// <summary>
         /// Add a MetaProperty
         /// </summary>
         /// <param name="metaProperty">the property to add.</param>
-        public void AddProperty(MetaPropertyArrayProp metaProperty) {
+        public void AddProperty(MetaPropertyArrayValues metaProperty) {
             if (metaProperty == null) { throw new ArgumentNullException(nameof(metaProperty)); }
 
             // check if property exists
@@ -75,7 +75,7 @@
         /// <returns>the property or null</returns>
         public IMetaProperty GetProperty(string name) {
             if (name == null) { throw new ArgumentNullException(nameof(name)); }
-            MetaPropertyArrayProp result = null;
+            MetaPropertyArrayValues result = null;
             if (this._PropertyByName.TryGetValue(name, out result)) {
                 return result;
             } else {

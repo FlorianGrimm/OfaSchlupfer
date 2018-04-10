@@ -72,6 +72,15 @@
 
         public string GetName() => this._Name;
 
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._Repositories.Freeze();
+                this._RepositoryMappings.Freeze();
+            }
+            return result;
+        }
+
         public class Current {
             public readonly ModelRoot ModelRoot;
             public readonly Dictionary<ModelEntityName, ModelRepository> RepositoriesByName;

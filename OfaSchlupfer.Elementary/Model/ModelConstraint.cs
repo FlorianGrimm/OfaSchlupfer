@@ -18,9 +18,19 @@
         [JsonIgnore]
         private string _Type;
 
-        public readonly List<ModelProperty> Properties;
 
-        public ModelConstraint() { }
+        [JsonIgnore]
+        private ModelEntity _Owner;
+
+        [JsonIgnore]
+
+        private readonly FreezeableCollection<ModelProperty> _Properties;
+
+        public IList<ModelProperty> Properties => this._Properties;
+
+        public ModelConstraint() {
+            this._Properties = new FreezeableCollection<ModelProperty>();
+        }
 
         public string Name {
             get {
@@ -42,6 +52,27 @@
             }
         }
 
+
+        [JsonIgnore]
+        public ModelEntity Owner {
+            get {
+                return this._Owner;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Owner = value;
+            }
+        }
+
+
         public string GetName() => this._Name;
+
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._Properties.Freeze();
+            }
+            return result;
+        }
     }
 }

@@ -3,6 +3,7 @@
     using Microsoft.SharePoint.Client;
 
     using OfaSchlupfer.Elementary;
+    using OfaSchlupfer.Freezable;
     using OfaSchlupfer.HttpAccess;
     using OfaSchlupfer.Model;
 
@@ -31,7 +32,9 @@
         }
     }
 
-    public class SPORepositoryModel : ISPORepositoryModel, IReferenceRepositoryModel {
+    public class SPORepositoryModel 
+        : FreezeableObject
+        , ISPORepositoryModel, IReferenceRepositoryModel {
         public SPORepositoryModel() {
         }
 

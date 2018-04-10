@@ -6,7 +6,8 @@
     using OfaSchlupfer.Freezable;
 
     [JsonObject]
-    public class ModelDefinition : FreezeableObject {
+    public class ModelDefinition
+        : FreezeableObject {
 
         [JsonIgnore]
         private string _MetaData;

@@ -8,7 +8,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
     /// <summary>
     /// Access for sys.indexes SqlSysForeignKeys
     /// </summary>
-    public sealed class SqlSysIndex : EntityArrayProp {
+    public sealed class SqlSysIndex : EntityArrayValues {
         /// <summary>
         /// SELECT ... FROM sys.indexes i;
         /// </summary>
@@ -19,7 +19,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
         /// </summary>
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
-        public SqlSysIndex(MetaEntityArrayProp metaData, object[] values)
+        public SqlSysIndex(MetaEntityArrayValues metaData, object[] values)
             : base(metaData, values) {
             this.IndexColumns = new List<SqlSysIndexColumn>();
         }
@@ -54,7 +54,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
         /// <returns>a new instance</returns>
-        public static SqlSysIndex Factory(MetaEntityArrayProp metaData, object[] values) {
+        public static SqlSysIndex Factory(MetaEntityArrayValues metaData, object[] values) {
             return new SqlSysIndex(metaData, values);
         }
     }

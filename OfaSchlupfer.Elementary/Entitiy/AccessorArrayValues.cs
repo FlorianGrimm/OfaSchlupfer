@@ -2,18 +2,18 @@
     /// <summary>
     /// the accessor to the value.
     /// </summary>
-    public struct AccessorArrayProp : IAccessor {
-        private EntityArrayProp _Entity;
-        private MetaPropertyArrayProp _MetaProperty;
+    public struct AccessorArrayValues : IAccessor {
+        private EntityArrayValues _Entity;
+        private MetaPropertyArrayValues _MetaProperty;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AccessorArrayProp"/> struct.
+        /// Initializes a new instance of the <see cref="AccessorArrayValues"/> struct.
         /// </summary>
         /// <param name="metaPropertyArrayProp">the property</param>
         /// <param name="entity">the entity</param>
-        public AccessorArrayProp(MetaPropertyArrayProp metaPropertyArrayProp, object entity) {
+        public AccessorArrayValues(MetaPropertyArrayValues metaPropertyArrayProp, object entity) {
             this._MetaProperty = metaPropertyArrayProp;
-            this._Entity = (EntityArrayProp)entity;
+            this._Entity = (EntityArrayValues)entity;
         }
 
         /// <summary>

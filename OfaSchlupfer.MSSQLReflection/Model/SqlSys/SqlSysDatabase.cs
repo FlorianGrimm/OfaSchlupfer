@@ -19,7 +19,7 @@
     /// <summary>
     /// Access for sys.schema
     /// </summary>
-    public sealed class SqlSysDatabase : EntityArrayProp {
+    public sealed class SqlSysDatabase : EntityArrayValues {
         /// <summary>
         /// Select statement for current databases
         /// </summary>
@@ -54,14 +54,14 @@
         /// Initializes a new instance of the <see cref="SqlSysDatabase"/> class.
         /// </summary>
         public SqlSysDatabase()
-            : this(new MetaEntityArrayProp(), new object[0]) { }
+            : this(new MetaEntityArrayValues(), new object[0]) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlSysDatabase"/> class.
         /// </summary>
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
-        public SqlSysDatabase(MetaEntityArrayProp metaData, object[] values)
+        public SqlSysDatabase(MetaEntityArrayValues metaData, object[] values)
             : base(metaData, values) {
             this.SchemaById = new Dictionary<int, SqlSysSchema>();
             this.Types = new List<SqlSysType>();
@@ -97,7 +97,7 @@
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
         /// <returns>a new instance</returns>
-        public static SqlSysDatabase Factory(MetaEntityArrayProp metaData, object[] values) {
+        public static SqlSysDatabase Factory(MetaEntityArrayValues metaData, object[] values) {
             return new SqlSysDatabase(metaData, values);
         }
 
@@ -125,7 +125,7 @@
         public List<SqlSysSchema> ReadSchemas(SqlTransConnection sqlTransConnection) {
             using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysSchema.SELECTStatement)) {
                 var sqlResults = SqlUtility.ExecuteReader(command, false, false);
-                var result = EntityArrayProp.ConvertFromSqlResult<SqlSysSchema>(sqlResults.First(), SqlSysSchema.Factory);
+                var result = EntityArrayValues.ConvertFromSqlResult<SqlSysSchema>(sqlResults.First(), SqlSysSchema.Factory);
                 result.ForEach((item) => { this.SchemaById[item.schema_id] = item; });
                 return result;
             }
@@ -139,7 +139,7 @@
         public List<SqlSysType> ReadTypes(SqlTransConnection sqlTransConnection) {
             using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysType.SELECTStatement)) {
                 var sqlResults = SqlUtility.ExecuteReader(command, false, false);
-                var result = EntityArrayProp.ConvertFromSqlResult<SqlSysType>(sqlResults.First(), SqlSysType.Factory);
+                var result = EntityArrayValues.ConvertFromSqlResult<SqlSysType>(sqlResults.First(), SqlSysType.Factory);
                 result.ForEach((item) => {
                     this.Types.Add(item);
                     this.TypesByUserId[item.user_type_id] = item;
@@ -156,7 +156,7 @@
         public List<SqlSysObject> ReadAllObjects(SqlTransConnection sqlTransConnection) {
             using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysObject.SELECTStatement)) {
                 var sqlResults = SqlUtility.ExecuteReader(command, false, false);
-                var result = EntityArrayProp.ConvertFromSqlResult<SqlSysObject>(sqlResults.First(), SqlSysObject.Factory);
+                var result = EntityArrayValues.ConvertFromSqlResult<SqlSysObject>(sqlResults.First(), SqlSysObject.Factory);
                 result.ForEach((item) => {
                     this.AllObjectsById[item.object_id] = item;
                 });
@@ -172,7 +172,7 @@
         public List<SqlSysColumn> ReadColumns(SqlTransConnection sqlTransConnection) {
             using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysColumn.SELECTStatement)) {
                 var sqlResults = SqlUtility.ExecuteReader(command, false, false);
-                var result = EntityArrayProp.ConvertFromSqlResult<SqlSysColumn>(sqlResults.First(), SqlSysColumn.Factory);
+                var result = EntityArrayValues.ConvertFromSqlResult<SqlSysColumn>(sqlResults.First(), SqlSysColumn.Factory);
                 result.ForEach((item) => {
                     {
                         var obj = this.AllObjectsById.GetValueOrDefault(item.object_id);
@@ -193,7 +193,7 @@
         public List<SqlSysParameter> ReadParameters(SqlTransConnection sqlTransConnection) {
             using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysParameter.SELECTStatement)) {
                 var sqlResults = SqlUtility.ExecuteReader(command, false, false);
-                var result = EntityArrayProp.ConvertFromSqlResult<SqlSysParameter>(sqlResults.First(), SqlSysParameter.Factory);
+                var result = EntityArrayValues.ConvertFromSqlResult<SqlSysParameter>(sqlResults.First(), SqlSysParameter.Factory);
                 result.ForEach((item) => {
                     {
                         var obj = this.AllObjectsById.GetValueOrDefault(item.object_id);
@@ -214,7 +214,7 @@
         public List<SqlSysIndex> ReadIndex(SqlTransConnection sqlTransConnection) {
             using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysIndex.SELECTStatement)) {
                 var sqlResults = SqlUtility.ExecuteReader(command, false, false);
-                var result = EntityArrayProp.ConvertFromSqlResult<SqlSysIndex>(sqlResults.First(), SqlSysIndex.Factory);
+                var result = EntityArrayValues.ConvertFromSqlResult<SqlSysIndex>(sqlResults.First(), SqlSysIndex.Factory);
                 result.ForEach((item) => {
                     {
                         var obj = this.AllObjectsById.GetValueOrDefault(item.object_id);
@@ -235,7 +235,7 @@
         public List<SqlSysIndexColumn> ReadIndexColumn(SqlTransConnection sqlTransConnection) {
             using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysIndexColumn.SELECTStatement)) {
                 var sqlResults = SqlUtility.ExecuteReader(command, false, false);
-                var result = EntityArrayProp.ConvertFromSqlResult<SqlSysIndexColumn>(sqlResults.First(), SqlSysIndexColumn.Factory);
+                var result = EntityArrayValues.ConvertFromSqlResult<SqlSysIndexColumn>(sqlResults.First(), SqlSysIndexColumn.Factory);
                 result.ForEach((item) => {
                     {
                         var obj = this.AllObjectsById.GetValueOrDefault(item.object_id);
@@ -259,7 +259,7 @@
         public List<SqlSysForeignKey> ReadForeignKey(SqlTransConnection sqlTransConnection) {
             using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysForeignKey.SELECTStatement)) {
                 var sqlResults = SqlUtility.ExecuteReader(command, false, false);
-                var result = EntityArrayProp.ConvertFromSqlResult<SqlSysForeignKey>(sqlResults.First(), SqlSysForeignKey.Factory);
+                var result = EntityArrayValues.ConvertFromSqlResult<SqlSysForeignKey>(sqlResults.First(), SqlSysForeignKey.Factory);
                 result.ForEach((item) => {
                     {
                         var obj = this.AllObjectsById.GetValueOrDefault(item.object_id);
@@ -280,7 +280,7 @@
         public List<SqlSysForeignKeysColumn> ReadForeignKeysColumn(SqlTransConnection sqlTransConnection) {
             using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysForeignKeysColumn.SELECTStatement)) {
                 var sqlResults = SqlUtility.ExecuteReader(command, false, false);
-                var result = EntityArrayProp.ConvertFromSqlResult<SqlSysForeignKeysColumn>(sqlResults.First(), SqlSysForeignKeysColumn.Factory);
+                var result = EntityArrayValues.ConvertFromSqlResult<SqlSysForeignKeysColumn>(sqlResults.First(), SqlSysForeignKeysColumn.Factory);
                 result.ForEach((item) => {
                     {
                         var obj = this.AllObjectsById.GetValueOrDefault(item.object_id);

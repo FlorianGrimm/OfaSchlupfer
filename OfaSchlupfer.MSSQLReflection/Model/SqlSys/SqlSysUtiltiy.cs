@@ -71,7 +71,7 @@
             try {
                 using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysServer.SELECTStatment)) {
                     var sqlResults = SqlUtility.ExecuteReader(command, false, false);
-                    var result = EntityArrayProp.ConvertFromSqlResult<SqlSysServer>(sqlResults.First(), SqlSysServer.Factory).FirstOrDefault();
+                    var result = EntityArrayValues.ConvertFromSqlResult<SqlSysServer>(sqlResults.First(), SqlSysServer.Factory).FirstOrDefault();
                     this.CurrentServer = result;
                     return result;
                 }
@@ -88,7 +88,7 @@
             try {
                 using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysDatabase.SELECTAllStatement)) {
                     var sqlResults = SqlUtility.ExecuteReader(command, false, false);
-                    var result = EntityArrayProp.ConvertFromSqlResult<SqlSysDatabase>(sqlResults.First(), SqlSysDatabase.Factory);
+                    var result = EntityArrayValues.ConvertFromSqlResult<SqlSysDatabase>(sqlResults.First(), SqlSysDatabase.Factory);
                     result.ForEach((item) => { this.DatabaseById[item.database_id] = item; });
                     return result;
                 }
@@ -96,7 +96,7 @@
             try {
                 using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysDatabase.SELECTCurrentStatement)) {
                     var sqlResults = SqlUtility.ExecuteReader(command, false, false);
-                    var result = EntityArrayProp.ConvertFromSqlResult<SqlSysDatabase>(sqlResults.First(), SqlSysDatabase.Factory);
+                    var result = EntityArrayValues.ConvertFromSqlResult<SqlSysDatabase>(sqlResults.First(), SqlSysDatabase.Factory);
                     result.ForEach((item) => { this.DatabaseById[item.database_id] = item; });
                     return result;
                 }
@@ -112,7 +112,7 @@
             var sqlTransConnection = this.EnsureOpenTransConnection();
             using (var command = sqlTransConnection.SqlCommand(System.Data.CommandType.Text, SqlSysDatabase.SELECTCurrentStatement)) {
                 var sqlResults = SqlUtility.ExecuteReader(command, false, false);
-                var result = EntityArrayProp.ConvertFromSqlResult<SqlSysDatabase>(sqlResults.First(), SqlSysDatabase.Factory).FirstOrDefault();
+                var result = EntityArrayValues.ConvertFromSqlResult<SqlSysDatabase>(sqlResults.First(), SqlSysDatabase.Factory).FirstOrDefault();
                 this.DatabaseById[result.database_id] = result;
                 this.CurrentDatabase = result;
                 return result;
