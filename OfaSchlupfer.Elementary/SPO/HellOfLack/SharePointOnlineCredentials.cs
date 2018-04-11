@@ -1,4 +1,4 @@
-namespace OfaSchlupfer.ModelOData.SPO {
+namespace OfaSchlupfer.SPO {
     using System;
     using System.Collections;
     using System.Net;
@@ -8,7 +8,8 @@ namespace OfaSchlupfer.ModelOData.SPO {
     using Microsoft.Extensions.Logging;
     using OfaSchlupfer.HttpAccess;
 
-    internal sealed class SharePointOnlineCredentials : ICredentials, ISharePointOnlineCredentials {
+    internal sealed class SharePointOnlineCredentials 
+        : ICredentials, ISharePointOnlineCredentials {
         private class CookieCacheEntry {
             public string Cookie;
 
@@ -80,7 +81,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
                     cookieCacheEntry = (CookieCacheEntry)this._CachedCookies[uri];
                 }
                 if (cookieCacheEntry != null && cookieCacheEntry.IsValid) {
-                    this._Logger.LogInformation("Get cookie from cache for URL {0}", uri);
+                    this._Logger?.LogInformation("Get cookie from cache for URL {0}", uri);
                     return cookieCacheEntry.Cookie;
                 }
             }
@@ -88,7 +89,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
                 var sharePointOnlineAuthenticationProvider = new SharePointOnlineAuthenticationProvider(this._Logger);
                 var resultCookie = sharePointOnlineAuthenticationProvider.GetAuthenticationCookie(uri, this.UserName, this._Password, alwaysThrowOnFailure, this.ExecutingWebRequest);
                 if (!string.IsNullOrEmpty(resultCookie)) {
-                    this._Logger.LogTrace("Put cookie in cache for URL {0}", uri);
+                    this._Logger?.LogTrace("Put cookie in cache for URL {0}", uri);
                     lock (this._CachedCookies) {
                         this._CachedCookies[uri] = new CookieCacheEntry {
                             Cookie = resultCookie,

@@ -1,4 +1,4 @@
-namespace OfaSchlupfer.ModelOData.SPO {
+namespace OfaSchlupfer.SPO {
     using System.Collections.Generic;
 
     internal static class IdcrlErrorCodes {

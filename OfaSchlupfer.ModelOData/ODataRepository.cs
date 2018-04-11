@@ -7,7 +7,7 @@
     using OfaSchlupfer.Elementary;
     using OfaSchlupfer.Model;
     using Microsoft.Extensions.DependencyInjection;
-    using OfaSchlupfer.ModelOData.SPO;
+    using OfaSchlupfer.SPO;
     using OfaSchlupfer.HttpAccess;
 
     public class ODataRepositoryModelType : ReferenceRepositoryModelType {

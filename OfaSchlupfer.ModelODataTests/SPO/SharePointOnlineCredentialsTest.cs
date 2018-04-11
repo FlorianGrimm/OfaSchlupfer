@@ -3,9 +3,14 @@
     using System.Collections.Generic;
     using System.Text;
     using System.Threading.Tasks;
+
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+
+    using OfaSchlupfer.SPO;
+
     using Xunit;
+
     public class SharePointOnlineCredentialsTest {
 #if LongRunning
         [Fact()]

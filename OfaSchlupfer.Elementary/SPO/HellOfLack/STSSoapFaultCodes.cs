@@ -1,4 +1,4 @@
-namespace OfaSchlupfer.ModelOData.SPO {
+namespace OfaSchlupfer.SPO {
     internal static class STSSoapFaultCodes {
         public const string InvalidRequest = "InvalidRequest";
 

@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <RootNamespace>OfaSchlupfer</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +32,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OfaSchlupfer.Elementary\OfaSchlupfer.Elementary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="SPO\" />
   </ItemGroup>
 
 </Project>

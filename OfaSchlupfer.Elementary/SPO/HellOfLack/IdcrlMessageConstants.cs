@@ -1,4 +1,4 @@
-namespace OfaSchlupfer.ModelOData.SPO {
+namespace OfaSchlupfer.SPO {
     internal static class IdcrlMessageConstants {
         public const string UserRealmServiceUrl_Prod = "https://login.microsoftonline.com/GetUserRealm.srf";
 

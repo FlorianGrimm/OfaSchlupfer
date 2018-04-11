@@ -1,5 +1,5 @@
 #define DontUseRegistry
-namespace OfaSchlupfer.ModelOData.SPO {
+namespace OfaSchlupfer.SPO {
     using Microsoft.Extensions.Logging;
     using Microsoft.Win32;
     using OfaSchlupfer.HttpAccess;
@@ -39,7 +39,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
                         }
                         registryKey.Close();
                     }
-                    this._Logger.LogWarning("IdcrlServiceEnvironment={0}", text);
+                    this._Logger?.LogWarning("IdcrlServiceEnvironment={0}", text);
                     SharePointOnlineAuthenticationProvider._idcrlEnvironmentCache = text;
                 }
                 return text;
@@ -50,8 +50,8 @@ namespace OfaSchlupfer.ModelOData.SPO {
 
         public SharePointOnlineAuthenticationProvider(ILogger logger) {
             this._Logger = logger;
-
         }
+
         public string GetAuthenticationCookie(Uri url, string username, string password, bool alwaysThrowOnFailure, EventHandler<WebRequestEventArgs> executingWebRequest) {
             if (url == (Uri)null) {
                 throw new ArgumentNullException("url");
@@ -64,7 +64,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
             }
             IdcrlHeader idcrlHeader = this.GetIdcrlHeader(url, alwaysThrowOnFailure, executingWebRequest);
             if (idcrlHeader == null) {
-                this._Logger.LogWarning("Cannot get IDCRL header for {0}", url);
+                this._Logger?.LogWarning("Cannot get IDCRL header for {0}", url);
                 if (alwaysThrowOnFailure) {
                     throw new ClientRequestException($"CannotContactSite {url}");
                 }
@@ -79,7 +79,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
             //string password2 = SharePointOnlineAuthenticationProvider.FromSecureString(password);
             string serviceToken = idcrlAuth.GetServiceToken(username, password, idcrlHeader.ServiceTarget, idcrlHeader.ServicePolicy);
             if (string.IsNullOrEmpty(serviceToken)) {
-                this._Logger.LogWarning("Cannot get IDCRL ticket for username {0}", username);
+                this._Logger?.LogWarning("Cannot get IDCRL ticket for username {0}", username);
                 if (alwaysThrowOnFailure) {
                     throw new IdcrlException("PPCRL_REQUEST_E_UNKNOWN  -2147186615");
                 }
@@ -102,15 +102,15 @@ namespace OfaSchlupfer.ModelOData.SPO {
             if (string.IsNullOrWhiteSpace(cookieHeader)) {
                 UriBuilder uriBuilder = new UriBuilder(uri);
                 uriBuilder.Host = httpWebRequest.Host;
-                this._Logger.LogInformation("Try get cookie using {0}", uriBuilder.ToString());
+                this._Logger?.LogInformation("Try get cookie using {0}", uriBuilder.ToString());
                 cookieHeader = cookieContainer2.GetCookieHeader(uriBuilder.Uri);
-                this._Logger.LogWarning("Get cookie using {0} and cookie value is {0}", uriBuilder.ToString(), cookieHeader);
+                this._Logger?.LogWarning("Get cookie using {0} and cookie value is {0}", uriBuilder.ToString(), cookieHeader);
             }
             if (response != null) {
                 response.Close();
             }
             if (string.IsNullOrWhiteSpace(cookieHeader)) {
-                this._Logger.LogWarning("Cannot get cookie for {0}", url);
+                this._Logger?.LogWarning("Cannot get cookie for {0}", url);
                 if (throwIfFail) {
                     throw new ClientRequestException($"Cannot get cookie for {url}.");
                 }
@@ -129,7 +129,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
             try {
                 httpWebResponse = (httpWebRequest.GetResponse() as HttpWebResponse);
             } catch (WebException ex) {
-                this._Logger.LogWarning("Exception in request. Url={0}, WebException={1}", url, ex);
+                this._Logger?.LogWarning("Exception in request. Url={0}, WebException={1}", url, ex);
                 httpWebResponse = (ex.Response as HttpWebResponse);
                 if (!alwaysThrowOnFailure) {
                     goto end_IL_0048;
@@ -146,7 +146,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
                 end_IL_0048:;
             }
             if (httpWebResponse == null) {
-                this._Logger.LogError("Cannot get response for request to {0}", url);
+                this._Logger?.LogError("Cannot get response for request to {0}", url);
                 if (alwaysThrowOnFailure) {
                     throw new ClientRequestException($"Cannot get response for request to  {url}");
                 }
@@ -154,19 +154,19 @@ namespace OfaSchlupfer.ModelOData.SPO {
             }
             string webResponseHeader = IdcrlUtility.GetWebResponseHeader(httpWebResponse);
             HttpStatusCode statusCode = httpWebResponse.StatusCode;
-            this._Logger.LogWarning("Response.StatusCode={0}, Headers={1}", statusCode, webResponseHeader);
+            this._Logger?.LogWarning("Response.StatusCode={0}, Headers={1}", statusCode, webResponseHeader);
             string text = ((NameValueCollection)httpWebResponse.Headers)[IdcrlConstants.HEADER_IDCRL_AUTH_PARAMS_V1];
             if (string.IsNullOrEmpty(text)) {
                 text = httpWebResponse.Headers[HttpResponseHeader.WwwAuthenticate];
             }
             httpWebResponse.Close();
-            this._Logger.LogWarning("IdcrlHeader={0}", text);
+            this._Logger?.LogWarning("IdcrlHeader={0}", text);
             return this.ParseIdcrlHeader(text, url, statusCode, webResponseHeader, alwaysThrowOnFailure);
         }
 
         private IdcrlHeader ParseIdcrlHeader(string headerValue, Uri url, HttpStatusCode statusCode, string allResponseHeaders, bool alwaysThrowOnFailure) {
             if (string.IsNullOrWhiteSpace(headerValue)) {
-                this._Logger.LogWarning("IDCRL header value is empty");
+                this._Logger?.LogWarning("IDCRL header value is empty");
                 if (alwaysThrowOnFailure) {
                     throw new NotSupportedException($"SharePoint ClientCredentials are NOT supported {url.OriginalString} {statusCode} {allResponseHeaders}.");
                 }
@@ -200,7 +200,7 @@ namespace OfaSchlupfer.ModelOData.SPO {
                 || string.IsNullOrEmpty(idcrlHeader.ServicePolicy)
                 || string.IsNullOrEmpty(idcrlHeader.ServiceTarget)
                 || string.IsNullOrEmpty(idcrlHeader.Endpoint)) {
-                this._Logger.LogWarning("Cannot extract required information from IDCRL header. Header={0}, IdcrlType={1}, ServicePolicy={2}, ServiceTarget={3}, Endpoint={4}", headerValue, idcrlHeader.IdcrlType, idcrlHeader.ServicePolicy, idcrlHeader.ServiceTarget, idcrlHeader.Endpoint);
+                this._Logger?.LogWarning("Cannot extract required information from IDCRL header. Header={0}, IdcrlType={1}, ServicePolicy={2}, ServiceTarget={3}, Endpoint={4}", headerValue, idcrlHeader.IdcrlType, idcrlHeader.ServicePolicy, idcrlHeader.ServiceTarget, idcrlHeader.Endpoint);
                 if (alwaysThrowOnFailure) {
                     throw new ClientRequestException($"Invalid IDCRL Header {url.OriginalString}, {headerValue}, {statusCode}, {allResponseHeaders}");
                 }
