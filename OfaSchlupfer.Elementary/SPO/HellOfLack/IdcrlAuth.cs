@@ -145,7 +145,7 @@ namespace OfaSchlupfer.SPO {
         public IdcrlAuth(IdcrlEnvironment env, EventHandler<WebRequestEventArgs> executingWebRequest, ILogger logger) {
             this.m_env = env;
             this._Logger = logger;
-            this._Logger.LogInformation("IDCRL Environment {0}", env);
+            this._Logger?.LogInformation("IDCRL Environment {0}", env);
             if (this.m_env == IdcrlEnvironment.Production) {
                 this.m_userRealmServiceUrl = "https://login.microsoftonline.com/GetUserRealm.srf";
                 this.m_securityTokenServiceUrl = "https://login.microsoftonline.com/rst2.srf";
@@ -207,11 +207,11 @@ namespace OfaSchlupfer.SPO {
             if (xAttribute != null && string.Compare(xAttribute.Value, "true", StringComparison.OrdinalIgnoreCase) == 0) {
                 XElement xElement = xDocument.Root.Element("NameSpaceType");
                 if (xElement == null) {
-                    this._Logger.LogError("There is no NameSpaceType element in the response when get user realm for user {0}", login);
+                    this._Logger?.LogError("There is no NameSpaceType element in the response when get user realm for user {0}", login);
                     throw IdcrlAuth.CreateIdcrlException(-2147186539);
                 }
                 if (string.Compare(xElement.Value, "Federated", StringComparison.OrdinalIgnoreCase) != 0 && string.Compare(xElement.Value, "Managed", StringComparison.OrdinalIgnoreCase) != 0) {
-                    this._Logger.LogError("Unknown namespace type for user {0}", login);
+                    this._Logger?.LogError("Unknown namespace type for user {0}", login);
                     throw IdcrlAuth.CreateIdcrlException(-2147186539);
                 }
                 UserRealmInfo userRealmInfo = new UserRealmInfo();
@@ -221,13 +221,13 @@ namespace OfaSchlupfer.SPO {
                     userRealmInfo.STSAuthUrl = xElement.Value;
                 }
                 if (userRealmInfo.IsFederated && string.IsNullOrEmpty(userRealmInfo.STSAuthUrl)) {
-                    this._Logger.LogError("User {0} is a federated account, but there is no STSAuthUrl for the user.", login);
+                    this._Logger?.LogError("User {0} is a federated account, but there is no STSAuthUrl for the user.", login);
                     throw CreateIdcrlException(-2147186539);
                 }
-                this._Logger.LogDebug("User={0}, IsFederated={1}, STSAuthUrl={2}", login, userRealmInfo.IsFederated, userRealmInfo.STSAuthUrl);
+                this._Logger?.LogDebug("User={0}, IsFederated={1}, STSAuthUrl={2}", login, userRealmInfo.IsFederated, userRealmInfo.STSAuthUrl);
                 return userRealmInfo;
             }
-            this._Logger.LogError("Failed to get user's realm for user {0}", login);
+            this._Logger?.LogError("Failed to get user's realm for user {0}", login);
             throw CreateIdcrlException(-2147186539);
         }
 
@@ -248,12 +248,12 @@ namespace OfaSchlupfer.SPO {
             XDocument xDocument = this.DoPost(adfsUrl, IdcrlMessageConstants.SoapContentType, body, this.HandleWebException);
             Exception soapException = this.GetSoapException(xDocument);
             if (soapException != null) {
-                this._Logger.LogError("SOAP error from {0}. Exception={1}", adfsUrl, soapException);
+                this._Logger?.LogError("SOAP error from {0}. Exception={1}", adfsUrl, soapException);
                 throw soapException;
             }
             XElement elementAtPath = IdcrlUtility.GetElementAtPath(xDocument.Root, "{http://www.w3.org/2003/05/soap-envelope}Body", "{http://schemas.xmlsoap.org/ws/2005/02/trust}RequestSecurityTokenResponse", "{http://schemas.xmlsoap.org/ws/2005/02/trust}RequestedSecurityToken", "{urn:oasis:names:tc:SAML:1.0:assertion}Assertion");
             if (elementAtPath == null) {
-                this._Logger.LogError("Cannot get security assertion for user {0} from {1}", username, adfsUrl);
+                this._Logger?.LogError("Cannot get security assertion for user {0} from {1}", username, adfsUrl);
                 throw CreateIdcrlException(-2147186451);
             }
             return elementAtPath.ToString(SaveOptions.DisableFormatting | SaveOptions.OmitDuplicateNamespaces);
@@ -278,12 +278,12 @@ namespace OfaSchlupfer.SPO {
             XDocument xDocument = this.DoPost(serviceTokenUrl, IdcrlMessageConstants.SoapContentType, body, this.HandleWebException);
             Exception soapException = GetSoapException(xDocument);
             if (soapException != null) {
-                this._Logger.LogError("Soap error from {0}. Exception={1}", serviceTokenUrl, soapException);
+                this._Logger?.LogError("Soap error from {0}. Exception={1}", serviceTokenUrl, soapException);
                 throw soapException;
             }
             XElement elementAtPath = IdcrlUtility.GetElementAtPath(xDocument.Root, "{http://www.w3.org/2003/05/soap-envelope}Body", "{http://schemas.xmlsoap.org/ws/2005/02/trust}RequestSecurityTokenResponse", "{http://schemas.xmlsoap.org/ws/2005/02/trust}RequestedSecurityToken", "{http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd}BinarySecurityToken");
             if (elementAtPath == null) {
-                this._Logger.LogError("Cannot get binary security token for from {0}", serviceTokenUrl);
+                this._Logger?.LogError("Cannot get binary security token for from {0}", serviceTokenUrl);
                 throw IdcrlAuth.CreateIdcrlException(-2147186656);
             }
             return elementAtPath.Value;
@@ -304,7 +304,7 @@ namespace OfaSchlupfer.SPO {
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest.Method = "POST";
             httpWebRequest.ContentType = contentType;
-            this._Logger.LogDebug("Sending POST request to {0}", url);
+            this._Logger?.LogDebug("Sending POST request to {0}", url);
             if (this.m_executingWebRequest != null) {
                 this.m_executingWebRequest(this, new WebRequestEventArgs(httpWebRequest));
             }
@@ -317,20 +317,20 @@ namespace OfaSchlupfer.SPO {
             try {
                 HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
                 if (httpWebResponse == null) {
-                    this._Logger.LogError("Unexpected response for POST request to {0}", url);
+                    this._Logger?.LogError("Unexpected response for POST request to {0}", url);
                     throw new InvalidOperationException();
                 }
                 using (httpWebResponse) {
                     using (TextReader textReader = new StreamReader(httpWebResponse.GetResponseStream())) {
                         string text = textReader.ReadToEnd();
-                        this._Logger.LogDebug("URL={0}, StatusCode={1}, ResponseText={2}", url, (int)httpWebResponse.StatusCode, text);
+                        this._Logger?.LogDebug("URL={0}, StatusCode={1}, ResponseText={2}", url, (int)httpWebResponse.StatusCode, text);
                         using (XmlReader reader = XmlReader.Create(new StringReader(text))) {
                             return XDocument.Load(reader);
                         }
                     }
                 }
             } catch (WebException webException) {
-                this._Logger.LogError("URL={0}, WebException={1}", url, webException);
+                this._Logger?.LogError("URL={0}, WebException={1}", url, webException);
                 if (webExceptionHandler == null) {
                     throw;
                 } else {
@@ -349,16 +349,16 @@ namespace OfaSchlupfer.SPO {
                 try {
                     using (TextReader textReader = new StreamReader(httpWebResponse.GetResponseStream())) {
                         string text = textReader.ReadToEnd();
-                        this._Logger.LogError("StatusCode={0}, ResponseText={1}", (int)httpWebResponse.StatusCode, text);
+                        this._Logger?.LogError("StatusCode={0}, ResponseText={1}", (int)httpWebResponse.StatusCode, text);
                         using (XmlReader reader = XmlReader.Create(new StringReader(text))) {
                             XDocument xdoc = XDocument.Load(reader);
                             return GetSoapException(xdoc);
                         }
                     }
                 } catch (XmlException xmlException) {
-                    this._Logger.LogWarning("Error when read error response. Exception={0}", xmlException);
+                    this._Logger?.LogWarning("Error when read error response. Exception={0}", xmlException);
                 } catch (IOException ioException) {
-                    this._Logger.LogWarning("Error when read error response. Exception={0}", ioException);
+                    this._Logger?.LogWarning("Error when read error response. Exception={0}", ioException);
                 }
             }
             return null;
@@ -388,7 +388,7 @@ namespace OfaSchlupfer.SPO {
             if (elementAtPathInternalError != null) {
                 textInternalError = elementAtPathInternalError.Value;
             }
-            this._Logger.LogError("PassportErrorCode={0}, PassportDetailCode={1}, PassportErrorText={2}", textCode, textValue, textInternalError);
+            this._Logger?.LogError("PassportErrorCode={0}, PassportDetailCode={1}, PassportErrorText={2}", textCode, textValue, textInternalError);
             int errorCode;
             long errorCodeValue = default(long);
             if (string.IsNullOrEmpty(textValue)) {
@@ -434,7 +434,7 @@ namespace OfaSchlupfer.SPO {
                     this.m_securityTokenServiceUrl = federationProviderInfo.SecurityTokenServiceUrl;
                     this.m_federationTokenIssuer = federationProviderInfo.FederationTokenIssuer;
                 }
-                this._Logger.LogDebug("UserName={0}, UserRealmServiceUrl={1}, SecurityTokenServiceUrl={1}, FederationTokenIssuer={2}", username, this.m_userRealmServiceUrl, this.m_securityTokenServiceUrl, this.m_federationTokenIssuer);
+                this._Logger?.LogDebug("UserName={0}, UserRealmServiceUrl={1}, SecurityTokenServiceUrl={1}, FederationTokenIssuer={2}", username, this.m_userRealmServiceUrl, this.m_securityTokenServiceUrl, this.m_federationTokenIssuer);
                 return;
             }
             throw new ArgumentException(nameof(username));
@@ -443,13 +443,13 @@ namespace OfaSchlupfer.SPO {
         private FederationProviderInfo GetFederationProviderInfo(string domainname) {
             FederationProviderInfo federationProviderInfo = default(FederationProviderInfo);
             if (IdcrlAuth.s_FederationProviderInfoCache.TryGetValue(domainname, out federationProviderInfo)) {
-                this._Logger.LogDebug("Get federation provider information for {0} from cache. UserRealmServiceUrl={1}, SecurityTokenServiceUrl={2}, FederationTokenIssuer={3}", domainname, (federationProviderInfo == null) ? null : federationProviderInfo.UserRealmServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.SecurityTokenServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.FederationTokenIssuer);
+                this._Logger?.LogDebug("Get federation provider information for {0} from cache. UserRealmServiceUrl={1}, SecurityTokenServiceUrl={2}, FederationTokenIssuer={3}", domainname, (federationProviderInfo == null) ? null : federationProviderInfo.UserRealmServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.SecurityTokenServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.FederationTokenIssuer);
                 return federationProviderInfo;
             }
             {
                 federationProviderInfo = this.RequestFederationProviderInfo(domainname);
                 IdcrlAuth.s_FederationProviderInfoCache.Put(domainname, federationProviderInfo);
-                this._Logger.LogWarning("Get federation provider information for {0} and put it in cache. UserRealmServcieUrl={1}, SecurityTokenServiceUrl={2}, FederationTokenIssuer={3}", domainname, (federationProviderInfo == null) ? null : federationProviderInfo.UserRealmServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.SecurityTokenServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.FederationTokenIssuer);
+                this._Logger?.LogWarning("Get federation provider information for {0} and put it in cache. UserRealmServcieUrl={1}, SecurityTokenServiceUrl={2}, FederationTokenIssuer={3}", domainname, (federationProviderInfo == null) ? null : federationProviderInfo.UserRealmServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.SecurityTokenServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.FederationTokenIssuer);
                 return federationProviderInfo;
             }
         }
@@ -471,7 +471,7 @@ namespace OfaSchlupfer.SPO {
                     xdoc = this.DoGet(text);
                     return ParseFederationProviderInfo(xdoc, fpDomainName);
                 } catch (WebException) {
-                    //this._Logger.LogWarning("Exception when request {0}. Exception={1}", text, ex);
+                    //this._Logger?.LogWarning("Exception when request {0}. Exception={1}", text, ex);
                 }
                 domainname = domainname.Substring(num + 1);
             }
@@ -481,7 +481,7 @@ namespace OfaSchlupfer.SPO {
         private string ParseFPDomainName(XDocument xdoc) {
             XElement elementAtPath = IdcrlUtility.GetElementAtPath(xdoc.Root, IdcrlMessageConstants.FPDOMAINNAME);
             if (elementAtPath == null) {
-                this._Logger.LogError("Cannot find FPDOMAINNAME element");
+                this._Logger?.LogError("Cannot find FPDOMAINNAME element");
                 throw IdcrlAuth.CreateIdcrlException(-2147186646);
             }
             return elementAtPath.Value;
@@ -494,37 +494,37 @@ namespace OfaSchlupfer.SPO {
                     XElement elementAtPath2 = IdcrlUtility.GetElementAtPath(item, IdcrlMessageConstants.URL, IdcrlMessageConstants.RST2);
                     XElement elementAtPath3 = IdcrlUtility.GetElementAtPath(item, IdcrlMessageConstants.URL, IdcrlMessageConstants.ENTITYID);
                     if (elementAtPath != null && elementAtPath2 != null && elementAtPath3 != null) {
-                        this._Logger.LogError("Find federation provider information for federation provider domain name {0}. UserRealmServiceUrl={1}, SecurityTokenServiceUrl={2}, FederationTokenIssuer={3}", fpDomainName, elementAtPath.Value, elementAtPath2.Value, elementAtPath3.Value);
+                        this._Logger?.LogError("Find federation provider information for federation provider domain name {0}. UserRealmServiceUrl={1}, SecurityTokenServiceUrl={2}, FederationTokenIssuer={3}", fpDomainName, elementAtPath.Value, elementAtPath2.Value, elementAtPath3.Value);
                         FederationProviderInfo federationProviderInfo = new FederationProviderInfo();
                         federationProviderInfo.UserRealmServiceUrl = elementAtPath.Value;
                         federationProviderInfo.SecurityTokenServiceUrl = elementAtPath2.Value;
                         federationProviderInfo.FederationTokenIssuer = elementAtPath3.Value;
                         return federationProviderInfo;
                     }
-                    this._Logger.LogError("Cannot get the user realm service url or security token service url for federation provider {0}", fpDomainName);
+                    this._Logger?.LogError("Cannot get the user realm service url or security token service url for federation provider {0}", fpDomainName);
                     throw IdcrlAuth.CreateIdcrlException(-2147186646);
                 }
             }
-            this._Logger.LogError("Cannot find federation provider information for federation domain {0}", fpDomainName);
+            this._Logger?.LogError("Cannot find federation provider information for federation domain {0}", fpDomainName);
             throw IdcrlAuth.CreateIdcrlException(-2147186646);
         }
 
         private XDocument DoGet(string url) {
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest.Method = "GET";
-            this._Logger.LogDebug("Sending GET request to {0}", url);
+            this._Logger?.LogDebug("Sending GET request to {0}", url);
             if (this.m_executingWebRequest != null) {
                 this.m_executingWebRequest(this, new WebRequestEventArgs(httpWebRequest));
             }
             HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
             if (httpWebResponse == null) {
-                this._Logger.LogError("Unexpected response for GET request to URL {0}", url);
+                this._Logger?.LogError("Unexpected response for GET request to URL {0}", url);
                 throw new InvalidOperationException();
             }
             using (httpWebResponse) {
                 using (var responseReader = new StreamReader(httpWebResponse.GetResponseStream())) {
                     string responseText = responseReader.ReadToEnd();
-                    this._Logger.LogDebug("StatusCode={0}, ResponseText={1}", (int)httpWebResponse.StatusCode, responseText);
+                    this._Logger?.LogDebug("StatusCode={0}, ResponseText={1}", (int)httpWebResponse.StatusCode, responseText);
                     using (XmlReader reader = XmlReader.Create(new StringReader(responseText))) {
                         return XDocument.Load(reader);
                     }

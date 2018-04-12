@@ -23,13 +23,12 @@
         }
 
         public override void InitializeServiceClient<T>(ServiceClient<T> client) {
-            client.HttpClient.BaseAddress
             base.InitializeServiceClient(client);
         }
 
         public override Task ProcessHttpRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
             var cookie = this._SPOCredentials.GetAuthenticationCookie(request.RequestUri, false, false);
-            request.Headers.Add("Set-Cookie", cookie);
+            request.Headers.Add("Cookie", cookie);
             return base.ProcessHttpRequestAsync(request, cancellationToken);
         }
     }

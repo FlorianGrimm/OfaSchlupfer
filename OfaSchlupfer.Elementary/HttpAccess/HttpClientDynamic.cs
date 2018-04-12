@@ -45,26 +45,10 @@
 
         public bool? GenerateClientRequestId { get; set; }
 
-
-
         /// <summary>
         /// Gets or sets the preferred language for the response.
         /// </summary>
         public string AcceptLanguage { get; set; }
-
-        //public CookieContainer CookieContainer { get; private set; }
-
-        //public CookieContainer CookieContainer { get {
-        //        var cookieContainer = this.HttpClientHandler.CookieContainer;
-        //        if ((object)cookieContainer == null) {
-        //            cookieContainer = new System.Net.CookieContainer();
-        //            this.HttpClientHandler.CookieContainer = cookieContainer;
-        //        }
-        //        return cookieContainer;
-        //    }
-        //}
-
-        //public HttpClientDynamic(HttpClientHandler rootHandler, params DelegatingHandler[] handlers) {}
 
         public HttpClientDynamic(
             System.Uri baseUri,
@@ -80,10 +64,11 @@
             //}
             //this.CookieContainer = cookieContainer;
             //
+            this.BaseUri = baseUri;
             this.Credentials = credentials;
             this.Credentials?.InitializeServiceClient(this);
         }
-
+#if no
         public async Task<AzureOperationResponse<R>> SendAsync<R>(
             string requestDescription,
             string httpMethod,
@@ -215,45 +200,20 @@
             }
             return result;
         }
-
-        public async Task<AzureOperationResponse<R>> SendAnyAsync<R>(
-            string requestDescription,
-            HttpRequestMessage httpRequest,
+#endif
+        public HttpRequestMessage CreateHttpRequestMessage(
+            HttpMethod httpMethod,
             string requestSuffix,
             object requestData,
-            Dictionary<string, List<string>> customHeaders = null,
-            CancellationToken cancellationToken = default(CancellationToken)) {
-
-            // Tracing
-            bool shouldTrace = ServiceClientTracing.IsEnabled;
-            string invocationId = null;
-            if (shouldTrace) {
-                invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("requestData", requestData);
-                if (ApiVersion != null) {
-                    tracingParameters.Add("apiVersion", ApiVersion);
-                }
-                tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(invocationId, this, requestDescription, tracingParameters);
-            }
-            // Construct URL
+            string contentType = null,
+            Dictionary<string, List<string>> customHeaders = null
+            ) {
+            var httpRequest = new HttpRequestMessage();
+            httpRequest.Method = httpMethod;
             var baseUrl = this.BaseUri.AbsoluteUri;
-            var requestUrl = new System.Uri(new System.Uri(baseUrl + (baseUrl.EndsWith("/") ? "" : "/")), requestSuffix).ToString();
-            List<string> _queryParameters = new List<string>();
-            //if (ApiVersion != null) {
-            //    _queryParameters.Add(string.Format("api-version={0}", System.Uri.EscapeDataString(ApiVersion)));
-            //}
-            if (_queryParameters.Count > 0) {
-                requestUrl += (requestUrl.Contains("?") ? "&" : "?") + string.Join("&", _queryParameters);
-            }
-            // Create HTTP transport objects
-            HttpResponseMessage httpResponse = null;
-            httpRequest.RequestUri = new System.Uri(requestUrl);
-            // Set Headers
-            if (this.GenerateClientRequestId != null && this.GenerateClientRequestId.Value) {
-                httpRequest.Headers.TryAddWithoutValidation("x-ms-client-request-id", System.Guid.NewGuid().ToString());
-            }
+            var requestUri = new System.Uri(new System.Uri(baseUrl + (baseUrl.EndsWith("/") ? "" : "/")), requestSuffix);
+            var requestUrl = requestUri.ToString();
+            httpRequest.RequestUri = requestUri;
             if (this.AcceptLanguage != null) {
                 if (httpRequest.Headers.Contains("accept-language")) {
                     httpRequest.Headers.Remove("accept-language");
@@ -269,14 +229,44 @@
                     httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
                 }
             }
-
-            // Serialize Request
-            string requestContent = null;
             if (requestData != null) {
-                requestContent = SafeJsonConvert.SerializeObject(requestData, this.SerializationSettings);
+                var requestContent = SafeJsonConvert.SerializeObject(requestData, this.SerializationSettings);
                 httpRequest.Content = new StringContent(requestContent, System.Text.Encoding.UTF8);
-                httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(contentType ?? "application/json; charset=utf-8");
             }
+            return httpRequest;
+        }
+        public async Task<AzureOperationResponse<R>> SendAsync<R>(
+            string requestDescription,
+            HttpRequestMessage httpRequest,
+            Func<AzureOperationResponse<R>, Task> deserializeResponse = null,
+            CancellationToken cancellationToken = default(CancellationToken)) {
+
+            //bool shouldTrace = ServiceClientTracing.IsEnabled;
+            // Tracing
+            bool shouldTrace = ServiceClientTracing.IsEnabled;
+            string invocationId = null;
+            if (shouldTrace) {
+                invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                var requestData = await httpRequest.Content.ReadAsStringAsync();
+                tracingParameters.Add("requestData", requestData);
+                if (ApiVersion != null) {
+                    tracingParameters.Add("apiVersion", ApiVersion);
+                }
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(invocationId, this, requestDescription, tracingParameters);
+            }
+
+            // Create HTTP transport objects
+            HttpResponseMessage httpResponse = null;
+            //httpRequest.RequestUri = new System.Uri(requestUrl);
+            // Set Headers
+            if (this.GenerateClientRequestId != null && this.GenerateClientRequestId.Value) {
+                httpRequest.Headers.TryAddWithoutValidation("x-ms-client-request-id", System.Guid.NewGuid().ToString());
+            }
+
+
             // Set Credentials
             if (this.Credentials != null) {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -306,6 +296,10 @@
                 } catch (JsonException) {
                     // Ignore the exception
                 }
+                string requestContent = null;
+                if ((object)httpRequest.Content != null) {
+                    requestContent = await httpRequest.Content.ReadAsStringAsync();
+                }
                 ex.Request = new HttpRequestMessageWrapper(httpRequest, requestContent);
                 ex.Response = new HttpResponseMessageWrapper(httpResponse, responseContent);
                 if (httpResponse.Headers.Contains("x-ms-request-id")) {
@@ -321,6 +315,7 @@
                 throw ex;
             }
             // Create Result
+            // HttpOperationResponse
             var result = new AzureOperationResponse<R>();
             result.Request = httpRequest;
             result.Response = httpResponse;
@@ -329,15 +324,30 @@
             }
             // Deserialize Response
             if (statusCode == HttpStatusCode.OK) {
-                responseContent = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try {
-                    result.Body = SafeJsonConvert.DeserializeObject<R>(responseContent, this.DeserializationSettings);
+                    if ((object)deserializeResponse == null) {
+                        await DeserializeJsonResponse(result);
+                    } else {
+                        await deserializeResponse(result);
+                    }
                 } catch (JsonException ex) {
                     httpRequest.Dispose();
                     if (httpResponse != null) {
                         httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", responseContent, ex);
+                } catch (SerializationException) {
+                    httpRequest.Dispose();
+                    if (httpResponse != null) {
+                        httpResponse.Dispose();
+                    }
+                    throw;
+                } catch (Exception) {
+                    httpRequest.Dispose();
+                    if (httpResponse != null) {
+                        httpResponse.Dispose();
+                    }
+                    throw;
                 }
             }
             if (shouldTrace) {
@@ -346,7 +356,21 @@
             return result;
         }
 
+
+        private async Task DeserializeJsonResponse<R>(AzureOperationResponse<R> result) {
+            HttpRequestMessage httpRequest = result.Request;
+            HttpResponseMessage httpResponse = result.Response;
+            string responseContent = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+            try {
+                result.Body = SafeJsonConvert.DeserializeObject<R>(responseContent, this.DeserializationSettings);
+            } catch (JsonException ex) {
+                httpRequest.Dispose();
+                if (httpResponse != null) {
+                    httpResponse.Dispose();
+                }
+                throw new SerializationException("Unable to deserialize the response.", responseContent, ex);
+            }
+        }
     }
 
-    // public class HttpClientHandlerDynamic : HttpClientHandler {    }
 }
