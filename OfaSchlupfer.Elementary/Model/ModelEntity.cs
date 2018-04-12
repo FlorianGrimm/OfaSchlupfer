@@ -1,4 +1,5 @@
 ﻿namespace OfaSchlupfer.Model {
+    using System;
     using System.Collections.Generic;
 
     using Newtonsoft.Json;
@@ -51,12 +52,16 @@
             set {
                 this.ThrowIfFrozen();
                 this._EntityTypeNáme = value;
+                this._EntityType = null;
             }
         }
 
         [JsonIgnore]
         public ModelComplexType EntityType {
             get {
+                if (((object)this._EntityType == null) && (this._EntityTypeNáme != null)) {
+                    this.ResolveNameEntityType();
+                }
                 return this._EntityType;
             }
             set {
@@ -77,6 +82,24 @@
                 this.ThrowIfFrozen();
                 this._Owner = value;
             }
+        }
+
+        public ModelComplexType ResolveNameEntityType() {
+            if (((object)this._EntityType == null) && (this._EntityTypeNáme != null)) {
+                var result = this.Owner.FindComplexType(this._EntityTypeNáme);
+                if (result.Count == 1) {
+                    this._EntityType = result[0];
+                    this._EntityTypeNáme = null;
+                    return result[0];
+                } else if (result.Count == 0) {
+#warning TODO !! ResolveNameEntityType
+                    throw new InvalidOperationException();
+                } else {
+#warning TODO !! ResolveNameEntityType
+                    throw new InvalidOperationException();
+                }
+            }
+            return this._EntityType;
         }
 
         public override bool Freeze() {

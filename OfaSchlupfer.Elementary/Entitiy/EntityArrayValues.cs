@@ -2,12 +2,15 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using OfaSchlupfer.Freezable;
     using OfaSchlupfer.SqlAccess;
 
     /// <summary>
     /// An entity that stores it's data in an array.
     /// </summary>
-    public class EntityArrayValues : IEntity {
+    public class EntityArrayValues
+        : FreezeableObject
+        , IEntity {
         /// <summary>
         /// Convert the rows to ProjectChange
         /// </summary>
@@ -32,6 +35,7 @@
         }
         */
         private MetaEntityArrayValues _MetaData;
+        private object[] _Values;
 
         /// <summary>
         /// Gets the metadata.
@@ -41,7 +45,16 @@
         /// <summary>
         /// Gets or sets the values.
         /// </summary>
-        public object[] Values { get; set; }
+        internal object[] Values {
+            get {
+                return this._Values;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this.Validate(value, false);
+                this._Values = value;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityArrayValues"/> class.
@@ -50,8 +63,12 @@
         /// <param name="values">the values</param>
         public EntityArrayValues(MetaEntityArrayValues metaData, object[] values) {
             this._MetaData = metaData;
-            this.Values = values;
+            this.Validate(values, false);
+            this._Values = values;
         }
+
+
+        public string Validate(object[] values, bool validateOrThrow) => this._MetaData?.Validate(values, validateOrThrow);
 
         /*
         /// <summary>

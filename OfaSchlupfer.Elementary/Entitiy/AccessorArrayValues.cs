@@ -1,4 +1,6 @@
 ﻿namespace OfaSchlupfer.Entitiy {
+    using OfaSchlupfer.Freezable;
+
     /// <summary>
     /// the accessor to the value.
     /// </summary>
@@ -30,6 +32,8 @@
             }
 
             set {
+                this._Entity.ThrowIfFrozen();
+                this._MetaProperty.Validate(value, false);
                 this._Entity.Values[this._MetaProperty.Index] = value;
             }
         }

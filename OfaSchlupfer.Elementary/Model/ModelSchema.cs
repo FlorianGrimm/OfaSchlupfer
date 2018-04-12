@@ -21,13 +21,13 @@
         internal ModelEntityName _Name;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedCollection<ModelSchema, ModelComplexType> _ComplexTypes;
+        private readonly FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelComplexType> _ComplexTypes;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedCollection<ModelSchema, ModelEntity> _Entities;
+        private readonly FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelEntity> _Entities;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedCollection<ModelSchema, ModelRelation> _Relations;
+        private readonly FreezeableOwnedKeyedCollection<ModelSchema, string, ModelRelation> _Relations;
 
         [JsonProperty(Order = 2)]
         public ModelEntityName RootEntityName {
@@ -51,9 +51,20 @@
         public IList<ModelRelation> Relations => this._Relations;
 
         public ModelSchema() {
-            this._ComplexTypes = new FreezeableOwnedCollection<ModelSchema, ModelComplexType>(this, (owner, item) => { item.Owner = owner; });
-            this._Entities = new FreezeableOwnedCollection<ModelSchema, ModelEntity>(this, (owner, item) => { item.Owner = owner; });
-            this._Relations = new FreezeableOwnedCollection<ModelSchema, ModelRelation>(this, (owner, item) => { item.Owner = owner; });
+            this._ComplexTypes = new FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelComplexType>(
+                this, 
+                (item) => item.Name, 
+                ModelUtility.Instance.ModelEntityNameEqualityComparer, 
+                (owner, item) => { item.Owner = owner; });
+            this._Entities = new FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelEntity>(
+                this,
+                (item) => item.Name,
+                ModelUtility.Instance.ModelEntityNameEqualityComparer,
+                (owner, item) => { item.Owner = owner; });
+            this._Relations = new FreezeableOwnedKeyedCollection<ModelSchema, string, ModelRelation>(this, 
+                (item) => item.Name,
+                ModelUtility.Instance.StringComparer, 
+                (owner, item) => { item.Owner = owner; });
         }
 
         [JsonIgnore]
@@ -73,6 +84,13 @@
             }
             return result;
         }
+
+        public List<ModelEntity> FindEntity(ModelEntityName name) => this._Entities.FindByKey(name);
+
+        public List<ModelComplexType> FindComplexType(ModelEntityName name) => this._ComplexTypes.FindByKey(name);
+
+        public List<ModelRelation> FindRelation(string name) => this._Relations.FindByKey(name);
+
 
         public class Current {
             public readonly ModelSchema ModelSchema;

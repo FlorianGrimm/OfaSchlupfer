@@ -2,20 +2,23 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using OfaSchlupfer.Freezable;
 
     /// <summary>
     /// MetaData for EntityArrayProp
     /// </summary>
-    public class MetaEntityArrayValues : IMetaEntity {
-        private List<MetaPropertyArrayValues> _PropertyByIndex;
-        private Dictionary<string, MetaPropertyArrayValues> _PropertyByName;
+    public class MetaEntityArrayValues
+        : FreezeableObject
+        , IMetaEntity {
+        private FreezeableCollection<MetaPropertyArrayValues> _PropertyByIndex;
+        private FreezeableDictionary<string, MetaPropertyArrayValues> _PropertyByName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MetaEntityArrayValues"/> class.
         /// </summary>
         public MetaEntityArrayValues() {
-            this._PropertyByIndex = new List<MetaPropertyArrayValues>();
-            this._PropertyByName = new Dictionary<string, MetaPropertyArrayValues>();
+            this._PropertyByIndex = new FreezeableCollection<MetaPropertyArrayValues>();
+            this._PropertyByName = new FreezeableDictionary<string, MetaPropertyArrayValues>();
         }
 
         /// <summary>
@@ -27,21 +30,32 @@
             if (names != null) {
                 int idx = 0;
                 foreach (var name in names) {
-                    this.AddProperty(new MetaPropertyArrayValues(name, idx));
+                    this.AddProperty(new MetaPropertyArrayValues(idx, name, null));
                     idx++;
                 }
             }
         }
 
+        public MetaEntityArrayValues(IEnumerable<IMetaProperty> properties) {
+            if (properties != null) {
+                int idx = 0;
+                foreach (var property in properties) {
+                    this.AddProperty(new MetaPropertyArrayValues(idx, property));
+                    idx++;
+                }
+            }
+        }
+#warning HERE MetaEntityArrayValues type
+
         /// <summary>
         /// Gets the property by index.
         /// </summary>
-        public List<MetaPropertyArrayValues> PropertyByIndex { get { return this._PropertyByIndex; } }
+        public IList<MetaPropertyArrayValues> PropertyByIndex { get { return this._PropertyByIndex; } }
 
         /// <summary>
         /// Gets the property by name.
         /// </summary>
-        public Dictionary<string, MetaPropertyArrayValues> PropertyByName { get { return this._PropertyByName; } }
+        public IDictionary<string, MetaPropertyArrayValues> PropertyByName { get { return this._PropertyByName; } }
 
         /// <summary>
         /// Add a MetaProperty
@@ -91,10 +105,35 @@
             return this.PropertyByName.Values.Cast<IMetaProperty>().ToArray();
         }
 
+        public string Validate(object[] values, bool validateOrThrow) {
+            var cnt = this._PropertyByIndex.Count;
+            var len = values.Length;
+            if (cnt != len) {
+                var msg = $"Values length {len} is not equal to Metadatas length {cnt}.";
+                if (validateOrThrow) {
+                    return msg;
+                } else {
+                    throw new InvalidOperationException(msg);
+                }
+            }
+            for (int idx = 0; idx < cnt; idx++) {
+                var subResult = this._PropertyByIndex[idx].Validate(values[idx], validateOrThrow);
+                if (validateOrThrow && (object)subResult != null) { return subResult; }
+            }
+            return null;
+        }
         /*
         public IMetaProperty<TData> GetPropertyT<TData>(string name) {
             throw new NotImplementedException();
         }
         */
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._PropertyByIndex.Freeze();
+                this._PropertyByName.Freeze();
+            }
+            return result;
+        }
     }
 }
