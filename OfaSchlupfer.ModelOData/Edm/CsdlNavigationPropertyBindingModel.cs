@@ -1,5 +1,6 @@
 ﻿namespace OfaSchlupfer.ModelOData.Edm {
     using System;
+    using OfaSchlupfer.Model;
 
     public class CsdlNavigationPropertyBindingModel : CsdlAnnotationalModel {
         private string _TargetName;
@@ -30,7 +31,7 @@
         public CsdlNavigationPropertyModel PathModel {
             get {
                 if (this._PathName == null) {
-                    this.ResolveNames(CsdlErrors.GetIgnorance());
+                    this.ResolveNames(ModelErrors.GetIgnorance());
                 }
                 return this._PathName;
             }
@@ -40,7 +41,7 @@
             }
         }
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             if ((this._PathName == null) && (this._TargetName != null)) {
                 var entitySetModel = this.OwnerEntitySetModel;
                 var entityTypeModel = entitySetModel?.EntityTypeModel;
@@ -49,9 +50,9 @@
                     if (lstNavProperty.Count == 1) {
                         this.PathModel = lstNavProperty[0];
                     } else if (lstNavProperty.Count == 0) {
-                        errors.AddError($"Property {this._TargetName} in {entityTypeModel.FullName} not found.");
+                        errors.AddErrorXmlParsing($"Property {this._TargetName} in {entityTypeModel.FullName} not found.");
                     } else {
-                        errors.AddError($"Property {this._TargetName} in {entityTypeModel.FullName} found #{lstNavProperty.Count} times.");
+                        errors.AddErrorXmlParsing($"Property {this._TargetName} in {entityTypeModel.FullName} found #{lstNavProperty.Count} times.");
                     }
                 }
             }

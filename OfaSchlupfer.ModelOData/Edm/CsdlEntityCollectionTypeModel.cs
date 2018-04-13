@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Text;
     using System.Text.RegularExpressions;
+    using OfaSchlupfer.Model;
 
     public class CsdlEntityCollectionTypeModel : ICsdlTypeModel {
         private static Regex regexIsCollection;
@@ -70,7 +71,7 @@
         public CsdlEntityTypeModel EntityTypeModel {
             get {
                 if (this._EntityTypeModel == null && this._EntityTypeName != null) {
-                    this.ResolveNames(CsdlErrors.GetIgnorance());
+                    this.ResolveNames(ModelErrors.GetIgnorance());
                 }
                 return this._EntityTypeModel;
             }
@@ -80,7 +81,7 @@
             }
         }
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             if (this._EntityTypeModel == null && this._EntityTypeName != null) {
                 EdmxModel edmxModel = this._SchemaModel?.EdmxModel;
                 if ((edmxModel != null)) {
@@ -100,14 +101,14 @@
                             this.EntityTypeModel = lstFound[0];
 #endif
                         } else if (lstFound.Count == 0) {
-                            errors.AddError($"{this._EntityTypeName} not found");
+                            errors.AddErrorXmlParsing($"{this._EntityTypeName} not found");
                         } else {
-                            errors.AddError($"{this._EntityTypeName} found #{lstFound.Count} times.");
+                            errors.AddErrorXmlParsing($"{this._EntityTypeName} found #{lstFound.Count} times.");
                         }
                     } else if (lstNS.Count == 0) {
-                        errors.AddError($"{this._EntityTypeName} namespace not found");
+                        errors.AddErrorXmlParsing($"{this._EntityTypeName} namespace not found");
                     } else {
-                        errors.AddError($"{this._EntityTypeName} namespace found #{lstNS.Count} times.");
+                        errors.AddErrorXmlParsing($"{this._EntityTypeName} namespace found #{lstNS.Count} times.");
                     }
                 }
             }

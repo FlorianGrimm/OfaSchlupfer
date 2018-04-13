@@ -1,11 +1,12 @@
 ﻿namespace OfaSchlupfer.ModelOData.Edm {
     using System;
     using System.Collections.Generic;
+    using OfaSchlupfer.Model;
 
     [System.Diagnostics.DebuggerDisplay("{Role}")]
     public class CsdlAssociationEndModel : CsdlAnnotationalModel {
         // parents
-        private CsdlAssociationModel _OwnerAssociationModel;
+        private CsdlAssociationModel _Owner;
 
         private string _TypeName;
         private CsdlEntityTypeModel _TypeModel;
@@ -14,20 +15,15 @@
         }
 
         public string RoleName;
-        //public string EntitySetName;
 
         public string Multiplicity;
-
-        [System.Diagnostics.DebuggerHidden]
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel => this._OwnerAssociationModel?.SchemaModel;
-
-        public CsdlAssociationModel OwnerAssociationModel {
+        
+        public CsdlAssociationModel Owner {
             get {
-                return this._OwnerAssociationModel;
+                return this._Owner;
             }
             set {
-                this._OwnerAssociationModel = value;
+                this._Owner = value;
             }
         }
 
@@ -52,11 +48,11 @@
         public CsdlEntityTypeModel TypeModel {
             get {
                 if (this._TypeModel == null && this._TypeName != null) {
-                    var associationModel = this.OwnerAssociationModel;
-                    var schema = this.SchemaModel;
+                    var associationModel = this.Owner;
+                    var schema = this._Owner?.SchemaModel;
                     var edmxModel = schema?.EdmxModel;
                     if (edmxModel != null && associationModel != null) {
-                        this.ResolveNames(CsdlErrors.GetIgnorance());
+                        this.ResolveNames(ModelErrors.GetIgnorance());
                     }
                 }
                 return this._TypeModel;
@@ -67,9 +63,9 @@
             }
         }
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             if (this._TypeModel == null && this._TypeName != null) {
-                EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
+                EdmxModel edmxModel = this._Owner?.SchemaModel?.EdmxModel;
                 if ((edmxModel != null)) {
                     var lstNS = edmxModel.FindStart(this.TypeName);
                     if (lstNS.Count == 1) {
@@ -87,14 +83,14 @@
                             this.TypeModel = lstFound[0];
 #endif
                         } else if (lstFound.Count == 0) {
-                            errors.AddError($"{this._TypeName} not found");
+                            errors.AddErrorXmlParsing($"{this._TypeName} not found");
                         } else {
-                            errors.AddError($"{this._TypeName} found #{lstFound.Count} times.");
+                            errors.AddErrorXmlParsing($"{this._TypeName} found #{lstFound.Count} times.");
                         }
                     } else if (lstNS.Count == 0) {
-                        errors.AddError($"{this._TypeName} namespace not found");
+                        errors.AddErrorXmlParsing($"{this._TypeName} namespace not found");
                     } else {
-                        errors.AddError($"{this._TypeName} namespace found #{lstNS.Count} times.");
+                        errors.AddErrorXmlParsing($"{this._TypeName} namespace found #{lstNS.Count} times.");
                     }
                 }
             }

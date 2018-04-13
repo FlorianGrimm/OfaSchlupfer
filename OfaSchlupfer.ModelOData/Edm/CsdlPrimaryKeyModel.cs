@@ -1,5 +1,6 @@
 ﻿namespace OfaSchlupfer.ModelOData.Edm {
     using System;
+    using OfaSchlupfer.Model;
 
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlPrimaryKeyModel : CsdlAnnotationalModel {
@@ -40,7 +41,7 @@
             get {
                 if (((object)this._Name != null) && ((object)this._Property == null)) {
                     if ((object)this._OwnerEntityTypeModel != null) {
-                        this.ResolveNames(CsdlErrors.GetIgnorance());
+                        this.ResolveNames(ModelErrors.GetIgnorance());
                     }
                 }
                 return this._Property;
@@ -53,16 +54,16 @@
         }
 
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             if (this._Property == null && this._Name != null) {
                 if ((object)this._OwnerEntityTypeModel != null) {
                     var lstProperty = this._OwnerEntityTypeModel.FindProperty(this.Name);
                     if (lstProperty.Count == 1) {
                         this.Property = lstProperty[0];
                     } else if (lstProperty.Count == 0) {
-                        errors.AddError($"Property '{this.Name}' not found in {this.OwnerEntityTypeModel.FullName}.");
+                        errors.AddErrorXmlParsing($"Property '{this.Name}' not found in {this.OwnerEntityTypeModel.FullName}.");
                     } else {
-                        errors.AddError($"Property '{this.Name}' found #{lstProperty.Count} times in {this.OwnerEntityTypeModel.FullName}.");
+                        errors.AddErrorXmlParsing($"Property '{this.Name}' found #{lstProperty.Count} times in {this.OwnerEntityTypeModel.FullName}.");
                     }
                 }
             }

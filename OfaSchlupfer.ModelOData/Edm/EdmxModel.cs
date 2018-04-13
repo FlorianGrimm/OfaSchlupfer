@@ -2,6 +2,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using OfaSchlupfer.Model;
 
     public class EdmxModel : CsdlAnnotationalModel {
         public EdmxModel() {
@@ -17,7 +18,7 @@
 
         public readonly CsdlCollection<CsdlSchemaModel> DataServices;
 
-        public void AddCoreSchema(CsdlErrors errors) {
+        public void AddCoreSchema(ModelErrors errors) {
             if (string.Equals(this.Version, "1.0", StringComparison.InvariantCulture)) {
                 CsdlSchemaModel.AddCoreV3(this, errors);
             } else if (string.Equals(this.Version, "1.1", StringComparison.InvariantCulture)) {
@@ -33,7 +34,7 @@
             } else if (string.Equals(this.Version, "4.01", StringComparison.InvariantCulture)) {
                 CsdlSchemaModel.AddCoreV4(this, errors);
             } else {
-                errors.AddError($"Unknown Version '{this.Version}'.");
+                errors.AddErrorXmlParsing($"Unknown Version '{this.Version}'.");
             }
         }
 
@@ -65,7 +66,7 @@
             return result;
         }
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             if (this.Find("Edm").Count==0) {
                 this.AddCoreSchema(errors);
             }

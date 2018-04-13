@@ -2,6 +2,7 @@
 
 namespace OfaSchlupfer.ModelOData.Edm {
     using System;
+    using OfaSchlupfer.Model;
 
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlEntitySetModel : CsdlAnnotationalModel {
@@ -67,7 +68,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
                     var schema = entityContainer?.SchemaModel;
                     var edmxModel = schema?.EdmxModel;
                     if (edmxModel != null) {
-                        this.ResolveNames(CsdlErrors.GetIgnorance());
+                        this.ResolveNames(ModelErrors.GetIgnorance());
                     }
 
                 }
@@ -79,14 +80,14 @@ namespace OfaSchlupfer.ModelOData.Edm {
             }
         }
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             this.ResolveNamesEntityType(errors);
             foreach (var navigationPropertyBinding in this.NavigationPropertyBinding) {
                 navigationPropertyBinding.ResolveNames(errors);
             }
         }
 
-        public void ResolveNamesEntityType(CsdlErrors errors) {
+        public void ResolveNamesEntityType(ModelErrors errors) {
             if (this._EntityTypeModel == null && this._EntityTypeName != null) {
                 EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
                 if ((edmxModel != null)) {
@@ -106,14 +107,14 @@ namespace OfaSchlupfer.ModelOData.Edm {
                             this.EntityTypeModel = lstFound[0];
 #endif
                         } else if (lstFound.Count == 0) {
-                            errors.AddError($"{this._EntityTypeName} not found");
+                            errors.AddErrorXmlParsing($"{this._EntityTypeName} not found");
                         } else {
-                            errors.AddError($"{this._EntityTypeName} found #{lstFound.Count} times.");
+                            errors.AddErrorXmlParsing($"{this._EntityTypeName} found #{lstFound.Count} times.");
                         }
                     } else if (lstNS.Count == 0) {
-                        errors.AddError($"{this._EntityTypeName} namespace not found");
+                        errors.AddErrorXmlParsing($"{this._EntityTypeName} namespace not found");
                     } else {
-                        errors.AddError($"{this._EntityTypeName} namespace found #{lstNS.Count} times.");
+                        errors.AddErrorXmlParsing($"{this._EntityTypeName} namespace found #{lstNS.Count} times.");
                     }
                 }
             }

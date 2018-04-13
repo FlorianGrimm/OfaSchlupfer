@@ -1,4 +1,5 @@
 ﻿using System;
+using OfaSchlupfer.Model;
 
 namespace OfaSchlupfer.ModelOData.Edm {
     [System.Diagnostics.DebuggerDisplay("{Role}")]
@@ -37,7 +38,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
         public CsdlAssociationEndModel RoleEnd {
             get {
                 if (this._RoleEnd == null) {
-                    this.ResolveNames(CsdlErrors.GetIgnorance());
+                    this.ResolveNames(ModelErrors.GetIgnorance());
                 }
                 return this._RoleEnd;
             }
@@ -47,14 +48,14 @@ namespace OfaSchlupfer.ModelOData.Edm {
             }
         }
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             this.ResolveNameRoleEnd(errors);
             foreach (var propertyRef in this.PropertyRef) {
                 propertyRef.ResolveNames(errors);
             }
         }
 
-        public void ResolveNameRoleEnd(CsdlErrors errors) {
+        public void ResolveNameRoleEnd(ModelErrors errors) {
             if (this._RoleEnd == null && this._RoleName != null) {
                 var referentialConstraintModel = this.OwnerReferentialConstraintModel;
                 var associationModel = referentialConstraintModel.OwnerAssociationModel;
@@ -63,7 +64,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
                     if (end != null) {
                         this.RoleEnd = end;
                     } else {
-                        errors.AddError($"Role {this._RoleName} not found in {associationModel.FullName}.");
+                        errors.AddErrorXmlParsing($"Role {this._RoleName} not found in {associationModel.FullName}.");
                     }
                 }
             }

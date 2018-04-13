@@ -1,5 +1,6 @@
 ﻿namespace OfaSchlupfer.ModelOData.Edm {
     using System.Collections.Generic;
+    using OfaSchlupfer.Model;
 
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlEntityContainerModel : CsdlAnnotationalModel {
@@ -31,7 +32,7 @@
             }
         }
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             foreach (var entitySet in this.EntitySet) {
                 entitySet.ResolveNames(errors);
             }

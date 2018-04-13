@@ -1,4 +1,5 @@
 ﻿using System;
+using OfaSchlupfer.Model;
 
 namespace OfaSchlupfer.ModelOData.Edm {
     [System.Diagnostics.DebuggerDisplay("{Name}")]
@@ -54,7 +55,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
         public CsdlScalarTypeModel ScalarType {
             get {
                 if (this._ScalarType == null) {
-                    this.ResolveNames(CsdlErrors.GetIgnorance());
+                    this.ResolveNames(ModelErrors.GetIgnorance());
                 }
                 return this._ScalarType;
             }
@@ -64,7 +65,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             }
         }
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             if (this._ScalarType == null && this._TypeName != null) {
                 EdmxModel edmxModel = this._OwnerEntityTypeModel?.SchemaModel?.EdmxModel;
                 if (edmxModel != null) {
@@ -84,14 +85,14 @@ namespace OfaSchlupfer.ModelOData.Edm {
                             this.ScalarType = lstFound[0];
 #endif
                         } else if (lstFound.Count == 0) {
-                            errors.AddError($"{this.TypeName} not found");
+                            errors.AddErrorXmlParsing($"{this.TypeName} not found");
                         } else {
-                            errors.AddError($"{this.TypeName} found #{lstFound.Count} times.");
+                            errors.AddErrorXmlParsing($"{this.TypeName} found #{lstFound.Count} times.");
                         }
                     } else if (lstNS.Count == 0) {
-                        errors.AddError($"{this.TypeName} namespace not found");
+                        errors.AddErrorXmlParsing($"{this.TypeName} namespace not found");
                     } else {
-                        errors.AddError($"{this.TypeName} namespace found #{lstNS.Count} times.");
+                        errors.AddErrorXmlParsing($"{this.TypeName} namespace found #{lstNS.Count} times.");
                     }
                 }
             }

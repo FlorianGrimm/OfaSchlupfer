@@ -1,5 +1,6 @@
 ﻿namespace OfaSchlupfer.ModelOData.Edm {
     using System;
+    using OfaSchlupfer.Model;
 
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlPropertyRefModel : CsdlAnnotationalModel {
@@ -34,7 +35,7 @@
             get {
                 if (((object)this._PropertyName != null) && ((object)this._PropertyModel == null)) {
                     if ((object)this._OwnerReferentialConstraintPartnerModel != null) {
-                        this.ResolveNames(CsdlErrors.GetIgnorance());
+                        this.ResolveNames(ModelErrors.GetIgnorance());
                     }
                 }
                 return this._PropertyModel;
@@ -46,7 +47,7 @@
             }
         }
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             if (this._PropertyModel == null && this._PropertyName != null) {
                 var referentialConstraintPartnerModel = this.OwnerReferentialConstraintPartnerModel;
                 var roleEnd = referentialConstraintPartnerModel?.RoleEnd;
@@ -56,9 +57,9 @@
                     if (lstProperty.Count == 1) {
                         this.PropertyModel = lstProperty[0];
                     } else if (lstProperty.Count == 0) {
-                        errors.AddError($"Property '{this.PropertyName}' not found in {roleTypeModel.FullName}.");
+                        errors.AddErrorXmlParsing($"Property '{this.PropertyName}' not found in {roleTypeModel.FullName}.");
                     } else {
-                        errors.AddError($"Property '{this.PropertyName}' found #{lstProperty.Count} times in {roleTypeModel.FullName}.");
+                        errors.AddErrorXmlParsing($"Property '{this.PropertyName}' found #{lstProperty.Count} times in {roleTypeModel.FullName}.");
                     }
                 }
             }

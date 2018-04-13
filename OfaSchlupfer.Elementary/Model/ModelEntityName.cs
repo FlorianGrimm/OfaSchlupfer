@@ -40,7 +40,7 @@
         [JsonIgnore]
         private int _HashCode;
 
-        public ModelEntityName(string namespaceUri = null, string fullname = null, string name = null) {
+        public ModelEntityName(string namespaceUri = null, string name = null) {
             this._NamespaceUri = namespaceUri;
             this._Name = name;
         }

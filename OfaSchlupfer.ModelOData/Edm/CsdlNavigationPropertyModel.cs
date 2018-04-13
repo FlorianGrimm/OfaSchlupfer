@@ -1,5 +1,6 @@
 ﻿namespace OfaSchlupfer.ModelOData.Edm {
     using System;
+    using OfaSchlupfer.Model;
 
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlNavigationPropertyModel {
@@ -48,7 +49,7 @@
         public CsdlAssociationModel RelationshipModel {
             get {
                 if (this._RelationshipModel == null && this._RelationshipName != null) {
-                    this.ResolveNamesRelationship(CsdlErrors.GetIgnorance());
+                    this.ResolveNamesRelationship(ModelErrors.GetIgnorance());
                 }
                 return this._RelationshipModel;
             }
@@ -78,7 +79,7 @@
         public CsdlAssociationEndModel FromRoleModel {
             get {
                 if (this._ToRoleModel == null && this._ToRoleName != null) {
-                    this.ResolveNamesFromRole(CsdlErrors.GetIgnorance());
+                    this.ResolveNamesFromRole(ModelErrors.GetIgnorance());
                 }
                 return this._FromRoleModel;
             }
@@ -107,7 +108,7 @@
         public CsdlAssociationEndModel ToRoleModel {
             get {
                 if (this._ToRoleModel == null && this._ToRoleName != null) {
-                    this.ResolveNamesToRole(CsdlErrors.GetIgnorance());
+                    this.ResolveNamesToRole(ModelErrors.GetIgnorance());
                 }
                 return this._ToRoleModel;
             }
@@ -139,7 +140,7 @@
         public ICsdlTypeModel TypeModel {
             get {
                 if (this._TypeModel == null && this._TypeName != null) {
-                    this.ResolveNamesType(CsdlErrors.GetIgnorance());
+                    this.ResolveNamesType(ModelErrors.GetIgnorance());
                 }
                 return this._TypeModel;
             }
@@ -170,7 +171,7 @@
         public CsdlNavigationPropertyModel PartnerModel {
             get {
                 if (this._PartnerModel == null && this._PartnerName != null) {
-                    this.ResolveNamesType(CsdlErrors.GetIgnorance());
+                    this.ResolveNamesType(ModelErrors.GetIgnorance());
                 }
                 return this._PartnerModel;
             }
@@ -197,7 +198,7 @@
             }
         }
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             this.ResolveNamesRelationship(errors);
             this.ResolveNamesFromRole(errors);
             this.ResolveNamesToRole(errors);
@@ -208,7 +209,7 @@
             }
         }
 
-        public void ResolveNamesRelationship(CsdlErrors errors) {
+        public void ResolveNamesRelationship(ModelErrors errors) {
             if (this._RelationshipModel == null && this._RelationshipName != null) {
                 EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
                 if ((edmxModel != null)) {
@@ -228,16 +229,16 @@
                             this.RelationshipModel = lstFound[0];
 #endif
                         } else if (lstFound.Count == 0) {
-                            errors.AddError($"{this._RelationshipName} not found");
+                            errors.AddErrorXmlParsing($"{this._RelationshipName} not found");
                         } else {
-                            errors.AddError($"{this._RelationshipName} found #{lstFound.Count} times.");
+                            errors.AddErrorXmlParsing($"{this._RelationshipName} found #{lstFound.Count} times.");
                         }
                     }
                 }
             }
         }
 
-        public void ResolveNamesFromRole(CsdlErrors csdlErrors) {
+        public void ResolveNamesFromRole(ModelErrors csdlErrors) {
             if (this._FromRoleModel == null && this._FromRoleName != null) {
                 var relationshipModel = this._RelationshipModel;
                 if (relationshipModel == null) {
@@ -247,7 +248,7 @@
                 if (relationshipModel != null) {
                     var end = relationshipModel.FindAssociationEnd(this.FromRoleName);
                     if (end == null) {
-                        csdlErrors.AddError($"FromRole {this._FromRoleName} not found in {this.RelationshipName}.");
+                        csdlErrors.AddErrorXmlParsing($"FromRole {this._FromRoleName} not found in {this.RelationshipName}.");
                     } else {
                         this.FromRoleModel = end;
                     }
@@ -255,7 +256,7 @@
             }
         }
 
-        public void ResolveNamesToRole(CsdlErrors csdlErrors) {
+        public void ResolveNamesToRole(ModelErrors csdlErrors) {
             if (this._ToRoleModel == null && this._ToRoleName != null) {
                 var relationshipModel = this._RelationshipModel;
                 if (relationshipModel == null) {
@@ -265,7 +266,7 @@
                 if (relationshipModel != null) {
                     var end = relationshipModel.FindAssociationEnd(this.ToRoleName);
                     if (end == null) {
-                        csdlErrors.AddError($"ToRole {this._ToRoleName} not found in {this.RelationshipName}.");
+                        csdlErrors.AddErrorXmlParsing($"ToRole {this._ToRoleName} not found in {this.RelationshipName}.");
                     } else {
                         this.ToRoleModel = end;
                     }
@@ -273,7 +274,7 @@
             }
         }
 
-        public void ResolveNamesType(CsdlErrors errors) {
+        public void ResolveNamesType(ModelErrors errors) {
             if (this._TypeModel == null && this._TypeName != null) {
                 var collection = CsdlEntityCollectionTypeModel.Create(this._TypeName, this.OwnerEntityTypeModel);
                 if (collection != null) {
@@ -299,21 +300,21 @@
                                 this.TypeModel = lstFound[0];
 #endif
                             } else if (lstFound.Count == 0) {
-                                errors.AddError($"{this.TypeName} not found");
+                                errors.AddErrorXmlParsing($"{this.TypeName} not found");
                             } else {
-                                errors.AddError($"{this.TypeName} found #{lstFound.Count} times.");
+                                errors.AddErrorXmlParsing($"{this.TypeName} found #{lstFound.Count} times.");
                             }
                         } else if (lstNS.Count == 0) {
-                            errors.AddError($"{this.TypeName} namespace not found");
+                            errors.AddErrorXmlParsing($"{this.TypeName} namespace not found");
                         } else {
-                            errors.AddError($"{this.TypeName} namespace found #{lstNS.Count} times.");
+                            errors.AddErrorXmlParsing($"{this.TypeName} namespace found #{lstNS.Count} times.");
                         }
                     }
                 }
             }
         }
 
-        public void ResolveNamesPartner(CsdlErrors errors) {
+        public void ResolveNamesPartner(ModelErrors errors) {
             if (this._PartnerModel == null && this._PartnerName != null) {
                 var typeModel = this._TypeModel;
                 if (typeModel == null) { this.ResolveNamesType(errors); typeModel = this._TypeModel; }
@@ -324,9 +325,9 @@
                         if (lstNavProperty.Count == 1) {
                             this.PartnerModel = lstNavProperty[0];
                         } else if (lstNavProperty.Count == 0) {
-                            errors.AddError($"Property {this.PartnerName} in {entityTypeModel.FullName} not found.");
+                            errors.AddErrorXmlParsing($"Property {this.PartnerName} in {entityTypeModel.FullName} not found.");
                         } else {
-                            errors.AddError($"Property {this.PartnerName} in {entityTypeModel.FullName} found #{lstNavProperty.Count} times.");
+                            errors.AddErrorXmlParsing($"Property {this.PartnerName} in {entityTypeModel.FullName} found #{lstNavProperty.Count} times.");
                         }
                     }
                 }

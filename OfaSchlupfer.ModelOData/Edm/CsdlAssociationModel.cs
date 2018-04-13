@@ -1,13 +1,14 @@
 ﻿namespace OfaSchlupfer.ModelOData.Edm {
     using System;
     using System.Collections.Generic;
+    using OfaSchlupfer.Model;
 
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlAssociationModel : CsdlAnnotationalModel {
         private CsdlSchemaModel _SchemaModel;
 
         public CsdlAssociationModel() {
-            this.AssociationEnd = new CsdlCollection<CsdlAssociationEndModel>((item) => { item.OwnerAssociationModel = this; });
+            this.AssociationEnd = new CsdlCollection<CsdlAssociationEndModel>((item) => { item.Owner = this; });
             this.ReferentialConstraint = new CsdlCollection<CsdlReferentialConstraintV3Model>((item) => { item.OwnerAssociationModel = this; });
         }
         public string Name;
@@ -31,7 +32,7 @@
             }
         }
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             foreach (var associationEnd in this.AssociationEnd) {
                 associationEnd.ResolveNames(errors);
             }

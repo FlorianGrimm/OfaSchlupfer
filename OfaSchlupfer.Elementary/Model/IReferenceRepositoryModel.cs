@@ -3,7 +3,11 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+
     using Microsoft.Extensions.DependencyInjection;
+
+    using Newtonsoft.Json;
+
     using OfaSchlupfer.HttpAccess;
     using OfaSchlupfer.Freezable;
 
@@ -43,6 +47,7 @@
 
         protected ReferenceRepositoryModelBase() { }
 
+        [JsonIgnore]
         public virtual ModelRepository ModelRepository {
             get {
                 return this._ModelRepository;
@@ -64,6 +69,7 @@
             }
         }
 
+        [JsonIgnore]
         public virtual ModelSchema ModelSchema {
             get {
                 return this._ModelSchema;
@@ -75,6 +81,7 @@
             }
         }
 
+        [JsonIgnore]
         public virtual ModelDefinition ModelDefinition {
             get {
                 return this._ModelDefinition;

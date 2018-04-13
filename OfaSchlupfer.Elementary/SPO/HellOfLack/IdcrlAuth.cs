@@ -521,14 +521,20 @@ namespace OfaSchlupfer.SPO {
                 this._Logger?.LogError("Unexpected response for GET request to URL {0}", url);
                 throw new InvalidOperationException();
             }
-            using (httpWebResponse) {
-                using (var responseReader = new StreamReader(httpWebResponse.GetResponseStream())) {
-                    string responseText = responseReader.ReadToEnd();
-                    this._Logger?.LogDebug("StatusCode={0}, ResponseText={1}", (int)httpWebResponse.StatusCode, responseText);
-                    using (XmlReader reader = XmlReader.Create(new StringReader(responseText))) {
-                        return XDocument.Load(reader);
+            try {
+                using (httpWebResponse) {
+                    using (var responseReader = new StreamReader(httpWebResponse.GetResponseStream())) {
+                        string responseText = responseReader.ReadToEnd();
+                        this._Logger?.LogDebug("StatusCode={0}, ResponseText={1}", (int)httpWebResponse.StatusCode, responseText);
+                        using (XmlReader reader = XmlReader.Create(new StringReader(responseText))) {
+                            return XDocument.Load(reader);
+                        }
                     }
                 }
+            } catch (System.Xml.XmlException) {
+                // aaarg internet provider 404 redirect ... shutup
+                // t-online navigationhilfe
+                throw new WebException();
             }
         }
     }

@@ -2,6 +2,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using OfaSchlupfer.Model;
 
     public class CsdlAssociationSetEndModel : CsdlAnnotationalModel {
         private CsdlAssociationSetModel _OwnerAssociationSet;
@@ -46,7 +47,7 @@
                     var schemaModel = entityContainerModel?.SchemaModel;
                     var edmxModel = schemaModel?.EdmxModel;
                     if (edmxModel != null) {
-                        this.ResolveNames(CsdlErrors.GetIgnorance());
+                        this.ResolveNames(ModelErrors.GetIgnorance());
                     }
                 }
                 return this._EntitySetModel;
@@ -57,11 +58,11 @@
             }
         }
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             this.ResolveNamesEntitySetName(errors);
         }
 
-        public void ResolveNamesEntitySetName(CsdlErrors errors) {
+        public void ResolveNamesEntitySetName(ModelErrors errors) {
             if (this._EntitySetModel == null && this._EntitySetName != null) {
                 var entityContainer = this.OwnerAssociationSet?.OwnerEntityContainerModel;
                 if ((entityContainer != null)) {
@@ -78,9 +79,9 @@
                         this.EntitySetModel = lstFound[0];
 #endif
                     } else if (lstFound.Count == 0) {
-                        errors.AddError($"{this._EntitySetName} not found");
+                        errors.AddErrorXmlParsing($"{this._EntitySetName} not found");
                     } else {
-                        errors.AddError($"{this._EntitySetName} found #{lstFound.Count} times.");
+                        errors.AddErrorXmlParsing($"{this._EntitySetName} found #{lstFound.Count} times.");
                     }
                 }
             }

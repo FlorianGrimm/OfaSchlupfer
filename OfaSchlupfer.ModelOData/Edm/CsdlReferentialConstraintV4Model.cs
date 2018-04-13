@@ -1,4 +1,5 @@
 ﻿using System;
+using OfaSchlupfer.Model;
 
 namespace OfaSchlupfer.ModelOData.Edm {
     public class CsdlReferentialConstraintV4Model : CsdlAnnotationalModel {
@@ -36,7 +37,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
         public CsdlPropertyModel Property {
             get {
                 if (((object)this._PropertyName != null) && ((object)this._PropertyModel == null)) {
-                    this.ResolveNamesProperty(CsdlErrors.GetIgnorance());
+                    this.ResolveNamesProperty(ModelErrors.GetIgnorance());
                 }
                 return this._PropertyModel;
             }
@@ -62,7 +63,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
         public CsdlPropertyModel ReferencedProperty {
             get {
                 if (((object)this._ReferencedPropertyName != null) && ((object)this._ReferencedPropertyModel == null)) {
-                    this.ResolveNamesReferencedProperty(CsdlErrors.GetIgnorance());
+                    this.ResolveNamesReferencedProperty(ModelErrors.GetIgnorance());
                 }
                 return this._ReferencedPropertyModel;
             }
@@ -74,13 +75,13 @@ namespace OfaSchlupfer.ModelOData.Edm {
         }
 
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             this.ResolveNamesProperty(errors);
             this.ResolveNamesReferencedProperty(errors);
 
         }
 
-        public void ResolveNamesProperty(CsdlErrors errors) {
+        public void ResolveNamesProperty(ModelErrors errors) {
             if (this._PropertyModel == null && this._PropertyName != null) {
                 if ((object)this._OwnerNavigationProperty != null) {
                     var ownerEntityTypeModel = this._OwnerNavigationProperty.OwnerEntityTypeModel;
@@ -88,15 +89,15 @@ namespace OfaSchlupfer.ModelOData.Edm {
                     if (lstProperty.Count == 1) {
                         this.Property = lstProperty[0];
                     } else if (lstProperty.Count == 0) {
-                        errors.AddError($"Property '{this._PropertyName}' not found in {ownerEntityTypeModel.FullName}.");
+                        errors.AddErrorXmlParsing($"Property '{this._PropertyName}' not found in {ownerEntityTypeModel.FullName}.");
                     } else {
-                        errors.AddError($"Property '{this._PropertyName}' found #{lstProperty.Count} times in {ownerEntityTypeModel.FullName}.");
+                        errors.AddErrorXmlParsing($"Property '{this._PropertyName}' found #{lstProperty.Count} times in {ownerEntityTypeModel.FullName}.");
                     }
                 }
             }
         }
 
-        public void ResolveNamesReferencedProperty(CsdlErrors errors) {
+        public void ResolveNamesReferencedProperty(ModelErrors errors) {
             if (this._ReferencedPropertyModel == null && this._ReferencedPropertyName != null) {
                 if ((object)this._OwnerNavigationProperty != null) {
                     var entityTypeModel = this._OwnerNavigationProperty.TypeModel?.GetEntityTypeModel();
@@ -105,9 +106,9 @@ namespace OfaSchlupfer.ModelOData.Edm {
                         if (lstReferencedProperty.Count == 1) {
                             this.ReferencedProperty = lstReferencedProperty[0];
                         } else if (lstReferencedProperty.Count == 0) {
-                            errors.AddError($"ReferencedProperty '{this._ReferencedPropertyName}' not found in {entityTypeModel.FullName}.");
+                            errors.AddErrorXmlParsing($"ReferencedProperty '{this._ReferencedPropertyName}' not found in {entityTypeModel.FullName}.");
                         } else {
-                            errors.AddError($"ReferencedProperty '{this._ReferencedPropertyName}' found #{lstReferencedProperty.Count} times in {entityTypeModel.FullName}.");
+                            errors.AddErrorXmlParsing($"ReferencedProperty '{this._ReferencedPropertyName}' found #{lstReferencedProperty.Count} times in {entityTypeModel.FullName}.");
                         }
                     }
                 }

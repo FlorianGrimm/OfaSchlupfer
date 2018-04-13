@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OfaSchlupfer.Model;
 
 namespace OfaSchlupfer.ModelOData.Edm {
     public class CsdlSchemaModel : CsdlAnnotationalModel {
@@ -19,7 +20,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             this.Association = new CsdlCollection<CsdlAssociationModel>((item) => { item.SchemaModel = this; });
         }
         
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             foreach (var entityType in this.EntityType) {
                 entityType.ResolveNames(errors);
             }
@@ -61,7 +62,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             return result;
         }
 
-        public static CsdlSchemaModel AddCoreV3(EdmxModel edmxModel, CsdlErrors errors) {
+        public static CsdlSchemaModel AddCoreV3(EdmxModel edmxModel, ModelErrors errors) {
             CsdlSchemaModel schemaModel = new CsdlSchemaModel();
             schemaModel.Namespace = "Edm";
             edmxModel.DataServices.Add(schemaModel);
@@ -100,7 +101,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             return schemaModel;
         }
         
-        public static CsdlSchemaModel AddCoreV4(EdmxModel edmxModel, CsdlErrors errors) {
+        public static CsdlSchemaModel AddCoreV4(EdmxModel edmxModel, ModelErrors errors) {
             CsdlSchemaModel schemaModel = new CsdlSchemaModel();
             schemaModel.Namespace = "Edm";
             edmxModel.DataServices.Add(schemaModel);

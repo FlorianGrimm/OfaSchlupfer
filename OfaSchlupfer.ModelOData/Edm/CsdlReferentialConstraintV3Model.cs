@@ -1,4 +1,6 @@
-﻿namespace OfaSchlupfer.ModelOData.Edm {
+﻿using OfaSchlupfer.Model;
+
+namespace OfaSchlupfer.ModelOData.Edm {
     public class CsdlReferentialConstraintV3Model : CsdlAnnotationalModel {
         private CsdlAssociationModel _OwnerAssociationModel;
 
@@ -39,7 +41,7 @@
             }
         }
 
-        public void ResolveNames(CsdlErrors errors) {
+        public void ResolveNames(ModelErrors errors) {
             this.Principal?.ResolveNames(errors);
             this.Dependent?.ResolveNames(errors);
         }

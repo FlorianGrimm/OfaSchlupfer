@@ -36,6 +36,8 @@
                 return this._Owner;
             }
             internal set {
+                if (ReferenceEquals(this._Owner, value)) { return; }
+                if ((object)this._Owner == null) { this._Owner = value; return; }
                 this.ThrowIfFrozen();
                 this._Owner = value;
             }
@@ -51,8 +53,16 @@
         protected override bool AreThisNamesEqual(string thisName, ref string value) => MappingObjectHelper.AreNamesEqual(thisName, ref value);
 
         public override void ResolveNameSource() {
-            if (((object)this._Source == null) && ((object)this._SourceName != null)) {
-#warning TODO ResolveNameSource
+            if (((object)this.Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
+                var lstFound = this.Owner.FindRepository(this.SourceName);
+                if (lstFound.Count == 1) {
+                    this._Source = lstFound[0];
+                    this._SourceName = null;
+                } else if (lstFound.Count==0){
+                    throw new ResolveNameNotFoundException($"{this.SourceName} not found.");
+                } else {
+                    throw new ResolveNameNotUniqueException($"{this.SourceName} found #{lstFound.Count} times.");
+                }
             }
         }
 
