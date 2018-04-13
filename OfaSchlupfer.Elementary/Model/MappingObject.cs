@@ -72,7 +72,7 @@
             get {
                 if (((object)this._Source == null)
                     && ((object)this._SourceName != null)) {
-                    this.ResolveNameSource();
+                    this.ResolveNameSource(ModelErrors.GetIgnorance());
                 }
                 return this._Source;
             }
@@ -83,8 +83,6 @@
                 this._SourceName = null;
             }
         }
-
-        public virtual void ResolveNameSource() { }
 
         [JsonIgnore]
         public virtual TMappingValue Target {
@@ -102,7 +100,7 @@
             }
         }
 
-        public virtual void ResolveNameTarget() { }
+        public virtual void ResolveNameTarget(ModelErrors errors) { }
 
 
         [JsonProperty]

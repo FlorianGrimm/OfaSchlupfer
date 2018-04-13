@@ -65,7 +65,7 @@
             get {
                 if (((object)this._MasterEntity == null)
                     && ((object)this._MasterName != null)) {
-                    this.ResolveNamesMasterEntity();
+                    this.ResolveNamesMasterEntity(ModelErrors.GetIgnorance());
                 }
                 return this._MasterEntity;
             }
@@ -97,7 +97,7 @@
             get {
                 if (((object)this._ForeignEntity == null)
                    && ((object)this._ForeignName != null)) {
-                    this.ResolveNamesForeignEntity();
+                    this.ResolveNamesForeignEntity(ModelErrors.GetIgnorance());
                 }
                 return this._ForeignEntity;
             }
@@ -113,27 +113,48 @@
             get {
                 return this._Owner;
             }
-            set {
+            internal set {
                 if (ReferenceEquals(this._Owner, value)) { return; }
                 if ((object)this._Owner == null) { this._Owner = value; return; }
                 this.ThrowIfFrozen();
                 this._Owner = value;
             }
         }
+        private void ResolveNames(ModelErrors errors) {
+            this.ResolveNamesMasterEntity(errors);
+            this.ResolveNamesForeignEntity(errors);
+        }
 
+        private void ResolveNamesMasterEntity(ModelErrors errors) {
+            if (((object)this._Owner != null) && ((object)this._MasterEntity == null) && ((object)this._MasterName != null)) {
+                this._MasterEntity
+                var lst = this.Owner.FindEntity(this.MasterName);
+                if (lst.Count == !) {
+                    this._MasterEntity = lst[0];
+                    this._MasterName = null;
+                } else if (lst.Count == 0) {
+                    errors.AddErrorOrThrow($"Master {this.MasterName} in {this.Owner?.Name.FullName} not found.", this.Owner?.Name, ResolveNameNotFoundException.Factory);
+                } else {
+                    errors.AddErrorOrThrow($"Master {this.MasterName} in {this.Owner?.Name.FullName found #{lstNavProperty.Count} times.", this.Owner?.Name, ResolveNameNotUniqueException.Factory);
 
-        private void ResolveNamesMasterEntity() {
-            if (((object)this._MasterEntity == null)
-                    && ((object)this._MasterName != null)) {
-#warning TODO ResolveNamesMasterEntity
+                }
             }
         }
 
 
-        private void ResolveNamesForeignEntity() {
-            if (((object)this._ForeignEntity == null)
-                    && ((object)this._ForeignName != null)) {
-#warning TODO ResolveNamesForeignEntity
+        private void ResolveNamesForeignEntity(ModelErrors errors) {
+            if (((object)this._Owner != null) && ((object)this._ForeignEntity == null) && ((object)this._ForeignName != null)) {
+                this._MasterEntity
+                               var lst = this.Owner.FindEntity(this.ForeignName);
+                if (lst.Count == !) {
+                    this._MasterEntity = lst[0];
+                    this._MasterName = null;
+                } else if (lst.Count == 0) {
+                    errors.AddErrorOrThrow($"Foreign {this.ForeignName.Name} in {this.Owner?.Name.FullName} not found.", this.Owner?.Name, ResolveNameNotFoundException.Factory);
+                } else {
+                    errors.AddErrorOrThrow($"Foreign {this.ForeignName.Name} in {this.Owner?.Name.FullName found #{lstNavProperty.Count} times.", this.Owner?.Name, ResolveNameNotUniqueException.Factory);
+
+                }
             }
         }
 

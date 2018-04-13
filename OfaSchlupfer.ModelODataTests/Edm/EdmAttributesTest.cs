@@ -1,0 +1,109 @@
+﻿namespace OfaSchlupfer.ModelOData.Edm {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text;
+
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
+
+    using OfaSchlupfer.Freezable;
+
+    using Xunit;
+
+    public class EdmAttributesTest {
+        [Fact]
+        public void ModelTypes_OwnerIsIgnored_Test() {
+
+            var type = typeof(EdmxModel);
+            var modelTypes = type.Assembly.GetExportedTypes().Where(t => t.Namespace == type.Namespace).ToArray();
+            foreach (var modelType in modelTypes) {
+                if (modelType.IsClass) {
+                    var property = modelType.GetProperty("Owner");
+                    if (property != null) {
+                        if (property.GetCustomAttribute<JsonIgnoreAttribute>() == null) {
+                            Assert.Equal("Error Owner", $"{modelType} - {property.Name} - {property.PropertyType.Name}");
+                        }
+                        if (modelType.GetCustomAttribute<JsonObjectAttribute>(false) == null) {
+                            Assert.Equal("Error JsonObject", $"{modelType}");
+                        }
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        public void ModelTypes_RefPropertiesAreIgnored_Test() {
+            var type = typeof(EdmxModel);
+            var modelTypes = type.Assembly.GetExportedTypes()
+                .Where(t => t.Namespace == type.Namespace)
+                //.Where(t => t.Name.StartsWith("Model"))
+                //.Where(t => t.Name != "ModelBuilder")
+                .ToArray();
+            var hsmodelTypes = modelTypes.ToHashSet();
+            var typeExceptions = new HashSet<Type>();
+            //typeExceptions.Add(typeof(ModelEntityName));
+
+            var propertyExceptions = new HashSet<string>();
+            propertyExceptions.Add("CsdlPropertyModel - ScalarType - CsdlScalarTypeModel");
+            propertyExceptions.Add("CsdlReferentialConstraintV3Model - Principal - CsdlReferentialConstraintPartnerV3Model");
+            propertyExceptions.Add("CsdlReferentialConstraintV3Model - Dependent - CsdlReferentialConstraintPartnerV3Model");
+
+            foreach (var modelType in modelTypes) {
+                if (modelType.IsClass) {
+                    if (modelType.GetCustomAttributes<JsonObjectAttribute>(true).Count() > 0) {
+                        var properties = modelType.GetProperties();
+                        foreach (var property in properties) {
+                            if (typeExceptions.Contains(property.PropertyType)) {
+                                continue;
+                            }
+                            if (hsmodelTypes.Contains(property.PropertyType)) {
+                                if (property != null) {
+                                    var attr = property.GetCustomAttribute<JsonIgnoreAttribute>();
+                                    if (attr == null) {
+                                        if (property.GetCustomAttributes<JsonConverterAttribute>().Count() > 0) { continue; }
+
+                                        var propertyInfo = $"{modelType.Name} - {property.Name} - {property.PropertyType.Name}";
+                                        if (propertyExceptions.Contains(propertyInfo)) { continue; }
+                                        Assert.Equal("", propertyInfo);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        public void ModelTypes_Freeze_Test() {
+            var type = typeof(EdmxModel);
+            var modelTypes = type.Assembly.GetExportedTypes();
+            foreach (var modelType in modelTypes) {
+                if (modelType.IsClass) {
+                    if (modelType.GetInterfaces().Contains(typeof(OfaSchlupfer.Freezable.IFreezeable))) {
+                        var properties = modelType.GetProperties();
+                        foreach (var property in properties) {
+                            var propertyType = property.PropertyType;
+
+                            if (propertyType.FullName.Contains("FreezeableOwnedCollection")) {
+                                if (
+                                    (propertyType.GetGenericTypeDefinition() == typeof(FreezeableCollection<>))
+                                    || (propertyType.GetGenericTypeDefinition() == typeof(FreezeableDictionary<,>))
+                                    || (propertyType.GetGenericTypeDefinition() == typeof(FreezeableOwnedCollection<,>))
+                                    || (propertyType.GetGenericTypeDefinition() == typeof(FreezeableOwnedDictionary<,,>))
+                                    || (propertyType.GetGenericTypeDefinition() == typeof(FreezeableOwnedKeyedCollection<,,>))
+                                ) {
+                                    if (modelType.GetMethod("Freeze").DeclaringType != modelType) {
+                                        Assert.Equal("Error Freeze missing", modelType.Name);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

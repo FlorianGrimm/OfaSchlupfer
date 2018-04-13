@@ -1,6 +1,7 @@
 ﻿namespace OfaSchlupfer.Model {
+    using System;
     using System.Runtime.Serialization;
-    
+
     [System.Serializable]
     public class ResolveNameException : ModelException {
         public ResolveNameException() : base("ResolveName") { }
@@ -12,6 +13,8 @@
         public ResolveNameException(string message, System.Exception innerException) : base(message, innerException) { }
 
         protected ResolveNameException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+
+        public new static Exception Factory(ModelErrorInfo modelErrorInfo) => new ResolveNameException(string.Empty, new ModelErrors(modelErrorInfo));
     }
 
     [System.Serializable]
@@ -25,6 +28,8 @@
         public ResolveNameNotFoundException(string message, System.Exception innerException) : base(message, innerException) { }
 
         protected ResolveNameNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+
+        public new static Exception Factory(ModelErrorInfo modelErrorInfo) => new ResolveNameNotFoundException(string.Empty, new ModelErrors(modelErrorInfo));
     }
 
     [System.Serializable]
@@ -38,5 +43,7 @@
         public ResolveNameNotUniqueException(string message, System.Exception innerException) : base(message, innerException) { }
 
         protected ResolveNameNotUniqueException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+
+        public new static Exception Factory(ModelErrorInfo modelErrorInfo) => new ResolveNameNotUniqueException(string.Empty, new ModelErrors(modelErrorInfo));
     }
 }

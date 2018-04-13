@@ -2,27 +2,51 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
     using OfaSchlupfer.Model;
 
-    public class CsdlAssociationSetEndModel : CsdlAnnotationalModel {
-        private CsdlAssociationSetModel _OwnerAssociationSet;
+    [JsonObject]
+    public class CsdlAssociationSetEndModel
+        : CsdlAnnotationalModel {
+        [JsonIgnore]
+        private CsdlAssociationSetModel _Owner;
+        [JsonIgnore]
+        private string _RoleName;
+        [JsonIgnore]
         private string _EntitySetName;
+        [JsonIgnore]
         private CsdlEntitySetModel _EntitySetModel;
 
         public CsdlAssociationSetEndModel() {
         }
 
-        public CsdlAssociationSetModel OwnerAssociationSet {
+        [JsonIgnore]
+        public CsdlAssociationSetModel Owner {
             get {
-                return this._OwnerAssociationSet;
+                return this._Owner;
             }
-            set {
-                this._OwnerAssociationSet = value;
+            internal set {
+                if (ReferenceEquals(this._Owner, value)) { return; }
+                if ((object)this._Owner == null) { this._Owner = value; return; }
+                this.ThrowIfFrozen();
+                this._Owner = value;
             }
         }
 
-        public string RoleName { get; set; }
 
+        [JsonProperty]
+        public string RoleName {
+            get {
+                return this._RoleName;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._RoleName = value;
+            }
+        }
+
+        [JsonProperty]
         public string EntitySetName {
             get {
                 var entitySetModel = this._EntitySetModel;
@@ -35,16 +59,18 @@
             set {
                 if (value == string.Empty) { value = null; }
                 if (string.Equals(this._EntitySetName, value, StringComparison.Ordinal)) { return; }
+                this.ThrowIfFrozen();
                 this._EntitySetName = value;
                 this._EntitySetModel = null;
             }
         }
 
+        [JsonIgnore]
         public CsdlEntitySetModel EntitySetModel {
             get {
                 if ((object)this._EntitySetModel == null) {
-                    var entityContainerModel = this.OwnerAssociationSet.OwnerEntityContainerModel;
-                    var schemaModel = entityContainerModel?.SchemaModel;
+                    var entityContainerModel = this.Owner.Owner;
+                    var schemaModel = entityContainerModel?.Owner;
                     var edmxModel = schemaModel?.EdmxModel;
                     if (edmxModel != null) {
                         this.ResolveNames(ModelErrors.GetIgnorance());
@@ -53,6 +79,7 @@
                 return this._EntitySetModel;
             }
             set {
+                this.ThrowIfFrozen();
                 this._EntitySetModel = value;
                 this._EntitySetName = null;
             }
@@ -64,24 +91,26 @@
 
         public void ResolveNamesEntitySetName(ModelErrors errors) {
             if (this._EntitySetModel == null && this._EntitySetName != null) {
-                var entityContainer = this.OwnerAssociationSet?.OwnerEntityContainerModel;
+                var entityContainer = this.Owner?.Owner;
                 if ((entityContainer != null)) {
                     var lstFound = entityContainer.FindEntitySet(this.EntitySetName);
                     if (lstFound.Count == 1) {
 #if DevAsserts
-                    var oldEntityTypeName = this.EntityTypeName;
-                    this.EntityTypeModelObject = lstFound[0];
-                    var newEntityTypeName = this.EntityTypeName;
-                    if (!string.Equals(oldEntityTypeName, newEntityTypeName, StringComparison.Ordinal)) {
-                        throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
-                    }
+                        var oldEntityTypeName = this.EntityTypeName;
+                        this._EntitySetModel = lstFound[0];
+                        this._EntitySetName = null;
+                        var newEntityTypeName = this.EntityTypeName;
+                        if (!string.Equals(oldEntityTypeName, newEntityTypeName, StringComparison.Ordinal)) {
+                            throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
+                        }
 #else
-                        this.EntitySetModel = lstFound[0];
+                        this._EntitySetModel = lstFound[0];
+                        this._EntitySetName = null;
 #endif
                     } else if (lstFound.Count == 0) {
-                        errors.AddErrorXmlParsing($"{this._EntitySetName} not found");
+                        errors.AddErrorOrThrow($"{this._EntitySetName} not found", this.RoleName, ResolveNameNotFoundException.Factory);
                     } else {
-                        errors.AddErrorXmlParsing($"{this._EntitySetName} found #{lstFound.Count} times.");
+                        errors.AddErrorOrThrow($"{this._EntitySetName} found #{lstFound.Count} times.", this.RoleName, ResolveNameNotUniqueException.Factory);
                     }
                 }
             }

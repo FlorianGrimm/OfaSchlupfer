@@ -19,7 +19,7 @@
             get {
                 return this._Owner;
             }
-            set {
+            internal set {
                 if (ReferenceEquals(this._Owner, value)) { return; }
                 if ((object)this._Owner == null) { this._Owner = value; return; }
                 this.ThrowIfFrozen();
@@ -29,15 +29,15 @@
         protected override bool AreSourceNamesEqual(string sourceName, ref string value) => MappingObjectHelper.AreNamesEqual(sourceName, ref value);
         protected override bool AreTargetNamesEqual(string targetName, ref string value) => MappingObjectHelper.AreNamesEqual(targetName, ref value);
         protected override bool AreThisNamesEqual(string thisName, ref string value) => MappingObjectHelper.AreNamesEqual(thisName, ref value);
-        
+
         public override void ResolveNameSource() {
-            if (((object)this._Source == null) && ((object)this._SourceName != null)) {
+            if (((object)this._Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
 #warning TODO ResolveNameSource
             }
         }
 
         public override void ResolveNameTarget() {
-            if (((object)this._Target == null) && ((object)this._TargetName != null)) {
+            if (((object)this._Owner != null) && ((object)this._Target == null) && ((object)this._TargetName != null)) {
 #warning TODO ResolveNameTarget
             }
         }

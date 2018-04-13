@@ -2,7 +2,8 @@
     /// <summary>
     /// Property for projection
     /// </summary>
-    public class MetaPropertyProjection : IMetaProperty {
+    public class MetaPropertyProjection
+        : IMetaProperty {
 #warning todo       FreezeableObject
         private readonly IMetaProperty _MetaProperty;
 

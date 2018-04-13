@@ -1,36 +1,73 @@
 ﻿namespace OfaSchlupfer.ModelOData.Edm {
     using System;
     using System.Collections.Generic;
+    using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
     using OfaSchlupfer.Model;
 
     [System.Diagnostics.DebuggerDisplay("{Name}")]
+    [JsonObject]
     public class CsdlAssociationModel : CsdlAnnotationalModel {
-        private CsdlSchemaModel _SchemaModel;
+        [JsonIgnore]
+        private CsdlSchemaModel _Owner;
+
+        [JsonIgnore]
+        private string _Name;
+
+        [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<CsdlAssociationModel, string, CsdlAssociationEndModel> _AssociationEnd;
+
+        [JsonIgnore]
+        private readonly FreezeableOwnedCollection<CsdlAssociationModel, CsdlReferentialConstraintV3Model> _ReferentialConstraint;
 
         public CsdlAssociationModel() {
-            this.AssociationEnd = new CsdlCollection<CsdlAssociationEndModel>((item) => { item.Owner = this; });
-            this.ReferentialConstraint = new CsdlCollection<CsdlReferentialConstraintV3Model>((item) => { item.OwnerAssociationModel = this; });
+            this._AssociationEnd = new FreezeableOwnedKeyedCollection<CsdlAssociationModel, string, CsdlAssociationEndModel>(
+                this,
+                (item) => item.RoleName,
+                StringComparer.OrdinalIgnoreCase,
+                (owner, item) => { item.Owner = owner; });
+            this._ReferentialConstraint = new FreezeableOwnedCollection<CsdlAssociationModel, CsdlReferentialConstraintV3Model>(
+                this,
+                (owner, item) => { item.Owner = owner; });
         }
-        public string Name;
-        public readonly CsdlCollection<CsdlAssociationEndModel> AssociationEnd;
-        public readonly CsdlCollection<CsdlReferentialConstraintV3Model> ReferentialConstraint;
 
-        public string FullName => (this.SchemaModel?.Namespace ?? string.Empty) + "." + this.Name;
+        [JsonProperty]
+        public string Name {
+            get {
+                return this._Name;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Name = value;
+            }
+        }
+
+        public string FullName => (this.Owner?.Namespace ?? string.Empty) + "." + this.Name;
 
 
         [System.Diagnostics.DebuggerHidden]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel {
+        [JsonIgnore]
+        public CsdlSchemaModel Owner {
             get {
-                return this._SchemaModel;
+                return this._Owner;
             }
             set {
-                if (ReferenceEquals(this._SchemaModel, value)) { return; }
-                this._SchemaModel = value;
-                this.AssociationEnd.Broadcast();
-                this.ReferentialConstraint.Broadcast();
+                if (ReferenceEquals(this._Owner, value)) { return; }
+                this.ThrowIfFrozen();
+                this._Owner = value;
+                //this.AssociationEnd.Broadcast();
+                //this.ReferentialConstraint.Broadcast();
             }
         }
+
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<CsdlAssociationModel, string, CsdlAssociationEndModel> AssociationEnd => this._AssociationEnd;
+
+        [JsonProperty]
+        public FreezeableOwnedCollection<CsdlAssociationModel, CsdlReferentialConstraintV3Model> ReferentialConstraint => this._ReferentialConstraint;
+
+        public List<CsdlAssociationEndModel> FindAssociationEnd(string roleName) => this._AssociationEnd.FindByKey(roleName);
 
         public void ResolveNames(ModelErrors errors) {
             foreach (var associationEnd in this.AssociationEnd) {
@@ -41,13 +78,5 @@
             }
         }
 
-        public CsdlAssociationEndModel FindAssociationEnd(string roleName) {
-            foreach (var associationEnd in this.AssociationEnd) {
-                if (string.Equals(associationEnd.RoleName, roleName, StringComparison.OrdinalIgnoreCase)) {
-                    return associationEnd;
-                }
-            }
-            return null;
-        }
     }
 }

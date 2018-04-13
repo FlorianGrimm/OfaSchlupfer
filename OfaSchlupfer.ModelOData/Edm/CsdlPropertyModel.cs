@@ -1,11 +1,14 @@
 ﻿using System;
+using Newtonsoft.Json;
+using OfaSchlupfer.Freezable;
 using OfaSchlupfer.Model;
 
 namespace OfaSchlupfer.ModelOData.Edm {
     [System.Diagnostics.DebuggerDisplay("{Name}")]
+    [JsonObject]
     public class CsdlPropertyModel : CsdlAnnotationalModel {
         // parents
-        private CsdlEntityTypeModel _OwnerEntityTypeModel;
+        private CsdlEntityTypeModel _Owner;
         private string _TypeName;
         private CsdlScalarTypeModel _ScalarType;
         public string Name;
@@ -26,16 +29,21 @@ namespace OfaSchlupfer.ModelOData.Edm {
             this.Unicode = true;
         }
 
-        public CsdlEntityTypeModel ÒwnerEntityTypeModel {
+        [JsonIgnore]
+        public CsdlEntityTypeModel Owner {
             get {
-                return this._OwnerEntityTypeModel;
+                return this._Owner;
             }
-            set {
-                this._OwnerEntityTypeModel = value;
+            internal set {
+                if (ReferenceEquals(this._Owner, value)) { return; }
+                if ((object)this._Owner == null) { this._Owner = value; return; }
+                this.ThrowIfFrozen();
+                this._Owner = value;
             }
         }
 
         // TODO: Collection(Edm.DateTime)
+        [JsonProperty]
         public string TypeName {
             get {
                 if (this._ScalarType != null) {
@@ -52,6 +60,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             }
         }
 
+        [JsonProperty]
         public CsdlScalarTypeModel ScalarType {
             get {
                 if (this._ScalarType == null) {
@@ -67,9 +76,9 @@ namespace OfaSchlupfer.ModelOData.Edm {
 
         public void ResolveNames(ModelErrors errors) {
             if (this._ScalarType == null && this._TypeName != null) {
-                EdmxModel edmxModel = this._OwnerEntityTypeModel?.SchemaModel?.EdmxModel;
+                EdmxModel edmxModel = this._Owner?.Owner?.EdmxModel;
                 if (edmxModel != null) {
-                    var lstNS = edmxModel.FindStart(this.TypeName);
+                    var lstNS = edmxModel.FindDataServicesWithStart(this.TypeName);
                     if (lstNS.Count == 1) {
                         (var localName, var schemaFound) = lstNS[0];
                         var lstFound = schemaFound.FindScalarType(localName);
@@ -85,14 +94,14 @@ namespace OfaSchlupfer.ModelOData.Edm {
                             this.ScalarType = lstFound[0];
 #endif
                         } else if (lstFound.Count == 0) {
-                            errors.AddErrorXmlParsing($"{this.TypeName} not found");
+                            errors.AddErrorOrThrow($"{this.TypeName} not found", this.Name, ResolveNameNotFoundException.Factory);
                         } else {
-                            errors.AddErrorXmlParsing($"{this.TypeName} found #{lstFound.Count} times.");
+                            errors.AddErrorOrThrow($"{this.TypeName} found #{lstFound.Count} times.", this.Name, ResolveNameNotUniqueException.Factory);
                         }
                     } else if (lstNS.Count == 0) {
-                        errors.AddErrorXmlParsing($"{this.TypeName} namespace not found");
+                        errors.AddErrorOrThrow($"{this.TypeName} namespace not found", this.Name, ResolveNameNotFoundException.Factory);
                     } else {
-                        errors.AddErrorXmlParsing($"{this.TypeName} namespace found #{lstNS.Count} times.");
+                        errors.AddErrorOrThrow($"{this.TypeName} namespace found #{lstNS.Count} times.", this.Name, ResolveNameNotUniqueException.Factory);
                     }
                 }
             }

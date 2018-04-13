@@ -2,11 +2,24 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+
+    using Newtonsoft.Json;
+
+    using OfaSchlupfer.Freezable;
     using OfaSchlupfer.Model;
 
-    public class EdmxModel : CsdlAnnotationalModel {
+    [JsonObject]
+    public class EdmxModel
+        : CsdlAnnotationalModel {
+        [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<EdmxModel, string, CsdlSchemaModel> _DataServices;
+
         public EdmxModel() {
-            this.DataServices = new CsdlCollection<CsdlSchemaModel>((schemaModel) => { schemaModel.EdmxModel = this; });
+            this._DataServices = new FreezeableOwnedKeyedCollection<EdmxModel, string, CsdlSchemaModel>(
+                this,
+                (item) => item.Namespace,
+                StringComparer.OrdinalIgnoreCase,
+                (owner, item) => { item.EdmxModel = owner; });
             this.References = new List<string>();
         }
 
@@ -16,7 +29,7 @@
 
         public string DataServiceVersion;
 
-        public readonly CsdlCollection<CsdlSchemaModel> DataServices;
+        public FreezeableOwnedKeyedCollection<EdmxModel, string, CsdlSchemaModel> DataServices => this._DataServices;
 
         public void AddCoreSchema(ModelErrors errors) {
             if (string.Equals(this.Version, "1.0", StringComparison.InvariantCulture)) {
@@ -34,23 +47,13 @@
             } else if (string.Equals(this.Version, "4.01", StringComparison.InvariantCulture)) {
                 CsdlSchemaModel.AddCoreV4(this, errors);
             } else {
-                errors.AddErrorXmlParsing($"Unknown Version '{this.Version}'.");
+                errors.AddErrorOrThrow($"Unknown Version '{this.Version}'.", string.Empty, ModelException.Factory);
             }
         }
 
+        public List<CsdlSchemaModel> FindDataServices(string @namespace) => this._DataServices.FindByKey(@namespace);
 
-        public List<CsdlSchemaModel> Find(string name) {
-            var result = new List<CsdlSchemaModel>();
-            foreach (var schema in this.DataServices) {
-                if (string.Equals(schema.Namespace, name, StringComparison.OrdinalIgnoreCase)) {
-                    result.Add(schema);
-                    continue;
-                }
-            }
-            return result;
-        }
-
-        public List<Tuple<string, CsdlSchemaModel>> FindStart(string name) {
+        public List<Tuple<string, CsdlSchemaModel>> FindDataServicesWithStart(string name) {
             var result = new List<Tuple<string, CsdlSchemaModel>>();
             foreach (var schema in this.DataServices) {
                 var val = schema.Namespace;
@@ -67,7 +70,7 @@
         }
 
         public void ResolveNames(ModelErrors errors) {
-            if (this.Find("Edm").Count==0) {
+            if (this.FindDataServices("Edm").Count == 0) {
                 this.AddCoreSchema(errors);
             }
             foreach (var schema in this.DataServices) {

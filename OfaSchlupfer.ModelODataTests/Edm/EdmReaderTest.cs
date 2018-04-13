@@ -67,7 +67,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
                 Assert.NotNull(end);
                 Assert.NotNull(end.EntitySetName);
                 Assert.NotNull(end.EntitySetModel);
-                Assert.NotNull(end.OwnerAssociationSet.AssociationModel.FindAssociationEnd(end.RoleName));
+                Assert.NotNull(end.Owner.AssociationModel.FindAssociationEnd(end.RoleName));
             }
 
             var entityTypes = schemaModels
@@ -206,7 +206,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
                 Assert.NotNull(end);
                 Assert.NotNull(end.EntitySetName);
                 Assert.NotNull(end.EntitySetModel);
-                Assert.NotNull(end.OwnerAssociationSet.AssociationModel.FindAssociationEnd(end.RoleName));
+                Assert.NotNull(end.Owner.AssociationModel.FindAssociationEnd(end.RoleName));
             }
 
             var entityTypes = schemaModels

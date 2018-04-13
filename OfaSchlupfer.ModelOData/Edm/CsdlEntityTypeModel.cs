@@ -1,45 +1,141 @@
 ﻿namespace OfaSchlupfer.ModelOData.Edm {
     using System;
     using System.Collections.Generic;
+    using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
     using OfaSchlupfer.Model;
 
     [System.Diagnostics.DebuggerDisplay("{Name}")]
+    [JsonObject]
     public class CsdlEntityTypeModel : CsdlAnnotationalModel, ICsdlTypeModel {
-        private CsdlSchemaModel _SchemaModel;
+        [JsonIgnore]
+        private CsdlSchemaModel _Owner;
+
+        [JsonIgnore]
+        private string _Name;
+
+        [JsonIgnore]
+        private string _BaseType;
+
+        [JsonIgnore]
+        private bool _Abstract;
+
+        [JsonIgnore]
+        private bool _OpenType;
+
+        [JsonIgnore]
+        private bool _HasStream;
+
+        [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPropertyModel> _Property;
+
+        [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlNavigationPropertyModel> _NavigationProperty;
+
+        [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPrimaryKeyModel> _Keys;
 
         public CsdlEntityTypeModel() {
-            this.Property = new CsdlCollection<CsdlPropertyModel>((item) => { item.ÒwnerEntityTypeModel = this; });
-            this.NavigationProperty = new CsdlCollection<CsdlNavigationPropertyModel>((item) => { item.OwnerEntityTypeModel = this; });
-            this.Keys = new CsdlCollection<CsdlPrimaryKeyModel>((item) => { item.OwnerEntityTypeModel = this; });
+            this._Property = new FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPropertyModel>(
+                this,
+                (item) => item.Name,
+                StringComparer.OrdinalIgnoreCase,
+                (owner, item) => { item.Owner = owner; });
+            this._NavigationProperty = new FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlNavigationPropertyModel>(
+                this,
+                (item) => item.Name,
+                StringComparer.OrdinalIgnoreCase,
+                (owner, item) => { item.Owner = owner; });
+            this._Keys = new FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPrimaryKeyModel>(
+                this,
+                (item) => item.Name,
+                StringComparer.OrdinalIgnoreCase,
+                (owner, item) => { item.Owner = owner; });
         }
 
-        public string Name;
-        public string BaseType;
-        public bool Abstract;
-        public bool OpenType;
-        public bool HasStream;
-        public readonly CsdlCollection<CsdlPropertyModel> Property;
-        public readonly CsdlCollection<CsdlNavigationPropertyModel> NavigationProperty;
-        public readonly CsdlCollection<CsdlPrimaryKeyModel> Keys;
+        [JsonProperty]
+        public string Name {
+            get {
+                return this._Name;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Name = value;
+            }
+        }
+
+        [JsonProperty]
+        public string BaseType {
+            get {
+                return this._BaseType;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._BaseType = value;
+            }
+        }
+
+
+        [JsonProperty]
+        public bool Abstract {
+            get {
+                return this._Abstract;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Abstract = value;
+            }
+        }
+
+
+        [JsonProperty]
+        public bool OpenType {
+            get {
+                return this._OpenType;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._OpenType = value;
+            }
+        }
+
+
+        [JsonProperty]
+        public bool HasStream {
+            get {
+                return this._HasStream;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._HasStream = value;
+            }
+        }
+
 
         [System.Diagnostics.DebuggerHidden]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel {
+        [JsonIgnore]
+        public CsdlSchemaModel Owner {
             get {
-                return this._SchemaModel;
+                return this._Owner;
             }
             set {
-                if (ReferenceEquals(this._SchemaModel, value)) { return; }
-                this._SchemaModel = value;
-                if ((object)value != null) {
-                    this.Property.Broadcast();
-                    this.NavigationProperty.Broadcast();
-                    this.Keys.Broadcast();
-                }
+                if (ReferenceEquals(this._Owner, value)) { return; }
+                if (this._Owner != null) { this.ThrowIfFrozen(); }
+                this._Owner = value;
+                //if ((object)value != null) {
+                //    this.Property.Broadcast();
+                //    this.NavigationProperty.Broadcast();
+                //    this.Keys.Broadcast();
+                //}
             }
         }
 
-        public string FullName => (this.SchemaModel?.Namespace ?? string.Empty) + "." + (this.Name ?? string.Empty);
+        public string FullName => (this.Owner?.Namespace ?? string.Empty) + "." + (this.Name ?? string.Empty);
+
+        public FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPropertyModel> Property => this._Property;
+        public FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlNavigationPropertyModel> NavigationProperty => this._NavigationProperty;
+        public FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPrimaryKeyModel> Keys => this._Keys;
 
         CsdlEntityTypeModel ICsdlTypeModel.GetEntityTypeModel() => this;
 
@@ -55,28 +151,11 @@
             }
         }
 
-        public List<CsdlPropertyModel> FindProperty(string name) {
-            var result = new List<CsdlPropertyModel>();
+        public List<CsdlPropertyModel> FindProperty(string name) => this._Property.FindByKey(name);
 
-            foreach (var property in this.Property) {
-                if (string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase)) {
-                    result.Add(property);
-                }
-            }
+        public List<CsdlNavigationPropertyModel> FindNavigationProperty(string name) => this._NavigationProperty.FindByKey(name);
 
-            return result;
-        }
+        public List<CsdlPrimaryKeyModel> FindPrimaryKey(string name) => this._Keys.FindByKey(name);
 
-        public List<CsdlNavigationPropertyModel> FindNavigationProperty(string name) {
-            var result = new List<CsdlNavigationPropertyModel>();
-
-            foreach (var property in this.NavigationProperty) {
-                if (string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase)) {
-                    result.Add(property);
-                }
-            }
-
-            return result;
-        }
     }
 }

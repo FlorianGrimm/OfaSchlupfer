@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿namespace OfaSchlupfer.Freezable {
+    using Newtonsoft.Json;
 
-namespace OfaSchlupfer.Freezable {
-
-    [JsonObject]
+    /// <summary>
+    /// base implementation for <see cref="IFreezeable"/>
+    /// </summary>
     public class FreezeableObject : IFreezeable {
         [JsonIgnore]
         private int _IsFrozen;

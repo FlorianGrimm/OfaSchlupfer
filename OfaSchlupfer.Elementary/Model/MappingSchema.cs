@@ -13,7 +13,10 @@
         private readonly FreezeableOwnedCollection<MappingSchema, MappingEntity> _EntityMappings;
         private readonly FreezeableOwnedCollection<MappingSchema, MappingRelation> _RelationMappings;
 
+        [JsonProperty]
         public IList<MappingEntity> EntityMappings => this._EntityMappings;
+
+        [JsonProperty]
         public IList<MappingRelation> RelationMappings => this._RelationMappings;
 
         public MappingSchema() {
@@ -27,14 +30,19 @@
 
         protected override bool AreThisNamesEqual(string thisName, ref string value) => MappingObjectHelper.AreNamesEqual(thisName, ref value);
 
-        public override void ResolveNameSource() {
-            if (((object)this._Source == null) && ((object)this._SourceName != null)) {
+        public virtual void ResolveNames(ModelErrors errors) {
+            this.ResolveNameSource(errors);
+            this.ResolveNameTarget(errors);
+        }
+
+        public override void ResolveNameSource(ModelErrors errors) {
+            if (((object)this._Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
 #warning TODO ResolveNameSource
             }
         }
 
-        public override void ResolveNameTarget() {
-            if (((object)this._Target == null) && ((object)this._TargetName != null)) {
+        public override void ResolveNameTarget(ModelErrors errors) {
+            if (((object)this._Owner != null) && ((object)this._Target == null) && ((object)this._TargetName != null)) {
 #warning TODO ResolveNameTarget
             }
         }

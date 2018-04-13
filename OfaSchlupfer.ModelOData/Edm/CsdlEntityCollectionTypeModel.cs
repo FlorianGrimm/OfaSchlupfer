@@ -3,9 +3,14 @@
     using System.Collections.Generic;
     using System.Text;
     using System.Text.RegularExpressions;
+    using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
     using OfaSchlupfer.Model;
 
-    public class CsdlEntityCollectionTypeModel : ICsdlTypeModel {
+    [JsonObject]
+    public class CsdlEntityCollectionTypeModel
+        : FreezeableObject
+        , ICsdlTypeModel {
         private static Regex regexIsCollection;
         public static string IsCollection(string typename) {
             Regex regex = regexIsCollection ?? (regexIsCollection = new Regex(@"^Collection\(([^()]+)\)$", RegexOptions.Compiled));
@@ -16,11 +21,12 @@
                 return null;
             }
         }
+
         public static CsdlEntityCollectionTypeModel Create(string collection, CsdlEntityTypeModel ownerEntityTypeModel) {
             var entityTypeName = IsCollection(collection);
             if (entityTypeName != null) {
                 var result = new CsdlEntityCollectionTypeModel();
-                result.OwnerEntityTypeModel = ownerEntityTypeModel;
+                result.Owner = ownerEntityTypeModel;
                 result.EntityTypeName = entityTypeName;
                 return result;
             }
@@ -28,8 +34,7 @@
         }
 
         // parents
-        private CsdlSchemaModel _SchemaModel;
-        private CsdlEntityTypeModel _OwnerEntityTypeModel;
+        private CsdlEntityTypeModel _Owner;
 
         private string _EntityTypeName;
         private CsdlEntityTypeModel _EntityTypeModel;
@@ -37,20 +42,25 @@
 
         public CsdlEntityCollectionTypeModel() { }
 
-
-        public CsdlEntityTypeModel OwnerEntityTypeModel {
+        [JsonIgnore]
+        public CsdlEntityTypeModel Owner {
             get {
-                return this._OwnerEntityTypeModel;
+                return this._Owner;
             }
-            set {
-                this._OwnerEntityTypeModel = value;
-                this._SchemaModel = value?.SchemaModel;
+            internal set {
+                if (ReferenceEquals(this._Owner, value)) { return; }
+                if ((object)this._Owner == null) { this._Owner = value; return; }
+                this.ThrowIfFrozen();
+                this._Owner = value;
             }
         }
 
+        [JsonIgnore]
         public string FullName => $"Collection({ this.EntityTypeName })";
+
         CsdlEntityTypeModel ICsdlTypeModel.GetEntityTypeModel() => this.EntityTypeModel;
 
+        [JsonProperty]
         public string EntityTypeName {
             get {
                 var entityTypeModel = this._EntityTypeModel;
@@ -63,11 +73,13 @@
             set {
                 if (value == string.Empty) { value = null; }
                 if (string.Equals(this._EntityTypeName, value, StringComparison.Ordinal)) { return; }
+                this.ThrowIfFrozen();
                 this._EntityTypeName = value;
                 this._EntityTypeModel = null;
             }
         }
 
+        [JsonIgnore]
         public CsdlEntityTypeModel EntityTypeModel {
             get {
                 if (this._EntityTypeModel == null && this._EntityTypeName != null) {
@@ -76,42 +88,47 @@
                 return this._EntityTypeModel;
             }
             set {
+                this.ThrowIfFrozen();
                 this._EntityTypeModel = value;
                 this._EntityTypeName = null;
             }
         }
 
-        public void ResolveNames(ModelErrors errors) {
+        public CsdlEntityTypeModel ResolveNames(ModelErrors errors) {
             if (this._EntityTypeModel == null && this._EntityTypeName != null) {
-                EdmxModel edmxModel = this._SchemaModel?.EdmxModel;
+                EdmxModel edmxModel = this._Owner?.Owner?.EdmxModel;
                 if ((edmxModel != null)) {
-                    var lstNS = edmxModel.FindStart(this.EntityTypeName);
+                    var lstNS = edmxModel.FindDataServicesWithStart(this.EntityTypeName);
                     if (lstNS.Count == 1) {
                         (var localName, var schemaFound) = lstNS[0];
                         var lstFound = schemaFound.FindEntityType(localName);
                         if (lstFound.Count == 1) {
-#if DevAsserts
-                        var oldEntityTypeName = this.EntityTypeName;
-                        this.EntityTypeModel = lstFound[0];
-                        var newEntityTypeName = this.EntityTypeName;
-                        if (!string.Equals(oldEntityTypeName, newEntityTypeName, StringComparison.Ordinal)) {
-                            throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
-                        }
+#if !DevAsserts
+                            var oldEntityTypeName = this.EntityTypeName;
+                            this._EntityTypeModel = lstFound[0];
+                            this._EntityTypeName = null;
+                            var newEntityTypeName = this.EntityTypeName;
+                            if (!string.Equals(oldEntityTypeName, newEntityTypeName, StringComparison.Ordinal)) {
+                                throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
+                            }
 #else
-                            this.EntityTypeModel = lstFound[0];
+                            this._EntityTypeModel = lstFound[0];
+                            this._EntityTypeName = null;
 #endif
+                            return lstFound[0];
                         } else if (lstFound.Count == 0) {
-                            errors.AddErrorXmlParsing($"{this._EntityTypeName} not found");
+                            errors.AddErrorOrThrow($"{this._EntityTypeName} not found", this.FullName, ResolveNameNotFoundException.Factory);
                         } else {
-                            errors.AddErrorXmlParsing($"{this._EntityTypeName} found #{lstFound.Count} times.");
+                            errors.AddErrorOrThrow($"{this._EntityTypeName} found #{lstFound.Count} times.", this.FullName, ResolveNameNotUniqueException.Factory);
                         }
                     } else if (lstNS.Count == 0) {
-                        errors.AddErrorXmlParsing($"{this._EntityTypeName} namespace not found");
+                        errors.AddErrorOrThrow($"{this._EntityTypeName} namespace not found", this.FullName, ResolveNameNotFoundException.Factory);
                     } else {
-                        errors.AddErrorXmlParsing($"{this._EntityTypeName} namespace found #{lstNS.Count} times.");
+                        errors.AddErrorOrThrow($"{this._EntityTypeName} namespace found #{lstNS.Count} times.", this.FullName, ResolveNameNotUniqueException.Factory);
                     }
                 }
             }
+            return this._EntityTypeModel;
         }
     }
 }

@@ -14,7 +14,7 @@
 
         public ModelException(string message, ModelErrors modelErrors) : base(message) {
         }
-        
+
 
         protected ModelException(SerializationInfo info, StreamingContext context) : base(info, context) {
             try {
@@ -28,5 +28,7 @@
             base.GetObjectData(info, context);
             info.AddValue("ModelErrors", this.ModelErrors, typeof(ModelErrors));
         }
+
+        public static Exception Factory(ModelErrorInfo modelErrorInfo) => new ModelException(string.Empty, new ModelErrors(modelErrorInfo));
     }
 }

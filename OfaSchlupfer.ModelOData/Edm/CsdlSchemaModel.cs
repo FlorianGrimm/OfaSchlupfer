@@ -1,25 +1,86 @@
-﻿using System;
-using System.Collections.Generic;
-using OfaSchlupfer.Model;
+﻿namespace OfaSchlupfer.ModelOData.Edm {
+    using System;
+    using System.Collections.Generic;
 
-namespace OfaSchlupfer.ModelOData.Edm {
+    using Newtonsoft.Json;
+
+    using OfaSchlupfer.Freezable;
+    using OfaSchlupfer.Model;
+
+    [JsonObject]
     public class CsdlSchemaModel : CsdlAnnotationalModel {
-        public readonly CsdlCollection<CsdlScalarTypeModel> ScalarTypeModel;
-        public readonly CsdlCollection<CsdlEntityTypeModel> EntityType;
-        public readonly CsdlCollection<CsdlEntityContainerModel> EntityContainer;
-        public readonly CsdlCollection<CsdlAssociationModel> Association;
-        
-        public string Namespace;
+        [JsonIgnore]
+        private EdmxModel _EdmxModel;
+        [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlScalarTypeModel> _ScalarTypeModel;
+        [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityTypeModel> _EntityType;
+        [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityContainerModel> _EntityContainer;
+        [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlAssociationModel> _Association;
 
-        public EdmxModel EdmxModel;
+        [JsonIgnore]
+        private string _Namespace;
+
+        [JsonProperty]
+        public string Namespace {
+            get {
+                return this._Namespace;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Namespace = value;
+            }
+        }
+
+        [JsonProperty]
+        public EdmxModel EdmxModel {
+            get {
+                return this._EdmxModel;
+            }
+            set {
+                if (this._EdmxModel != null) { this.ThrowIfFrozen(); }
+                this._EdmxModel = value;
+            }
+        }
+
+
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlScalarTypeModel> ScalarTypeModel => this._ScalarTypeModel;
+
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityTypeModel> EntityType => this._EntityType;
+
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityContainerModel> EntityContainer => this._EntityContainer;
+
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlAssociationModel> Association => this._Association;
 
         public CsdlSchemaModel() {
-            this.ScalarTypeModel = new CsdlCollection<CsdlScalarTypeModel>((item) => { item.SchemaModel = this; });
-            this.EntityType = new CsdlCollection<CsdlEntityTypeModel>((item) => { item.SchemaModel = this; });
-            this.EntityContainer = new CsdlCollection<CsdlEntityContainerModel>((item) => { item.SchemaModel = this; });
-            this.Association = new CsdlCollection<CsdlAssociationModel>((item) => { item.SchemaModel = this; });
+            this._ScalarTypeModel = new FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlScalarTypeModel>(
+                this,
+                (item) => item.Name,
+                StringComparer.OrdinalIgnoreCase,
+                (owner, item) => { item.Owner = owner; });
+            this._EntityType = new FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityTypeModel>(
+                this,
+                (item) => item.Name,
+                StringComparer.OrdinalIgnoreCase,
+                (owner, item) => { item.Owner = owner; });
+            this._EntityContainer = new FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityContainerModel>(
+                this,
+                (item) => item.Name,
+                StringComparer.OrdinalIgnoreCase,
+                (owner, item) => { item.Owner = owner; });
+            this._Association = new FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlAssociationModel>(
+                this,
+                (item) => item.Name,
+                StringComparer.OrdinalIgnoreCase,
+                (owner, item) => { item.Owner = owner; });
         }
-        
+
         public void ResolveNames(ModelErrors errors) {
             foreach (var entityType in this.EntityType) {
                 entityType.ResolveNames(errors);
@@ -32,35 +93,14 @@ namespace OfaSchlupfer.ModelOData.Edm {
             }
         }
 
-        public List<CsdlScalarTypeModel> FindScalarType(string scalarTypeLocalName) {
-            var result = new List<CsdlScalarTypeModel>();
-            foreach (var scalarTypeModel in this.ScalarTypeModel) {
-                if (string.Equals(scalarTypeModel.Name, scalarTypeLocalName, StringComparison.OrdinalIgnoreCase)) {
-                    result.Add(scalarTypeModel);
-                }
-            }
-            return result;
-        }
+        public List<CsdlScalarTypeModel> FindScalarType(string scalarTypeLocalName) => this._ScalarTypeModel.FindByKey(scalarTypeLocalName);
 
-        public List<CsdlEntityTypeModel> FindEntityType(string entityTypeLocalName) {
-            var result = new List<CsdlEntityTypeModel>();
-            foreach (var entityType in this.EntityType) {
-                if (string.Equals(entityType.Name, entityTypeLocalName, StringComparison.OrdinalIgnoreCase)) {
-                    result.Add(entityType);
-                }
-            }
-            return result;
-        }
+        public List<CsdlEntityTypeModel> FindEntityType(string entityTypeLocalName) => this._EntityType.FindByKey(entityTypeLocalName);
 
-        public List<CsdlAssociationModel> FindAssociation(string associationLocalName) {
-            var result = new List<CsdlAssociationModel>();
-            foreach (var association in this.Association) {
-                if (string.Equals(association.Name, associationLocalName, StringComparison.OrdinalIgnoreCase)) {
-                    result.Add(association);
-                }
-            }
-            return result;
-        }
+        public List<CsdlAssociationModel> FindAssociation(string associationLocalName) => this._Association.FindByKey(associationLocalName);
+
+        public List<CsdlEntityContainerModel> FindEntityContainer(string entityContainerLocalName) => this._EntityContainer.FindByKey(entityContainerLocalName);
+
 
         public static CsdlSchemaModel AddCoreV3(EdmxModel edmxModel, ModelErrors errors) {
             CsdlSchemaModel schemaModel = new CsdlSchemaModel();
@@ -100,7 +140,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             schemaModel.AddScalarType(new CsdlScalarTypeModel("Edm", "Stream"));
             return schemaModel;
         }
-        
+
         public static CsdlSchemaModel AddCoreV4(EdmxModel edmxModel, ModelErrors errors) {
             CsdlSchemaModel schemaModel = new CsdlSchemaModel();
             schemaModel.Namespace = "Edm";

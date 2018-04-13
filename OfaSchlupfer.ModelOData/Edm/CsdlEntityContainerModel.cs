@@ -1,36 +1,88 @@
 ﻿namespace OfaSchlupfer.ModelOData.Edm {
+    using System;
     using System.Collections.Generic;
+    using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
     using OfaSchlupfer.Model;
 
     [System.Diagnostics.DebuggerDisplay("{Name}")]
+    [JsonObject]
     public class CsdlEntityContainerModel : CsdlAnnotationalModel {
-        private CsdlSchemaModel _SchemaModel;
+        [JsonIgnore]
+        private CsdlSchemaModel _Owner;
+
+        [JsonIgnore]
+        private string _Name;
+
+        [JsonIgnore]
+        private bool _IsDefaultEntityContainer;
+
+        [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlEntitySetModel> _EntitySet;
+
+        [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlAssociationSetModel> _AssociationSet;
 
         public CsdlEntityContainerModel() {
-            this.EntitySet = new CsdlCollection<CsdlEntitySetModel>((item) => { item.OwnerEntityContainerModel = this; });
-            this.AssociationSet = new CsdlCollection<CsdlAssociationSetModel>((item) => { item.OwnerEntityContainerModel = this; });
+            this._EntitySet = new FreezeableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlEntitySetModel>(
+                this,
+                (item) => item.Name,
+                StringComparer.OrdinalIgnoreCase,
+                (owner, item) => { item.Owner = owner; });
+            this._AssociationSet = new FreezeableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlAssociationSetModel>(
+                this,
+                (item) => item.Name,
+                StringComparer.OrdinalIgnoreCase,
+                (owner, item) => { item.Owner = owner; });
         }
-        public string Name;
-        public bool IsDefaultEntityContainer;
-        public readonly CsdlCollection<CsdlEntitySetModel> EntitySet;
-        public readonly CsdlCollection<CsdlAssociationSetModel> AssociationSet;
 
+        [JsonProperty]
+        public string Name {
+            get {
+                return this._Name;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Name = value;
+            }
+        }
+
+
+
+        [JsonProperty]
+        public bool IsDefaultEntityContainer {
+            get {
+                return this._IsDefaultEntityContainer;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._IsDefaultEntityContainer = value;
+            }
+        }
 
         [System.Diagnostics.DebuggerHidden]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel {
+        [JsonIgnore]
+        public CsdlSchemaModel Owner {
             get {
-                return this._SchemaModel;
+                return this._Owner;
             }
             set {
-                if (ReferenceEquals(this._SchemaModel, value)) { return; }
-                this._SchemaModel = value;
-                if ((object)value != null) {
-                    this.EntitySet.Broadcast();
-                    this.AssociationSet.Broadcast();
+                if (ReferenceEquals(this._Owner, value)) { return; }
+                if (this._Owner != null) {
+                    this.ThrowIfFrozen();
                 }
+                this._Owner = value;
             }
         }
+
+        public FreezeableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlAssociationSetModel> AssociationSet => this._AssociationSet;
+
+        public FreezeableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlEntitySetModel> EntitySet => this._EntitySet;
+
+        public List<CsdlAssociationSetModel> FindAssociationSet(string name) => this._AssociationSet.FindByKey(name);
+
+        public List<CsdlEntitySetModel> FindEntitySet(string name) => this._EntitySet.FindByKey(name);
 
         public void ResolveNames(ModelErrors errors) {
             foreach (var entitySet in this.EntitySet) {
@@ -41,14 +93,6 @@
             }
         }
 
-        public List<CsdlEntitySetModel> FindEntitySet(string localName) {
-            var result = new List<CsdlEntitySetModel>();
-            foreach (var entitySet in this.EntitySet) {
-                if (string.Equals(entitySet.Name, localName, System.StringComparison.OrdinalIgnoreCase)) {
-                    result.Add(entitySet);
-                }
-            }
-            return result;
-        }
+        public List<CsdlEntitySetModel> FindEntitySet(string localName) => this._EntitySet.FindByKey(localName);
     }
 }

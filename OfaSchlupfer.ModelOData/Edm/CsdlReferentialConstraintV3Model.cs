@@ -1,8 +1,12 @@
-﻿using OfaSchlupfer.Model;
+﻿namespace OfaSchlupfer.ModelOData.Edm {
+    using Newtonsoft.Json;
 
-namespace OfaSchlupfer.ModelOData.Edm {
+    using OfaSchlupfer.Freezable;
+    using OfaSchlupfer.Model;
+
+    [JsonObject]
     public class CsdlReferentialConstraintV3Model : CsdlAnnotationalModel {
-        private CsdlAssociationModel _OwnerAssociationModel;
+        private CsdlAssociationModel _Owner;
 
         // V3
         private CsdlReferentialConstraintPartnerV3Model _Principal;
@@ -11,33 +15,40 @@ namespace OfaSchlupfer.ModelOData.Edm {
         public CsdlReferentialConstraintV3Model() {
         }
 
+        [JsonProperty]
         public CsdlReferentialConstraintPartnerV3Model Principal {
             get { return this._Principal; }
             set {
                 if (ReferenceEquals(this._Principal, value)) { return; }
                 this._Principal = value;
                 if (value != null) {
-                    value.OwnerReferentialConstraintModel = this;
+                    value.Owner = this;
                 }
             }
         }
+
+        [JsonProperty]
         public CsdlReferentialConstraintPartnerV3Model Dependent {
             get { return this._Dependent; }
             set {
                 if (ReferenceEquals(this._Dependent, value)) { return; }
                 this._Dependent = value;
                 if (value != null) {
-                    value.OwnerReferentialConstraintModel = this;
+                    value.Owner = this;
                 }
             }
         }
 
-        public CsdlAssociationModel OwnerAssociationModel {
+        [JsonIgnore]
+        public CsdlAssociationModel Owner {
             get {
-                return this._OwnerAssociationModel;
+                return this._Owner;
             }
-            set {
-                this._OwnerAssociationModel = value;
+            internal set {
+                if (ReferenceEquals(this._Owner, value)) { return; }
+                if ((object)this._Owner == null) { this._Owner = value; return; }
+                this.ThrowIfFrozen();
+                this._Owner = value;
             }
         }
 

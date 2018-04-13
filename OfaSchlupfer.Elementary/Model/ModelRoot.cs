@@ -52,15 +52,6 @@
             }
         }
 
-#warning TODO weichei
-        public void UpdateNames() {
-            var current = (new ModelRoot.Current(this, false));
-
-            foreach (var repositoryMapping in this.RepositoryMappings) {
-                repositoryMapping.UpdateNames(current);
-            }
-        }
-
         public void ResolveNames() {
             var current = (new ModelRoot.Current(this, true));
 

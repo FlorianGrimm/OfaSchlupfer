@@ -59,8 +59,8 @@
         [JsonIgnore]
         public ModelComplexType EntityType {
             get {
-                if (((object)this._EntityType == null) && (this._EntityTypeNáme != null)) {
-                    this.ResolveNameEntityType();
+                if (((object)this._Owner != null) && ((object)this._EntityType == null) && (this._EntityTypeNáme != null)) {
+                    this.ResolveNameEntityType(ModelErrors.GetIgnorance());
                 }
                 return this._EntityType;
             }
@@ -78,7 +78,7 @@
             get {
                 return this._Owner;
             }
-            set {
+            internal set {
                 if (ReferenceEquals(this._Owner, value)) { return; }
                 if ((object)this._Owner == null) { this._Owner = value; return; }
                 this.ThrowIfFrozen();
@@ -86,19 +86,21 @@
             }
         }
 
-        public ModelComplexType ResolveNameEntityType() {
-            if (((object)this._EntityType == null) && (this._EntityTypeNáme != null)) {
-                var result = this.Owner.FindComplexType(this._EntityTypeNáme);
-                if (result.Count == 1) {
-                    this._EntityType = result[0];
+        public void ResolveName(ModelErrors errors) {
+            this.ResolveNameEntityType(errors);
+        }
+
+        public ModelComplexType ResolveNameEntityType(ModelErrors errors) {
+            if ((this.Owner != null) && ((object)this._EntityType == null) && (this._EntityTypeNáme != null)) {
+                var lstComplexType = this.Owner.FindComplexType(this._EntityTypeNáme);
+                if (lstComplexType.Count == 1) {
+                    this._EntityType = lstComplexType[0];
                     this._EntityTypeNáme = null;
-                    return result[0];
-                } else if (result.Count == 0) {
-#warning TODO !! ResolveNameEntityType
-                    throw new InvalidOperationException();
+                    return lstComplexType[0];
+                } else if (lstComplexType.Count == 0) {
+                    errors.AddErrorOrThrow($"Property {this._EntityTypeNáme} in {this.Owner?.Name} not found.", this.Owner?.Name, ResolveNameNotFoundException.Factory);
                 } else {
-#warning TODO !! ResolveNameEntityType
-                    throw new InvalidOperationException();
+                    errors.AddErrorOrThrow($"Property {this._EntityTypeNáme} in {this.Owner?.Name} found #{lstComplexType.Count} times.", this.Owner?.Name, ResolveNameNotUniqueException.Factory);
                 }
             }
             return this._EntityType;

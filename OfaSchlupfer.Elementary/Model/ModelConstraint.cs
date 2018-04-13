@@ -58,7 +58,7 @@
             get {
                 return this._Owner;
             }
-            set {
+            internal set {
                 if (ReferenceEquals(this._Owner, value)) { return; }
                 if ((object)this._Owner == null) { this._Owner = value; return; }
                 this.ThrowIfFrozen();

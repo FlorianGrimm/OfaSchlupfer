@@ -1,28 +1,40 @@
-﻿using System;
-using OfaSchlupfer.Model;
+﻿namespace OfaSchlupfer.ModelOData.Edm {
+    using System;
+    using System.Collections.Generic;
+    using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
+    using OfaSchlupfer.Model;
 
-namespace OfaSchlupfer.ModelOData.Edm {
     [System.Diagnostics.DebuggerDisplay("{Role}")]
+    [JsonObject]
     public class CsdlReferentialConstraintPartnerV3Model : CsdlAnnotationalModel {
-        public readonly CsdlCollection<CsdlPropertyRefModel> PropertyRef;
-        private CsdlReferentialConstraintV3Model _OwnerReferentialConstraintModel;
+        private readonly FreezeableOwnedKeyedCollection<CsdlReferentialConstraintPartnerV3Model, string, CsdlPropertyRefModel> _PropertyRef;
+        private CsdlReferentialConstraintV3Model _Owner;
         private string _RoleName;
         private CsdlAssociationEndModel _RoleEnd;
 
         public CsdlReferentialConstraintPartnerV3Model() {
-            this.PropertyRef = new CsdlCollection<CsdlPropertyRefModel>((item) => { item.OwnerReferentialConstraintPartnerModel = this; });
+            this._PropertyRef = new FreezeableOwnedKeyedCollection<CsdlReferentialConstraintPartnerV3Model, string, CsdlPropertyRefModel>(
+                this,
+                (item) => item.PropertyName,
+                StringComparer.OrdinalIgnoreCase,
+                (owner, item) => { item.Owner = owner; });
         }
 
-        public CsdlReferentialConstraintV3Model OwnerReferentialConstraintModel {
+        [JsonIgnore]
+        public CsdlReferentialConstraintV3Model Owner {
             get {
-                return this._OwnerReferentialConstraintModel;
+                return this._Owner;
             }
-            set {
-                if (ReferenceEquals(this._OwnerReferentialConstraintModel, value)) { return; }
-                this._OwnerReferentialConstraintModel = value;
+            internal set {
+                if (ReferenceEquals(this._Owner, value)) { return; }
+                if ((object)this._Owner == null) { this._Owner = value; return; }
+                this.ThrowIfFrozen();
+                this._Owner = value;
             }
         }
 
+        [JsonProperty]
         public string RoleName {
             get {
                 return this._RoleName;
@@ -30,11 +42,13 @@ namespace OfaSchlupfer.ModelOData.Edm {
             set {
                 if (value == string.Empty) { value = null; }
                 if (string.Equals(this._RoleName, value, StringComparison.Ordinal)) { return; }
+                this.ThrowIfFrozen();
                 this._RoleName = value;
                 this._RoleEnd = null;
             }
         }
 
+        [JsonIgnore]
         public CsdlAssociationEndModel RoleEnd {
             get {
                 if (this._RoleEnd == null) {
@@ -43,10 +57,16 @@ namespace OfaSchlupfer.ModelOData.Edm {
                 return this._RoleEnd;
             }
             set {
+                this.ThrowIfFrozen();
                 this._RoleEnd = value;
                 this._RoleName = null;
             }
         }
+
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<CsdlReferentialConstraintPartnerV3Model, string, CsdlPropertyRefModel> PropertyRef => this._PropertyRef;
+
+        public List<CsdlPropertyRefModel> FindPropertyRef(string propertyName) => this._PropertyRef.FindByKey(propertyName);
 
         public void ResolveNames(ModelErrors errors) {
             this.ResolveNameRoleEnd(errors);
@@ -57,14 +77,17 @@ namespace OfaSchlupfer.ModelOData.Edm {
 
         public void ResolveNameRoleEnd(ModelErrors errors) {
             if (this._RoleEnd == null && this._RoleName != null) {
-                var referentialConstraintModel = this.OwnerReferentialConstraintModel;
-                var associationModel = referentialConstraintModel.OwnerAssociationModel;
+                var referentialConstraintModel = this.Owner;
+                var associationModel = referentialConstraintModel.Owner;
                 if (associationModel != null) {
-                    var end = associationModel.FindAssociationEnd(this._RoleName);
-                    if (end != null) {
-                        this.RoleEnd = end;
+                    var lstEnd = associationModel.FindAssociationEnd(this._RoleName);
+                    if (lstEnd.Count == 1) {
+                        this._RoleEnd = lstEnd[0];
+                        this._RoleName = null;
+                    } else if (lstEnd.Count == 0) {
+                        errors.AddErrorOrThrow($"ToRole {this._RoleName} not found in {associationModel.FullName}.", associationModel.FullName, ResolveNameNotFoundException.Factory);
                     } else {
-                        errors.AddErrorXmlParsing($"Role {this._RoleName} not found in {associationModel.FullName}.");
+                        errors.AddErrorOrThrow($"ToRole {this._RoleName}  found #{lstEnd.Count} times in {associationModel.FullName}", associationModel.FullName, ResolveNameNotUniqueException.Factory);
                     }
                 }
             }

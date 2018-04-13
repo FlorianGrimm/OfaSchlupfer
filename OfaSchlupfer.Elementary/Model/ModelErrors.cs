@@ -89,15 +89,15 @@
     }
 
     public static class ModelErrorsExtension {
-        public static void AddErrorOrThrow(this ModelErrors errors, string msg, Func<string, Exception> generator) {
+        public static void AddErrorOrThrow(this ModelErrors errors, string msg, string location, Func<ModelErrorInfo, Exception> generator) {
             if ((object)errors == null) {
                 if (generator == null) {
-                    throw new ModelException(msg);
+                    throw new ModelException(string.Empty, new ModelErrors(new ModelErrorInfo(msg, location)));
                 } else {
-                    throw (generator(msg));
+                    throw (generator(new ModelErrorInfo(msg, location)));
                 }
             } else {
-                errors.Errors?.Add(new ModelErrorInfo(msg));
+                errors.Errors?.Add(new ModelErrorInfo(msg, location));
             }
         }
 

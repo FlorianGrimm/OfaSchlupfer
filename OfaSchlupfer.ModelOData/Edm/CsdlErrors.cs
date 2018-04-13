@@ -6,30 +6,35 @@
     using OfaSchlupfer.Model;
 
     public static class ModelErrorsExtension {
-        public static void AddErrorXmlParsing(this ModelErrors errors, string msg, params XObject[] args) {
-            if (errors != null && errors.Errors == null) { return; }
-            var sb = new StringBuilder();
-            if (!string.IsNullOrEmpty(msg)) {
-                sb.Append(msg);
+        public static void AddErrorXmlParsing(this ModelErrors errors, string msg, Func<ModelErrorInfo, Exception> generator, params XObject[] args) {
+            if (errors != null && errors.Errors == null) {
+                // fast ignorance
+                return;
             }
-            foreach (var o in args) {
-                if ((object)o == null) { continue; }
-                if (o is XElement element) {
-                    if (sb.Length > 0) { sb.Append(" - "); }
-                    sb.Append(element.Name.ToString());
-                } else if (o is XAttribute attribute) {
-                    if (sb.Length > 0) { sb.Append(" - "); }
-                    sb.Append(attribute.Name.ToString());
-                } else {
+            var mi = new ModelErrorInfo() { Text = msg, Location = "" };
+            if (args.Length > 0) {
+                var sb = new StringBuilder();
+                foreach (var o in args) {
+                    if ((object)o == null) { continue; }
+                    if (o is XElement element) {
+                        if (sb.Length > 0) { sb.Append(" - "); }
+                        sb.Append(element.Name.ToString());
+                    } else if (o is XAttribute attribute) {
+                        if (sb.Length > 0) { sb.Append(" - "); }
+                        sb.Append(attribute.Name.ToString());
+                    } else {
+                    }
                 }
+                mi.Location = sb.ToString();
             }
             if ((object)errors == null) {
-                throw new InvalidOperationException(sb.ToString());
-            } else {
-                if (errors.Errors != null) {
-                    errors.Errors.Add(new ModelErrorInfo(sb.ToString()));
+                if (generator == null) {
+                    throw new ModelException(msg, new ModelErrors(mi));
+                } else {
+                    throw (generator(mi));
                 }
-                //errors.Errors?.Add(sb.ToString());
+            } else {
+                errors.Errors?.Add(mi);
             }
         }
     }

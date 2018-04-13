@@ -2,34 +2,48 @@
 
 namespace OfaSchlupfer.ModelOData.Edm {
     using System;
+    using System.Collections.Generic;
+    using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
     using OfaSchlupfer.Model;
 
     [System.Diagnostics.DebuggerDisplay("{Name}")]
+    [JsonObject]
     public class CsdlEntitySetModel : CsdlAnnotationalModel {
         // parents
-        private CsdlEntityContainerModel _OwnerEntityContainerModel;
+        [JsonIgnore]
+        private CsdlEntityContainerModel _Owner;
 
+        [JsonIgnore]
         private string _Name;
 
+        [JsonIgnore]
         private string _EntityTypeName;
+
+        [JsonIgnore]
         private CsdlEntityTypeModel _EntityTypeModel;
 
-        public readonly CsdlCollection<CsdlNavigationPropertyBindingModel> NavigationPropertyBinding;
+        [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<CsdlEntitySetModel, string, CsdlNavigationPropertyBindingModel> _NavigationPropertyBinding;
 
         public CsdlEntitySetModel() {
-            this.NavigationPropertyBinding = new CsdlCollection<CsdlNavigationPropertyBindingModel>((item) => { item.OwnerEntitySetModel = this; });
+            this._NavigationPropertyBinding = new FreezeableOwnedKeyedCollection<CsdlEntitySetModel, string, CsdlNavigationPropertyBindingModel>(
+                this,
+                (item) => item.PathName,
+                StringComparer.OrdinalIgnoreCase,
+                (owner, item) => { item.Owner = owner; });
         }
 
-        [System.Diagnostics.DebuggerHidden]
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        public CsdlSchemaModel SchemaModel => this.OwnerEntityContainerModel.SchemaModel;
-
-        public CsdlEntityContainerModel OwnerEntityContainerModel {
+        [JsonIgnore]
+        public CsdlEntityContainerModel Owner {
             get {
-                return this._OwnerEntityContainerModel;
+                return this._Owner;
             }
-            set {
-                this._OwnerEntityContainerModel = value;
+            internal set {
+                if (ReferenceEquals(this._Owner, value)) { return; }
+                if ((object)this._Owner == null) { this._Owner = value; return; }
+                this.ThrowIfFrozen();
+                this._Owner = value;
             }
         }
 
@@ -40,6 +54,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             set {
                 if (value == string.Empty) { value = null; }
                 if (string.Equals(this._Name, value, StringComparison.Ordinal)) { return; }
+                this.ThrowIfFrozen();
                 this._Name = value;
             }
         }
@@ -50,22 +65,24 @@ namespace OfaSchlupfer.ModelOData.Edm {
                 if (entityTypeModel == null) {
                     return this._EntityTypeName;
                 } else {
-                    return (entityTypeModel.SchemaModel.Namespace ?? string.Empty) + "." + (entityTypeModel.Name ?? string.Empty);
+                    return (entityTypeModel.Owner.Namespace ?? string.Empty) + "." + (entityTypeModel.Name ?? string.Empty);
                 }
             }
             set {
                 if (value == string.Empty) { value = null; }
                 if (string.Equals(this._EntityTypeName, value, StringComparison.Ordinal)) { return; }
+                this.ThrowIfFrozen();
                 this._EntityTypeName = value;
                 this._EntityTypeModel = null;
             }
         }
 
+        [JsonIgnore]
         public CsdlEntityTypeModel EntityTypeModel {
             get {
                 if (this._EntityTypeModel == null && this._EntityTypeName != null) {
-                    var entityContainer = this.OwnerEntityContainerModel;
-                    var schema = entityContainer?.SchemaModel;
+                    var entityContainer = this.Owner;
+                    var schema = entityContainer?.Owner;
                     var edmxModel = schema?.EdmxModel;
                     if (edmxModel != null) {
                         this.ResolveNames(ModelErrors.GetIgnorance());
@@ -75,10 +92,16 @@ namespace OfaSchlupfer.ModelOData.Edm {
                 return this._EntityTypeModel;
             }
             set {
+                this.ThrowIfFrozen();
                 this._EntityTypeModel = value;
                 this._EntityTypeName = null;
             }
         }
+
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<CsdlEntitySetModel, string, CsdlNavigationPropertyBindingModel> NavigationPropertyBinding => this._NavigationPropertyBinding;
+
+        public List<CsdlNavigationPropertyBindingModel> FindNavigationPropertyBinding(string name) => this._NavigationPropertyBinding.FindByKey(name);
 
         public void ResolveNames(ModelErrors errors) {
             this.ResolveNamesEntityType(errors);
@@ -89,32 +112,34 @@ namespace OfaSchlupfer.ModelOData.Edm {
 
         public void ResolveNamesEntityType(ModelErrors errors) {
             if (this._EntityTypeModel == null && this._EntityTypeName != null) {
-                EdmxModel edmxModel = this.SchemaModel?.EdmxModel;
+                EdmxModel edmxModel = this._Owner.Owner?.EdmxModel;
                 if ((edmxModel != null)) {
-                    var lstNS = edmxModel.FindStart(this.EntityTypeName);
+                    var lstNS = edmxModel.FindDataServicesWithStart(this.EntityTypeName);
                     if (lstNS.Count == 1) {
                         (var localName, var schemaFound) = lstNS[0];
                         var lstFound = schemaFound.FindEntityType(localName);
                         if (lstFound.Count == 1) {
 #if DevAsserts
-                        var oldEntityTypeName = this.EntityTypeName;
-                        this.EntityTypeModel = lstFound[0];
-                        var newEntityTypeName = this.EntityTypeName;
-                        if (!string.Equals(oldEntityTypeName, newEntityTypeName, StringComparison.Ordinal)) {
-                            throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
-                        }
+                            var oldEntityTypeName = this.EntityTypeName;
+                            this._EntityTypeModel = lstFound[0];
+                            this._EntityTypeName = null;
+                            var newEntityTypeName = this.EntityTypeName;
+                            if (!string.Equals(oldEntityTypeName, newEntityTypeName, StringComparison.Ordinal)) {
+                                throw new Exception($"{oldEntityTypeName} != {newEntityTypeName}");
+                            }
 #else
-                            this.EntityTypeModel = lstFound[0];
+                            this._EntityTypeModel = lstFound[0];
+                            this._EntityTypeName = null;
 #endif
                         } else if (lstFound.Count == 0) {
-                            errors.AddErrorXmlParsing($"{this._EntityTypeName} not found");
+                            errors.AddErrorOrThrow($"{this._EntityTypeName} not found", this.Name, ResolveNameNotFoundException.Factory);
                         } else {
-                            errors.AddErrorXmlParsing($"{this._EntityTypeName} found #{lstFound.Count} times.");
+                            errors.AddErrorOrThrow($"{this._EntityTypeName} found #{lstFound.Count} times.", this.Name, ResolveNameNotUniqueException.Factory);
                         }
                     } else if (lstNS.Count == 0) {
-                        errors.AddErrorXmlParsing($"{this._EntityTypeName} namespace not found");
+                        errors.AddErrorOrThrow($"{this._EntityTypeName} namespace not found", this.Name, ResolveNameNotFoundException.Factory);
                     } else {
-                        errors.AddErrorXmlParsing($"{this._EntityTypeName} namespace found #{lstNS.Count} times.");
+                        errors.AddErrorOrThrow($"{this._EntityTypeName} namespace found #{lstNS.Count} times.", this.Name, ResolveNameNotUniqueException.Factory);
                     }
                 }
             }

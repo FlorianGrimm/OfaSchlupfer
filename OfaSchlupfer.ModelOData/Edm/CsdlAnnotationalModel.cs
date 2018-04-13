@@ -3,11 +3,14 @@
     using System.Collections.Generic;
     using System.Xml.Linq;
 
+    using Newtonsoft.Json;
+
     using OfaSchlupfer.Freezable;
 
     /// <summary>
     /// Elements with annotations.
     /// </summary>
+    [JsonObject]
     public class CsdlAnnotationalModel
         : FreezeableObject {
         private Dictionary<string, string> _Annotations;
@@ -26,7 +29,7 @@
         /// <returns>the dictionary or null - if frozen and not created null will be returned.</returns>
         public Dictionary<string, string> GetAnnotations(bool createIfNeeded = false) {
             if (createIfNeeded) {
-                if ((object)this._Annotations == null) {
+                if ((object)this._Annotations != null) {
                     return this._Annotations;
                 } else {
                     if (this.IsFrozen()) { return null; }

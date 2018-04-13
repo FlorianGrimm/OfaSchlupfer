@@ -1,15 +1,19 @@
 ﻿namespace OfaSchlupfer.Freezable {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
     using System.Text;
 
     public static class FreezableExtensions {
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static T AsFrozen<T>(this T that)
             where T : IFreezeable {
             that.Freeze();
             return that;
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowIfFrozen(this IFreezeable that, string name = null) {
             if ((object)that != null) {
                 if (that.IsFrozen()) {
@@ -22,6 +26,7 @@
             }
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowIfNotFrozen(this IFreezeable that, string name = null) {
             if ((object)that != null) {
                 if (!(that.IsFrozen())) {
@@ -34,6 +39,7 @@
             }
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void SetOrThrowIfFrozen<T>(this IFreezeable that, ref T target, T value, string name = null) {
             if ((object)that != null) {
                 if (that.IsFrozen()) {
