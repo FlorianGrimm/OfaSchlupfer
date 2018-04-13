@@ -144,5 +144,12 @@ namespace OfaSchlupfer.ModelOData.Edm {
                 }
             }
         }
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._NavigationPropertyBinding.Freeze();
+            }
+            return result;
+        }
     }
 }

@@ -29,7 +29,7 @@
     [JsonObject]
     public sealed class ModelEntityName
         : FreezeableObject
-        , IMappingNamedObject<string>
+        //, IMappingNamedObject<string>
         , IEquatable<ModelEntityName> {
         [JsonIgnore]
         private string _NamespaceUri;
@@ -73,7 +73,7 @@
             }
         }
 
-        public string GetName() => this._Name;
+        public string GetName() => this.ToString();
 
         public override bool Equals(object obj)
             => this.Equals(obj as ModelEntityName);

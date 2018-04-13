@@ -12,13 +12,17 @@
         private ModelSchema _Owner;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedCollection<ModelComplexType, ModelProperty> _Properties;
+        private readonly FreezeableOwnedKeyedCollection<ModelComplexType, ModelEntityName, ModelProperty> _Properties;
 
         [JsonProperty(Order = 2)]
-        public IList<ModelProperty> Properties => this._Properties;
+        public FreezeableOwnedKeyedCollection<ModelComplexType, ModelEntityName, ModelProperty> Properties => this._Properties;
 
         public ModelComplexType() {
-            this._Properties = new FreezeableOwnedCollection<ModelComplexType, ModelProperty>(this, (owner, item) => { item.Owner = owner; });
+            this._Properties = new FreezeableOwnedKeyedCollection<ModelComplexType, ModelEntityName, ModelProperty>(
+                this,
+                (property) => property.Name,
+                ModelUtility.Instance.ModelEntityNameEqualityComparer,
+                (owner, item) => { item.Owner = owner; });
         }
 
         [JsonIgnore]

@@ -82,7 +82,7 @@
 
         public List<CsdlAssociationSetModel> FindAssociationSet(string name) => this._AssociationSet.FindByKey(name);
 
-        public List<CsdlEntitySetModel> FindEntitySet(string name) => this._EntitySet.FindByKey(name);
+        public List<CsdlEntitySetModel> FindEntitySet(string localName) => this._EntitySet.FindByKey(localName);
 
         public void ResolveNames(ModelErrors errors) {
             foreach (var entitySet in this.EntitySet) {
@@ -92,7 +92,14 @@
                 associationSet.ResolveNames(errors);
             }
         }
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._AssociationSet.Freeze();
+                this._EntitySet.Freeze();
+            }
+            return result;
+        }
 
-        public List<CsdlEntitySetModel> FindEntitySet(string localName) => this._EntitySet.FindByKey(localName);
     }
 }

@@ -92,5 +92,12 @@
                 }
             }
         }
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._PropertyRef.Freeze();
+            }
+            return result;
+        }
     }
 }

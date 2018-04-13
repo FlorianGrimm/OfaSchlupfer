@@ -27,6 +27,9 @@
             set {
                 this.ThrowIfFrozen();
                 this._Mapping = value;
+                if ((object)value != null) {
+                    value.Owner = this;
+                }
             }
         }
 
@@ -52,69 +55,39 @@
 
         protected override bool AreThisNamesEqual(string thisName, ref string value) => MappingObjectHelper.AreNamesEqual(thisName, ref value);
 
-        public override void ResolveNameSource() {
+        public void ResolveName(ModelErrors errors) {
+            this.ResolveNameSource(errors);
+            this.ResolveNameTarget(errors);
+        }
+
+        public override void ResolveNameSource(ModelErrors errors) {
             if (((object)this.Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
                 var lstFound = this.Owner.FindRepository(this.SourceName);
                 if (lstFound.Count == 1) {
                     this._Source = lstFound[0];
                     this._SourceName = null;
-                } else if (lstFound.Count==0){
-                    throw new ResolveNameNotFoundException($"{this.SourceName} not found.");
+                } else if (lstFound.Count == 0) {
+                    errors.AddErrorOrThrow($"Repository {this.SourceName} in {this.Owner?.Name} not found.", this.Owner?.Name, ResolveNameNotFoundException.Factory);
                 } else {
-                    throw new ResolveNameNotUniqueException($"{this.SourceName} found #{lstFound.Count} times.");
+                    errors.AddErrorOrThrow($"Repository {this.SourceName} in {this.Owner?.Name} found #{lstFound.Count} times.", this.Owner?.Name, ResolveNameNotUniqueException.Factory);
                 }
             }
         }
 
-        public override void ResolveNameTarget() {
+        public override void ResolveNameTarget(ModelErrors errors) {
             if (((object)this._Target == null) && ((object)this._TargetName != null)) {
-#warning TODO ResolveNameTarget
-            }
-        }
-
-        internal void UpdateNames(ModelRoot.Current current) {
-            if (this.Source != null) {
-                var name = this.Source.Name;
-                this.SourceName = name;
-                current.RepositoriesByName[name] = this.Source;
-            }
-            if (this.Target != null) {
-                var name = this.Target.Name;
-                this.TargetName = name;
-                current.RepositoriesByName[name] = this.Target;
-            }
-
-            if (this.Mapping != null) {
-                if (this.Mapping.Source != null) {
-                    var name = this.Mapping.Source.Name;
-                    this.Mapping.SourceName = name;
-                    current.SchemaByName[name] = this.Mapping.Source;
-                }
-                if (this.Mapping.Target != null) {
-                    var name = this.Mapping.Target.Name;
-                    this.Mapping.TargetName = name;
-                    current.SchemaByName[name] = this.Mapping.Target;
-                }
-                this.Mapping.UpdateNames(current);
-            }
-        }
-
-        internal void ResolveNames(ModelRoot.Current current) {
-            if (this.Source == null) {
-                if (this.SourceName != null) {
-                    if (current.RepositoriesByName.TryGetValue(this.SourceName, out var source)) {
-                        this.Source = source;
+                if (((object)this.Owner != null) && ((object)this._Target == null) && ((object)this._TargetName != null)) {
+                    var lstFound = this.Owner.FindRepository(this.TargetName);
+                    if (lstFound.Count == 1) {
+                        this._Target = lstFound[0];
+                        this._TargetName = null;
+                    } else if (lstFound.Count == 0) {
+                        errors.AddErrorOrThrow($"Repository {this.TargetName} in {this.Owner?.Name} not found.", this.Owner?.Name, ResolveNameNotFoundException.Factory);
+                    } else {
+                        errors.AddErrorOrThrow($"Repository {this.TargetName} in {this.Owner?.Name} found #{lstFound.Count} times.", this.Owner?.Name, ResolveNameNotUniqueException.Factory);
                     }
                 }
             }
-            if (this.Target == null) {
-                if (this.TargetName != null) {
-                    if (current.RepositoriesByName.TryGetValue(this.TargetName, out var target)) {
-                        this.Target = target;
-                    }
-                }
-            }
-            this.Mapping?.ResolveNames(current);
         }
     }
 }

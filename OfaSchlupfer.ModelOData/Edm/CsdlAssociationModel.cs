@@ -78,5 +78,13 @@
             }
         }
 
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._AssociationEnd.Freeze();
+                this._ReferentialConstraint.Freeze();
+            }
+            return result;
+        }
     }
 }

@@ -26,7 +26,7 @@
         private readonly FreezeableOwnedCollection<ModelEntity, ModelConstraint> _Constraints;
 
         [JsonProperty(Order = 5)]
-        public IList<ModelConstraint> Constraints => this._Constraints;
+        public FreezeableOwnedCollection<ModelEntity, ModelConstraint> Constraints => this._Constraints;
 
         public ModelEntity() {
             this._Constraints = new FreezeableOwnedCollection<ModelEntity, ModelConstraint>(this, (owner, item) => { item.Owner = owner; });
@@ -98,9 +98,9 @@
                     this._EntityTypeNáme = null;
                     return lstComplexType[0];
                 } else if (lstComplexType.Count == 0) {
-                    errors.AddErrorOrThrow($"Property {this._EntityTypeNáme} in {this.Owner?.Name} not found.", this.Owner?.Name, ResolveNameNotFoundException.Factory);
+                    errors.AddErrorOrThrow($"EntityType {this._EntityTypeNáme} in {this.Owner?.Name} not found.", this.Owner?.Name?.Name, ResolveNameNotFoundException.Factory);
                 } else {
-                    errors.AddErrorOrThrow($"Property {this._EntityTypeNáme} in {this.Owner?.Name} found #{lstComplexType.Count} times.", this.Owner?.Name, ResolveNameNotUniqueException.Factory);
+                    errors.AddErrorOrThrow($"EntityType {this._EntityTypeNáme} in {this.Owner?.Name} found #{lstComplexType.Count} times.", this.Owner?.Name?.Name, ResolveNameNotUniqueException.Factory);
                 }
             }
             return this._EntityType;

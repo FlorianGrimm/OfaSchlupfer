@@ -14,8 +14,7 @@
     /// </summary>
     [JsonObject]
     public class ModelRoot
-        : FreezeableObject
-        , IMappingNamedObject<string> {
+        : FreezeableObject {
         [JsonIgnore]
         private string _Name;
 
@@ -25,9 +24,9 @@
         [JsonIgnore]
         private readonly FreezeableOwnedKeyedCollection<ModelRoot, string, MappingRepository> _RepositoryMappings;
 
-        public IList<ModelRepository> Repositories => this._Repositories;
+        public FreezeableOwnedKeyedCollection<ModelRoot, ModelEntityName, ModelRepository> Repositories => this._Repositories;
 
-        public IList<MappingRepository> RepositoryMappings => this._RepositoryMappings;
+        public FreezeableOwnedKeyedCollection<ModelRoot, string, MappingRepository> RepositoryMappings => this._RepositoryMappings;
 
         public ModelRoot() {
             this._Repositories = new FreezeableOwnedKeyedCollection<ModelRoot, ModelEntityName, ModelRepository>(
@@ -52,23 +51,13 @@
             }
         }
 
-        public void ResolveNames() {
-            var current = (new ModelRoot.Current(this, true));
-
-            foreach (var repositoryMapping in this.RepositoryMappings) {
-                repositoryMapping.ResolveNames(current);
-            }
-        }
-
         /// <summary>
         /// Find a repository by name.
         /// </summary>
         /// <param name="name">the name of the repository</param>
         /// <returns>the repository</returns>
         public List<ModelRepository> FindRepository(ModelEntityName name) => this._Repositories.FindByKey(name);
-
-        public string GetName() => this._Name;
-
+        
         public override bool Freeze() {
             var result = base.Freeze();
             if (result) {
@@ -76,27 +65,6 @@
                 this._RepositoryMappings.Freeze();
             }
             return result;
-        }
-
-        public class Current {
-            public readonly ModelRoot ModelRoot;
-            public readonly Dictionary<ModelEntityName, ModelRepository> RepositoriesByName;
-            public readonly Dictionary<ModelEntityName, ModelSchema> SchemaByName;
-            // public readonly Dictionary<string, ModelSchema.Current> SchemaCurrentByName;
-
-            public Current(ModelRoot modelRoot, bool build) {
-                this.ModelRoot = modelRoot;
-                var stringComparer = ModelUtility.Instance.StringComparer;
-                var nameComparer = ModelUtility.Instance.ModelEntityNameEqualityComparer;
-                if (build) {
-                    this.RepositoriesByName = modelRoot.Repositories.ToDictionary(repo => repo.Name, nameComparer);
-                    this.SchemaByName = modelRoot.Repositories.ToDictionary(repo => repo.Name, repo => repo.ModelSchema, nameComparer);
-                } else {
-                    this.RepositoriesByName = new Dictionary<ModelEntityName, ModelRepository>(nameComparer);
-                    this.SchemaByName = new Dictionary<ModelEntityName, ModelSchema>(nameComparer);
-                }
-                // this.SchemaCurrentByName = modelRoot.Repositories.ToDictionary(repo => repo.Name, repo => new ModelSchema.Current(repo.ModelSchema), StringComparer.InvariantCultureIgnoreCase);
-            }
         }
     }
 }

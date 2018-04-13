@@ -6,13 +6,13 @@
     [JsonObject]
     public class ModelProperty
         : FreezeableObject
-        , IMappingNamedObject<string> {
+        , IMappingNamedObject<ModelEntityName> {
 
         [JsonIgnore]
         private ModelComplexType _Owner;
 
         [JsonIgnore]
-        private string _Name;
+        private ModelEntityName _Name;
 
         [JsonIgnore]
         private ModelType _Type;
@@ -20,7 +20,7 @@
         public ModelProperty() { }
 
         [JsonProperty]
-        public string Name {
+        public ModelEntityName Name {
             get {
                 return this._Name;
             }
@@ -55,12 +55,13 @@
         }
 
 
-        public string GetName() => this._Name;
+        public ModelEntityName GetName() => this._Name;
 
         public override bool Freeze() {
             var result = base.Freeze();
             if (result) {
                 this.Type?.Freeze();
+                this.Name?.Freeze();
             }
             return result;
         }

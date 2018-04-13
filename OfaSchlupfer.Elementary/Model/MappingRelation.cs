@@ -9,8 +9,8 @@
 
     [JsonObject]
     public class MappingRelation
-        : MappingObjectString<ModelRelation>
-        , IMappingNamedObject<string> {
+        : MappingObject<ModelEntityName, ModelEntityName, ModelRelation>
+        , IMappingNamedObject<ModelEntityName> {
         [JsonIgnore]
         private MappingSchema _Owner;
 
@@ -44,42 +44,45 @@
             }
         }
 
-        protected override bool AreSourceNamesEqual(string sourceName, ref string value) => MappingObjectHelper.AreNamesEqual(sourceName, ref value);
+        protected override bool AreSourceNamesEqual(ModelEntityName sourceName, ref ModelEntityName value) => MappingObjectHelper.AreNamesEqual(sourceName, ref value);
 
-        protected override bool AreTargetNamesEqual(string targetName, ref string value) => MappingObjectHelper.AreNamesEqual(targetName, ref value);
+        protected override bool AreTargetNamesEqual(ModelEntityName targetName, ref ModelEntityName value) => MappingObjectHelper.AreNamesEqual(targetName, ref value);
 
-        protected override bool AreThisNamesEqual(string thisName, ref string value) => MappingObjectHelper.AreNamesEqual(thisName, ref value);
+        protected override bool AreThisNamesEqual(ModelEntityName thisName, ref ModelEntityName value) => MappingObjectHelper.AreNamesEqual(thisName, ref value);
 
-        public override void ResolveNameSource() {
-            if (((object)this._Source == null) && ((object)this._SourceName != null)) {
-#warning TODO ResolveNameSource
+
+        public void ResolveName(ModelErrors errors) {
+            this.ResolveNameSource(errors);
+            this.ResolveNameTarget(errors);
+        }
+
+        public override void ResolveNameSource(ModelErrors errors) {
+            if (((object)this.Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
+#warning TODO
+                //var lstFound = this.Owner.Source.FindEntity(this._SourceName);
+                //if (lstFound.Count == 1) {
+                //    this._Source = lstFound[0];
+                //    this._SourceName = null;
+                //} else if (lstFound.Count == 0) {
+                //    throw new ResolveNameNotFoundException($"{this.SourceName} not found.");
+                //} else {
+                //    throw new ResolveNameNotUniqueException($"{this.SourceName} found #{lstFound.Count} times.");
+                //}
             }
         }
 
-        public override void ResolveNameTarget() {
-            if (((object)this._Target == null) && ((object)this._TargetName != null)) {
-#warning TODO ResolveNameTarget
-            }
-        }
-
-        internal void UpdateNames(ModelRoot.Current current, ModelSchema.Current sourceCurrent, ModelSchema.Current targetCurrent) {
-            throw new NotImplementedException();
-        }
-
-        internal void ResolveNames(ModelRoot.Current current, ModelSchema.Current sourceCurrent, ModelSchema.Current targetCurrent) {
-            if (this.Source == null) {
-                if (!string.IsNullOrEmpty(this.SourceName)) {
-                    if (sourceCurrent.RelationByName.TryGetValue(this.SourceName, out var source)) {
-                        this.Source = source;
-                    }
-                }
-            }
-            if (this.Target != null) {
-                if (!string.IsNullOrEmpty(this.TargetName)) {
-                    if (targetCurrent.RelationByName.TryGetValue(this.TargetName, out var target)) {
-                        this.Target = target;
-                    }
-                }
+        public override void ResolveNameTarget(ModelErrors errors) {
+            if (((object)this.Owner != null) && ((object)this._Target == null) && ((object)this._TargetName != null)) {
+#warning TODO
+                //var lstFound = this.Owner.FindRepository(this.TargetName);
+                //if (lstFound.Count == 1) {
+                //    this._Target = lstFound[0];
+                //    this._TargetName = null;
+                //} else if (lstFound.Count == 0) {
+                //    throw new ResolveNameNotFoundException($"{this.TargetName} not found.");
+                //} else {
+                //    throw new ResolveNameNotUniqueException($"{this.TargetName} found #{lstFound.Count} times.");
+                //}
             }
         }
     }

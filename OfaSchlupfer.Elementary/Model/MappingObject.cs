@@ -8,7 +8,7 @@
     }
 
     [JsonObject]
-    public class MappingObject<TThisKey, TMappingKey, TMappingValue>
+    public abstract class MappingObject<TThisKey, TMappingKey, TMappingValue>
         : FreezeableObject
         , IMappingNamedObject<TThisKey>
         where TMappingKey : class
@@ -29,7 +29,7 @@
         [JsonIgnore]
         protected TThisKey _Name;
 
-        public MappingObject() { }
+        protected MappingObject() { }
 
         [JsonProperty]
         public virtual TMappingKey SourceName {
@@ -84,12 +84,16 @@
             }
         }
 
+        //public virtual void ResolveNameSource(ModelErrors errors) { }
+        public abstract void ResolveNameSource(ModelErrors errors);
+
+
         [JsonIgnore]
         public virtual TMappingValue Target {
             get {
                 if (((object)this._Target == null)
                     && ((object)this._TargetName != null)) {
-                    this.ResolveNameTarget();
+                    this.ResolveNameTarget(ModelErrors.GetIgnorance());
                 }
                 return this._Target;
             }
@@ -100,7 +104,8 @@
             }
         }
 
-        public virtual void ResolveNameTarget(ModelErrors errors) { }
+        //public virtual void ResolveNameTarget(ModelErrors errors) { }
+        public abstract void ResolveNameTarget(ModelErrors errors);
 
 
         [JsonProperty]
@@ -115,11 +120,13 @@
             }
         }
 
-        protected virtual bool AreThisNamesEqual(TThisKey thisName, ref TThisKey value) => false;
+        //protected virtual bool AreThisNamesEqual(TThisKey thisName, ref TThisKey value) => false;
+        protected abstract bool AreThisNamesEqual(TThisKey thisName, ref TThisKey value);
 
         public TThisKey GetName() => this._Name;
     }
 
+    /*
     [JsonObject]
     public class MappingObjectString<TValue>
         : MappingObject<string, string, TValue>
@@ -133,6 +140,7 @@
         protected override bool AreThisNamesEqual(string thisName, ref string value)
             => MappingObjectHelper.AreNamesEqual(thisName, ref value);
     }
+    */
 
     public static class MappingObjectHelper {
         public static bool AreNamesEqual(string thisName, ref string value) {

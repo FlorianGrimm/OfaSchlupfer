@@ -11,9 +11,9 @@
     [JsonObject]
     public class ModelConstraint
         : FreezeableObject
-        , IMappingNamedObject<string> {
+        , IMappingNamedObject<ModelEntityName> {
         [JsonIgnore]
-        private string _Name;
+        private ModelEntityName _Name;
 
         [JsonIgnore]
         private string _Type;
@@ -26,13 +26,12 @@
 
         private readonly FreezeableCollection<ModelProperty> _Properties;
 
-        public IList<ModelProperty> Properties => this._Properties;
 
         public ModelConstraint() {
             this._Properties = new FreezeableCollection<ModelProperty>();
         }
 
-        public string Name {
+        public ModelEntityName Name {
             get {
                 return this._Name;
             }
@@ -42,6 +41,7 @@
             }
         }
 
+        [JsonProperty]
         public string Type {
             get {
                 return this._Type;
@@ -51,6 +51,9 @@
                 this._Type = value;
             }
         }
+
+        [JsonProperty]
+        public FreezeableCollection<ModelProperty> Properties => this._Properties;
 
 
         [JsonIgnore]
@@ -67,7 +70,7 @@
         }
 
 
-        public string GetName() => this._Name;
+        public ModelEntityName GetName() => this._Name;
 
         public override bool Freeze() {
             var result = base.Freeze();

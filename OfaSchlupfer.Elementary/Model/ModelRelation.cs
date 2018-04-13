@@ -10,12 +10,12 @@
     [JsonObject]
     public class ModelRelation
         : FreezeableObject
-        , IMappingNamedObject<string> {
+        , IMappingNamedObject<ModelEntityName> {
         [JsonIgnore]
         private ModelSchema _Owner;
 
         [JsonIgnore]
-        private string _Name;
+        private ModelEntityName _Name;
 
         [JsonIgnore]
         private ModelEntityName _MasterName;
@@ -32,7 +32,7 @@
         public ModelRelation() { }
 
         [JsonProperty(Order = 1)]
-        public string Name {
+        public ModelEntityName Name {
             get {
                 return this._Name;
             }
@@ -42,7 +42,7 @@
             }
         }
 
-        public string GetName() => this._Name;
+        public ModelEntityName GetName() => this._Name;
 
 
         [JsonProperty(Order = 2)]
@@ -127,16 +127,14 @@
 
         private void ResolveNamesMasterEntity(ModelErrors errors) {
             if (((object)this._Owner != null) && ((object)this._MasterEntity == null) && ((object)this._MasterName != null)) {
-                this._MasterEntity
                 var lst = this.Owner.FindEntity(this.MasterName);
-                if (lst.Count == !) {
+                if (lst.Count == 1) {
                     this._MasterEntity = lst[0];
                     this._MasterName = null;
                 } else if (lst.Count == 0) {
-                    errors.AddErrorOrThrow($"Master {this.MasterName} in {this.Owner?.Name.FullName} not found.", this.Owner?.Name, ResolveNameNotFoundException.Factory);
+                    errors.AddErrorOrThrow($"Master {this.MasterName} in {this.Owner?.Name?.Name} not found.", this.Owner?.Name?.Name, ResolveNameNotFoundException.Factory);
                 } else {
-                    errors.AddErrorOrThrow($"Master {this.MasterName} in {this.Owner?.Name.FullName found #{lstNavProperty.Count} times.", this.Owner?.Name, ResolveNameNotUniqueException.Factory);
-
+                    errors.AddErrorOrThrow($"Master {this.MasterName} in {this.Owner?.Name?.Name} found #{lst.Count} times.", this.Owner?.Name?.Name, ResolveNameNotUniqueException.Factory);
                 }
             }
         }
@@ -144,16 +142,14 @@
 
         private void ResolveNamesForeignEntity(ModelErrors errors) {
             if (((object)this._Owner != null) && ((object)this._ForeignEntity == null) && ((object)this._ForeignName != null)) {
-                this._MasterEntity
-                               var lst = this.Owner.FindEntity(this.ForeignName);
-                if (lst.Count == !) {
-                    this._MasterEntity = lst[0];
-                    this._MasterName = null;
+                var lst = this.Owner.FindEntity(this.ForeignName);
+                if (lst.Count == 1) {
+                    this._ForeignEntity = lst[0];
+                    this._ForeignName = null;
                 } else if (lst.Count == 0) {
-                    errors.AddErrorOrThrow($"Foreign {this.ForeignName.Name} in {this.Owner?.Name.FullName} not found.", this.Owner?.Name, ResolveNameNotFoundException.Factory);
+                    errors.AddErrorOrThrow($"Foreign {this.ForeignName.Name} in {this.Owner?.Name?.Name} not found.", this.Owner?.Name?.Name, ResolveNameNotFoundException.Factory);
                 } else {
-                    errors.AddErrorOrThrow($"Foreign {this.ForeignName.Name} in {this.Owner?.Name.FullName found #{lstNavProperty.Count} times.", this.Owner?.Name, ResolveNameNotUniqueException.Factory);
-
+                    errors.AddErrorOrThrow($"Foreign {this.ForeignName.Name} in {this.Owner?.Name?.Name} found #{lst.Count} times.", this.Owner?.Name?.Name, ResolveNameNotUniqueException.Factory);
                 }
             }
         }

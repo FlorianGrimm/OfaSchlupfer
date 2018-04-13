@@ -77,5 +77,13 @@
                 schema.ResolveNames(errors);
             }
         }
+
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._DataServices.Freeze();
+            }
+            return result;
+        }
     }
 }

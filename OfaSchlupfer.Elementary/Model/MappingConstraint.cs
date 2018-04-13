@@ -8,7 +8,7 @@
 
     [JsonObject]
     public class MappingConstraint
-        : MappingObjectString<ModelConstraint> {
+        : MappingObject<string, ModelEntityName, ModelConstraint> {
         [JsonIgnore]
         private MappingEntity _Owner;
 
@@ -26,28 +26,20 @@
                 this._Owner = value;
             }
         }
-        protected override bool AreSourceNamesEqual(string sourceName, ref string value) => MappingObjectHelper.AreNamesEqual(sourceName, ref value);
-        protected override bool AreTargetNamesEqual(string targetName, ref string value) => MappingObjectHelper.AreNamesEqual(targetName, ref value);
+        protected override bool AreSourceNamesEqual(ModelEntityName sourceName, ref ModelEntityName value) => MappingObjectHelper.AreNamesEqual(sourceName, ref value);
+        protected override bool AreTargetNamesEqual(ModelEntityName targetName, ref ModelEntityName value) => MappingObjectHelper.AreNamesEqual(targetName, ref value);
         protected override bool AreThisNamesEqual(string thisName, ref string value) => MappingObjectHelper.AreNamesEqual(thisName, ref value);
 
-        public override void ResolveNameSource() {
+        public override void ResolveNameSource(ModelErrors errors) {
             if (((object)this._Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
-#warning TODO ResolveNameSource
             }
         }
-
-        public override void ResolveNameTarget() {
+        public override void ResolveNameTarget(ModelErrors errors) {
             if (((object)this._Owner != null) && ((object)this._Target == null) && ((object)this._TargetName != null)) {
 #warning TODO ResolveNameTarget
+                //this._Owner.Source.f
             }
         }
 
-        internal void UpdateNames(ModelRoot.Current current, ModelSchema.Current sourceCurrent, ModelSchema.Current targetCurrent) {
-            throw new NotImplementedException();
-        }
-
-        internal void ResolveNames(ModelRoot.Current current, ModelSchema.Current sourceCurrent, ModelSchema.Current targetCurrent) {
-            throw new NotImplementedException();
-        }
     }
 }

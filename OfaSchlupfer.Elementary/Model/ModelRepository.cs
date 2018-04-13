@@ -9,7 +9,7 @@
     [JsonObject]
     public class ModelRepository
         : FreezeableObject
-        , IMappingNamedObject<string>
+        //, IMappingNamedObject<string>
         , IMappingNamedObject<ModelEntityName> {
         [JsonIgnore]
         private ModelRoot _Owner;
@@ -131,6 +131,6 @@
 
         ModelEntityName IMappingNamedObject<ModelEntityName>.GetName() => this._Name;
 
-        string IMappingNamedObject<string>.GetName() => this._Name.GetName();
+        //string IMappingNamedObject<string>.GetName() => this._Name.GetName();
     }
 }

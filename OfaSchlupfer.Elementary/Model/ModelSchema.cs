@@ -27,7 +27,7 @@
         private readonly FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelEntity> _Entities;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSchema, string, ModelRelation> _Relations;
+        private readonly FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelRelation> _Relations;
 
         [JsonProperty(Order = 2)]
         public ModelEntityName RootEntityName {
@@ -42,28 +42,28 @@
 
 
         [JsonProperty(Order = 3)]
-        public IList<ModelComplexType> ComplexTypes => this._ComplexTypes;
+        public FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelComplexType> ComplexTypes => this._ComplexTypes;
 
         [JsonProperty(Order = 4)]
-        public IList<ModelEntity> Entities => this._Entities;
+        public FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelEntity> Entities => this._Entities;
 
         [JsonProperty(Order = 5)]
-        public IList<ModelRelation> Relations => this._Relations;
+        public FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelRelation> Relations => this._Relations;
 
         public ModelSchema() {
             this._ComplexTypes = new FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelComplexType>(
-                this, 
-                (item) => item.Name, 
-                ModelUtility.Instance.ModelEntityNameEqualityComparer, 
+                this,
+                (item) => item.Name,
+                ModelUtility.Instance.ModelEntityNameEqualityComparer,
                 (owner, item) => { item.Owner = owner; });
             this._Entities = new FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelEntity>(
                 this,
                 (item) => item.Name,
                 ModelUtility.Instance.ModelEntityNameEqualityComparer,
                 (owner, item) => { item.Owner = owner; });
-            this._Relations = new FreezeableOwnedKeyedCollection<ModelSchema, string, ModelRelation>(this, 
+            this._Relations = new FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelRelation>(this,
                 (item) => item.Name,
-                ModelUtility.Instance.StringComparer, 
+                ModelUtility.Instance.ModelEntityNameEqualityComparer,
                 (owner, item) => { item.Owner = owner; });
         }
 
@@ -89,29 +89,6 @@
 
         public List<ModelComplexType> FindComplexType(ModelEntityName name) => this._ComplexTypes.FindByKey(name);
 
-        public List<ModelRelation> FindRelation(string name) => this._Relations.FindByKey(name);
-
-
-        public class Current {
-            public readonly ModelSchema ModelSchema;
-            public readonly Dictionary<ModelEntityName, ModelEntity> EntityByName;
-            public readonly Dictionary<string, ModelRelation> RelationByName;
-            public readonly Dictionary<ModelEntityName, ModelComplexType> ComplexTypes;
-
-            public Current(ModelSchema modelSchema, bool build) {
-                this.ModelSchema = modelSchema;
-                var stringComparer = ModelUtility.Instance.StringComparer;
-                var nameEqualityComparer = ModelUtility.Instance.ModelEntityNameEqualityComparer;
-                if (build) {
-                    this.ComplexTypes = modelSchema.ComplexTypes.ToDictionary(_ => _.Name, nameEqualityComparer);
-                    this.EntityByName = modelSchema.Entities.ToDictionary(_ => _.Name, nameEqualityComparer);
-                    this.RelationByName = modelSchema.Relations.ToDictionary(_ => _.Name, stringComparer);
-                } else {
-                    this.ComplexTypes = new Dictionary<ModelEntityName, ModelComplexType>(nameEqualityComparer);
-                    this.EntityByName = new Dictionary<ModelEntityName, ModelEntity>(nameEqualityComparer);
-                    this.RelationByName = new Dictionary<string, ModelRelation>(stringComparer);
-                }
-            }
-        }
+        public List<ModelRelation> FindRelation(ModelEntityName name) => this._Relations.FindByKey(name);
     }
 }

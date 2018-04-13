@@ -421,5 +421,13 @@
             }
             return this._PartnerModel;
         }
+
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._ReferentialConstraint.Freeze();
+            }
+            return result;
+        }
     }
 }

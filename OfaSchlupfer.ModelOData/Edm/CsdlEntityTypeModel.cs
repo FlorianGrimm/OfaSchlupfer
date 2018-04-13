@@ -157,5 +157,14 @@
 
         public List<CsdlPrimaryKeyModel> FindPrimaryKey(string name) => this._Keys.FindByKey(name);
 
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._Property.Freeze();
+                this._NavigationProperty.Freeze();
+                this._Keys.Freeze();
+            }
+            return result;
+        }
     }
 }

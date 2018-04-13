@@ -148,5 +148,14 @@
             }
             return this._AssociationModel;
         }
+
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._End.Freeze();
+            }
+            return result;
+        }
+
     }
 }

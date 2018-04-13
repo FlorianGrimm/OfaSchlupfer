@@ -9,8 +9,7 @@
 
     [JsonObject]
     public class MappingEntity
-        : MappingObject<string, ModelEntityName, ModelEntity>
-        , IMappingNamedObject<string> {
+        : MappingObject<string, ModelEntityName, ModelEntity> {
         [JsonIgnore]
         private MappingSchema _Owner;
 
@@ -25,9 +24,9 @@
             this._ConstraintMappings = new FreezeableOwnedCollection<MappingEntity, MappingConstraint>(this, (owner, item) => { item.Owner = owner; });
         }
 
-        public IList<MappingProperty> PropertyMappings => this._PropertyMappings;
+        public FreezeableOwnedCollection<MappingEntity, MappingProperty> PropertyMappings => this._PropertyMappings;
 
-        public IList<MappingConstraint> ConstraintMappings => this._ConstraintMappings;
+        public FreezeableOwnedCollection<MappingEntity, MappingConstraint> ConstraintMappings => this._ConstraintMappings;
 
 
         [JsonIgnore]
@@ -49,51 +48,32 @@
 
         protected override bool AreThisNamesEqual(string thisName, ref string value) => MappingObjectHelper.AreNamesEqual(thisName, ref value);
 
-        public override void ResolveNameSource() {
+        public override void ResolveNameSource(ModelErrors errors) {
             if (((object)this._Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
-#warning TODO ResolveNameSource
+                var lstFound = this._Owner.Source.FindEntity(this._SourceName);
+                if (lstFound.Count == 1) {
+                    this._Source = lstFound[0];
+                    this._SourceName = null;
+                } else if (lstFound.Count == 0) {
+                    errors.AddErrorOrThrow($"{this._SourceName} not found", this.Name, ResolveNameNotFoundException.Factory);
+                } else {
+                    errors.AddErrorOrThrow($"{this._SourceName} found #{lstFound.Count} times.", this.Name, ResolveNameNotUniqueException.Factory);
+                }
             }
         }
 
-        public override void ResolveNameTarget() {
+        public override void ResolveNameTarget(ModelErrors errors) {
             if (((object)this._Owner != null) && ((object)this._Target == null) && ((object)this._TargetName != null)) {
-#warning TODO ResolveNameTarget
-            }
-        }
-
-        internal void UpdateNames(ModelRoot.Current current, ModelSchema.Current sourceCurrent, ModelSchema.Current targetCurrent) {
-            if (this.Source != null) {
-                var name = this.Source.Name;
-                this.SourceName = name;
-                sourceCurrent.EntityByName[name] = this.Source;
-            }
-            if (this.Target != null) {
-                var name = this.Target.Name;
-                this.TargetName = name;
-                targetCurrent.EntityByName[name] = this.Target;
-            }
-            foreach (var propertyMapping in this.PropertyMappings) { propertyMapping.UpdateNames(current, sourceCurrent, targetCurrent); }
-            foreach (var constraintMapping in this.ConstraintMappings) { constraintMapping.UpdateNames(current, sourceCurrent, targetCurrent); }
-        }
-
-
-        internal void ResolveNames(ModelRoot.Current current, ModelSchema.Current sourceCurrent, ModelSchema.Current targetCurrent) {
-            if (this.Source == null) {
-                if (this.SourceName != null) {
-                    if (sourceCurrent.EntityByName.TryGetValue(this.SourceName, out var source)) {
-                        this.Source = source;
-                    }
+                var lstFound = this._Owner.Target.FindEntity(this._TargetName);
+                if (lstFound.Count == 1) {
+                    this._Target = lstFound[0];
+                    this._TargetName = null;
+                } else if (lstFound.Count == 0) {
+                    errors.AddErrorOrThrow($"{this._TargetName} not found", this.Name, ResolveNameNotFoundException.Factory);
+                } else {
+                    errors.AddErrorOrThrow($"{this._TargetName} found #{lstFound.Count} times.", this.Name, ResolveNameNotUniqueException.Factory);
                 }
             }
-            if (this.Target == null) {
-                if (this.TargetName != null) {
-                    if (targetCurrent.EntityByName.TryGetValue(this.TargetName, out var target)) {
-                        this.Target = target;
-                    }
-                }
-            }
-            foreach (var propertyMapping in this.PropertyMappings) { propertyMapping.ResolveNames(current, sourceCurrent, targetCurrent); }
-            foreach (var constraintMapping in this.ConstraintMappings) { constraintMapping.ResolveNames(current, sourceCurrent, targetCurrent); }
         }
     }
 }

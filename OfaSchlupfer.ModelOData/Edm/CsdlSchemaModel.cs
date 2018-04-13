@@ -185,5 +185,16 @@
         public void AddScalarType(CsdlScalarTypeModel scalarTypeModel) {
             this.ScalarTypeModel.Add(scalarTypeModel);
         }
+
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._ScalarTypeModel.Freeze();
+                this._EntityType.Freeze();
+                this._EntityContainer.Freeze();
+                this._Association.Freeze();
+            }
+            return result;
+        }
     }
 }
