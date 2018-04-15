@@ -6,13 +6,13 @@
     [JsonObject]
     public class ModelNamedElement
         : FreezeableObject
-        , IMappingNamedObject<ModelEntityName> {
-        private ModelEntityName _Name;
+        , IMappingNamedObject<string> {
+        private string _Name;
 
         public ModelNamedElement() { }
 
         [JsonProperty(Order = 1)]
-        public ModelEntityName Name {
+        public string Name {
             get {
                 return this._Name;
             }
@@ -26,6 +26,6 @@
             return (this.Name == null) ? this.GetType().Name : this.Name.ToString();
         }
 
-        ModelEntityName IMappingNamedObject<ModelEntityName>.GetName() => this._Name;
+        string IMappingNamedObject<string>.GetName() => this._Name;
     }
 }

@@ -5,31 +5,12 @@
 
     [JsonObject]
     public class ModelProperty
-        : FreezeableObject
-        , IMappingNamedObject<ModelEntityName> {
-
-        [JsonIgnore]
-        private ModelComplexType _Owner;
-
-        [JsonIgnore]
-        private ModelEntityName _Name;
-
+        : ModelNamedOwnedElement<ModelComplexType> {
         [JsonIgnore]
         private ModelType _Type;
 
         public ModelProperty() { }
-
-        [JsonProperty]
-        public ModelEntityName Name {
-            get {
-                return this._Name;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Name = value;
-            }
-        }
-
+        
         [JsonProperty]
         public ModelType Type {
             get {
@@ -41,27 +22,10 @@
             }
         }
 
-        [JsonIgnore]
-        public ModelComplexType Owner {
-            get {
-                return this._Owner;
-            }
-            internal set {
-                if (ReferenceEquals(this._Owner, value)) { return; }
-                if ((object)this._Owner == null) { this._Owner = value; return; }
-                this.ThrowIfFrozen();
-                this._Owner = value;
-            }
-        }
-
-
-        public ModelEntityName GetName() => this._Name;
-
         public override bool Freeze() {
             var result = base.Freeze();
             if (result) {
                 this.Type?.Freeze();
-                this.Name?.Freeze();
             }
             return result;
         }

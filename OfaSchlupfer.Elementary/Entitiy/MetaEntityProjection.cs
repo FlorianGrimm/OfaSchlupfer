@@ -9,7 +9,7 @@
     /// metadata for projection
     /// </summary>
     public class MetaEntityProjection : IMetaEntity {
-#warning TODO FreezeableObject
+#warning TODO FreezeableObject MetaEntityProjection
         private Dictionary<string, MetaPropertyProjection> _PropertyByName;
 
         /// <summary>

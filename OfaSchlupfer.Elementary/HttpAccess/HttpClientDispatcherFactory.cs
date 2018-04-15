@@ -39,7 +39,7 @@
             if (factory != null) {
                 return factory.CreateHttpClientCredentials(connectionString);
             } else {
-#warning HERE
+#warning HERE  CreateHttpClientCredentials
                 //factory = this.GetHttpClientTypedFactoryByAuthenticationMode("Default");
                 //if (factory != null) {
                 //    return factory.CreateHttpClientCredentials(connectionString);

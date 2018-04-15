@@ -2,6 +2,6 @@
     using Newtonsoft.Json;
 
     [JsonObject]
-    public abstract class ModelType : ModelNamedElement {
+    public abstract class ModelType : ModelNamedOwnedElement<ModelSchema> {
     }
 }

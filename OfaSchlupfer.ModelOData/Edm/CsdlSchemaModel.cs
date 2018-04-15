@@ -34,7 +34,7 @@
             }
         }
 
-        [JsonProperty]
+        [JsonIgnore]
         public EdmxModel EdmxModel {
             get {
                 return this._EdmxModel;

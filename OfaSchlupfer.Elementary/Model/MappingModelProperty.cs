@@ -6,18 +6,15 @@
     using OfaSchlupfer.Freezable;
 
     [JsonObject]
-    public class MappingProperty
-        : MappingObject<ModelEntityName, ModelEntityName, ModelProperty> {
-        [JsonIgnore]
-        private MappingEntity _Owner;
-
+    public class MappingModelProperty
+        : MappingObjectString<MappingModelEntity, ModelProperty> {
         [JsonIgnore]
         private bool _Enabled;
 
         [JsonIgnore]
         private string _Conversion;
 
-        public MappingProperty() {
+        public MappingModelProperty() {
         }
 
         [JsonProperty]
@@ -41,26 +38,7 @@
                 this._Conversion = value;
             }
         }
-
-        [JsonIgnore]
-        public MappingEntity Owner {
-            get {
-                return this._Owner;
-            }
-            internal set {
-                if (ReferenceEquals(this._Owner, value)) { return; }
-                if ((object)this._Owner == null) { this._Owner = value; return; }
-                this.ThrowIfFrozen();
-                this._Owner = value;
-            }
-        }
-
-        protected override bool AreSourceNamesEqual(ModelEntityName sourceName, ref ModelEntityName value) => MappingObjectHelper.AreNamesEqual(sourceName, ref value);
-
-        protected override bool AreTargetNamesEqual(ModelEntityName targetName, ref ModelEntityName value) => MappingObjectHelper.AreNamesEqual(targetName, ref value);
-
-        protected override bool AreThisNamesEqual(ModelEntityName thisName, ref ModelEntityName value) => MappingObjectHelper.AreNamesEqual(thisName, ref value);
-
+        
         public override void ResolveNameSource(ModelErrors errors) {
             if (((object)this._Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
                 var lstFound = this.Owner.Source.EntityType.Properties.FindByKey(this._SourceName);

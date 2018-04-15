@@ -19,21 +19,21 @@
         private string _Name;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelRoot, ModelEntityName, ModelRepository> _Repositories;
+        private readonly FreezeableOwnedKeyedCollection<ModelRoot, string, ModelRepository> _Repositories;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelRoot, string, MappingRepository> _RepositoryMappings;
+        private readonly FreezeableOwnedKeyedCollection<ModelRoot, string, MappingModelRepository> _RepositoryMappings;
 
-        public FreezeableOwnedKeyedCollection<ModelRoot, ModelEntityName, ModelRepository> Repositories => this._Repositories;
+        public FreezeableOwnedKeyedCollection<ModelRoot, string, ModelRepository> Repositories => this._Repositories;
 
-        public FreezeableOwnedKeyedCollection<ModelRoot, string, MappingRepository> RepositoryMappings => this._RepositoryMappings;
+        public FreezeableOwnedKeyedCollection<ModelRoot, string, MappingModelRepository> RepositoryMappings => this._RepositoryMappings;
 
         public ModelRoot() {
-            this._Repositories = new FreezeableOwnedKeyedCollection<ModelRoot, ModelEntityName, ModelRepository>(
+            this._Repositories = new FreezeableOwnedKeyedCollection<ModelRoot, string, ModelRepository>(
                 this, (item) => item.Name,
-                ModelUtility.Instance.ModelEntityNameEqualityComparer,
+                ModelUtility.Instance.StringComparer,
                 (that, item) => { item.Owner = that; });
-            this._RepositoryMappings = new FreezeableOwnedKeyedCollection<ModelRoot, string, MappingRepository>(
+            this._RepositoryMappings = new FreezeableOwnedKeyedCollection<ModelRoot, string, MappingModelRepository>(
                 this, (item) => item.Name,
                 ModelUtility.Instance.StringComparer,
                 (that, item) => { item.Owner = that; });
@@ -56,7 +56,7 @@
         /// </summary>
         /// <param name="name">the name of the repository</param>
         /// <returns>the repository</returns>
-        public List<ModelRepository> FindRepository(ModelEntityName name) => this._Repositories.FindByKey(name);
+        public List<ModelRepository> FindRepository(string name) => this._Repositories.FindByKey(name);
         
         public override bool Freeze() {
             var result = base.Freeze();

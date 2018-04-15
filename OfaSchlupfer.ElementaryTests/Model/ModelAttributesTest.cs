@@ -19,6 +19,9 @@
                 var property = modelType.GetProperty("Owner");
                 if (property != null) {
                     var attr = property.GetCustomAttribute<JsonIgnoreAttribute>();
+                    if (attr == null) {
+                        Assert.Equal("Error Owner", $"{property.DeclaringType.Name} - {modelType.Name}");
+                    }
                     Assert.NotNull(attr);
                 }
             }

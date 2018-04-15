@@ -66,7 +66,7 @@
 
                                         var propertyInfo = $"{modelType.Name} - {property.Name} - {property.PropertyType.Name}";
                                         if (propertyExceptions.Contains(propertyInfo)) { continue; }
-                                        Assert.Equal("", propertyInfo);
+                                        Assert.Equal("Error JsonIgnore", propertyInfo);
                                     }
                                 }
                             }

@@ -27,11 +27,11 @@ namespace OfaSchlupfer.ModelOData {
 
             var modelRoot = new ModelRoot();
             var modelRepository1 = new ModelRepository();
-            modelRepository1.Name = new ModelEntityName(null, "one");
+            modelRepository1.Name = "one";
             modelRepository1.RepositoryType = "OData";
 
             var modelRepository2 = new ModelRepository();
-            modelRepository2.Name = new ModelEntityName(null, "two");
+            modelRepository2.Name = "two";
             modelRepository2.RepositoryType = "OData";
 
             modelRoot.Repositories.Add(modelRepository1);

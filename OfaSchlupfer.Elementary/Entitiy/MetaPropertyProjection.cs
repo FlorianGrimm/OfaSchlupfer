@@ -4,7 +4,7 @@
     /// </summary>
     public class MetaPropertyProjection
         : IMetaProperty {
-#warning todo       FreezeableObject
+#warning todo       FreezeableObject MetaPropertyProjection
         private readonly IMetaProperty _MetaProperty;
 
         /// <summary>
@@ -13,8 +13,8 @@
         /// <param name="name">front name</param>
         /// <param name="projectedName">back name</param>
         public MetaPropertyProjection(string name, string projectedName) {
-#warning todo
-            //IMetaProperty metaProperty,
+#warning todo MetaPropertyProjection
+            //IMetaProperty  metaProperty,
             //this._MetaProperty = metaProperty;
             this.Name = name;
             this.ProjectedName = projectedName;
@@ -40,7 +40,7 @@
             return new AccessorProjection(this, (EntityProjection)entity);
         }
 
-#warning TODO
+#warning TODO Validate MetaPropertyProjection
         public string Validate(object value, bool validateOrThrow) {
             return null;
         }

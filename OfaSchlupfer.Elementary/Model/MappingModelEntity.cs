@@ -8,45 +8,22 @@
     using System.Threading.Tasks;
 
     [JsonObject]
-    public class MappingEntity
-        : MappingObject<string, ModelEntityName, ModelEntity> {
+    public class MappingModelEntity
+        : MappingObjectString<MappingModelSchema, ModelEntity> {
         [JsonIgnore]
-        private MappingSchema _Owner;
+        private readonly FreezeableOwnedCollection<MappingModelEntity, MappingModelProperty> _PropertyMappings;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedCollection<MappingEntity, MappingProperty> _PropertyMappings;
+        private readonly FreezeableOwnedCollection<MappingModelEntity, MappingModelConstraint> _ConstraintMappings;
 
-        [JsonIgnore]
-        private readonly FreezeableOwnedCollection<MappingEntity, MappingConstraint> _ConstraintMappings;
-
-        public MappingEntity() {
-            this._PropertyMappings = new FreezeableOwnedCollection<MappingEntity, MappingProperty>(this, (owner, item) => { item.Owner = owner; });
-            this._ConstraintMappings = new FreezeableOwnedCollection<MappingEntity, MappingConstraint>(this, (owner, item) => { item.Owner = owner; });
+        public MappingModelEntity() {
+            this._PropertyMappings = new FreezeableOwnedCollection<MappingModelEntity, MappingModelProperty>(this, (owner, item) => { item.Owner = owner; });
+            this._ConstraintMappings = new FreezeableOwnedCollection<MappingModelEntity, MappingModelConstraint>(this, (owner, item) => { item.Owner = owner; });
         }
 
-        public FreezeableOwnedCollection<MappingEntity, MappingProperty> PropertyMappings => this._PropertyMappings;
+        public FreezeableOwnedCollection<MappingModelEntity, MappingModelProperty> PropertyMappings => this._PropertyMappings;
 
-        public FreezeableOwnedCollection<MappingEntity, MappingConstraint> ConstraintMappings => this._ConstraintMappings;
-
-
-        [JsonIgnore]
-        public MappingSchema Owner {
-            get {
-                return this._Owner;
-            }
-            internal set {
-                if (ReferenceEquals(this._Owner, value)) { return; }
-                if ((object)this._Owner == null) { this._Owner = value; return; }
-                this.ThrowIfFrozen();
-                this._Owner = value;
-            }
-        }
-
-        protected override bool AreSourceNamesEqual(ModelEntityName sourceName, ref ModelEntityName value) => MappingObjectHelper.AreNamesEqual(sourceName, ref value);
-
-        protected override bool AreTargetNamesEqual(ModelEntityName targetName, ref ModelEntityName value) => MappingObjectHelper.AreNamesEqual(targetName, ref value);
-
-        protected override bool AreThisNamesEqual(string thisName, ref string value) => MappingObjectHelper.AreNamesEqual(thisName, ref value);
+        public FreezeableOwnedCollection<MappingModelEntity, MappingModelConstraint> ConstraintMappings => this._ConstraintMappings;
 
         public override void ResolveNameSource(ModelErrors errors) {
             if (((object)this._Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {

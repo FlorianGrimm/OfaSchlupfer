@@ -9,44 +9,23 @@
 
     [JsonObject]
     public class ModelRelation
-        : FreezeableObject
-        , IMappingNamedObject<ModelEntityName> {
+        : ModelNamedOwnedElement<ModelSchema>{
         [JsonIgnore]
-        private ModelSchema _Owner;
-
-        [JsonIgnore]
-        private ModelEntityName _Name;
-
-        [JsonIgnore]
-        private ModelEntityName _MasterName;
+        private string _MasterName;
 
         [JsonIgnore]
         private ModelEntity _MasterEntity;
 
         [JsonIgnore]
-        private ModelEntityName _ForeignName;
+        private string _ForeignName;
 
         [JsonIgnore]
         private ModelEntity _ForeignEntity;
 
         public ModelRelation() { }
 
-        [JsonProperty(Order = 1)]
-        public ModelEntityName Name {
-            get {
-                return this._Name;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Name = value;
-            }
-        }
-
-        public ModelEntityName GetName() => this._Name;
-
-
-        [JsonProperty(Order = 2)]
-        public ModelEntityName MasterName {
+              [JsonProperty(Order = 2)]
+        public string MasterName {
             get {
                 if ((object)this._MasterEntity != null) {
                     return this._MasterEntity.Name;
@@ -78,7 +57,7 @@
 
 
         [JsonProperty(Order = 3)]
-        public ModelEntityName ForeignName {
+        public string ForeignName {
             get {
                 if ((object)this._ForeignEntity != null) {
                     return this._ForeignEntity.Name;
@@ -108,18 +87,6 @@
             }
         }
 
-        [JsonIgnore]
-        public ModelSchema Owner {
-            get {
-                return this._Owner;
-            }
-            internal set {
-                if (ReferenceEquals(this._Owner, value)) { return; }
-                if ((object)this._Owner == null) { this._Owner = value; return; }
-                this.ThrowIfFrozen();
-                this._Owner = value;
-            }
-        }
         private void ResolveNames(ModelErrors errors) {
             this.ResolveNamesMasterEntity(errors);
             this.ResolveNamesForeignEntity(errors);
@@ -132,9 +99,9 @@
                     this._MasterEntity = lst[0];
                     this._MasterName = null;
                 } else if (lst.Count == 0) {
-                    errors.AddErrorOrThrow($"Master {this.MasterName} in {this.Owner?.Name?.Name} not found.", this.Owner?.Name?.Name, ResolveNameNotFoundException.Factory);
+                    errors.AddErrorOrThrow($"Master {this.MasterName} in {this.Owner?.Name} not found.", this.Owner?.Name, ResolveNameNotFoundException.Factory);
                 } else {
-                    errors.AddErrorOrThrow($"Master {this.MasterName} in {this.Owner?.Name?.Name} found #{lst.Count} times.", this.Owner?.Name?.Name, ResolveNameNotUniqueException.Factory);
+                    errors.AddErrorOrThrow($"Master {this.MasterName} in {this.Owner?.Name} found #{lst.Count} times.", this.Owner?.Name, ResolveNameNotUniqueException.Factory);
                 }
             }
         }
@@ -147,9 +114,9 @@
                     this._ForeignEntity = lst[0];
                     this._ForeignName = null;
                 } else if (lst.Count == 0) {
-                    errors.AddErrorOrThrow($"Foreign {this.ForeignName.Name} in {this.Owner?.Name?.Name} not found.", this.Owner?.Name?.Name, ResolveNameNotFoundException.Factory);
+                    errors.AddErrorOrThrow($"Foreign {this.ForeignName} in {this.Owner?.Name} not found.", this.Owner?.Name, ResolveNameNotFoundException.Factory);
                 } else {
-                    errors.AddErrorOrThrow($"Foreign {this.ForeignName.Name} in {this.Owner?.Name?.Name} found #{lst.Count} times.", this.Owner?.Name?.Name, ResolveNameNotUniqueException.Factory);
+                    errors.AddErrorOrThrow($"Foreign {this.ForeignName} in {this.Owner?.Name} found #{lst.Count} times.", this.Owner?.Name, ResolveNameNotUniqueException.Factory);
                 }
             }
         }
@@ -157,9 +124,7 @@
         public override bool Freeze() {
             var result = base.Freeze();
             if (result) {
-                this.MasterName?.Freeze();
                 this.MasterEntity?.Freeze();
-                this.ForeignName?.Freeze();
                 this.ForeignEntity?.Freeze();
             }
             return result;

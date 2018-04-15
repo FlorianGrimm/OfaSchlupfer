@@ -8,7 +8,7 @@
     }
 
     [JsonObject]
-    public abstract class MappingObject<TThisKey, TMappingKey, TMappingValue>
+    public abstract class MappingModelObject<TThisKey, TMappingKey, TMappingValue>
         : FreezeableObject
         , IMappingNamedObject<TThisKey>
         where TMappingKey : class
@@ -29,7 +29,7 @@
         [JsonIgnore]
         protected TThisKey _Name;
 
-        protected MappingObject() { }
+        protected MappingModelObject() { }
 
         [JsonProperty]
         public virtual TMappingKey SourceName {
@@ -126,11 +126,28 @@
         public TThisKey GetName() => this._Name;
     }
 
-    /*
     [JsonObject]
-    public class MappingObjectString<TValue>
-        : MappingObject<string, string, TValue>
+    public abstract class MappingObjectString<TOwner, TValue>
+        : MappingModelObject<string, string, TValue>
+        where TOwner : class
         where TValue : class, IMappingNamedObject<string> {
+        [JsonIgnore]
+        protected TOwner _Owner;
+
+        protected MappingObjectString() { }
+
+        [JsonIgnore]
+        public TOwner Owner {
+            get {
+                return this._Owner;
+            }
+            internal set {
+                if (ReferenceEquals(this._Owner, value)) { return; }
+                if ((object)this._Owner == null) { this._Owner = value; return; }
+                this.ThrowIfFrozen();
+                this._Owner = value;
+            }
+        }
         protected override bool AreSourceNamesEqual(string sourceName, ref string value)
             => MappingObjectHelper.AreNamesEqual(sourceName, ref value);
 
@@ -140,7 +157,6 @@
         protected override bool AreThisNamesEqual(string thisName, ref string value)
             => MappingObjectHelper.AreNamesEqual(thisName, ref value);
     }
-    */
 
     public static class MappingObjectHelper {
         public static bool AreNamesEqual(string thisName, ref string value) {

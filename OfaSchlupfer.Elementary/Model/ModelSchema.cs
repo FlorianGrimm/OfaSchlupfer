@@ -12,25 +12,21 @@
     /// </summary>
     [JsonObject]
     public class ModelSchema
-        : FreezeableObject
-        , IMappingNamedObject<ModelEntityName> {
+        : ModelNamedOwnedElement<ModelRepository> {
         [JsonIgnore]
-        private ModelEntityName _RootEntityName;
+        private string _RootEntityName;
 
         [JsonIgnore]
-        internal ModelEntityName _Name;
+        private readonly FreezeableOwnedKeyedCollection<ModelSchema, string, ModelComplexType> _ComplexTypes;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelComplexType> _ComplexTypes;
+        private readonly FreezeableOwnedKeyedCollection<ModelSchema, string, ModelEntity> _Entities;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelEntity> _Entities;
-
-        [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelRelation> _Relations;
+        private readonly FreezeableOwnedKeyedCollection<ModelSchema, string, ModelRelation> _Relations;
 
         [JsonProperty(Order = 2)]
-        public ModelEntityName RootEntityName {
+        public string RootEntityName {
             get {
                 return this._RootEntityName;
             }
@@ -40,40 +36,34 @@
             }
         }
 
-
         [JsonProperty(Order = 3)]
-        public FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelComplexType> ComplexTypes => this._ComplexTypes;
+        public FreezeableOwnedKeyedCollection<ModelSchema, string, ModelComplexType> ComplexTypes => this._ComplexTypes;
 
         [JsonProperty(Order = 4)]
-        public FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelEntity> Entities => this._Entities;
+        public FreezeableOwnedKeyedCollection<ModelSchema, string, ModelEntity> Entities => this._Entities;
 
         [JsonProperty(Order = 5)]
-        public FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelRelation> Relations => this._Relations;
+        public FreezeableOwnedKeyedCollection<ModelSchema, string, ModelRelation> Relations => this._Relations;
 
         public ModelSchema() {
-            this._ComplexTypes = new FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelComplexType>(
+            this._ComplexTypes = new FreezeableOwnedKeyedCollection<ModelSchema, string, ModelComplexType>(
                 this,
                 (item) => item.Name,
-                ModelUtility.Instance.ModelEntityNameEqualityComparer,
+                ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
-            this._Entities = new FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelEntity>(
+            this._Entities = new FreezeableOwnedKeyedCollection<ModelSchema, string, ModelEntity>(
                 this,
                 (item) => item.Name,
-                ModelUtility.Instance.ModelEntityNameEqualityComparer,
+                ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
-            this._Relations = new FreezeableOwnedKeyedCollection<ModelSchema, ModelEntityName, ModelRelation>(this,
+            this._Relations = new FreezeableOwnedKeyedCollection<ModelSchema, string, ModelRelation>(this,
                 (item) => item.Name,
-                ModelUtility.Instance.ModelEntityNameEqualityComparer,
+                ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
         }
-
-        [JsonIgnore]
-        public ModelEntityName Name => this._Name;
 
         public void PostDeserialize() {
         }
-
-        public ModelEntityName GetName() => this._Name;
 
         public override bool Freeze() {
             var result = base.Freeze();
@@ -85,10 +75,10 @@
             return result;
         }
 
-        public List<ModelEntity> FindEntity(ModelEntityName name) => this._Entities.FindByKey(name);
+        public List<ModelEntity> FindEntity(string name) => this._Entities.FindByKey(name);
 
-        public List<ModelComplexType> FindComplexType(ModelEntityName name) => this._ComplexTypes.FindByKey(name);
+        public List<ModelComplexType> FindComplexType(string name) => this._ComplexTypes.FindByKey(name);
 
-        public List<ModelRelation> FindRelation(ModelEntityName name) => this._Relations.FindByKey(name);
+        public List<ModelRelation> FindRelation(string name) => this._Relations.FindByKey(name);
     }
 }

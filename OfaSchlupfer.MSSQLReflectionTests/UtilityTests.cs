@@ -78,7 +78,7 @@
                 Assert.NotNull(p);
             }
             {
-#warning here
+#warning here TableTypes SQL
                 //var p = db.TableTypes.GetValueOrDefault(SqlName.Parse("[dbo].[TVP_Name]", ObjectLevel.Object));
                 //Assert.NotNull(p);
             }

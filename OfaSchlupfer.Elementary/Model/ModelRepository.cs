@@ -8,15 +8,10 @@
 
     [JsonObject]
     public class ModelRepository
-        : FreezeableObject
+        : ModelNamedOwnedElement<ModelRoot>
         //, IMappingNamedObject<string>
-        , IMappingNamedObject<ModelEntityName> {
-        [JsonIgnore]
-        private ModelRoot _Owner;
-
-        [JsonIgnore]
-        private ModelEntityName _Name;
-
+        //, IMappingNamedObject<ModelEntityName> 
+        {
         [JsonIgnore]
         private IReferenceRepositoryModel _ReferenceRepositoryModel;
 
@@ -30,20 +25,6 @@
         private ModelSchema _ModelSchema;
 
         public ModelRepository() { }
-
-        [JsonProperty]
-        public ModelEntityName Name {
-            get {
-                return this._Name;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Name = value;
-                if (this.ModelSchema != null) {
-                    this.ModelSchema._Name = value;
-                }
-            }
-        }
 
         [JsonProperty]
         public ModelDefinition ModelDefinition {
@@ -74,7 +55,14 @@
             }
             set {
                 this.ThrowIfFrozen();
+                if (ReferenceEquals(this._ModelSchema, value)) { return; }
+                if (ReferenceEquals(this._ModelSchema, this)) {
+                    this._ModelSchema.Owner = null;
+                }
                 this._ModelSchema = value;
+                if (this._ModelSchema != null) {
+                    this._ModelSchema.Owner = this;
+                }
             }
         }
 
@@ -89,23 +77,9 @@
             }
         }
 
-        [JsonIgnore]
-        public ModelRoot Owner {
-            get {
-                return this._Owner;
-            }
-            internal set {
-                if (ReferenceEquals(this._Owner, value)) { return; }
-                if ((object)this._Owner == null) { this._Owner = value; return; }
-                this.ThrowIfFrozen();
-                this._Owner = value;
-            }
-        }
-
         public override bool Freeze() {
             var result = base.Freeze();
             if (result) {
-                this.Name?.Freeze();
                 this.ModelDefinition?.Freeze();
                 this.ModelSchema?.Freeze();
             }
@@ -129,8 +103,7 @@
             }
         }
 
-        ModelEntityName IMappingNamedObject<ModelEntityName>.GetName() => this._Name;
-
+        //ModelEntityName IMappingNamedObject<ModelEntityName>.GetName() => this._Name;
         //string IMappingNamedObject<string>.GetName() => this._Name.GetName();
     }
 }

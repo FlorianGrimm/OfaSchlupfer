@@ -10,7 +10,7 @@
             var modelRoot = new ModelRoot();
             modelRoot.Name = "Hugo";
             var modelRepository = new ModelRepository();
-            modelRepository.Name = new ModelEntityName("test", "PWA");
+            modelRepository.Name = "PWA";
             modelRoot.Repositories.Add(modelRepository);
             //modelRepository.ReferenceRepositoryModel
         }
