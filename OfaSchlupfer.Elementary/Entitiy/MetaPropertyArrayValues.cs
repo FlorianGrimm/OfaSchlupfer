@@ -53,7 +53,7 @@ namespace OfaSchlupfer.Entitiy {
     /// </summary>
     public class MetaPropertyArrayValues
         : FreezeableObject
-        , IMetaProperty {
+        , IMetaIndexedProperty {
 
         private int _Index;
         private readonly IMetaProperty _ChainedMetaProperty;

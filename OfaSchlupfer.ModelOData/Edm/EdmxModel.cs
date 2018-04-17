@@ -4,7 +4,7 @@
     using System.Text;
 
     using Newtonsoft.Json;
-
+    using OfaSchlupfer.Entitiy;
     using OfaSchlupfer.Freezable;
     using OfaSchlupfer.Model;
 
@@ -30,6 +30,12 @@
         public string DataServiceVersion;
 
         public FreezeableOwnedKeyedCollection<EdmxModel, string, CsdlSchemaModel> DataServices => this._DataServices;
+
+        public void AddCoreSchemaIfNeeded(ModelErrors errors) {
+            if (this.FindDataServices("Edm").Count == 0) {
+                this.AddCoreSchema(errors);
+            }
+        }
 
         public void AddCoreSchema(ModelErrors errors) {
             if (string.Equals(this.Version, "1.0", StringComparison.InvariantCulture)) {
@@ -71,7 +77,7 @@
 
         public void ResolveNames(ModelErrors errors) {
             if (this.FindDataServices("Edm").Count == 0) {
-                this.AddCoreSchema(errors);
+                this.AddCoreSchemaIfNeeded(errors);
             }
             foreach (var schema in this.DataServices) {
                 schema.ResolveNames(errors);

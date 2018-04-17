@@ -11,8 +11,15 @@
     using OfaSchlupfer.Freezable;
 
     using Xunit;
+    using Xunit.Abstractions;
 
     public class EdmAttributesTest {
+        private readonly ITestOutputHelper output;
+
+        public EdmAttributesTest(ITestOutputHelper output) {
+            this.output = output;
+        }
+
         [Fact]
         public void ModelTypes_OwnerIsIgnored_Test() {
 
@@ -49,6 +56,7 @@
             propertyExceptions.Add("CsdlPropertyModel - ScalarType - CsdlScalarTypeModel");
             propertyExceptions.Add("CsdlReferentialConstraintV3Model - Principal - CsdlReferentialConstraintPartnerV3Model");
             propertyExceptions.Add("CsdlReferentialConstraintV3Model - Dependent - CsdlReferentialConstraintPartnerV3Model");
+            propertyExceptions.Add("CsdlPropertyModel - ScalarTypePersitent - CsdlScalarTypeModel");
 
             foreach (var modelType in modelTypes) {
                 if (modelType.IsClass) {
@@ -66,7 +74,9 @@
 
                                         var propertyInfo = $"{modelType.Name} - {property.Name} - {property.PropertyType.Name}";
                                         if (propertyExceptions.Contains(propertyInfo)) { continue; }
-                                        Assert.Equal("Error JsonIgnore", propertyInfo);
+                                        output.WriteLine(propertyInfo);
+                                        // Assert.Equal("Error JsonIgnore", propertyInfo);
+                                        throw new Xunit.Sdk.XunitException(propertyInfo);
                                     }
                                 }
                             }

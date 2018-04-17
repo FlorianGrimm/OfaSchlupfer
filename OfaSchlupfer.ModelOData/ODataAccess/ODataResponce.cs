@@ -19,11 +19,11 @@
             this.ResponceContentString = responceContent;
         }
 
-        public void Parse(ODataClient oDataClient, ODataQueryRequest oDataRequest) {
-            var d = new ODataDeserializtion(this, oDataRequest, oDataClient.EdmxModel);
-            var responceContentString = this.ResponceContentString;
-            d.Deserialize(responceContentString);
-
-        }
+#warning later
+        //public void Parse(ODataServiceClient oDataClient, ODataQueryRequest oDataRequest) {
+        //    var d = new ODataDeserializtion(this, oDataRequest, oDataClient.EdmxModel);
+        //    var responceContentString = this.ResponceContentString;
+        //    d.Deserialize(responceContentString);
+        //}
     }
 }

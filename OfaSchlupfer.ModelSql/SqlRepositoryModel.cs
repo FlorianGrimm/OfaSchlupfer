@@ -8,14 +8,15 @@
     using Microsoft.Extensions.DependencyInjection;
 
     using OfaSchlupfer.Elementary;
+    using OfaSchlupfer.Entitiy;
     using OfaSchlupfer.HttpAccess;
-    using OfaSchlupfer.Model; 
+    using OfaSchlupfer.Model;
 
     public class SqlRepositoryModelType : ReferenceRepositoryModelType {
         public SqlRepositoryModelType(
-            IServiceProvider serviceProvider, 
-            IHttpClientDispatcherFactory httpClientDispatcherFactory
-            ) : base(serviceProvider, httpClientDispatcherFactory) {
+            IServiceProvider serviceProvider
+            //IHttpClientDispatcherFactory httpClientDispatcherFactory
+            ) : base(serviceProvider) {
             this.Name = "SPO";
             this.Description = "Read access to ShrePointOnline sources.";
         }
@@ -30,6 +31,11 @@
 
     public abstract class SqlRepositoryModel : ReferenceRepositoryModelBase {
         protected SqlRepositoryModel() {
+        }
+
+        public override IEntity CreateEntityByExternalTypeName(string externalTypeName) {
+#warning TODO
+            throw new NotImplementedException();
         }
     }
 

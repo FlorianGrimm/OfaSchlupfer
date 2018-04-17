@@ -26,7 +26,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             var sut = new EdmReader(serviceProvider);
             sut.MetadataResolver = cachedMetadataResolver;
 
-            var edmxModel = sut.Read(srcPath, null);
+            var edmxModel = sut.Read(srcPath, true, null);
             Assert.NotNull(edmxModel);
             Assert.NotNull(edmxModel.Version);
             Assert.Equal(3, edmxModel.DataServices.Count);
@@ -131,7 +131,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             var sut = new EdmReader(serviceProvider);
             sut.MetadataResolver = cachedMetadataResolver;
 
-            var edmxModel = sut.Read(srcPath, null);
+            var edmxModel = sut.Read(srcPath, true, null);
             Assert.NotNull(edmxModel);
             Assert.NotNull(edmxModel.Version);
             Assert.Equal(3, edmxModel.DataServices.Count);
@@ -167,7 +167,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
             var sut = new EdmReader(serviceProvider);
             sut.MetadataResolver = cachedMetadataResolver;
 
-            var edmxModel = sut.Read(srcPath, null);
+            var edmxModel = sut.Read(srcPath, true, null);
             Assert.NotNull(edmxModel);
             Assert.NotNull(edmxModel.Version);
             Assert.Equal(3, edmxModel.DataServices.Count);

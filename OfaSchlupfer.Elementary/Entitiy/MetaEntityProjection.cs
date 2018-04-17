@@ -4,19 +4,21 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using OfaSchlupfer.Freezable;
 
     /// <summary>
     /// metadata for projection
     /// </summary>
-    public class MetaEntityProjection : IMetaEntity {
-#warning TODO FreezeableObject MetaEntityProjection
-        private Dictionary<string, MetaPropertyProjection> _PropertyByName;
+    public class MetaEntityProjection
+        : FreezeableObject
+        , IMetaEntity {
+        private FreezeableDictionary<string, MetaPropertyProjection> _PropertyByName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MetaEntityProjection"/> class.
         /// </summary>
         public MetaEntityProjection() {
-            this._PropertyByName = new Dictionary<string, MetaPropertyProjection>();
+            this._PropertyByName = new FreezeableDictionary<string, MetaPropertyProjection>();
         }
 
         /// <summary>
@@ -49,7 +51,7 @@
         /// <summary>
         /// Gets the property by name.
         /// </summary>
-        public Dictionary<string, MetaPropertyProjection> PropertyByName { get { return this._PropertyByName; } }
+        public IDictionary<string, MetaPropertyProjection> PropertyByName { get { return this._PropertyByName; } }
 
         /// <summary>
         /// Gets the unbound accessor to the named property name
@@ -70,8 +72,17 @@
         /// Get all properties.
         /// </summary>
         /// <returns>a list of properties.</returns>
-        public IEnumerable<IMetaProperty> GetProperties() {
+        public IList<IMetaProperty> GetProperties() {
+#warning TODO
             return this.PropertyByName.Values.Cast<IMetaProperty>().ToArray();
+        }
+
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._PropertyByName.Freeze();
+            }
+            return result;
         }
     }
 }

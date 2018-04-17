@@ -10,7 +10,8 @@
     /// </summary>
     public class EntityArrayValues
         : FreezeableObject
-        , IEntity {
+        , IEntity
+        , IEntityArrayValue {
         /// <summary>
         /// Convert the rows to ProjectChange
         /// </summary>
@@ -34,7 +35,7 @@
             return new EntityArrayProp(metaData, values);
         }
         */
-        private MetaEntityArrayValues _MetaData;
+        private IMetaEntityArrayValues _MetaData;
         private object[] _Values;
 
         /// <summary>
@@ -61,7 +62,7 @@
         /// </summary>
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
-        public EntityArrayValues(MetaEntityArrayValues metaData, object[] values) {
+        public EntityArrayValues(IMetaEntityArrayValues metaData, object[] values) {
             this._MetaData = metaData;
             this.Validate(values, false);
             this._Values = values;
@@ -69,23 +70,5 @@
 
 
         public string Validate(object[] values, bool validateOrThrow) => this._MetaData?.Validate(values, validateOrThrow);
-
-        /*
-        /// <summary>
-        /// Get an accessor to the property
-        /// </summary>
-        /// <typeparam name="TEntity">the type</typeparam>
-        /// <param name="name">the name of the property</param>
-        /// <returns>an bound accessor</returns>
-        public IAccessor<T> GetAccessor<T>(string name) {
-            //this._MetaData.GetPropertyT().GetAccessorOT
-            throw new NotImplementedException();
-        }
-        public IAccessor<TEntity, TData> GetAccessor<TData>(string name) {
-            var property = this._MetaData?.GetPropertyT<TData>(name);
-            var result= property?.GetAccessorOT(this);
-            return result;
-        }
-        */
     }
 }

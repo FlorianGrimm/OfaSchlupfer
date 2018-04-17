@@ -2,17 +2,25 @@
     using System;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using OfaSchlupfer.Entitiy;
     using OfaSchlupfer.ModelOData.Edm;
 
     public class ODataDeserializtion {
         private const string Property__metadata = "__metadata";
-        public readonly ODataResponce oDataResponce;
+        //public readonly ODataResponce oDataResponce;
         public readonly ODataQueryRequest oDataRequest;
-        public readonly EdmxModel edmxModel;
-        public ODataDeserializtion(ODataResponce oDataResponce, ODataQueryRequest oDataRequest, EdmxModel edmxModel) {
-            this.oDataResponce = oDataResponce;
+        //public readonly EdmxModel edmxModel;
+        public readonly ODataServiceClient oDataClient;
+
+        //public ODataDeserializtion(ODataResponce oDataResponce, ODataQueryRequest oDataRequest, EdmxModel edmxModel) {
+        //    this.oDataResponce = oDataResponce;
+        //    this.oDataRequest = oDataRequest;
+        //    this.edmxModel = edmxModel;
+        //}
+
+        public ODataDeserializtion(ODataQueryRequest oDataRequest, ODataServiceClient oDataClient) {
             this.oDataRequest = oDataRequest;
-            this.edmxModel = edmxModel;
+            this.oDataClient = oDataClient;
         }
 
         public void Deserialize(string responceContentString) {
@@ -69,9 +77,11 @@
                  *      "uri":"https://m365x235962.sharepoint.com/sites/pwa/_api/ProjectData/%5Ben-us%5D/Projects(guid'c54ff8c6-4e51-e711-80d4-00155d38270c')",
                  *      "type":"ReportingData.Project"}
                  */
-                var id = jObjectMetadata.Property("id")?.Value;
-                var uri = jObjectMetadata.Property("uri")?.Value;
-                var type = jObjectMetadata.Property("type")?.Value;
+                var id = (string)(jObjectMetadata.Property("id")?.Value);
+                var uri = (string)(jObjectMetadata.Property("uri")?.Value);
+                var type = (string)(jObjectMetadata.Property("type")?.Value);
+                IEntity entity = this.CreateEntityByExternalTypeName(type);
+                if (entity == null) { throw new OfaSchlupfer.Model.ResolveNameNotFoundException(type); }
                 foreach (var jToken in jObject.Children()) {
                     if (jToken is JProperty jProperty) {
                         if (string.Equals(jProperty.Name, Property__metadata, StringComparison.Ordinal)) {
@@ -92,5 +102,7 @@
                 throw new NotImplementedException(jsonAny.Type.ToString());
             }
         }
+
+        public IEntity CreateEntityByExternalTypeName(string externalTypeName) => this.oDataClient.CreateEntityByExternalTypeName(externalTypeName);
     }
 }

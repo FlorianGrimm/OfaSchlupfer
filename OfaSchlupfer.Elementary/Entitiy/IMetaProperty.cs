@@ -23,4 +23,14 @@
         /// <returns>an error message or null.</returns>
         string Validate(object value, bool validateOrThrow);
     }
+
+    /// <summary>
+    /// A property with index
+    /// </summary>
+    public interface IMetaIndexedProperty : IMetaProperty {
+        /// <summary>
+        /// Gets or sets the index
+        /// </summary>
+        int Index { get; set; }
+    }
 }

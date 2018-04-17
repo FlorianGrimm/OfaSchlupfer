@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Rest;
+    using OfaSchlupfer.Elementary;
     using OfaSchlupfer.HttpAccess;
 
     public class SharePointOnlineServiceClientCredentials : ServiceClientCredentials {
@@ -14,6 +15,11 @@
         //private readonly string _Password;
         private readonly ILogger _Logger;
         private readonly SharePointOnlineCredentials _SPOCredentials;
+
+        public SharePointOnlineServiceClientCredentials(RepositoryConnectionString connectionString, ILogger logger) {
+            this._Logger = logger;
+            this._SPOCredentials = new SharePointOnlineCredentials(connectionString.User, connectionString.Password, logger);
+        }
 
         public SharePointOnlineServiceClientCredentials(string username, string password, ILogger logger) {
             //this._Username = username;

@@ -1,4 +1,5 @@
-﻿namespace OfaSchlupfer.SPO {
+﻿#warning weichei / move to ServiceClient
+namespace OfaSchlupfer.SPO {
     using Microsoft.Extensions.DependencyInjection;
 
     public interface ISharePointOnlineCredentialsBuilder {
@@ -25,8 +26,8 @@ namespace Microsoft.Extensions.DependencyInjection {
         public static ISharePointOnlineCredentialsBuilder AddSharePointOnlineCredentials(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) => AddSharePointOnlineCredentials(services, _ => { });
         public static ISharePointOnlineCredentialsBuilder AddSharePointOnlineCredentials(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Action<SharePointOnlineCredentialsOptions> configure) {
             services.Configure(configure);
-            services.AddTransient(typeof(ISharePointOnlineClientFactory), typeof(SharePointOnlineFactory));
-            services.AddTransient(typeof(IHttpClientTypedFactory), typeof(SharePointOnlineFactory));
+            //services.AddTransient(typeof(ISharePointOnlineClientFactory), typeof(SharePointOnlineFactory));
+            //services.AddTransient(typeof(IHttpClientTypedFactory), typeof(SharePointOnlineFactory));
             return new SharePointOnlineCredentialsBuilder(services);
         }
     }

@@ -7,7 +7,11 @@
     public class ModelNamedElement
         : FreezeableObject
         , IMappingNamedObject<string> {
+        [JsonIgnore]
         private string _Name;
+
+        [JsonIgnore]
+        private string _ExternalName;
 
         public ModelNamedElement() { }
 
@@ -19,6 +23,17 @@
             set {
                 this.ThrowIfFrozen();
                 this._Name = value;
+            }
+        }
+
+        [JsonProperty(Order = 2)]
+        public string ExternalName {
+            get {
+                return this._ExternalName;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._ExternalName = value;
             }
         }
 

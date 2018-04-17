@@ -11,9 +11,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Edm\ICsdlTypeFacade.cs" />
     <Compile Remove="ISharePointOnlineCredentials.cs" />
+    <Compile Remove="ODataAccess\ODataClient.cs" />
     <Compile Remove="SharePointOnlineCredentialsBuilder.cs" />
     <Compile Remove="SharePointOnlineFactory.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Edm\ICsdlTypeFacade.cs" />
+    <None Include="ODataAccess\ODataClient.cs" />
   </ItemGroup>
 
   <ItemGroup>

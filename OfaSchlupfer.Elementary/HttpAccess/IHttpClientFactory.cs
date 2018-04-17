@@ -1,4 +1,6 @@
-﻿namespace OfaSchlupfer.HttpAccess {
+﻿#warning weichei / move to ServiceClient
+
+namespace OfaSchlupfer.HttpAccess {
     using System;
     using System.Net;
     using System.Net.Http;
@@ -39,16 +41,8 @@
     public interface IHttpClientCredentialsData {
     }
 
-    //HttpClientCookieCredentialsData
     public interface IHttpClientCookieCredentials : ICredentials, IHttpClientCredentials {
-        //bool IsSupportedGetAuthenticationCookie { get; }
-        //bool IsSupportedGetAuthenticationCookieAsync { get; }
-
-        //IHttpClientCredentialsData GetAuthenticationCookie(Uri url, bool refresh, bool alwaysThrowOnFailure);
-        //Task<IHttpClientCredentialsData> GetAuthenticationCookieAsync(Uri url, bool refresh, bool alwaysThrowOnFailure);
     }
-
-
 
     public interface IHttpClient : System.IDisposable {
         Task<string> GetAsStringAsync(

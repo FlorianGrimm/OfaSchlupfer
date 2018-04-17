@@ -50,11 +50,14 @@ namespace OfaSchlupfer.ModelOData {
 
         }
 
-
+#if lateragain
         [Fact]
         public void ODataRepository_GetUrlMetadata() {
             var testCfg = TestCfg.Get();
             Assert.False(string.IsNullOrEmpty(testCfg.ProjectServer?.Url));
+            var testCfg = OfaSchlupfer.TestCfg.Get();
+            var repCSProjectServer = testCfg.ProjectServer.CreateWithSuffix("/_api/ProjectData/[en-us]");
+            repCSProjectServer.AuthenticationMode = "SPOIDCRL";
 
             var sut = new ODataRepositoryImplementation(null);
             sut.SetConnectionString(testCfg.ProjectServer, "/_api/ProjectData/[en-us]");
@@ -62,7 +65,9 @@ namespace OfaSchlupfer.ModelOData {
             Assert.StartsWith("http", sut.GetUrlMetadata());
             Assert.EndsWith("$metadata", sut.GetUrlMetadata());
         }
+#endif
 
+#if lateragain
         [Fact]
         public void ODataRepository_GetMetadata() {
             var testCfg = TestCfg.Get();
@@ -85,7 +90,7 @@ namespace OfaSchlupfer.ModelOData {
                 throw;
             }
         }
-
+#endif
         private static string ReadMetaDataXml(TestCfg testCfg) {
             string content;
             var metadataPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\ProjectOnlinemetadata.xml");

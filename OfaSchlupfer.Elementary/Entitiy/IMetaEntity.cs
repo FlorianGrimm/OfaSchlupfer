@@ -16,6 +16,26 @@
         /// Get all properties.
         /// </summary>
         /// <returns>a list of properties.</returns>
-        IEnumerable<IMetaProperty> GetProperties();
+        IList<IMetaProperty> GetProperties();
+    }
+
+    public interface IMetaEntityArrayValues : IMetaEntity {
+        /// <summary>
+        /// Gets the property by index.
+        /// </summary>
+        IMetaIndexedProperty GetPropertyByIndex(int index);
+
+        /// <summary>
+        /// Gets the properties sorted by index.
+        /// </summary>
+        IList<IMetaIndexedProperty> GetPropertiesByIndex();
+
+        /// <summary>
+        /// Validate
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="validateOrThrow"></param>
+        /// <returns></returns>
+        string Validate(object[] values, bool validateOrThrow);
     }
 }

@@ -9,9 +9,14 @@
     /// </summary>
     public class MetaEntityArrayValues
         : FreezeableObject
-        , IMetaEntity {
+        , IMetaEntity
+        , IMetaEntityArrayValues {
         private FreezeableCollection<MetaPropertyArrayValues> _PropertyByIndex;
         private FreezeableDictionary<string, MetaPropertyArrayValues> _PropertyByName;
+
+        // cache
+        private FreezedList<IMetaProperty> _GetProperties;
+        private FreezedList<IMetaIndexedProperty> _GetPropertiesByIndex;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MetaEntityArrayValues"/> class.
@@ -45,7 +50,6 @@
                 }
             }
         }
-#warning HERE MetaEntityArrayValues type
 
         /// <summary>
         /// Gets the property by index.
@@ -98,11 +102,40 @@
         }
 
         /// <summary>
+        /// Gets the property by index.
+        /// </summary>
+        public IMetaIndexedProperty GetPropertyByIndex(int index) => this._PropertyByIndex[index];
+
+        /// <summary>
+        /// Gets the properties sorted by index.
+        /// </summary>
+        public IList<IMetaIndexedProperty> GetPropertiesByIndex() {
+            var result = this._GetPropertiesByIndex;
+            if ((object)result == null) {
+                result = this.PropertyByIndex.Cast<IMetaIndexedProperty>().AsFreezedList();
+                // if it is frozen it is save to cache.
+                if (this.IsFrozen()) {
+                    this._GetPropertiesByIndex = result;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Get all properties.
         /// </summary>
         /// <returns>a list of properties.</returns>
-        public IEnumerable<IMetaProperty> GetProperties() {
-            return this.PropertyByName.Values.Cast<IMetaProperty>().ToArray();
+        public IList<IMetaProperty> GetProperties() {
+            var result = this._GetProperties;
+            if ((object)result == null) {
+                result = this.PropertyByName.Values.Cast<IMetaProperty>().AsFreezedList();
+                // if it is frozen it is save to cache.
+                if (this.IsFrozen()) {
+
+                    this._GetProperties = result;
+                }
+            }
+            return result;
         }
 
         public string Validate(object[] values, bool validateOrThrow) {

@@ -3,7 +3,7 @@
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
-
+    using OfaSchlupfer.Entitiy;
     using OfaSchlupfer.Freezable;
 
     [JsonObject]
@@ -24,7 +24,13 @@
         [JsonIgnore]
         private ModelSchema _ModelSchema;
 
-        public ModelRepository() { }
+#warning TODO soon _EndPoint;
+        //[JsonIgnore]
+        //private readonly FreezeableOwnedKeyedCollection<ModelRepository, string, ModelRepositoryEndPoint> _EndPoint;
+
+        public ModelRepository() {
+
+        }
 
         [JsonProperty]
         public ModelDefinition ModelDefinition {
@@ -72,8 +78,19 @@
                 return this._ReferenceRepositoryModel;
             }
             set {
-                this.ThrowIfFrozen();
+                if (ReferenceEquals(this._ReferenceRepositoryModel, value)) {
+                    return;
+                }
+                if (this._ReferenceRepositoryModel != null) {
+                    this.ThrowIfFrozen();
+                }
                 this._ReferenceRepositoryModel = value;
+                if (value != null) {
+                    if (this.RepositoryType == null) {
+                        this._RepositoryType = value.GetModelTypeName();
+                    }
+#warning later check this._RepositoryType = value.GetModelTypeName();
+                }
             }
         }
 
@@ -101,6 +118,15 @@
                     return this.ReferenceRepositoryModel;
                 }
             }
+        }
+
+        public IEntity CreateEntityByExternalTypeName(string externalTypeName) {
+            //var referenceRepositoryModel = this.GetReferenceRepositoryModel(serviceProvider);
+            //return referenceRepositoryModel.CreateEntityByExternalTypeName(externalTypeName);
+            //IEntity CreateEntityByExternalTypeName(string externalTypeName);
+            var complexType = this.ModelSchema.FindComplexType(externalTypeName);
+            
+            //return this.ModelSchema.CreateEntityByExternalTypeName(externalTypeName);
         }
 
         //ModelEntityName IMappingNamedObject<ModelEntityName>.GetName() => this._Name;

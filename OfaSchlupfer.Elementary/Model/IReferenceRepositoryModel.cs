@@ -10,9 +10,11 @@
 
     using OfaSchlupfer.HttpAccess;
     using OfaSchlupfer.Freezable;
+    using OfaSchlupfer.Entitiy;
 
     public interface IReferenceRepositoryModel
         : IFreezeable {
+        string GetModelTypeName();
 
         ModelRepository ModelRepository { get; set; }
 
@@ -45,7 +47,12 @@
 
         protected ModelDefinition _ModelDefinition;
 
-        protected ReferenceRepositoryModelBase() { }
+        protected ReferenceRepositoryModelBase() {
+        }
+
+        public abstract string GetModelTypeName();
+
+        public abstract IEntity CreateEntityByExternalTypeName(string externalTypeName);
 
         [JsonIgnore]
         public virtual ModelRepository ModelRepository {
@@ -72,6 +79,11 @@
         [JsonIgnore]
         public virtual ModelSchema ModelSchema {
             get {
+                if (this._ModelSchema == null) {
+                    if (this.ModelRepository != null) {
+                        this._ModelSchema = this.ModelRepository.ModelSchema;
+                    }
+                }
                 return this._ModelSchema;
             }
             set {
@@ -108,11 +120,9 @@
 
     public class ReferenceRepositoryModelType : IReferenceRepositoryModelType {
         public readonly IServiceProvider ServiceProvider;
-        public readonly IHttpClientDispatcherFactory HttpClientDispatcherFactory;
 
-        public ReferenceRepositoryModelType(IServiceProvider serviceProvider, IHttpClientDispatcherFactory httpClientDispatcherFactory) {
+        public ReferenceRepositoryModelType(IServiceProvider serviceProvider) {
             this.ServiceProvider = serviceProvider;
-            this.HttpClientDispatcherFactory = httpClientDispatcherFactory;
             this.Description = this.Name = this.GetType().Name;
         }
 

@@ -8,4 +8,6 @@
         /// </summary>
         IMetaEntity MetaData { get; }
     }
+    public interface IEntityArrayValue {
+    }
 }

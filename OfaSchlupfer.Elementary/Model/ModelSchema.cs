@@ -1,5 +1,6 @@
 ﻿namespace OfaSchlupfer.Model {
     using Newtonsoft.Json;
+    using OfaSchlupfer.Entitiy;
     using OfaSchlupfer.Freezable;
     using System;
     using System.Collections.Generic;
@@ -17,15 +18,15 @@
         private string _RootEntityName;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSchema, string, ModelComplexType> _ComplexTypes;
+        private readonly FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelComplexType> _ComplexTypes;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSchema, string, ModelEntity> _Entities;
+        private readonly FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelEntity> _Entities;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSchema, string, ModelRelation> _Relations;
+        private readonly FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelRelation> _Relations;
 
-        [JsonProperty(Order = 2)]
+        [JsonProperty(Order = 3)]
         public string RootEntityName {
             get {
                 return this._RootEntityName;
@@ -36,28 +37,34 @@
             }
         }
 
-        [JsonProperty(Order = 3)]
-        public FreezeableOwnedKeyedCollection<ModelSchema, string, ModelComplexType> ComplexTypes => this._ComplexTypes;
-
         [JsonProperty(Order = 4)]
-        public FreezeableOwnedKeyedCollection<ModelSchema, string, ModelEntity> Entities => this._Entities;
+        public FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelComplexType> ComplexTypes => this._ComplexTypes;
 
         [JsonProperty(Order = 5)]
-        public FreezeableOwnedKeyedCollection<ModelSchema, string, ModelRelation> Relations => this._Relations;
+        public FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelEntity> Entities => this._Entities;
+
+        [JsonProperty(Order = 6)]
+        public FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelRelation> Relations => this._Relations;
 
         public ModelSchema() {
-            this._ComplexTypes = new FreezeableOwnedKeyedCollection<ModelSchema, string, ModelComplexType>(
+            this._ComplexTypes = new FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelComplexType>(
                 this,
                 (item) => item.Name,
                 ModelUtility.Instance.StringComparer,
+                (item) => item.ExternalName,
+                ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
-            this._Entities = new FreezeableOwnedKeyedCollection<ModelSchema, string, ModelEntity>(
+            this._Entities = new FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelEntity>(
                 this,
                 (item) => item.Name,
                 ModelUtility.Instance.StringComparer,
+                (item) => item.ExternalName,
+                ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
-            this._Relations = new FreezeableOwnedKeyedCollection<ModelSchema, string, ModelRelation>(this,
+            this._Relations = new FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelRelation>(this,
                 (item) => item.Name,
+                ModelUtility.Instance.StringComparer,
+                (item) => item.ExternalName,
                 ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
         }

@@ -12,7 +12,13 @@
         : FreezeableObject
         , ICsdlTypeModel {
         private static Regex regexIsCollection;
-        public static string IsCollection(string typename) {
+
+        /// <summary>
+        /// Get the collection item typename.
+        /// </summary>
+        /// <param name="typename">the typename</param>
+        /// <returns>null or Collection(result).</returns>
+        public static string GetCollectionItemTypeName(string typename) {
             Regex regex = regexIsCollection ?? (regexIsCollection = new Regex(@"^Collection\(([^()]+)\)$", RegexOptions.Compiled));
             var match = regex.Match(typename);
             if (match.Success) {
@@ -23,7 +29,7 @@
         }
 
         public static CsdlEntityCollectionTypeModel Create(string collection, CsdlEntityTypeModel ownerEntityTypeModel) {
-            var entityTypeName = IsCollection(collection);
+            var entityTypeName = GetCollectionItemTypeName(collection);
             if (entityTypeName != null) {
                 var result = new CsdlEntityCollectionTypeModel();
                 result.Owner = ownerEntityTypeModel;

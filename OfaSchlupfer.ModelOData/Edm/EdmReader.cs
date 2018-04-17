@@ -22,17 +22,22 @@
 
         public IMetadataResolver MetadataResolver { get; set; }
 
-        public EdmxModel Read(string location, ModelErrors errors) {
-            return this.Read(this.MetadataResolver.Resolve(location), errors);
+        public EdmxModel Read(string location, bool freeze, ModelErrors errors) {
+            var streamReader = this.MetadataResolver.Resolve(location);
+            return this.Read(streamReader, freeze, errors);
         }
 
-        public EdmxModel Read(StreamReader streamReader, ModelErrors errors) {
+        public EdmxModel Read(StreamReader streamReader, bool freeze, ModelErrors errors) {
             var xDoc = XDocument.Load(XmlReader.Create(streamReader, new XmlReaderSettings() {
                 CloseInput = true,
                 IgnoreComments = true,
                 IgnoreWhitespace = true
             }));
             var result = this.ReadDocument(xDoc.Root, errors);
+            result.AddCoreSchemaIfNeeded(errors);
+            if (freeze) {
+                result.Freeze();
+            }
             this.ResolveNames(result, errors);
             return result;
         }
@@ -468,13 +473,13 @@
                             } else if (attr.Name == EdmConstants.AttrNullable) {
                                 property.Nullable = ConvertToBoolean(attr.Value, true);
                             } else if (attr.Name == EdmConstants.AttrMaxLength) {
-                                property.MaxLength = ConvertToInt(attr.Value, 0);
+                                property.MaxLength = ConvertToShort(attr.Value, 0);
                             } else if (attr.Name == EdmConstants.AttrFixedLength) {
                                 property.FixedLength = ConvertToBoolean(attr.Value, false);
                             } else if (attr.Name == EdmConstants.AttrPrecision) {
-                                property.Precision = ConvertToInt(attr.Value, 0);
+                                property.Precision = ConvertToByte(attr.Value, 0);
                             } else if (attr.Name == EdmConstants.AttrScale) {
-                                property.Scale = ConvertToInt(attr.Value, 0);
+                                property.Scale = ConvertToByte(attr.Value, 0);
                             } else if (attr.Name == EdmConstants.AttrUnicode) {
                                 property.Unicode = ConvertToBoolean(attr.Value, true);
                             } else if (attr.Name == EdmConstants.AttrCollation) {
@@ -589,6 +594,27 @@
             } else {
                 return false;
             }
+        }
+
+        public static byte ConvertToByte(string value, byte defaultValue = 0) {
+            if (string.IsNullOrEmpty(value)) { return defaultValue; }
+            //try {
+            return byte.Parse(value);
+            //} catch (System.FormatException exc) {
+            //    throw new System.FormatException(value ?? "<NULL>", exc);
+            //}
+        }
+
+        public static short ConvertToShort(string value, short defaultValue = 0) {
+            if (string.IsNullOrEmpty(value)) { return defaultValue; }
+            if (string.Equals(value, "Max", StringComparison.OrdinalIgnoreCase)) {
+                return short.MaxValue;
+            }
+            //try {
+            return short.Parse(value);
+            //} catch (System.FormatException exc) {
+            //    throw new System.FormatException(value ?? "<NULL>", exc);
+            //}
         }
 
         public static int ConvertToInt(string value, int defaultValue = 0) {

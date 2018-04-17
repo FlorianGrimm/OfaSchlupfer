@@ -1,4 +1,5 @@
-﻿namespace OfaSchlupfer.HttpAccess {
+﻿#warning weichei / move to ServiceClient
+namespace OfaSchlupfer.HttpAccess {
     using Microsoft.Extensions.DependencyInjection;
 
     public interface IHttpClientBuilder {
@@ -26,8 +27,8 @@ namespace Microsoft.Extensions.DependencyInjection {
         public static IHttpClientBuilder AddHttpClient(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) => AddHttpClient(services, _ => { });
         public static IHttpClientBuilder AddHttpClient(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Action<HttpClientBuilderOptions> configure) {
             services.Configure(configure);
-            services.AddSingleton(typeof(OfaSchlupfer.HttpAccess.IHttpClientDispatcherFactory), typeof(HttpClientDispatcherFactory));
-            services.AddTransient<IHttpClientTypedFactory, HttpClientDefaultFactory>();
+            //services.AddSingleton(typeof(OfaSchlupfer.HttpAccess.IHttpClientDispatcherFactory), typeof(HttpClientDispatcherFactory));
+            //services.AddTransient<IHttpClientTypedFactory, HttpClientDefaultFactory>();
             return new HttpClientBuilder(services);
         }
     }

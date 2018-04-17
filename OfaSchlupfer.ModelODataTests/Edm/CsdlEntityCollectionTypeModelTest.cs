@@ -7,8 +7,8 @@
     public class CsdlEntityCollectionTypeModelTest {
         [Fact]
         public void CsdlEntityCollectionTypeModel_IsCollection() {
-            Assert.Equal("a.b", CsdlEntityCollectionTypeModel.IsCollection("Collection(a.b)"));
-            Assert.Null(CsdlEntityCollectionTypeModel.IsCollection("a.b"));
+            Assert.Equal("a.b", CsdlEntityCollectionTypeModel.GetCollectionItemTypeName("Collection(a.b)"));
+            Assert.Null(CsdlEntityCollectionTypeModel.GetCollectionItemTypeName("a.b"));
         }
     }
 }

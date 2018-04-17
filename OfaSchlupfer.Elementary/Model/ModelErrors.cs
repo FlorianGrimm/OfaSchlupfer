@@ -35,6 +35,13 @@
             }
         }
 
+        //public bool HasErrors() {
+        //    if (this.Errors == null) {
+        //        return false;
+        //    }
+        //    return (this.Errors.Count > 0);
+        //}
+
         public void Add(ModelErrorInfo item) {
             this.Errors?.Add(item);
         }
@@ -52,6 +59,15 @@
 
         public void GetObjectData(SerializationInfo info, StreamingContext context) {
             info.AddValue("Errors", this.Errors, typeof(List<ModelErrorInfo>));
+        }
+
+        public override string ToString() {
+            if (this.Errors == null) { return string.Empty; }
+            var sb = new StringBuilder();
+            foreach (var item in this.Errors) {
+                sb.AppendLine(item.ToString());
+            }
+            return sb.ToString();
         }
     }
 
@@ -89,7 +105,7 @@
     }
 
     public static class ModelErrorsExtension {
-        public static void AddErrorOrThrow(this ModelErrors errors, string msg, string location, Func<ModelErrorInfo, Exception> generator) {
+        public static void AddErrorOrThrow(this ModelErrors errors, string msg, string location, Func<ModelErrorInfo, Exception> generator = null) {
             if ((object)errors == null) {
                 if (generator == null) {
                     throw new ModelException(string.Empty, new ModelErrors(new ModelErrorInfo(msg, location)));
@@ -101,7 +117,7 @@
             }
         }
 
-        public static void AddErrorOrThrow(this ModelErrors errors, ModelErrorInfo modelErrorInfo, Func<string, Exception> generator) {
+        public static void AddErrorOrThrow(this ModelErrors errors, ModelErrorInfo modelErrorInfo, Func<string, Exception> generator = null) {
             if ((object)errors == null) {
                 if (generator == null) {
                     throw new ModelException(string.Empty, new ModelErrors(modelErrorInfo));
@@ -113,6 +129,15 @@
             }
         }
 
+        public static bool HasErrors(this ModelErrors errors) {
+            if ((object)errors == null) {
+                return false;
+            }
+            if ((object)(errors.Errors) == null) {
+                return false;
+            }
+            return (errors.Errors.Count > 0);
+        }
 
         /*
         public static void AddError(this ModelErrors errors, string msg, params XObject[] args) {
