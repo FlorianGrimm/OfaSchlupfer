@@ -9,7 +9,7 @@
         public EdmxModelBuilder() {
         }
 
-        public ModelSchema Builder(
+        public ModelSchema Build(
             EdmxModel edmxModel,
             ModelSchema modelSchema,
             MetaMappingSchema metaMappingSchema,
@@ -23,7 +23,6 @@
                 edmxModel.AddCoreSchemaIfNeeded(errors);
                 edmxModel.Freeze();
             }
-
 
             var defaultEntityContainers = edmxModel.DataServices.SelectMany(_ => _.EntityContainer).Where(_ => _.IsDefaultEntityContainer).ToList();
             if (defaultEntityContainers.Count != 1) {
@@ -40,11 +39,14 @@
                 if (entityTypeModel == null) {
                     errors.AddErrorOrThrow("entitySet.EntityTypeModel not found", entitySet.Name);
                 } else {
-
+                    var entityTypeModelName = entityTypeModel.Name;
+                    var entityTypeModelFullName = entityTypeModel.FullName;
 
                     var modelComplexType = metaModelBuilder.CreateModelComplexType(
-                        entityTypeModel.Name,
+                        entityTypeModelName,
+                        entityTypeModelFullName,
                         errors);
+
                     if (modelComplexType.Owner == null) {
                         modelSchema.ComplexTypes.Add(modelComplexType);
                     }
@@ -58,7 +60,8 @@
                         //    property.ScalarType.FullName
                         //}
                         modelScalarType = metaModelBuilder.CreateModelScalarType(
-                            entityTypeModel.Name,
+                            entityTypeModelName,
+                            entityTypeModelFullName,
                             property.Name,
                             property.TypeName,
                             suggestedType,
@@ -71,7 +74,8 @@
                             );
 
                         var modelProperty = metaModelBuilder.CreateModelProperty(
-                            entityTypeModel.Name,
+                            entityTypeModelName,
+                            entityTypeModelFullName,
                             property.Name,
                             errors
                            );
@@ -81,8 +85,14 @@
                         }
                     }
 
+#warning NavigationProperty
+                    /*
+                    foreach (var navigationProperty in entityTypeModel.NavigationProperty) { }
+                    */
+
+                    var entitySetName = entitySet.Name;
                     var modelEntity = metaModelBuilder.CreateModelEntity(
-                        entitySet.Name,
+                        entitySetName,
                         errors);
                     if (modelEntity.Owner == null) { modelSchema.Entities.Add(modelEntity); }
                     modelEntity.EntityType = modelComplexType;

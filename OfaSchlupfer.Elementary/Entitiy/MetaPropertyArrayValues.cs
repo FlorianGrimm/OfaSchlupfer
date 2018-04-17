@@ -1,5 +1,5 @@
 ﻿#if weichei
-namespace OfaSchlupfer.Entitiy {
+namespace OfaSchlupfer.Entity {
     using System;
     using OfaSchlupfer.Freezable;
 
@@ -44,7 +44,7 @@ namespace OfaSchlupfer.Entitiy {
 #endif
 
 
-namespace OfaSchlupfer.Entitiy {
+namespace OfaSchlupfer.Entity {
     using System;
     using OfaSchlupfer.Freezable;
 
@@ -55,6 +55,7 @@ namespace OfaSchlupfer.Entitiy {
         : FreezeableObject
         , IMetaIndexedProperty {
 
+        private IMetaEntity _MetaEntity;
         private int _Index;
         private readonly IMetaProperty _ChainedMetaProperty;
 
@@ -66,6 +67,26 @@ namespace OfaSchlupfer.Entitiy {
             set {
                 this.ThrowIfFrozen();
                 this._Index = value;
+            }
+        }
+
+        public IMetaEntity MetaEntity {
+            get {
+                return this._MetaEntity;
+            }
+            set {
+                if (ReferenceEquals(this._MetaEntity, value)) { return; }
+                if ((object)this._MetaEntity != null) {
+                    this.ThrowIfFrozen();
+                    throw new ArgumentException("Cannot be set again");
+                }
+                this._MetaEntity = value;
+#warning thinkofagain
+                if (this._ChainedMetaProperty != null) {
+                    if (this._ChainedMetaProperty.MetaEntity == null) {
+                        this._ChainedMetaProperty.MetaEntity = value;
+                    }
+                }
             }
         }
 
@@ -94,7 +115,7 @@ namespace OfaSchlupfer.Entitiy {
         /// <param name="entity">the entity</param>
         /// <returns>the accessor.</returns>
         public IAccessor GetAccessor(object entity) {
-            return new AccessorArrayValues(this, entity);
+            return new AccessorArrayValues(this, (IEntityArrayValues)entity);
         }
 
         /// <summary>

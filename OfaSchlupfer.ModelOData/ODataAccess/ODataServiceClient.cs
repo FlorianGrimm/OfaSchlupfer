@@ -8,7 +8,7 @@
     using Microsoft.Rest;
     using Microsoft.Rest.Azure;
     using Newtonsoft.Json;
-    using OfaSchlupfer.Entitiy;
+    using OfaSchlupfer.Entity;
     using OfaSchlupfer.HttpAccess;
     using OfaSchlupfer.ModelOData.Edm;
 

@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.Entitiy {
+﻿namespace OfaSchlupfer.Entity {
     using System.Collections.Generic;
 
     /// <summary>
@@ -17,6 +17,15 @@
         /// </summary>
         /// <returns>a list of properties.</returns>
         IList<IMetaProperty> GetProperties();
+
+        /// <summary>
+        /// Validate
+        /// </summary>
+        /// <param name="metaProperty">property</param>
+        /// <param name="values"></param>
+        /// <param name="validateOrThrow"></param>
+        /// <returns></returns>
+        string Validate(IMetaProperty metaProperty, object value, bool validateOrThrow);
     }
 
     public interface IMetaEntityArrayValues : IMetaEntity {

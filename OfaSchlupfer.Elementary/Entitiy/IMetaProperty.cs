@@ -1,8 +1,14 @@
-﻿namespace OfaSchlupfer.Entitiy {
+﻿namespace OfaSchlupfer.Entity {
     /// <summary>
     /// Defines a property.
     /// </summary>
     public interface IMetaProperty {
+        /// <summary>
+        /// Get the MetaEntity.
+        /// </summary>
+        /// <returns>the MetaEntity.</returns>
+        IMetaEntity MetaEntity { get; set; }
+
         /// <summary>
         /// Gets the definition of an property
         /// </summary>

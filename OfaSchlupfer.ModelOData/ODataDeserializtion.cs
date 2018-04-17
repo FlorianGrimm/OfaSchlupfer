@@ -2,7 +2,7 @@
     using System;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-    using OfaSchlupfer.Entitiy;
+    using OfaSchlupfer.Entity;
     using OfaSchlupfer.ModelOData.Edm;
 
     public class ODataDeserializtion {

@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.Entitiy {
+﻿namespace OfaSchlupfer.Entity {
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -11,7 +11,7 @@
     public class EntityArrayValues
         : FreezeableObject
         , IEntity
-        , IEntityArrayValue {
+        , IEntityArrayValues {
         /// <summary>
         /// Convert the rows to ProjectChange
         /// </summary>
@@ -46,7 +46,7 @@
         /// <summary>
         /// Gets or sets the values.
         /// </summary>
-        internal object[] Values {
+        public object[] Values {
             get {
                 return this._Values;
             }
@@ -58,14 +58,40 @@
         }
 
         /// <summary>
+        /// INTERNAL
+        /// Get the object value
+        /// </summary>
+        /// <param name="index">index</param>
+        /// <returns>the value</returns>
+        public object GetObjectValue(int index) { return this._Values[index]; }
+
+        /// <summary>
+        /// INTERNAL
+        /// Set the value at the index
+        /// </summary>
+        /// <param name="index">the index</param>
+        /// <param name="value">the new value</param>
+        public void SetObjectValue(int index, object value) {
+            this.ThrowIfFrozen();
+            var metaProperty = this._MetaData.GetPropertyByIndex(index);
+            this._MetaData.Validate(metaProperty, value, false);
+            this._Values[index] = value;
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="EntityArrayValues"/> class.
         /// </summary>
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
         public EntityArrayValues(IMetaEntityArrayValues metaData, object[] values) {
             this._MetaData = metaData;
-            this.Validate(values, false);
-            this._Values = values;
+            if ((object)values == null) {
+                var cnt = metaData.GetPropertiesByIndex().Count;
+                this._Values = new object[cnt];
+            } else {
+                this.Validate(values, false);
+                this._Values = values;
+            }
         }
 
 

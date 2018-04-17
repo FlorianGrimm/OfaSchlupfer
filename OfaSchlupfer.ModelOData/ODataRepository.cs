@@ -4,15 +4,18 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using OfaSchlupfer.Elementary;
-    using OfaSchlupfer.Model;
+
     using Microsoft.Extensions.DependencyInjection;
-    using OfaSchlupfer.SPO;
-    using OfaSchlupfer.HttpAccess;
-    using OfaSchlupfer.ModelOData.ODataAccess;
     using Microsoft.Rest;
-    using OfaSchlupfer.Entitiy;
+
+    using OfaSchlupfer.Entity;
+    using OfaSchlupfer.Elementary;
+    using OfaSchlupfer.Freezable;
+    using OfaSchlupfer.HttpAccess;
+    using OfaSchlupfer.Model;
+    using OfaSchlupfer.ModelOData.ODataAccess;
     using OfaSchlupfer.ModelOData.Edm;
+    using OfaSchlupfer.SPO;
 
     public class ODataRepositoryModelType : ReferenceRepositoryModelType {
         public const string ModelTypeName = "OData";
@@ -35,18 +38,46 @@
     }
 
     public abstract class ODataRepository : ReferenceRepositoryModelBase {
+        protected EdmxModel _EdmxModel;
         //protected IHttpClientDispatcherFactory _ClientFactory;
         //protected IHttpClientCredentials _HttpClientCredentials;
         protected IHttpServiceClient _ServiceClient;
         protected ODataRepository(
-            //  IHttpClientDispatcherFactory clientFactory
             ) {
-            //this._ClientFactory = clientFactory;
         }
+
+        [System.Diagnostics.DebuggerStepThrough]
+        public override string GetModelTypeName() => ODataRepositoryModelType.ModelTypeName;
 
         public RepositoryConnectionString ConnectionString { get; set; }
 
-        //public RepositoryConnectionString ConnectionString { get; set; }
+        public EdmxModel EdmxModel {
+            get {
+                return this._EdmxModel;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._EdmxModel = value;
+            }
+        }
+
+
+        public override ModelSchema GetModelSchema() {
+            var result = this.ModelSchema;
+            if ((object)result == null) {
+                if (this._EdmxModel != null) {
+                    var builder = new EdmxModelBuilder();
+                    result = new ModelSchema();
+                    builder.Build(this._EdmxModel, result, null, null, null);
+                    result.Freeze();
+                    if (this.ModelSchema == null) {
+                        this.ModelSchema = result;
+                    }
+                }
+            }
+            return result;
+        }
+
 
         public virtual void SetConnectionString(RepositoryConnectionString connectionString, string suffix) {
             if (string.IsNullOrEmpty(suffix)) {
@@ -91,11 +122,10 @@
 
         public abstract string GetUrlMetadata();
         public abstract Task<string> GetMetadataAsync();
-
-        // public EdmxModel EdmxModel { get; set; }
     }
 
     public class ODataRepositoryImplementation : ODataRepository, IReferenceRepositoryModel {
+
         //  https://m365x235962.sharepoint.com/sites/pwa/_api/projectserver
         // https://code.msdn.microsoft.com/office/Invoke-SharePoint-REST-API-078a0638/sourcecode?fileId=136158&pathId=613790383
 
@@ -103,9 +133,6 @@
             //IHttpClientDispatcherFactory clientFactory
             ) : base() {
         }
-
-        [System.Diagnostics.DebuggerStepThrough]
-        public override string GetModelTypeName() => ODataRepositoryModelType.ModelTypeName;
 
         [System.Diagnostics.DebuggerStepThrough]
         public override string GetUrlMetadata() {
@@ -171,9 +198,10 @@
             //return this.EdmxModel.CreateEntityByExternalTypeName(externalTypeName);
 #warning            IServiceProvider serviceProvider
 
-            var complexType = this.ModelSchema.FindComplexType(externalTypeName);
+            //   var complexType = this.ModelSchema.FindComplexType(externalTypeName);
 
             //this.ModelSchema.FindEntity(externalTypeName);
+            throw new NotImplementedException("CreateEntityByExternalTypeName");
         }
 
         /*

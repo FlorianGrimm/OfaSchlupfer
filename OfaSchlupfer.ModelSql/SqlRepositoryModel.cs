@@ -8,16 +8,18 @@
     using Microsoft.Extensions.DependencyInjection;
 
     using OfaSchlupfer.Elementary;
-    using OfaSchlupfer.Entitiy;
+    using OfaSchlupfer.Entity;
     using OfaSchlupfer.HttpAccess;
     using OfaSchlupfer.Model;
 
     public class SqlRepositoryModelType : ReferenceRepositoryModelType {
+        public const string TypeName = "SQL";
+
         public SqlRepositoryModelType(
             IServiceProvider serviceProvider
             //IHttpClientDispatcherFactory httpClientDispatcherFactory
             ) : base(serviceProvider) {
-            this.Name = "SPO";
+            this.Name = TypeName;
             this.Description = "Read access to ShrePointOnline sources.";
         }
         public override IReferenceRepositoryModel CreateReferenceRepositoryModel() {
@@ -44,6 +46,8 @@
         }
 
         public string ConnectionString { get; set; }
+
+        public override string GetModelTypeName() => SqlRepositoryModelType.TypeName;
 
         public void ReadSchema() {
             var utility = new MSSQLReflection.Utility() { ConnectionString = this.ConnectionString };

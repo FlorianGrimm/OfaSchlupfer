@@ -19,15 +19,17 @@
 
         public ModelComplexType CreateModelComplexType(
             string complexTypeName,
+            string complexTypeExternalName,
             ModelErrors errors) {
             var result = new ModelComplexType();
             result.Name = complexTypeName;
-            result.ExternalName = complexTypeName;
+            result.ExternalName = complexTypeExternalName;
             return result;
         }
 
         public ModelProperty CreateModelProperty(
             string complexTypeName,
+            string complexTypeExternalName,
             string propertyName,
             ModelErrors errors
             ) {
@@ -39,6 +41,7 @@
 
         public ModelScalarType CreateModelScalarType(
             string complexTypeName,
+            string complexTypeExternalName,
             string propertyName,
             string scalarTypeName,
             ModelScalarType suggestedType,

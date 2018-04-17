@@ -56,7 +56,7 @@
             var modelRoot = new ModelRoot();
 
             EdmxModelBuilder edmxModelBuilder = new EdmxModelBuilder();
-            var modelSchema = edmxModelBuilder.Builder(edmxModel, null, null, null, null);
+            var modelSchema = edmxModelBuilder.Build(edmxModel, null, null, null, null);
             var modelRepository = new ModelRepository();
             //modelRepository.ModelDefinition = modelDefinition;
             modelRepository.ModelSchema = modelSchema;
@@ -109,6 +109,9 @@
 
             var oDataRepository = new ODataRepositoryImplementation();
             modelRepository.ReferenceRepositoryModel = oDataRepository;
+            oDataRepository.EdmxModel = edmxModel;
+
+            Assert.NotNull(modelRepository.GetModelSchema());
 
             var cred = new SharePointOnlineServiceClientCredentials(repCSProjectServer, null);
             var oDataClient = new ODataServiceClient(new Uri(repCSProjectServer.GetUrlNormalized()), cred, null);

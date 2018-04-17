@@ -1,6 +1,7 @@
 ﻿namespace OfaSchlupfer.Model {
+    using System;
     using Newtonsoft.Json;
-
+    using OfaSchlupfer.Entity;
     using OfaSchlupfer.Freezable;
 
     [JsonObject]
@@ -10,7 +11,7 @@
         private ModelType _Type;
 
         public ModelProperty() { }
-        
+
         [JsonProperty]
         public ModelType Type {
             get {
@@ -28,6 +29,115 @@
                 this.Type?.Freeze();
             }
             return result;
+        }
+
+        public IMetaIndexedProperty GetMetaProperty(int index) => new ModelPropertyMetaProperty(this, index);
+
+        public Type GetClrType() => this.Type.GetClrType();
+    }
+
+    public class ModelPropertyMetaProperty
+        : FreezeableObject
+        , IMetaProperty
+        , IMetaIndexedProperty {
+        private IMetaEntity _MetaEntity;
+        private string _Name;
+        private Type _PropertyType;
+        private int _Index;
+
+        public ModelPropertyMetaProperty(ModelProperty modelProperty, int index) {
+            this._Name = modelProperty.Name;
+            this._PropertyType = modelProperty.GetClrType();
+            this._Index = index;
+            if (modelProperty.IsFrozen()) {
+                this.Freeze();
+            }
+        }
+
+        public IMetaEntity MetaEntity {
+            get {
+                return this._MetaEntity;
+            }
+            set {
+                if (ReferenceEquals(this._MetaEntity, value)) { return; }
+                if ((object)this._MetaEntity != null) {
+                    this.ThrowIfFrozen();
+                    throw new ArgumentException("Cannot be set again");
+                }
+                this._MetaEntity = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the name
+        /// </summary>
+        public string Name {
+            get { return this._Name; }
+            set {
+                this.ThrowIfFrozen();
+                this._Name = value;
+            }
+        }
+
+        public Type PropertyType {
+            get { return this._PropertyType; }
+            set {
+                this.ThrowIfFrozen();
+                this._PropertyType = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the index
+        /// </summary>
+        public int Index {
+            get { return this._Index; }
+            set {
+                this.ThrowIfFrozen();
+                this._Index = value;
+            }
+        }
+
+        /// <summary>
+        /// Get an bound accessor
+        /// </summary>
+        /// <param name="entity">the entity to access.</param>
+        /// <returns>the bound accessor</returns>
+        public virtual IAccessor GetAccessor(object entity) {
+            return new AccessorArrayValues(this, (IEntityArrayValues)entity);
+        }
+
+
+        /// <summary>
+        /// validate the type of value.
+        /// </summary>
+        /// <param name="value">the new value</param>
+        /// <param name="validateOrThrow">false - return a message or true - throw an exception.</param>
+        /// <returns>an error message or null.</returns>
+        public virtual string Validate(object value, bool validateOrThrow) {
+            if ((object)this._PropertyType != null) {
+                if ((object)value == null) {
+                    if (this._PropertyType.IsValueType && (Nullable.GetUnderlyingType(this._PropertyType) == null)) {
+                        var msg = $"${this.Name} is not nullable.";
+                        if (validateOrThrow) {
+                            return msg;
+                        } else {
+                            throw new InvalidOperationException(msg);
+                        }
+                    }
+                } else {
+                    var valueType = value.GetType();
+                    if (!this._PropertyType.IsAssignableFrom(valueType)) {
+                        var msg = $"Value- ${valueType.FullName} for ${this.Name}-${this._PropertyType.FullName} is not type compatible.";
+                        if (validateOrThrow) {
+                            return msg;
+                        } else {
+                            throw new InvalidOperationException(msg);
+                        }
+                    }
+                }
+            }
+            return null;
         }
     }
 }

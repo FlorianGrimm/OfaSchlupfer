@@ -2,7 +2,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using OfaSchlupfer.Entitiy;
+    using OfaSchlupfer.Entity;
 
     public interface IModelClient {
         ModelRepository ModelRepository { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.Entitiy {
+﻿namespace OfaSchlupfer.Entity {
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -75,6 +75,10 @@
         public IList<IMetaProperty> GetProperties() {
 #warning TODO
             return this.PropertyByName.Values.Cast<IMetaProperty>().ToArray();
+        }
+
+        public string Validate(IMetaProperty metaProperty, object value, bool validateOrThrow) {
+            return metaProperty.Validate(value, validateOrThrow);
         }
 
         public override bool Freeze() {

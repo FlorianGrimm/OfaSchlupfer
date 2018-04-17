@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.Entitiy {
+﻿namespace OfaSchlupfer.Entity {
     /// <summary>
     /// An entity that project properties
     /// </summary>

@@ -1,6 +1,7 @@
-﻿namespace OfaSchlupfer.Entitiy {
+﻿namespace OfaSchlupfer.Entity {
     using System;
     using OfaSchlupfer.Freezable;
+    using OfaSchlupfer.Model;
 
     /// <summary>
     /// Meta Property
@@ -8,8 +9,24 @@
     public class MetaProperty
         : FreezeableObject
         , IMetaProperty {
+        private IMetaEntity _MetaEntity;
         private string _Name;
         private Type _Type;
+        private int _Index;
+
+        public IMetaEntity MetaEntity {
+            get {
+                return this._MetaEntity;
+            }
+            set {
+                if (ReferenceEquals(this._MetaEntity, value)) { return; }
+                if ((object)this._MetaEntity != null) {
+                    this.ThrowIfFrozen();
+                    throw new ArgumentException("Cannot be set again");
+                }
+                this._MetaEntity = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the name

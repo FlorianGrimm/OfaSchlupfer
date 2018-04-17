@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.Entitiy {
+﻿namespace OfaSchlupfer.Entity {
     using System;
 
     /// <summary>

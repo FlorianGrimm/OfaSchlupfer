@@ -11,7 +11,7 @@
     using Microsoft.Rest.Azure;
     using Microsoft.Rest.Serialization;
     using Newtonsoft.Json;
-    using OfaSchlupfer.Entitiy;
+    using OfaSchlupfer.Entity;
     using OfaSchlupfer.Model;
 
     public class HttpServiceClient<T>
@@ -86,9 +86,7 @@
         protected virtual JsonSerializerSettings CreateDeserializationSettings() {
             return new JsonSerializerSettings();
         }
-
-
-
+        
         public virtual HttpRequestMessage CreateHttpRequestMessage(
             HttpMethod httpMethod,
             string requestSuffix,
@@ -262,6 +260,6 @@
             }
         }
 
-        public virtual IEntity CreateEntityByExternalTypeName(string externalTypeName) => this.ModelRepository?.CreateEntityByExternalTypeName(externalTypeName);
+        public virtual IEntity CreateEntityByExternalTypeName(string externalTypeName) => this.ModelRepository.CreateEntityByExternalTypeName(externalTypeName);
     }
 }

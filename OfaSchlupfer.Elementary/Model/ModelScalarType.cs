@@ -130,5 +130,7 @@
                 this._Unicode = value;
             }
         }
+
+        public override Type GetClrType() => this._Type;
     }
 }

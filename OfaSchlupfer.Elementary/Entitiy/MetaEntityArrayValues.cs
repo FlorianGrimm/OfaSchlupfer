@@ -1,4 +1,4 @@
-﻿namespace OfaSchlupfer.Entitiy {
+﻿namespace OfaSchlupfer.Entity {
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -11,8 +11,8 @@
         : FreezeableObject
         , IMetaEntity
         , IMetaEntityArrayValues {
-        private FreezeableCollection<MetaPropertyArrayValues> _PropertyByIndex;
-        private FreezeableDictionary<string, MetaPropertyArrayValues> _PropertyByName;
+        private FreezeableCollection<IMetaIndexedProperty> _PropertyByIndex;
+        private FreezeableDictionary<string, IMetaIndexedProperty> _PropertyByName;
 
         // cache
         private FreezedList<IMetaProperty> _GetProperties;
@@ -22,8 +22,8 @@
         /// Initializes a new instance of the <see cref="MetaEntityArrayValues"/> class.
         /// </summary>
         public MetaEntityArrayValues() {
-            this._PropertyByIndex = new FreezeableCollection<MetaPropertyArrayValues>();
-            this._PropertyByName = new FreezeableDictionary<string, MetaPropertyArrayValues>();
+            this._PropertyByIndex = new FreezeableCollection<IMetaIndexedProperty>();
+            this._PropertyByName = new FreezeableDictionary<string, IMetaIndexedProperty>();
         }
 
         /// <summary>
@@ -54,19 +54,20 @@
         /// <summary>
         /// Gets the property by index.
         /// </summary>
-        public IList<MetaPropertyArrayValues> PropertyByIndex { get { return this._PropertyByIndex; } }
+        public IList<IMetaIndexedProperty> PropertyByIndex { get { return this._PropertyByIndex; } }
 
         /// <summary>
         /// Gets the property by name.
         /// </summary>
-        public IDictionary<string, MetaPropertyArrayValues> PropertyByName { get { return this._PropertyByName; } }
+        public IDictionary<string, IMetaIndexedProperty> PropertyByName { get { return this._PropertyByName; } }
 
         /// <summary>
         /// Add a MetaProperty
         /// </summary>
         /// <param name="metaProperty">the property to add.</param>
-        public void AddProperty(MetaPropertyArrayValues metaProperty) {
+        public void AddProperty(IMetaIndexedProperty metaProperty) {
             if (metaProperty == null) { throw new ArgumentNullException(nameof(metaProperty)); }
+            this.ThrowIfFrozen();
 
             // check if property exists
             if (this._PropertyByName.ContainsKey(metaProperty.Name)) {
@@ -74,6 +75,7 @@
             }
 
             // and add
+            metaProperty.MetaEntity = this;
             if (metaProperty.Index < 0) {
                 metaProperty.Index = this._PropertyByIndex.Count;
                 this._PropertyByIndex.Add(metaProperty);
@@ -93,7 +95,7 @@
         /// <returns>the property or null</returns>
         public IMetaProperty GetProperty(string name) {
             if (name == null) { throw new ArgumentNullException(nameof(name)); }
-            MetaPropertyArrayValues result = null;
+            IMetaIndexedProperty result = null;
             if (this._PropertyByName.TryGetValue(name, out result)) {
                 return result;
             } else {
@@ -112,7 +114,7 @@
         public IList<IMetaIndexedProperty> GetPropertiesByIndex() {
             var result = this._GetPropertiesByIndex;
             if ((object)result == null) {
-                result = this.PropertyByIndex.Cast<IMetaIndexedProperty>().AsFreezedList();
+                result = this.PropertyByIndex.AsFreezedList();
                 // if it is frozen it is save to cache.
                 if (this.IsFrozen()) {
                     this._GetPropertiesByIndex = result;
@@ -128,7 +130,7 @@
         public IList<IMetaProperty> GetProperties() {
             var result = this._GetProperties;
             if ((object)result == null) {
-                result = this.PropertyByName.Values.Cast<IMetaProperty>().AsFreezedList();
+                result = this.PropertyByIndex.Cast<IMetaProperty>().AsFreezedList();
                 // if it is frozen it is save to cache.
                 if (this.IsFrozen()) {
 
@@ -136,6 +138,10 @@
                 }
             }
             return result;
+        }
+
+        public string Validate(IMetaProperty metaProperty, object value, bool validateOrThrow) {
+            return metaProperty.Validate(value, validateOrThrow);
         }
 
         public string Validate(object[] values, bool validateOrThrow) {

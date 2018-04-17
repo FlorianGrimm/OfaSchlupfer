@@ -10,7 +10,7 @@
 
     using OfaSchlupfer.HttpAccess;
     using OfaSchlupfer.Freezable;
-    using OfaSchlupfer.Entitiy;
+    using OfaSchlupfer.Entity;
 
     public interface IReferenceRepositoryModel
         : IFreezeable {
@@ -19,6 +19,8 @@
         ModelRepository ModelRepository { get; set; }
 
         ModelSchema ModelSchema { get; set; }
+
+        ModelSchema GetModelSchema();
 
         ModelDefinition ModelDefinition { get; set; }
 
@@ -90,8 +92,13 @@
                 if (ReferenceEquals(this._ModelSchema, value)) { return; }
                 this.ThrowIfFrozen();
                 this._ModelSchema = value;
+                if (this._ModelRepository != null) {
+                    this._ModelRepository.ModelSchema = value;
+                }
             }
         }
+
+        public abstract ModelSchema GetModelSchema();
 
         [JsonIgnore]
         public virtual ModelDefinition ModelDefinition {

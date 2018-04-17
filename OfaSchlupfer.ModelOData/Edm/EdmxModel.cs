@@ -4,7 +4,7 @@
     using System.Text;
 
     using Newtonsoft.Json;
-    using OfaSchlupfer.Entitiy;
+    using OfaSchlupfer.Entity;
     using OfaSchlupfer.Freezable;
     using OfaSchlupfer.Model;
 

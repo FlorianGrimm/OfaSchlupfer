@@ -1,7 +1,7 @@
 ﻿#pragma warning disable SA1600 // Elements must be documented
 
 namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
-    using OfaSchlupfer.Entitiy;
+    using OfaSchlupfer.Entity;
     using OfaSchlupfer.SqlAccess;
 
     /// <summary>

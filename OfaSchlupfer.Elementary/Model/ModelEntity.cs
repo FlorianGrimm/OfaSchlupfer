@@ -94,6 +94,8 @@
             return this._EntityType;
         }
 
+        public override Type GetClrType() => typeof(OfaSchlupfer.Entity.AccessorArrayValues);
+
         public override bool Freeze() {
             var result = base.Freeze();
             if (result) {

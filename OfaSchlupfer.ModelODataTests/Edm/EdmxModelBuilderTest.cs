@@ -45,7 +45,7 @@
             }
 
             EdmxModelBuilder edmxModelBuilder = new EdmxModelBuilder();
-            var modelSchema = edmxModelBuilder.Builder(edmxModel, null, null, null, errors);
+            var modelSchema = edmxModelBuilder.Build(edmxModel, null, null, null, errors);
             if (errors.HasErrors()) {
                 output.WriteLine(errors.ToString());
                 Assert.Equal("Error Builder HasErrors", errors.ToString());

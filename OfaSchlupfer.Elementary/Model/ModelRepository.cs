@@ -3,7 +3,7 @@
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
-    using OfaSchlupfer.Entitiy;
+    using OfaSchlupfer.Entity;
     using OfaSchlupfer.Freezable;
 
     [JsonObject]
@@ -71,6 +71,15 @@
                 }
             }
         }
+        public ModelSchema GetModelSchema() {
+            var result = this.ModelSchema;
+            if (result == null) {
+                if (this.ReferenceRepositoryModel != null) {
+                    return this.ReferenceRepositoryModel.GetModelSchema();
+                }
+            }
+            return result;
+        }
 
         [JsonIgnore]
         public IReferenceRepositoryModel ReferenceRepositoryModel {
@@ -90,6 +99,7 @@
                         this._RepositoryType = value.GetModelTypeName();
                     }
 #warning later check this._RepositoryType = value.GetModelTypeName();
+                    value.ModelRepository = this;
                 }
             }
         }
@@ -120,13 +130,19 @@
             }
         }
 
+#warning CreateEntityByExternalTypeName
         public IEntity CreateEntityByExternalTypeName(string externalTypeName) {
             //var referenceRepositoryModel = this.GetReferenceRepositoryModel(serviceProvider);
             //return referenceRepositoryModel.CreateEntityByExternalTypeName(externalTypeName);
             //IEntity CreateEntityByExternalTypeName(string externalTypeName);
-            var complexType = this.ModelSchema.FindComplexType(externalTypeName);
-            
+            var lstComplexType = this.ModelSchema.ComplexTypes.FindByKey2(externalTypeName);
+            if (lstComplexType.Count > 0) {
+                var metaEntity = lstComplexType[0].GetMetaEntity();
+
+                return new EntityArrayValues(metaEntity, null);
+            }
             //return this.ModelSchema.CreateEntityByExternalTypeName(externalTypeName);
+            return null;
         }
 
         //ModelEntityName IMappingNamedObject<ModelEntityName>.GetName() => this._Name;
