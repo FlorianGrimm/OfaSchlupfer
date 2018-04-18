@@ -8,6 +8,9 @@
         public ODataQueryRequest() {
         }
 
+#warning here ExpectedType ODataQueryRequest
+        public object ExpectedType { get; set; }
+
         public string Path { get; set; }
 
         public string HeaderAccept { get; set; }
@@ -40,6 +43,7 @@
             */
             return result;
         }
+
         public override void ConfigureHttpClient(HttpClient httpClient) {
             base.ConfigureHttpClient(httpClient);
             //httpClient.DefaultRequestHeaders.Add()

@@ -33,8 +33,8 @@ namespace Microsoft.Extensions.DependencyInjection {
         public static IServiceClientCredentialsBuilder AddServiceClientCredentials(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) => AddServiceClientCredentials(services, _ => { });
         public static IServiceClientCredentialsBuilder AddServiceClientCredentials(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Action<ServiceClientCredentialsOptions> configure) {
             services.Configure(configure);
-            services.AddSingleton(typeof(IServiceClientCredentialsDispatcherFactory), typeof(ServiceClientCredentialsDispatcherFactory));
-            //services.AddTransient<IHttpClientTypedFactory, HttpClientDefaultFactory>();
+            services.AddSingleton<IServiceClientCredentialsDispatcherFactory, ServiceClientCredentialsDispatcherFactory>();
+            services.AddTransient<IServiceClientCredentialsConcreteFactory, OfaSchlupfer.SPO.SharePointOnlineServiceClientCredentialsFactory>();
             return new ServiceClientCredentialsBuilder(services);
         }
     }

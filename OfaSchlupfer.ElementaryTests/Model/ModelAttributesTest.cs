@@ -33,17 +33,21 @@
             var modelTypes = type.Assembly.GetExportedTypes()
                 .Where(t => t.Namespace == type.Namespace)
                 .Where(t => t.Name.StartsWith("Model"))
-                .Where(t => t.Name != "ModelBuilder")
+                .Where(t => t.Name != nameof(ModelBuilder) 
+                            && t.Name != nameof(ModelComplexTypeMetaEntity)
+                            && t.Name != nameof(ModelRepository)
+                            )
                 .ToArray();
             var hsmodelTypes = modelTypes.ToHashSet();
             var typeExceptions = new HashSet<Type>();
             typeExceptions.Add(typeof(ModelEntityName));
 
             var propertyExceptions = new HashSet<string>();
-            propertyExceptions.Add("MappingRepository - Mapping - MappingSchema");
             propertyExceptions.Add("ModelProperty - Type - ModelType");
-            propertyExceptions.Add("ModelRepository - ModelSchema - ModelSchema");
-            propertyExceptions.Add("ModelRepository - ModelDefinition - ModelDefinition");
+            //propertyExceptions.Add("MappingRepository - Mapping - MappingSchema");
+            //propertyExceptions.Add("ModelRepository - ModelSchema - ModelSchema");
+            //propertyExceptions.Add("ModelRepository - ModelDefinition - ModelDefinition");
+            
             
             foreach (var modelType in modelTypes) {
                 if (modelType.IsClass) {
@@ -61,7 +65,7 @@
 
                                         var propertyInfo = $"{modelType.Name} - {property.Name} - {property.PropertyType.Name}";
                                         if (propertyExceptions.Contains(propertyInfo)) { continue; }
-                                        Assert.Equal("", propertyInfo);
+                                        Assert.Equal("Error RefProperty", propertyInfo);
                                     }
                                 }
                             }

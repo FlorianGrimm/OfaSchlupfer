@@ -27,8 +27,8 @@
 
             IServiceCollection services = new ServiceCollection();
             services.AddLogging((builder) => { builder.AddDebug(); });
-            services.AddSharePointOnlineCredentials((builder) => { });
-            services.AddHttpClient((builder) => { });
+            services.AddServiceClientCredentials((builder) => { });
+            //services.AddHttpClient((builder) => { });
             var serviceProvider = services.BuildServiceProvider();
 
             var srcPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\ProjectOnlinemetadata.xml");
@@ -44,8 +44,8 @@
                 Assert.Equal("Error Read HasErrors", errors.ToString());
             }
 
-            EdmxModelBuilder edmxModelBuilder = new EdmxModelBuilder();
-            var modelSchema = edmxModelBuilder.Build(edmxModel, null, null, null, errors);
+            EdmxModelSchemaBuilder edmxModelBuilder = new EdmxModelSchemaBuilder();
+            var modelSchema = edmxModelBuilder.Build(edmxModel, null, null, errors);
             if (errors.HasErrors()) {
                 output.WriteLine(errors.ToString());
                 Assert.Equal("Error Builder HasErrors", errors.ToString());

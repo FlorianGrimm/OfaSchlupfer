@@ -33,10 +33,12 @@
         private bool _Unicode;
 
         public ModelScalarType() {
-            this.Nullable = true;
+            this._Nullable = true;
+            this._Unicode = true;
         }
 
         [JsonProperty(Order = 2)]
+        [JsonConverter(typeof(OfaSchlupfer.Entity.TypeJsonConverter))]
         public Type Type {
             get {
                 return this._Type;
@@ -54,7 +56,7 @@
             set { }
         }
 
-        [JsonProperty(Order = 3)]
+        [JsonProperty(Order = 3, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool Collection {
             get {
                 return this._Collection;
@@ -75,8 +77,9 @@
                 this._Nullable = value;
             }
         }
+        public bool ShouldSerializeNullable() => !this.Nullable;
 
-        [JsonProperty(Order = 5)]
+        [JsonProperty(Order = 5, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public short MaxLength {
             get {
                 return this._MaxLength;
@@ -87,7 +90,7 @@
             }
         }
 
-        [JsonProperty(Order = 6)]
+        [JsonProperty(Order = 6, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool FixedLength {
             get {
                 return this._FixedLength;
@@ -98,7 +101,7 @@
             }
         }
 
-        [JsonProperty(Order = 7)]
+        [JsonProperty(Order = 7, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public byte Precision {
             get {
                 return this._Precision;
@@ -109,7 +112,7 @@
             }
         }
 
-        [JsonProperty(Order = 8)]
+        [JsonProperty(Order = 8, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public byte Scale {
             get {
                 return this._Scale;
@@ -120,7 +123,7 @@
             }
         }
 
-        [JsonProperty(Order = 9)]
+        [JsonProperty(Order = 9, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool Unicode {
             get {
                 return this._Unicode;
@@ -130,6 +133,7 @@
                 this._Unicode = value;
             }
         }
+        public bool ShouldSerializeUnicode() => !this.Unicode;
 
         public override Type GetClrType() => this._Type;
     }

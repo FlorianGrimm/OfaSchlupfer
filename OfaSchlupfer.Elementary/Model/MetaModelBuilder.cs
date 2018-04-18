@@ -3,10 +3,41 @@
     using System.Collections.Generic;
     using System.Text;
 
+    using Newtonsoft.Json;
+
     public class MetaModelBuilder {
+        private readonly RulesForKind<ModelEntity> _RulesModelEntity;
+        private readonly RulesForKind<ModelComplexType> _RulesModelComplexType;
+        private readonly RulesForKind<ModelProperty> _RulesModelProperty;
+        private readonly RulesForKind<ModelScalarType> _RulesModelScalarType;
+
+
         public MetaModelBuilder() {
+            this._RulesModelEntity = new RulesForKind<ModelEntity>();
+            this._RulesModelComplexType = new RulesForKind<ModelComplexType>();
+            this._RulesModelProperty = new RulesForKind<ModelProperty>();
+            this._RulesModelScalarType = new RulesForKind<ModelScalarType>();
         }
-#warning add rules
+
+        public bool GenerateRules { get; set; }
+
+        public void Initialize(MetaModelBuilderRules rules) {
+            if (rules != null) {
+                this._RulesModelEntity.Initialize(rules.ModelEntityRules);
+                this._RulesModelComplexType.Initialize(rules.ModelComplexTypeRules);
+                this._RulesModelProperty.Initialize(rules.ModelPropertyRules);
+                this._RulesModelScalarType.Initialize(rules.ModelScalarTypeRules);
+            }
+        }
+
+        public MetaModelBuilderRules GetGeneratedRules() {
+            var result = new MetaModelBuilderRules();
+            result.ModelEntityRules.AddRange(this._RulesModelEntity.GeneratedRules.Values);
+            result.ModelComplexTypeRules.AddRange(this._RulesModelComplexType.GeneratedRules.Values);
+            result.ModelPropertyRules.AddRange(this._RulesModelProperty.GeneratedRules.Values);
+            result.ModelScalarTypeRules.AddRange(this._RulesModelScalarType.GeneratedRules.Values);
+            return result;
+        }
 
         public ModelEntity CreateModelEntity(
             string entityName,
@@ -14,7 +45,7 @@
             var result = new ModelEntity();
             result.Name = entityName;
             result.ExternalName = entityName;
-            return result;
+            return this._RulesModelEntity.HandleRules(result.ExternalName, result, this.GenerateRules);
         }
 
         public ModelComplexType CreateModelComplexType(
@@ -23,26 +54,29 @@
             ModelErrors errors) {
             var result = new ModelComplexType();
             result.Name = complexTypeName;
-            result.ExternalName = complexTypeExternalName;
-            return result;
+            result.ExternalName = complexTypeExternalName ?? complexTypeName;
+            return this._RulesModelComplexType.HandleRules(result.ExternalName, result, this.GenerateRules);
         }
 
         public ModelProperty CreateModelProperty(
             string complexTypeName,
             string complexTypeExternalName,
             string propertyName,
+            string propertyExternalName,
             ModelErrors errors
             ) {
             var result = new ModelProperty();
             result.Name = propertyName;
-            result.ExternalName = propertyName;
-            return result;
+            result.ExternalName = propertyExternalName ?? propertyName;
+            var key = (complexTypeExternalName ?? complexTypeName) + "." + result.ExternalName;
+            return this._RulesModelProperty.HandleRules(key, result, this.GenerateRules);
         }
 
         public ModelScalarType CreateModelScalarType(
             string complexTypeName,
             string complexTypeExternalName,
             string propertyName,
+            string propertyExternalName,
             string scalarTypeName,
             ModelScalarType suggestedType,
             short maxLentgth,
@@ -53,7 +87,8 @@
             ModelErrors errors
             ) {
             if (suggestedType != null) {
-                return suggestedType;
+                var key = (complexTypeExternalName ?? complexTypeName) + "." + (propertyExternalName ?? propertyName) + ":" + scalarTypeName;
+                return this._RulesModelScalarType.HandleRules(key, suggestedType, this.GenerateRules);
             } else {
                 var result = new ModelScalarType();
                 result.Name = scalarTypeName;
@@ -63,7 +98,8 @@
                 result.Precision = precision;
                 result.Scale = scale;
 #warning CreateModelScalarType
-                return result;
+                var key = (complexTypeExternalName ?? complexTypeName) + "." + (propertyExternalName ?? propertyName) + ":" + scalarTypeName;
+                return this._RulesModelScalarType.HandleRules(key, result, this.GenerateRules);
             }
         }
 
@@ -74,5 +110,72 @@
                 return null;
             }
         }
+
+        private class RulesForKind<T> {
+            public readonly Dictionary<string, MetaModelBuilderRule> ExistingsRules;
+            public readonly Dictionary<string, MetaModelBuilderRule> GeneratedRules;
+            public readonly Dictionary<string, MetaModelBuilderRule> AllRules;
+            internal RulesForKind() {
+                this.ExistingsRules = new Dictionary<string, MetaModelBuilderRule>();
+                this.GeneratedRules = new Dictionary<string, MetaModelBuilderRule>();
+                this.AllRules = new Dictionary<string, MetaModelBuilderRule>();
+            }
+            internal T HandleRules(string key, T result, bool generateRules) {
+                var found = AllRules.GetValueOrDefault(key);
+                if (found is null) {
+                    if (generateRules) {
+                        var json = JsonConvert.SerializeObject(result);
+                        var rule = new MetaModelBuilderRule();
+                        rule.Kind = nameof(T);
+                        rule.SourceKey = key;
+                        rule.Result = json;
+                        rule.Generated = true;
+                        AllRules.Add(key, rule);
+                        GeneratedRules.Add(key, rule);
+                        return result;
+                    } else {
+                        return result;
+                    }
+                } else if (found.Generated) {
+                    return result;
+                } else {
+                    var alternateRule = JsonConvert.DeserializeObject<T>(found.Result);
+                    return alternateRule;
+                }
+            }
+
+            internal void Initialize(List<MetaModelBuilderRule> rules) {
+                foreach (var rule in rules) {
+                    this.ExistingsRules.Add(rule.SourceKey, rule);
+                    this.AllRules.Add(rule.SourceKey, rule);
+                }
+            }
+        }
+    }
+
+    [JsonObject]
+    public class MetaModelBuilderRules {
+        public readonly List<MetaModelBuilderRule> ModelEntityRules;
+        public readonly List<MetaModelBuilderRule> ModelComplexTypeRules;
+        public readonly List<MetaModelBuilderRule> ModelPropertyRules;
+        public readonly List<MetaModelBuilderRule> ModelScalarTypeRules;
+
+        public MetaModelBuilderRules() {
+            this.ModelEntityRules = new List<MetaModelBuilderRule>();
+            this.ModelComplexTypeRules = new List<MetaModelBuilderRule>();
+            this.ModelPropertyRules = new List<MetaModelBuilderRule>();
+            this.ModelScalarTypeRules = new List<MetaModelBuilderRule>();
+        }
+
+    }
+
+    [JsonObject]
+    public class MetaModelBuilderRule {
+        [JsonIgnore]
+        public bool Generated;
+
+        public string Kind { get; set; }
+        public string SourceKey { get; set; }
+        public string Result { get; set; }
     }
 }

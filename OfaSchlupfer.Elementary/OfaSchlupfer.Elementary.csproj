@@ -8,17 +8,11 @@
   <ItemGroup>
     <Compile Remove="HttpAccess\HttpClientDispatcherFactory.cs" />
     <Compile Remove="HttpAccess\HttpClientImplementation.cs" />
-    <Compile Remove="SPO\HellOfLack\SharePointOnlineAuthenticationModule.cs" />
-    <Compile Remove="SPO\ISharePointOnlineCredentials.cs" />
-    <Compile Remove="SPO\SharePointOnlineFactory.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="HttpAccess\HttpClientDispatcherFactory.cs" />
     <None Include="HttpAccess\HttpClientImplementation.cs" />
-    <None Include="SPO\HellOfLack\SharePointOnlineAuthenticationModule.cs" />
-    <None Include="SPO\ISharePointOnlineCredentials.cs" />
-    <None Include="SPO\SharePointOnlineFactory.cs" />
   </ItemGroup>
 
   <ItemGroup>

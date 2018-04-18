@@ -30,7 +30,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
 
         [JsonIgnore]
         private string _Name;
-
+        
         [JsonIgnore]
         private bool _Nullable;
 

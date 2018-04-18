@@ -9,6 +9,7 @@ namespace OfaSchlupfer.SPO {
     using System.Net.Security;
     using System.Runtime.InteropServices;
     using System.Security;
+    using System.Threading.Tasks;
 
     internal sealed class SharePointOnlineAuthenticationProvider {
         private class IdcrlHeader {
@@ -52,7 +53,7 @@ namespace OfaSchlupfer.SPO {
             this._Logger = logger;
         }
 
-        public string GetAuthenticationCookie(Uri url, string username, string password, bool alwaysThrowOnFailure, EventHandler<WebRequestEventArgs> executingWebRequest) {
+        public async Task<string> GetAuthenticationCookieAsync(Uri url, string username, string password, bool alwaysThrowOnFailure, EventHandler<WebRequestEventArgs> executingWebRequest) {
             if (url == (Uri)null) {
                 throw new ArgumentNullException("url");
             }
@@ -76,8 +77,7 @@ namespace OfaSchlupfer.SPO {
 #else
             IdcrlAuth idcrlAuth = new IdcrlAuth(executingWebRequest, this._Logger);
 #endif
-            //string password2 = SharePointOnlineAuthenticationProvider.FromSecureString(password);
-            string serviceToken = idcrlAuth.GetServiceToken(username, password, idcrlHeader.ServiceTarget, idcrlHeader.ServicePolicy);
+            string serviceToken = await idcrlAuth.GetServiceTokenAsync(username, password, idcrlHeader.ServiceTarget, idcrlHeader.ServicePolicy);
             if (string.IsNullOrEmpty(serviceToken)) {
                 this._Logger?.LogWarning("Cannot get IDCRL ticket for username {0}", username);
                 if (alwaysThrowOnFailure) {

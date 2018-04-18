@@ -5,18 +5,18 @@
     using System.Text;
     using OfaSchlupfer.Model;
 
-    public class EdmxModelBuilder {
-        public EdmxModelBuilder() {
+    public class EdmxModelSchemaBuilder {
+        public EdmxModelSchemaBuilder() {
         }
 
         public ModelSchema Build(
             EdmxModel edmxModel,
             ModelSchema modelSchema,
-            MetaMappingSchema metaMappingSchema,
+            //MetaMappingSchema metaMappingSchema,
             MetaModelBuilder metaModelBuilder,
             ModelErrors errors) {
             if (modelSchema == null) { modelSchema = new ModelSchema(); }
-            if (metaMappingSchema == null) { metaMappingSchema = new MetaMappingSchema(); }
+            //if (metaMappingSchema == null) { metaMappingSchema = new MetaMappingSchema(); }
             if (metaModelBuilder == null) { metaModelBuilder = new MetaModelBuilder(); }
 
             if (!edmxModel.IsFrozen()) {
@@ -65,6 +65,7 @@
                             entityTypeModelName,
                             entityTypeModelFullName,
                             property.Name,
+                            null,
                             property.TypeName,
                             suggestedType,
                             property.MaxLength,
@@ -79,6 +80,7 @@
                             entityTypeModelName,
                             entityTypeModelFullName,
                             property.Name,
+                            null,
                             errors
                            );
                         if (modelProperty.Type == null) { modelProperty.Type = modelScalarType; }

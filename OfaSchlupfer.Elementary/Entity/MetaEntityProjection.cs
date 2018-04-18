@@ -4,11 +4,15 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+
+    using Newtonsoft.Json;
+
     using OfaSchlupfer.Freezable;
 
     /// <summary>
     /// metadata for projection
     /// </summary>
+#warning TODO    [JsonObject]
     public class MetaEntityProjection
         : FreezeableObject
         , IMetaEntity {
@@ -33,6 +37,12 @@
                 }
             }
         }
+
+        /// <summary>
+        /// Gets or sets the typename.
+        /// </summary>
+        [JsonProperty]
+        public string EntityTypeName { get; set; }
 
         /// <summary>
         /// Add a MetaProperty

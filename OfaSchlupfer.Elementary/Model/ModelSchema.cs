@@ -87,5 +87,16 @@
         public List<ModelComplexType> FindComplexType(string name) => this._ComplexTypes.FindByKey(name);
 
         public List<ModelRelation> FindRelation(string name) => this._Relations.FindByKey(name);
+
+        public EntitySchema GetEntitySchema() {
+            var result = new EntitySchema(null);
+            foreach (var complexType in this.ComplexTypes) {
+                var metaEntity = complexType.GetMetaEntity();
+                if (!(metaEntity.EntityTypeName is null)) {
+                    result.Add(null, metaEntity);
+                }
+            }
+            return result;
+        }
     }
 }

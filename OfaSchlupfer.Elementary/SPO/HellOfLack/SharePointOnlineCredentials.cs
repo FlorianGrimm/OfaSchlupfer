@@ -8,12 +8,7 @@ namespace OfaSchlupfer.SPO {
     using Microsoft.Extensions.Logging;
     using OfaSchlupfer.HttpAccess;
 
-#warning weichei / move to ServiceClient
-
-    internal sealed class SharePointOnlineCredentials
-        //: ICredentials
-        //, ISharePointOnlineCredentials 
-        {
+    internal sealed class SharePointOnlineCredentials {
         private class CookieCacheEntry {
             public string Cookie;
 
@@ -36,10 +31,6 @@ namespace OfaSchlupfer.SPO {
 
         public string UserName { get; }
 
-        //public bool IsSupportedGetAuthenticationAsync => false;
-
-        //public bool IsSupportedGetAuthentication => true;
-
         public event EventHandler<WebRequestEventArgs> ExecutingWebRequest;
 
         public SharePointOnlineCredentials(string username, string password, ILogger logger) {
@@ -53,7 +44,6 @@ namespace OfaSchlupfer.SPO {
                 if (password == null) {
                     throw new ArgumentNullException(nameof(password));
                 }
-                // SharePointOnlineAuthenticationModule.EnsureRegistered();
                 this.UserName = username;
                 this._Password = password;
             } else {
@@ -61,17 +51,7 @@ namespace OfaSchlupfer.SPO {
             }
         }
 
-        //public NetworkCredential GetCredential(Uri uri, string authType) => null;
-
-        //public Task<IHttpClientCredentialsData> GetAuthenticationAsync(Uri uri, bool refresh, bool alwaysThrowOnFailure)
-        //    => Task.FromResult<IHttpClientCredentialsData>(
-        //            new SharePointOnlineCredentialsData(uri, this.GetAuthenticationCookie(uri, refresh, alwaysThrowOnFailure))
-        //        );
-
-        //public IHttpClientCredentialsData GetAuthentication(Uri uri, bool refresh, bool alwaysThrowOnFailure)
-        //    => new SharePointOnlineCredentialsData(uri, this.GetAuthenticationCookie(uri, refresh, alwaysThrowOnFailure));
-
-        public string GetAuthenticationCookie(Uri url, bool refresh, bool alwaysThrowOnFailure) {
+        public async Task<string> GetAuthenticationCookieAsync(Uri url, bool refresh, bool alwaysThrowOnFailure) {
             if (url == (Uri)null) {
                 throw new ArgumentNullException(nameof(url));
             }
@@ -91,7 +71,7 @@ namespace OfaSchlupfer.SPO {
             }
             {
                 var sharePointOnlineAuthenticationProvider = new SharePointOnlineAuthenticationProvider(this._Logger);
-                var resultCookie = sharePointOnlineAuthenticationProvider.GetAuthenticationCookie(uri, this.UserName, this._Password, alwaysThrowOnFailure, this.ExecutingWebRequest);
+                var resultCookie = await sharePointOnlineAuthenticationProvider.GetAuthenticationCookieAsync(uri, this.UserName, this._Password, alwaysThrowOnFailure, this.ExecutingWebRequest);
                 if (!string.IsNullOrEmpty(resultCookie)) {
                     this._Logger?.LogTrace("Put cookie in cache for URL {0}", uri);
                     lock (this._CachedCookies) {
@@ -105,29 +85,5 @@ namespace OfaSchlupfer.SPO {
             }
             return null;
         }
-
-        //public Task<string> GetAuthenticationCookieAsync(Uri url, bool refresh, bool alwaysThrowOnFailure) {
-        //    var result = this.GetAuthenticationCookie(url, refresh, alwaysThrowOnFailure);
-        //    return Task.FromResult(result);
-        //}
-
-        //public void ConfigureHttpClientHandler(HttpClientHandler httpClientHandler, IHttpClientCredentialsData data) {
-        //    var spoData = (SharePointOnlineCredentialsData)data;
-        //    httpClientHandler.Credentials = this;
-        //    httpClientHandler.CookieContainer.SetCookies(spoData.Uri, spoData.Cookie);
-        //}
-
-        //public void ConfigureHttpClient(HttpClient httpClient, IHttpClientCredentialsData httpClientCredentialsData) {
-        //    // do nothing
-        //}
     }
-    //public class SharePointOnlineCredentialsData : IHttpClientCredentialsData {
-    //    public readonly Uri Uri;
-    //    public readonly string Cookie;
-
-    //    public SharePointOnlineCredentialsData(Uri uri, string cookie) {
-    //        this.Uri = uri;
-    //        this.Cookie = cookie;
-    //    }
-    //}
 }

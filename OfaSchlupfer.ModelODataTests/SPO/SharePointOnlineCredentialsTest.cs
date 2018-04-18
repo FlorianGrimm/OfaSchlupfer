@@ -25,7 +25,7 @@
 
             IServiceCollection services = new ServiceCollection();
             services.AddLogging((builder) => { builder.AddDebug(); });
-            services.AddSharePointOnlineCredentials();
+            services.AddServiceClientCredentials((builder) => { });
             services.AddTransient<ODataRepository, ODataRepositoryImplementation>();
             //services.AddSingleton(typeof(OfaSchlupfer.HttpAccess.IHttpClientFactory), typeof(SharePointOnlineFactory));
 

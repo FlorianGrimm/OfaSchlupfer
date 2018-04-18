@@ -4,18 +4,20 @@
     using System.Text;
 
     public class ModelBuilder {
+        private readonly List<ModelBuilderRule> Rules;
+
         public ModelBuilder() {
             this.Rules = new List<ModelBuilderRule>();
         }
 
-        public ModelDefinition ModelDefinition { get; set; }
+        //public ModelDefinition ModelDefinition { get; set; }
 
-        public ModelSchema ModelSchema { get; set; }
+        //public ModelSchema ModelSchema { get; set; }
 
-        public List<ModelBuilderRule> Rules { get; }
+        //public List<ModelBuilderRule> Rules { get; }
 
-        public virtual List<string> Build() {
-            return null;
-        }
+        //public virtual List<string> Build() {
+        //    return null;
+        //}
     }
 }

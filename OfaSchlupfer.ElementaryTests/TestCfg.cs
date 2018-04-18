@@ -35,6 +35,12 @@
                 csb.IntegratedSecurity = true;
                 cache.ConnectionString = csb.ConnectionString;
             }
+            if (cache.SQLConnectionString == null) {
+                cache.SQLConnectionString = new RepositoryConnectionString();
+            }
+            if (cache.SQLConnectionString.Url == null) {
+                cache.SQLConnectionString.Url = cache.ConnectionString;
+            }
             Cache = cache;
             return cache;
         }
@@ -46,6 +52,8 @@
         public string SolutionFolder { get; set; }
 
         public string ConnectionString { get; set; }
+
+        public RepositoryConnectionString SQLConnectionString { get; set; }
 
         public RepositoryConnectionString ProjectServer { get; set; }
     }    

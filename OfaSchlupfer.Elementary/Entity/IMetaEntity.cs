@@ -6,6 +6,11 @@
     /// </summary>
     public interface IMetaEntity {
         /// <summary>
+        /// Gets or sets the typename.
+        /// </summary>
+        string EntityTypeName { get; set; }
+
+        /// <summary>
         /// Gets the unbound accessor to the named property name
         /// </summary>
         /// <param name="name">the property names</param>

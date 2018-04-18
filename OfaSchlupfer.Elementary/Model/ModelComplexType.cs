@@ -47,12 +47,16 @@
         public override Type GetClrType() => typeof(OfaSchlupfer.Entity.AccessorArrayValues);
     }
 
+    [JsonObject]
     public class ModelComplexTypeMetaEntity
         : FreezeableObject
         , IMetaEntity
         , IMetaEntityArrayValues {
+        [JsonIgnore]
         private readonly ModelComplexType _ModelComplexType;
+        [JsonIgnore]
         private FreezeableCollection<IMetaIndexedProperty> _PropertyByIndex;
+        [JsonIgnore]
         private FreezeableDictionary<string, IMetaIndexedProperty> _PropertyByName;
 
         // cache
@@ -60,6 +64,7 @@
         private FreezedList<IMetaIndexedProperty> _GetPropertiesByIndex;
 
         public ModelComplexTypeMetaEntity(ModelComplexType modelComplexType) {
+            this.EntityTypeName = modelComplexType.ExternalName ?? modelComplexType.Name;
             this._ModelComplexType = modelComplexType;
             this._PropertyByIndex = new FreezeableCollection<IMetaIndexedProperty>();
             this._PropertyByName = new FreezeableDictionary<string, IMetaIndexedProperty>();
@@ -71,6 +76,16 @@
             }
             if (modelComplexType.IsFrozen()) { this.Freeze(); }
         }
+
+
+        /// <summary>
+        /// Gets or sets the typename.
+        /// </summary>
+        [JsonProperty]
+        public string EntityTypeName { get; set; }
+
+        public ModelComplexType ModelComplexType => this._ModelComplexType;
+
         /// <summary>
         /// Add a MetaProperty
         /// </summary>
@@ -114,6 +129,7 @@
             }
             return result;
         }
+     
         /// <summary>
         /// Gets the properties sorted by index.
         /// </summary>
@@ -128,7 +144,6 @@
             }
             return result;
         }
-
 
         /// <summary>
         /// Get the named property

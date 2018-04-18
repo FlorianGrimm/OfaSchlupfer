@@ -13,7 +13,7 @@ namespace OfaSchlupfer.Elementary {
         public string User { get; set; }
 
         public string Password { get; set; }
-
+        
         private System.Tuple<string, string, string> _GetUrlNormalizedCache;
         public string GetUrlNormalized() {
             var cache = this._GetUrlNormalizedCache;

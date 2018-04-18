@@ -15,7 +15,7 @@
 
         public ModelNamedElement() { }
 
-        [JsonProperty(Order = 1)]
+        [JsonProperty(Order = 1, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Name {
             get {
                 return this._Name;
@@ -26,7 +26,7 @@
             }
         }
 
-        [JsonProperty(Order = 2)]
+        [JsonProperty(Order = 2, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string ExternalName {
             get {
                 return this._ExternalName;

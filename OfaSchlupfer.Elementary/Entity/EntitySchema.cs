@@ -5,10 +5,18 @@
     using System.Text;
     using System.Threading.Tasks;
 
+    using Newtonsoft.Json;
+
+    [JsonObject]
     public class EntitySchema : IEntityDispatcherFactory {
         private Dictionary<string, IMetaEntity> _MetaEntityByName;
 
+        [JsonIgnore]
         public IEntityDispatcherFactory EntityDispatcherFactory { get; set; }
+
+        public EntitySchema() {
+        }
+
         public EntitySchema(
             IEntityDispatcherFactory entityDispatcherFactory
             ) {
@@ -20,7 +28,13 @@
             while (true) {
                 var o = this._MetaEntityByName;
                 var n = new Dictionary<string, IMetaEntity>(o);
-                n.Add(entityTypeName, metaEntity);
+                if (entityTypeName is null) {
+                    if (!(metaEntity.EntityTypeName is null)) {
+                        n.Add(metaEntity.EntityTypeName, metaEntity);
+                    }
+                } else {
+                    n.Add(entityTypeName, metaEntity);
+                }
                 if (ReferenceEquals(System.Threading.Interlocked.CompareExchange(ref this._MetaEntityByName, n, o), o)) { break; }
             }
         }
@@ -47,7 +61,26 @@
         }
 
         public IEntity CreateEntity(string entityTypeName) {
+            var metaEntity = this.GetMetaEntity(entityTypeName);
+#warning missing create custom type
+            if (metaEntity is IMetaEntityArrayValues metaEntityArrayValues) {
+                return new EntityArrayValues(metaEntityArrayValues, null);
+            }
             return null;
+        }
+
+        [JsonProperty]
+        public List<IMetaEntity> MetaEntities {
+            get {
+                return new List<IMetaEntity>(this._MetaEntityByName.Values.Where(_ => !(_.EntityTypeName is null)));
+            }
+            set {
+                if (!(value is null)) {
+                    foreach (var metaEntity in value) {
+                        this.Add(null, metaEntity);
+                    }
+                }
+            }
         }
     }
 }

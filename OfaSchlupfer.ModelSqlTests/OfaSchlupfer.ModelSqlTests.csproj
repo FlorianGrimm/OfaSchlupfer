@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OfaSchlupfer.ElementaryTests\OfaSchlupfer.ElementaryTests.csproj" />
+    <ProjectReference Include="..\OfaSchlupfer.Elementary\OfaSchlupfer.Elementary.csproj" />
     <ProjectReference Include="..\OfaSchlupfer.ModelSql\OfaSchlupfer.ModelSql.csproj" />
   </ItemGroup>
 

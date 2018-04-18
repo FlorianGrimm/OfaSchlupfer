@@ -7,8 +7,8 @@
     public sealed class FreezeableOwned2KeyedCollection<TOwner, TKey1, TKey2, TValue>
         : IFreezeable
         , IList<TValue>
-        where TKey1 : IEquatable<TKey1>
-        where TKey2 : IEquatable<TKey2>
+        where TKey1 : class, IEquatable<TKey1>
+        where TKey2 : class, IEquatable<TKey2>
         where TValue : class {
         private readonly TOwner _Owner;
         private readonly Func<TValue, TKey1> _GetKey1;
@@ -117,17 +117,7 @@
                 return result;
             } else {
                 if ((object)this._ItemsByKey1 == null) {
-                    var count = this._Items.Count;
-                    var dict1 = new Dictionary<TKey1, TValue>(count, this._KeyComparer1);
-                    var dict2 = new Dictionary<TKey2, TValue>(this._Items.Count, this._KeyComparer2);
-                    foreach (var item in this._Items) {
-                        var itemKey1 = this._GetKey1(item);
-                        var itemKey2 = this._GetKey2(item);
-                        dict1[itemKey1] = item;
-                        dict2[itemKey2] = item;
-                    }
-                    this._ItemsByKey1 = dict1;
-                    this._ItemsByKey2 = dict2;
+                    buildDictionaries();
                 }
                 {
                     var result = new List<TValue>();
@@ -157,17 +147,7 @@
                 return result;
             } else {
                 if ((object)this._ItemsByKey1 == null) {
-                    var count = this._Items.Count;
-                    var dict1 = new Dictionary<TKey1, TValue>(count, this._KeyComparer1);
-                    var dict2 = new Dictionary<TKey2, TValue>(this._Items.Count, this._KeyComparer2);
-                    foreach (var item in this._Items) {
-                        var itemKey1 = this._GetKey1(item);
-                        var itemKey2 = this._GetKey2(item);
-                        dict1[itemKey1] = item;
-                        dict2[itemKey2] = item;
-                    }
-                    this._ItemsByKey1 = dict1;
-                    this._ItemsByKey2 = dict2;
+                    buildDictionaries();
                 }
                 {
                     var result = new List<TValue>();
@@ -180,6 +160,24 @@
                     return result;
                 }
             }
+        }
+
+        private void buildDictionaries() {
+            var count = this._Items.Count;
+            var dict1 = new Dictionary<TKey1, TValue>(count, this._KeyComparer1);
+            var dict2 = new Dictionary<TKey2, TValue>(this._Items.Count, this._KeyComparer2);
+            foreach (var item in this._Items) {
+                var itemKey1 = this._GetKey1(item);
+                var itemKey2 = this._GetKey2(item);
+                if (!(itemKey1 is null)) {
+                    dict1[itemKey1] = item;
+                }
+                if (!(itemKey2 is null)) {
+                    dict2[itemKey2] = item;
+                }
+            }
+            this._ItemsByKey1 = dict1;
+            this._ItemsByKey2 = dict2;
         }
 
         public bool Freeze() {

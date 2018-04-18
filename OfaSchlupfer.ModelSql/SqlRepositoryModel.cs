@@ -6,11 +6,12 @@
     using System.Threading.Tasks;
 
     using Microsoft.Extensions.DependencyInjection;
-
+    using Newtonsoft.Json;
     using OfaSchlupfer.Elementary;
     using OfaSchlupfer.Entity;
     using OfaSchlupfer.HttpAccess;
     using OfaSchlupfer.Model;
+    using OfaSchlupfer.MSSQLReflection.Model;
 
     public class SqlRepositoryModelType : ReferenceRepositoryModelType {
         public const string TypeName = "SQL";
@@ -35,24 +36,45 @@
         protected SqlRepositoryModel() {
         }
 
+        [JsonProperty]
+        public RepositoryConnectionString ConnectionString { get; set; }
+
+        public virtual void ReadSQLSchema(
+            MetaModelBuilder metaModelBuilder,
+            ModelErrors errors
+            ) { }
+
+        [JsonIgnore]
+        public ModelSqlDatabase ModelDatabase { get; set; }
+
+
         public override IEntity CreateEntityByExternalTypeName(string externalTypeName) {
 #warning TODO
             throw new NotImplementedException();
         }
     }
 
+    [JsonObject]
     public class SqlRepositoryImplementation : SqlRepositoryModel, IReferenceRepositoryModel {
         public SqlRepositoryImplementation() {
         }
-
-        public string ConnectionString { get; set; }
-
+        
         public override string GetModelTypeName() => SqlRepositoryModelType.TypeName;
 
-        public void ReadSchema() {
-            var utility = new MSSQLReflection.Utility() { ConnectionString = this.ConnectionString };
+        public override void ReadSQLSchema(
+            MetaModelBuilder metaModelBuilder,
+            ModelErrors errors
+            ) {
+            var utility = new MSSQLReflection.Utility() { ConnectionString = this.ConnectionString.Url };
             utility.ReadAll();
             var modelDatabase = utility.ModelDatabase;
+            this.ModelDatabase = modelDatabase;
+
+            var modelSchemaBuilder = new SQLSModelSchemaBuilder();
+            var modelSchema = new ModelSchema();            
+            modelSchemaBuilder.Build(modelDatabase, modelSchema, metaModelBuilder, errors);
+            this.ModelSchema = modelSchema;
+
             // modelDatabase.Tables.Values.Where(tbl=>tbl.Schema==)
         }
 

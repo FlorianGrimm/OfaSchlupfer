@@ -29,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection {
     using System;
     using OfaSchlupfer.Entity;
 
-    public static class HttpServiceClientExtension {
+    public static class EntityExtension {
         public static IEntityBuilder AddEntity(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) => AddEntity(services, _ => { });
         public static IEntityBuilder AddEntity(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Action<EntityOptions> configure) {
             services.Configure(configure);

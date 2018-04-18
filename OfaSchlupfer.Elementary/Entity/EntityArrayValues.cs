@@ -19,10 +19,10 @@
         /// <param name="sqlResult">the read values</param>
         /// <param name="factory">a factory for the target instances</param>
         /// <returns>the list of read items.</returns>
-        public static List<T> ConvertFromSqlResult<T>(SqlReadResult sqlResult, Func<MetaEntityArrayValues /*metaData*/, object[] /*values*/, T> factory)
+        public static List<T> ConvertFromSqlResult<T>(string entityTypeName, SqlReadResult sqlResult, Func<MetaEntityArrayValues /*metaData*/, object[] /*values*/, T> factory)
             where T : EntityArrayValues {
             var result = new List<T>(sqlResult.Rows.Count);
-            var meta = new MetaEntityArrayValues(sqlResult.FieldNames);
+            var meta = new MetaEntityArrayValues(entityTypeName, sqlResult.FieldNames);
             var length = sqlResult.FieldNames.Length;
             foreach (var row in sqlResult.Rows) {
                 result.Add(factory(meta, row));

@@ -4,7 +4,9 @@ namespace OfaSchlupfer.SPO {
     using System.Globalization;
     using System.IO;
     using System.Net;
+    using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using System.Xml;
     using System.Xml.Linq;
     using Microsoft.Extensions.Logging;
@@ -173,7 +175,7 @@ namespace OfaSchlupfer.SPO {
 
 
 
-        public string GetServiceToken(string username, string password, string serviceTarget, string servicePolicy) {
+        public async Task<string> GetServiceTokenAsync(string username, string password, string serviceTarget, string servicePolicy) {
             if (string.IsNullOrEmpty(username)) {
                 throw new ArgumentNullException("username");
             }
@@ -183,17 +185,17 @@ namespace OfaSchlupfer.SPO {
             if (string.IsNullOrEmpty(serviceTarget)) {
                 throw new ArgumentNullException("serviceTarget");
             }
-            this.InitFederationProviderInfoForUser(username);
-            UserRealmInfo userRealm = this.GetUserRealm(username);
+            await this.InitFederationProviderInfoForUserAsync(username);
+            UserRealmInfo userRealm = await this.GetUserRealmAsync(username);
             if (userRealm.IsFederated) {
-                string partnerTicketFromAdfs = this.GetPartnerTicketFromAdfs(userRealm.STSAuthUrl, username, password);
-                return this.GetServiceToken(partnerTicketFromAdfs, serviceTarget, servicePolicy);
+                string partnerTicketFromAdfs = await this.GetPartnerTicketFromAdfsAsync(userRealm.STSAuthUrl, username, password);
+                return await this.GetServiceTokenAsync(partnerTicketFromAdfs, serviceTarget, servicePolicy);
             }
             string securityXml = this.BuildWsSecurityUsingUsernamePassword(username, password);
-            return this.GetServiceToken(securityXml, serviceTarget, servicePolicy);
+            return await this.GetServiceTokenAsync(securityXml, serviceTarget, servicePolicy);
         }
 
-        private UserRealmInfo GetUserRealm(string login) {
+        private async Task<UserRealmInfo> GetUserRealmAsync(string login) {
             if (string.IsNullOrWhiteSpace(login)) {
                 throw new ArgumentNullException("login");
             }
@@ -202,7 +204,7 @@ namespace OfaSchlupfer.SPO {
             {
                 Uri.EscapeDataString(login)
             });
-            XDocument xDocument = this.DoPost(userRealmServiceUrl, IdcrlMessageConstants.GetUserRealmContentType, body, null);
+            XDocument xDocument = await this.DoPostAsync(userRealmServiceUrl, IdcrlMessageConstants.GetUserRealmContentType, body, null);
             XAttribute xAttribute = xDocument.Root.Attribute("Success");
             if (xAttribute != null && string.Compare(xAttribute.Value, "true", StringComparison.OrdinalIgnoreCase) == 0) {
                 XElement xElement = xDocument.Root.Element("NameSpaceType");
@@ -231,7 +233,7 @@ namespace OfaSchlupfer.SPO {
             throw CreateIdcrlException(-2147186539);
         }
 
-        private string GetPartnerTicketFromAdfs(string adfsUrl, string username, string password) {
+        private async Task<string> GetPartnerTicketFromAdfsAsync(string adfsUrl, string username, string password) {
             string body = string.Format(
                 CultureInfo.InvariantCulture,
                 /*
@@ -245,7 +247,7 @@ namespace OfaSchlupfer.SPO {
                 DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture),
                 DateTime.UtcNow.AddMinutes(10.0).ToString("o", CultureInfo.InvariantCulture),
                 this.FederationTokenIssuer);
-            XDocument xDocument = this.DoPost(adfsUrl, IdcrlMessageConstants.SoapContentType, body, this.HandleWebException);
+            XDocument xDocument = await this.DoPostAsync(adfsUrl, IdcrlMessageConstants.SoapContentType, body, this.HandleWebException);
             Exception soapException = this.GetSoapException(xDocument);
             if (soapException != null) {
                 this._Logger?.LogError("SOAP error from {0}. Exception={1}", adfsUrl, soapException);
@@ -259,7 +261,7 @@ namespace OfaSchlupfer.SPO {
             return elementAtPath.ToString(SaveOptions.DisableFormatting | SaveOptions.OmitDuplicateNamespaces);
         }
 
-        private string GetServiceToken(string securityXml, string serviceTarget, string servicePolicy) {
+        private async Task< string> GetServiceTokenAsync(string securityXml, string serviceTarget, string servicePolicy) {
             string serviceTokenUrl = this.ServiceTokenUrl;
             string text = string.Empty;
             if (!string.IsNullOrEmpty(servicePolicy)) {
@@ -275,7 +277,7 @@ namespace OfaSchlupfer.SPO {
                 securityXml,
                 IdcrlUtility.XmlValueEncode(serviceTarget),
                 text);
-            XDocument xDocument = this.DoPost(serviceTokenUrl, IdcrlMessageConstants.SoapContentType, body, this.HandleWebException);
+            XDocument xDocument = await this.DoPostAsync(serviceTokenUrl, IdcrlMessageConstants.SoapContentType, body, this.HandleWebException);
             Exception soapException = GetSoapException(xDocument);
             if (soapException != null) {
                 this._Logger?.LogError("Soap error from {0}. Exception={1}", serviceTokenUrl, soapException);
@@ -300,7 +302,7 @@ namespace OfaSchlupfer.SPO {
                 utcNow.AddDays(1.0).ToString("o", CultureInfo.InvariantCulture));
         }
 
-        private XDocument DoPost(string url, string contentType, string body, Func<WebException, Exception> webExceptionHandler) {
+        private async Task<XDocument> DoPostAsync(string url, string contentType, string body, Func<WebException, Exception> webExceptionHandler) {
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest.Method = "POST";
             httpWebRequest.ContentType = contentType;
@@ -315,7 +317,7 @@ namespace OfaSchlupfer.SPO {
                 }
             }
             try {
-                HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
+                HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
                 if (httpWebResponse == null) {
                     this._Logger?.LogError("Unexpected response for POST request to {0}", url);
                     throw new InvalidOperationException();
@@ -424,11 +426,11 @@ namespace OfaSchlupfer.SPO {
             return new IdcrlException(resourceId, hr);
         }
 
-        private void InitFederationProviderInfoForUser(string username) {
+        private async Task InitFederationProviderInfoForUserAsync(string username) {
             int pos = username.IndexOf('@');
             if (pos >= 0 && pos != username.Length - 1) {
                 string domainname = username.Substring(pos + 1);
-                FederationProviderInfo federationProviderInfo = this.GetFederationProviderInfo(domainname);
+                FederationProviderInfo federationProviderInfo = await this.GetFederationProviderInfoAsync(domainname);
                 if (federationProviderInfo != null) {
                     this.m_userRealmServiceUrl = federationProviderInfo.UserRealmServiceUrl;
                     this.m_securityTokenServiceUrl = federationProviderInfo.SecurityTokenServiceUrl;
@@ -440,40 +442,47 @@ namespace OfaSchlupfer.SPO {
             throw new ArgumentException(nameof(username));
         }
 
-        private FederationProviderInfo GetFederationProviderInfo(string domainname) {
+        private async Task<FederationProviderInfo> GetFederationProviderInfoAsync(string domainname) {
             FederationProviderInfo federationProviderInfo = default(FederationProviderInfo);
             if (IdcrlAuth.s_FederationProviderInfoCache.TryGetValue(domainname, out federationProviderInfo)) {
                 this._Logger?.LogDebug("Get federation provider information for {0} from cache. UserRealmServiceUrl={1}, SecurityTokenServiceUrl={2}, FederationTokenIssuer={3}", domainname, (federationProviderInfo == null) ? null : federationProviderInfo.UserRealmServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.SecurityTokenServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.FederationTokenIssuer);
                 return federationProviderInfo;
             }
             {
-                federationProviderInfo = this.RequestFederationProviderInfo(domainname);
+                federationProviderInfo = await this.RequestFederationProviderInfoAsync(domainname);
                 IdcrlAuth.s_FederationProviderInfoCache.Put(domainname, federationProviderInfo);
                 this._Logger?.LogWarning("Get federation provider information for {0} and put it in cache. UserRealmServcieUrl={1}, SecurityTokenServiceUrl={2}, FederationTokenIssuer={3}", domainname, (federationProviderInfo == null) ? null : federationProviderInfo.UserRealmServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.SecurityTokenServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.FederationTokenIssuer);
                 return federationProviderInfo;
             }
         }
 
-        private FederationProviderInfo RequestFederationProviderInfo(string domainname) {
-            int num;
-            while ((num = domainname.IndexOf('.')) > 0) {
-                string text = string.Format(CultureInfo.InvariantCulture, IdcrlMessageConstants.FPUrlFullUrlFormat, new object[1]
+        private async Task<FederationProviderInfo> RequestFederationProviderInfoAsync(string domainname) {
+            int posDot;
+            while ((posDot = domainname.IndexOf('.')) > 0) {
+                string url = string.Format(CultureInfo.InvariantCulture, IdcrlMessageConstants.FPUrlFullUrlFormat, new object[1]
                 {
                     domainname
                 });
                 try {
-                    XDocument xdoc = this.DoGet(text);
+                    XDocument xdoc = await this.DoGetAsync(url);
+                    if (xdoc == null) { continue; }
                     string fpDomainName = ParseFPDomainName(xdoc);
-                    text = string.Format(CultureInfo.InvariantCulture, IdcrlMessageConstants.FPListFullUrlFormat, new object[1]
+                    url = string.Format(CultureInfo.InvariantCulture, IdcrlMessageConstants.FPListFullUrlFormat, new object[1]
                     {
                         domainname
                     });
-                    xdoc = this.DoGet(text);
+                    xdoc = await this.DoGetAsync(url);
                     return ParseFederationProviderInfo(xdoc, fpDomainName);
+                } catch (AggregateException a) {
+                    if (a.InnerExceptions.Any(_ => _ is WebException)) {
+                        // fall through
+                    } else {
+                        throw;
+                    }
                 } catch (WebException) {
                     //this._Logger?.LogWarning("Exception when request {0}. Exception={1}", text, ex);
                 }
-                domainname = domainname.Substring(num + 1);
+                domainname = domainname.Substring(posDot + 1);
             }
             return null;
         }
@@ -509,14 +518,14 @@ namespace OfaSchlupfer.SPO {
             throw IdcrlAuth.CreateIdcrlException(-2147186646);
         }
 
-        private XDocument DoGet(string url) {
+        private async Task<XDocument> DoGetAsync(string url) {
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest.Method = "GET";
             this._Logger?.LogDebug("Sending GET request to {0}", url);
             if (this.m_executingWebRequest != null) {
                 this.m_executingWebRequest(this, new WebRequestEventArgs(httpWebRequest));
             }
-            HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
+            HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
             if (httpWebResponse == null) {
                 this._Logger?.LogError("Unexpected response for GET request to URL {0}", url);
                 throw new InvalidOperationException();

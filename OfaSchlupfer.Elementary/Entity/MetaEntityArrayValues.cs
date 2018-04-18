@@ -2,20 +2,28 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+
+    using Newtonsoft.Json;
+
     using OfaSchlupfer.Freezable;
 
     /// <summary>
     /// MetaData for EntityArrayProp
     /// </summary>
+    [JsonObject]
     public class MetaEntityArrayValues
         : FreezeableObject
         , IMetaEntity
         , IMetaEntityArrayValues {
+        [JsonIgnore]
         private FreezeableCollection<IMetaIndexedProperty> _PropertyByIndex;
+        [JsonIgnore]
         private FreezeableDictionary<string, IMetaIndexedProperty> _PropertyByName;
 
         // cache
+        [JsonIgnore]
         private FreezedList<IMetaProperty> _GetProperties;
+        [JsonIgnore]
         private FreezedList<IMetaIndexedProperty> _GetPropertiesByIndex;
 
         /// <summary>
@@ -30,8 +38,9 @@
         /// Initializes a new instance of the <see cref="MetaEntityArrayValues"/> class.
         /// </summary>
         /// <param name="names">names of properties.</param>
-        public MetaEntityArrayValues(IEnumerable<string> names)
+        public MetaEntityArrayValues(string entityTypeName, IEnumerable<string> names)
             : this() {
+            this.EntityTypeName = entityTypeName;
             if (names != null) {
                 int idx = 0;
                 foreach (var name in names) {
@@ -41,7 +50,8 @@
             }
         }
 
-        public MetaEntityArrayValues(IEnumerable<IMetaProperty> properties) {
+        public MetaEntityArrayValues(string entityTypeName, IEnumerable<IMetaProperty> properties) {
+            this.EntityTypeName = entityTypeName;
             if (properties != null) {
                 int idx = 0;
                 foreach (var property in properties) {
@@ -52,13 +62,21 @@
         }
 
         /// <summary>
+        /// Gets or sets the typename.
+        /// </summary>
+        [JsonProperty]
+        public string EntityTypeName { get; set; }
+
+        /// <summary>
         /// Gets the property by index.
         /// </summary>
+        [JsonIgnore]
         public IList<IMetaIndexedProperty> PropertyByIndex { get { return this._PropertyByIndex; } }
 
         /// <summary>
         /// Gets the property by name.
         /// </summary>
+        [JsonIgnore]
         public IDictionary<string, IMetaIndexedProperty> PropertyByName { get { return this._PropertyByName; } }
 
         /// <summary>
@@ -173,6 +191,21 @@
                 this._PropertyByName.Freeze();
             }
             return result;
+        }
+
+        [JsonProperty]
+        public IEnumerable<IMetaIndexedProperty> Properties {
+            get {
+                return this.GetPropertiesByIndex();
+            }
+            set {
+                this.ThrowIfFrozen();
+                if (!(value is null)) {
+                    foreach (var property in value) {
+                        this.AddProperty(property);
+                    }
+                }
+            }
         }
     }
 }
