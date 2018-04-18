@@ -17,7 +17,7 @@ namespace OfaSchlupfer.ModelOData {
             services.AddLogging((builder) => { builder.AddDebug(); });
             services.AddHttpClient((builder) => {
                 // builder.Logger= 
-#warning TODO Add Credentials
+                // TODO: TODO Add Credentials
                 //builder.AddSharePointOnlineCredentials
             });
             services.AddSharePointOnlineCredentials();

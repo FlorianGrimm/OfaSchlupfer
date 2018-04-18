@@ -92,6 +92,8 @@ namespace OfaSchlupfer.Entity {
 
         public string Name => this._ChainedMetaProperty.Name;
 
+        public Type PropertyType { get { return this._ChainedMetaProperty.PropertyType; } set { this._ChainedMetaProperty.PropertyType = value; } }
+
         public MetaPropertyArrayValues(int index, IMetaProperty chainedMetaProperty) {
             if ((object)chainedMetaProperty == null) { throw new ArgumentNullException(nameof(chainedMetaProperty)); }
             this._Index = index;

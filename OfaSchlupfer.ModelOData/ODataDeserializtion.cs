@@ -81,14 +81,27 @@
                 var uri = (string)(jObjectMetadata.Property("uri")?.Value);
                 var type = (string)(jObjectMetadata.Property("type")?.Value);
                 IEntity entity = this.CreateEntityByExternalTypeName(type);
+                var entityMetaData = entity.MetaData;
                 if (entity == null) { throw new OfaSchlupfer.Model.ResolveNameNotFoundException(type); }
                 foreach (var jToken in jObject.Children()) {
                     if (jToken is JProperty jProperty) {
-                        if (string.Equals(jProperty.Name, Property__metadata, StringComparison.Ordinal)) {
+                        var propertyName = jProperty.Name;
+                        if (string.Equals(propertyName, Property__metadata, StringComparison.Ordinal)) {
                             continue;
                         }
-                        //jProperty.Name
-                        //jProperty.Value
+                        var metaProperty = entityMetaData.GetProperty(propertyName);
+                        if (metaProperty == null) {
+                            var deferred_uri = jProperty.Value.SelectToken("__deferred.uri");
+                            if (deferred_uri != null && deferred_uri.Type == JTokenType.String) {
+                                // navigation url...
+                            } else {
+                                throw new OfaSchlupfer.Model.ResolveNameNotFoundException($"{type} - {propertyName}");
+                            }
+                        } else {
+                            object propertyValue = null;
+                            propertyValue = jProperty.ToObject(metaProperty.PropertyType);
+                            metaProperty.GetAccessor(entity).Value = propertyValue;
+                        }
                     }
                 }
             } else {

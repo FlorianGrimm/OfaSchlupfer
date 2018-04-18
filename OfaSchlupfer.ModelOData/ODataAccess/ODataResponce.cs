@@ -19,7 +19,7 @@
             this.ResponceContentString = responceContent;
         }
 
-#warning later
+#warning later Parse
         //public void Parse(ODataServiceClient oDataClient, ODataQueryRequest oDataRequest) {
         //    var d = new ODataDeserializtion(this, oDataRequest, oDataClient.EdmxModel);
         //    var responceContentString = this.ResponceContentString;

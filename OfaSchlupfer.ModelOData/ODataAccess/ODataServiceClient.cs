@@ -28,12 +28,6 @@
             ) {
         }
 
-#warning weichei
-        /*
-        //private EdmxModel _EdmxModel;
-        public EdmxModel EdmxModel { get => this._EdmxModel; set => this._EdmxModel = value; }
-         */
-
         public ODataQueryRequest Query(string path) {
             var result = new ODataQueryRequest();
             result.Path = path;

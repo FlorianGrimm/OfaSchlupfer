@@ -94,7 +94,7 @@
                     result = this._ServiceClient;
                     if (result == null) {
                         var baseUri = new Uri(this.ConnectionString.GetUrlNormalized());
-#warning TODO ServiceClientCredentials Factory
+#warning TODO ServiceClientCredentialsFactory
                         ServiceClientCredentials credentials = new SharePointOnlineServiceClientCredentials(this.ConnectionString, null);
                         result = new ODataServiceClient(baseUri, credentials, null);
                         this._ServiceClient = result;
@@ -103,22 +103,6 @@
             }
             return result;
         }
-
-#warning weichei
-        //public virtual IHttpClient CreateHttpClient() {
-        //    if (this._ClientFactory != null) {
-        //        if (this._HttpClientCredentials == null) {
-        //            this._HttpClientCredentials = this._ClientFactory.CreateHttpClientCredentials(this.ConnectionString);
-        //        }
-        //        if (this._HttpClientCredentials == null) {
-        //            return this._ClientFactory.CreateHttpClient(this.ConnectionString);
-        //        } else {
-        //            return this._ClientFactory.CreateHttpClient(this.ConnectionString, this._HttpClientCredentials);
-        //        }
-        //    } else {
-        //        return null;
-        //    }
-        //}
 
         public abstract string GetUrlMetadata();
         public abstract Task<string> GetMetadataAsync();
@@ -148,7 +132,7 @@
             //this._SharePointOnlineCredentialsFactory.Create
             var client = this.GetHttpServiceClient();
             var requestUrl = this.GetUrlMetadata();
-#warning GetMetadataAsync
+            Todo.Later("GetMetadataAsync");
             throw new NotImplementedException("GetMetadataAsync");
             //var t = client.GetAsStringAsync(
             //    requestUrl,

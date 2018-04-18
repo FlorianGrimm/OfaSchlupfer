@@ -28,6 +28,11 @@
         /// <param name="validateOrThrow">false - return a message or true - throw an exception.</param>
         /// <returns>an error message or null.</returns>
         string Validate(object value, bool validateOrThrow);
+
+        /// <summary>
+        /// Gets or sets the property type.
+        /// </summary>
+        System.Type PropertyType { get; set; }
     }
 
     /// <summary>

@@ -55,10 +55,12 @@
 
                         ModelScalarType modelScalarType = null;
                         ModelScalarType suggestedType = property.SuggestType(metaModelBuilder);
-#warning thinkof
+
+                        // TODO: thinkof EdmxModelBuilder Build ScalarType
                         //if (property.ScalarType != null) {
                         //    property.ScalarType.FullName
                         //}
+
                         modelScalarType = metaModelBuilder.CreateModelScalarType(
                             entityTypeModelName,
                             entityTypeModelFullName,
@@ -85,7 +87,7 @@
                         }
                     }
 
-#warning NavigationProperty
+                    // TODO: NavigationProperty
                     /*
                     foreach (var navigationProperty in entityTypeModel.NavigationProperty) { }
                     */
@@ -98,7 +100,7 @@
                     modelEntity.EntityType = modelComplexType;
                 }
             }
-#warning hhhhhhhhhhhhhhhere
+
             return modelSchema;
         }
     }

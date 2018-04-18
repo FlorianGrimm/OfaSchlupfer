@@ -13,7 +13,7 @@
     using Newtonsoft.Json;
     using OfaSchlupfer.Entity;
     using OfaSchlupfer.Model;
-
+    //ServiceClientCredentialsFactory
     public class HttpServiceClient<T>
         : ServiceClient<T>
         , IHttpServiceClient
@@ -86,7 +86,7 @@
         protected virtual JsonSerializerSettings CreateDeserializationSettings() {
             return new JsonSerializerSettings();
         }
-        
+
         public virtual HttpRequestMessage CreateHttpRequestMessage(
             HttpMethod httpMethod,
             string requestSuffix,

@@ -117,7 +117,8 @@
             var oDataClient = new ODataServiceClient(new Uri(repCSProjectServer.GetUrlNormalized()), cred, null);
             oDataClient.ModelRepository = modelRepository;
 
-#warning here soon //oDataClient.EdmxModel = edmxModel;
+            // TODO: here soon //oDataClient.EdmxModel = edmxModel;
+
             var oDataRequest = oDataClient.Query("Projects");
             // oDataClient.ConnectionString = repCSProjectServer;
             // oDataClient.SetConnectionString(repCSProjectServer, "/_api/ProjectData/[en-us]");

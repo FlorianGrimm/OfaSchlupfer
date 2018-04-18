@@ -27,4 +27,20 @@
         /// <param name="value">the new value</param>
         void SetObjectValue(int index, object value);
     }
+
+
+    public interface IEntityFactory {
+        IEntityFactory GetEntityFactory(string entityTypeName);
+
+        IEntity CreateEntity(string entityTypeName);
+
+#warning thinkof how does the dynamic object EntityArrayValues fit in here?
+    }
+
+    public interface IEntityConcreteFactory : IEntityFactory {
+        string GetEntityTypeName();
+    }
+
+    public interface IEntityDispatcherFactory : IEntityFactory {
+    }
 }

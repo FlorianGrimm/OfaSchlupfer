@@ -59,5 +59,9 @@
         public override List<string> BuildSchema(string metadataContent) {
             throw new NotImplementedException();
         }
+
+        public override ModelSchema GetModelSchema() {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -36,6 +36,8 @@
         /// </summary>
         public string ProjectedName { get; set; }
 
+#warning thinkof
+        public Type PropertyType { get { return this._MetaProperty.PropertyType; } set { this._MetaProperty.PropertyType = value; } }
         public IMetaEntity MetaEntity {
             get {
                 return this._MetaEntity;

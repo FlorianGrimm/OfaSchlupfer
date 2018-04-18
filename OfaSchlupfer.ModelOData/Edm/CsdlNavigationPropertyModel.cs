@@ -358,7 +358,9 @@
 
         public void ResolveNamesType(ModelErrors errors) {
             if (this._TypeModel == null && this._TypeName != null) {
-#warning ResolveNamesType collection
+
+                // TODO: ResolveNamesType collection
+
                 var collection = CsdlEntityCollectionTypeModel.Create(this._TypeName, this.Owner);
                 if (collection != null) {
                     collection.ResolveNames(errors);
