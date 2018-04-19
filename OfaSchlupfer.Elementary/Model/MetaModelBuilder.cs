@@ -41,10 +41,12 @@
 
         public ModelEntity CreateModelEntity(
             string entityName,
+            ModelEntityKind modelEntityKind,
             ModelErrors errors) {
             var result = new ModelEntity();
             result.Name = entityName;
             result.ExternalName = entityName;
+            result.Kind = modelEntityKind;
             return this._RulesModelEntity.HandleRules(result.ExternalName, result, this.GenerateRules);
         }
 

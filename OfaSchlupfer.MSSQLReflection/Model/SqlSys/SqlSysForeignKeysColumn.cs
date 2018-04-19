@@ -7,7 +7,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
     /// <summary>
     /// Access for sys.indexes
     /// </summary>
-    public sealed class SqlSysForeignKeysColumn : EntityArrayValues {
+    public sealed class SqlSysForeignKeysColumn : EntityFlexible {
         /// <summary>
         /// SELECT ... FROM sys.foreign_key_columns;
         /// </summary>
@@ -18,7 +18,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
         /// </summary>
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
-        public SqlSysForeignKeysColumn(MetaEntityArrayValues metaData, object[] values)
+        public SqlSysForeignKeysColumn(MetaEntityFlexible metaData, object[] values)
             : base(metaData, values) { }
 
 #pragma warning disable SA1101 // Prefix local calls with this
@@ -44,7 +44,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
         /// <returns>a new instance</returns>
-        public static SqlSysForeignKeysColumn Factory(MetaEntityArrayValues metaData, object[] values) {
+        public static SqlSysForeignKeysColumn Factory(MetaEntityFlexible metaData, object[] values) {
             return new SqlSysForeignKeysColumn(metaData, values);
         }
     }

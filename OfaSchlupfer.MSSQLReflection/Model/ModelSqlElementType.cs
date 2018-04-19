@@ -14,5 +14,7 @@
         /// Initializes a new instance of the <see cref="ModelSqlElementType"/> class.
         /// </summary>
         protected ModelSqlElementType() { }
+
+        public abstract ModelTypeScalar GetScalarType();
     }
 }

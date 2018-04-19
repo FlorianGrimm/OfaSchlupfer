@@ -29,7 +29,7 @@ namespace OfaSchlupfer.ModelSql {
 
             SqlRepositoryModel sqlRepository = new SqlRepositoryImplementation();
             sqlRepository.ConnectionString = repSQLConnectionString;
-            modelRepository.ReferenceRepositoryModel = sqlRepository;
+            modelRepository.ReferencedRepositoryModel = sqlRepository;
 
             var errors = new ModelErrors();
             MetaModelBuilder metaModelBuilder = new MetaModelBuilder();
@@ -42,6 +42,34 @@ namespace OfaSchlupfer.ModelSql {
             Assert.NotNull(sqlRepository.ModelSchema);
             Assert.True(sqlRepository.ModelSchema.ComplexTypes.Count > 0);
 
+            var entitySchema = sqlRepository.ModelSchema.GetEntitySchema();
+            Assert.NotNull(entitySchema);
+
+            {
+                var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings();
+                serializeSettings.TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple;
+                serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+                var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(sqlRepository.ModelSchema, Newtonsoft.Json.Formatting.Indented, serializeSettings);
+                try {
+                    string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\SqlRepositoryImplementation_ReadSQLSchema_Test_ModelSchema.json");
+                    System.IO.File.WriteAllText(outputPath, schemaAsJson);
+                } catch {
+                    throw;
+                }
+            }
+
+            {
+                var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings();
+                serializeSettings.TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple;
+                serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+                var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(entitySchema, Newtonsoft.Json.Formatting.Indented, serializeSettings);
+                try {
+                    string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\SqlRepositoryImplementation_ReadSQLSchema_Test_EntitySchema.json");
+                    System.IO.File.WriteAllText(outputPath, schemaAsJson);
+                } catch {
+                    throw;
+                }
+            }
 
         }
     }

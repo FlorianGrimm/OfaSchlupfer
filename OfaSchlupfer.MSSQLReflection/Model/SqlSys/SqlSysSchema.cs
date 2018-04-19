@@ -5,7 +5,7 @@
     /// <summary>
     /// Access for sys.schema
     /// </summary>
-    public sealed class SqlSysSchema : EntityArrayValues {
+    public sealed class SqlSysSchema : EntityFlexible {
         /// <summary>
         /// SQL Statemant SELECT name, schema_id FROM sys.schemas;
         /// </summary>
@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
-        public SqlSysSchema(MetaEntityArrayValues metaData, object[] values)
+        public SqlSysSchema(MetaEntityFlexible metaData, object[] values)
             : base(metaData, values) { }
 
 #pragma warning disable SA1101 // Prefix local calls with this
@@ -48,7 +48,7 @@
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
         /// <returns>a new instance</returns>
-        public static SqlSysSchema Factory(MetaEntityArrayValues metaData, object[] values) {
+        public static SqlSysSchema Factory(MetaEntityFlexible metaData, object[] values) {
             return new SqlSysSchema(metaData, values);
         }
     }

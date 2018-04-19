@@ -4,9 +4,9 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-
+    using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
-
+    using Newtonsoft.Json.Converters;
     using OfaSchlupfer.Freezable;
 
     /// <summary>
@@ -15,6 +15,9 @@
     [JsonObject]
     public class ModelRoot
         : FreezeableObject {
+        [JsonIgnore]
+        IServiceProvider _ServiceProvider;
+
         [JsonIgnore]
         private string _Name;
 
@@ -39,25 +42,90 @@
                 (that, item) => { item.Owner = that; });
         }
 
+        public MappingModelRepository CreateMapping(
+            string name,
+            ModelRepository source,
+            ModelRepository target) {
+            var result = new MappingModelRepository();
+            if (name is null) {
+                if (!(source is null)
+                    && !(target is null)
+                    && !(source.Name is null)
+                    && !(target.Name is null)
+                ) {
+                    name = source.Name + target.Name;
+                } else {
+                    name = DateTime.Now.ToString("s");
+                }
+            }
+            result.Name = name;
+            result.Source = source;
+            result.Target = target;
+            return result;
+        }
+
+        public ModelRoot(IServiceProvider serviceProvider) : this() {
+            this.ServiceProvider = serviceProvider;
+        }
+
+        public ModelRepository CreateRepository(string name, string repositoryType) {
+            var result = new ModelRepository();
+            result.Name = name;
+            result.RepositoryTypeName = repositoryType;
+            this.Repositories.Add(result);
+            return result;
+        }
+
+        [JsonIgnore]
+        public IServiceProvider ServiceProvider {
+            get => this._ServiceProvider;
+            set => this.SetRefPropertyOnce<IServiceProvider>(ref this._ServiceProvider, value);
+        }
 
         [JsonProperty]
         public string Name {
-            get {
-                return this._Name;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Name = value;
-            }
+            get => this._Name;
+            set => this.SetStringProperty(ref this._Name, value);
         }
 
         /// <summary>
-        /// Find a repository by name.
+        /// 
         /// </summary>
-        /// <param name="name">the name of the repository</param>
-        /// <returns>the repository</returns>
-        public List<ModelRepository> FindRepository(string name) => this._Repositories.FindByKey(name);
-        
+        /// <param name="settings"></param>
+        /// <returns></returns>
+        public string SerializeToJson(JsonSerializerSettings settings) {
+            settings = EnsureSerializeObjectSettings(settings);
+            var result = JsonConvert.SerializeObject(this, settings);
+            return result;
+        }
+
+        public static ModelRoot DeserializeFromJson(string json, JsonSerializerSettings settings, IServiceProvider serviceProvider) {
+            settings = EnsureDeserializeObjectSettings(settings, serviceProvider);
+            var result = JsonConvert.DeserializeObject<ModelRoot>(json, settings);
+            return result;
+        }
+
+        public static JsonSerializerSettings EnsureSerializeObjectSettings(JsonSerializerSettings settings) {
+            if (settings == null) {
+                settings = new JsonSerializerSettings();
+            }
+            //if (!(settings.Converters.Any((converter) => converter is ModelRooCreationConverter))) {
+            //    settings.Converters.Add(new ModelRooCreationConverter(serviceProvider));
+            //}
+            return settings;
+        }
+
+        public static JsonSerializerSettings EnsureDeserializeObjectSettings(JsonSerializerSettings settings, IServiceProvider serviceProvider) {
+            if (settings == null) {
+                settings = new JsonSerializerSettings();
+            }
+            if (!(settings.Converters.Any((converter) => converter is ModelRootCreationConverter))) {
+                if (serviceProvider is null) { throw new ArgumentNullException(nameof(serviceProvider), "is required to create a ModelRooCreationConverter."); }
+                settings.Converters.Add(new ModelRootCreationConverter(serviceProvider));
+            }
+            return settings;
+        }
+
         public override bool Freeze() {
             var result = base.Freeze();
             if (result) {
@@ -65,6 +133,18 @@
                 this._RepositoryMappings.Freeze();
             }
             return result;
+        }
+    }
+
+    public class ModelRootCreationConverter : CustomCreationConverter<ModelRoot> {
+        public readonly IServiceProvider ServiceProvider;
+        public ModelRootCreationConverter(IServiceProvider serviceProvider) {
+            this.ServiceProvider = serviceProvider;
+        }
+
+        public override ModelRoot Create(Type objectType) {
+            return (this.ServiceProvider.GetService<ModelRoot>())
+                ?? (new ModelRoot(this.ServiceProvider));
         }
     }
 }

@@ -28,80 +28,9 @@
         /// </summary>
         /// <returns>the sql string</returns>
         public string GetCondensed() {
-            // TODO: this.Scale
-            switch (this.SystemDataType) {
-                case ModelSystemDataType.None:
-                    break;
-                case ModelSystemDataType.BigInt:
-                    return "bigint";
-                case ModelSystemDataType.Int:
-                    return "int";
-                case ModelSystemDataType.SmallInt:
-                    return "smallInt";
-                case ModelSystemDataType.TinyInt:
-                    return "tinyInt";
-                case ModelSystemDataType.Bit:
-                    return "bit";
-                case ModelSystemDataType.Decimal:
-                    return "decimal";
-                case ModelSystemDataType.Numeric:
-                    return "numeric";
-                case ModelSystemDataType.Money:
-                    return "money";
-                case ModelSystemDataType.SmallMoney:
-                    return "smallmoney";
-                case ModelSystemDataType.Float:
-                    return "float";
-                case ModelSystemDataType.Real:
-                    return "real";
-                case ModelSystemDataType.DateTime:
-                    return "datetime";
-                case ModelSystemDataType.SmallDateTime:
-                    return "smalldatetime";
-                case ModelSystemDataType.Char:
-                    return "char(" + (this.MaxLength.GetValueOrDefault().ToString()) + ")";
-                case ModelSystemDataType.VarChar:
-                    return "varchar(" + ((this.MaxLength.GetValueOrDefault() <= 0) ? "max" : this.MaxLength.Value.ToString()) + ")";
-                case ModelSystemDataType.Text:
-                    return "text";
-                case ModelSystemDataType.NChar:
-                    return "nchar(" + (this.MaxLength.GetValueOrDefault().ToString()) + ")";
-                case ModelSystemDataType.NVarChar:
-                    return "nvarchar(" + ((this.MaxLength.GetValueOrDefault() <= 0) ? "max" : this.MaxLength.Value.ToString()) + ")";
-                case ModelSystemDataType.NText:
-                    return "ntext";
-                case ModelSystemDataType.Binary:
-                    return "binary";
-                case ModelSystemDataType.VarBinary:
-                    return "varbinary";
-                case ModelSystemDataType.Image:
-                    return "image";
-                case ModelSystemDataType.Cursor:
-                    return "cursor";
-                case ModelSystemDataType.Sql_Variant:
-                    return "sql_variant";
-                case ModelSystemDataType.Table:
-                    return "table"; // ??
-                case ModelSystemDataType.Timestamp:
-                    return "timestamp";
-                case ModelSystemDataType.UniqueIdentifier:
-                    return "uniqueidentifier";
-                case ModelSystemDataType.Date:
-                    return "date";
-                case ModelSystemDataType.Time:
-                    return "time";
-                case ModelSystemDataType.DateTime2:
-                    return "datetime2";
-                case ModelSystemDataType.DateTimeOffset:
-                    return "datetimeoffset";
-                case ModelSystemDataType.Rowversion:
-                    return "rowversion";
-                default:
-                    break;
-            }
-            return "??";
+            return ModelSystemDataTypeUtility.GetCondensed(this.Name, this.SystemDataType, this.MaxLength, this.Scale, this.Precision);            
         }
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelTypeScalar"/> class.
         /// </summary>
@@ -147,5 +76,9 @@
         /// Gets or sets a value indicating whether is nullable.
         /// </summary>
         public bool? IsNullable { get; set; }
+
+        public Type GetClrType() {
+            return ModelSystemDataTypeUtility.ConvertToClrType(this.SystemDataType) ;
+        }
     }
 }

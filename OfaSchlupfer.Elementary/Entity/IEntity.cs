@@ -9,7 +9,7 @@
         IMetaEntity MetaData { get; }
     }
 
-    public interface IEntityArrayValues {
+    public interface IEntityFlexible {
 
         /// <summary>
         /// INTERNAL

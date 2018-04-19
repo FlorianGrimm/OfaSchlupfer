@@ -4,16 +4,16 @@
     /// <summary>
     /// the accessor to the value.
     /// </summary>
-    public struct AccessorArrayValues : IAccessor {
-        private readonly IEntityArrayValues _Entity;
+    public struct AccessorFlexible : IAccessor {
+        private readonly IEntityFlexible _Entity;
         private readonly IMetaIndexedProperty _MetaProperty;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AccessorArrayValues"/> struct.
+        /// Initializes a new instance of the <see cref="AccessorFlexible"/> struct.
         /// </summary>
         /// <param name="metaPropertyArrayProp">the property</param>
         /// <param name="entity">the entity</param>
-        public AccessorArrayValues(IMetaIndexedProperty metaPropertyArrayProp, IEntityArrayValues entity) {
+        public AccessorFlexible(IMetaIndexedProperty metaPropertyArrayProp, IEntityFlexible entity) {
             this._MetaProperty = metaPropertyArrayProp;
             this._Entity = entity;
         }

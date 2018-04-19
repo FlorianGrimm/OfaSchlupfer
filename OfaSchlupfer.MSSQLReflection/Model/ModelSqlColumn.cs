@@ -3,6 +3,7 @@
 namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
     using System.Linq;
+    using OfaSchlupfer.Model;
     using OfaSchlupfer.SqlAccess;
 
     /// <summary>
@@ -11,7 +12,8 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     public sealed class ModelSqlColumn
         : ModelSqlNamedElement
         , IEquatable<ModelSqlColumn>
-        , IScopeNameResolver {
+        , IScopeNameResolver
+        , IModelScalarTypeFacade {
         private SqlScope _Scope;
         private IModelSqlObjectWithColumns _Owner;
 
@@ -47,7 +49,21 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             this.Scale = src.Scale;
             this.Precision = src.Precision;
             this.CollationName = src.CollationName;
-            this.IsNullable = src.IsNullable;
+            this.Nullable = src.Nullable;
+        }
+
+        public ModelScalarType SuggestType(MetaModelBuilder metaModelBuilder) {
+            //ModelTypeScalar scalarType = this.Type?.GetScalarType();
+            ModelTypeScalar scalarType = this.SqlType.GetScalarType();
+            var result = new ModelScalarType();
+            result.Name = scalarType.Name.GetQFullName("[", 2);
+            result.ExternalName = scalarType.GetCondensed();
+            result.MaxLength = this.MaxLength;
+            result.Scale = this.Scale;
+            result.Precision = this.Precision;
+            result.Nullable = this.Nullable;
+            result.Type = scalarType.GetClrType();
+            return result;
         }
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
@@ -66,12 +82,38 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         public string CollationName { get; set; }
 
-        public bool IsNullable { get; set; }
+        public bool Nullable { get; set; }
 
         /// <summary>
         /// Gets or sets the reference to the SqlType
         /// </summary>
         public ModelSqlType SqlType { get; set; }
+
+        public IModelScalarTypeFacade ItemType {
+            get {
+                return null;
+            }
+
+            set {
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool Collection {
+            get {
+                return false;
+            }
+
+            set {
+                if (value) {
+                    throw new NotSupportedException();
+                }
+            }
+        }
+
+        public bool FixedLength { get; set; }
+
+        public bool Unicode { get; set; }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
@@ -121,7 +163,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
                 && (this.Precision == other.Precision)
                 && (this.Scale == other.Scale)
                 && (this.CollationName == other.CollationName)
-                && (this.IsNullable == other.IsNullable)
+                && (this.Nullable == other.Nullable)
                 ;
         }
 

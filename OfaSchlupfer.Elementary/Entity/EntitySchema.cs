@@ -63,8 +63,8 @@
         public IEntity CreateEntity(string entityTypeName) {
             var metaEntity = this.GetMetaEntity(entityTypeName);
 #warning missing create custom type
-            if (metaEntity is IMetaEntityArrayValues metaEntityArrayValues) {
-                return new EntityArrayValues(metaEntityArrayValues, null);
+            if (metaEntity is IMetaEntityFlexible metaEntityArrayValues) {
+                return new EntityFlexible(metaEntityArrayValues, null);
             }
             return null;
         }

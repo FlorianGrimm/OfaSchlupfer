@@ -140,7 +140,14 @@ namespace OfaSchlupfer.MSSQLReflection {
                         dstType.Precision = srcType.precision;
                         dstType.Scale = srcType.scale;
                         dstType.CollationName = srcType.collation_name;
-                        dstType.IsNullable = srcType.is_nullable;
+                        dstType.Nullable = srcType.is_nullable;
+                        //srcType.system_type_id
+                        //switch (srcType.user_type_id) {
+                        //    case 1:
+                        //        dstType.s
+                        //    default:break;
+                        //}
+                            
                         if (((object)foundType == null) && (foundType != dstType)) {
                             dstType.AddToParent();
                         } else {
@@ -304,7 +311,7 @@ namespace OfaSchlupfer.MSSQLReflection {
             typeScalar.Precision = srcColumn.precision;
             typeScalar.Scale = srcColumn.scale;
             typeScalar.CollationName = srcColumn.collation_name;
-            typeScalar.IsNullable = srcColumn.is_nullable;
+            typeScalar.Nullable = srcColumn.is_nullable;
             dstColumn.SqlType = foundSqlType;
             return dstColumn;
         }

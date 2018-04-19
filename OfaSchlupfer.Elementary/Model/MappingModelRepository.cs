@@ -39,7 +39,7 @@
 
         public override void ResolveNameSource(ModelErrors errors) {
             if (((object)this.Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
-                var lstFound = this.Owner.FindRepository(this.SourceName);
+                var lstFound = this.Owner.Repositories.FindByKey(this.SourceName);
                 if (lstFound.Count == 1) {
                     this._Source = lstFound[0];
                     this._SourceName = null;
@@ -54,7 +54,7 @@
         public override void ResolveNameTarget(ModelErrors errors) {
             if (((object)this._Target == null) && ((object)this._TargetName != null)) {
                 if (((object)this.Owner != null) && ((object)this._Target == null) && ((object)this._TargetName != null)) {
-                    var lstFound = this.Owner.FindRepository(this.TargetName);
+                    var lstFound = this.Owner.Repositories.FindByKey(this.TargetName);
                     if (lstFound.Count == 1) {
                         this._Target = lstFound[0];
                         this._TargetName = null;

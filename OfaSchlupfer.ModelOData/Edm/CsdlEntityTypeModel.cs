@@ -116,19 +116,8 @@
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         [JsonIgnore]
         public CsdlSchemaModel Owner {
-            get {
-                return this._Owner;
-            }
-            set {
-                if (ReferenceEquals(this._Owner, value)) { return; }
-                if (this._Owner != null) { this.ThrowIfFrozen(); }
-                this._Owner = value;
-                //if ((object)value != null) {
-                //    this.Property.Broadcast();
-                //    this.NavigationProperty.Broadcast();
-                //    this.Keys.Broadcast();
-                //}
-            }
+            get => this._Owner;
+            internal set => this.SetOwner(ref _Owner, value);
         }
 
         public string FullName => (this.Owner?.Namespace ?? string.Empty) + "." + (this.Name ?? string.Empty);

@@ -64,16 +64,8 @@
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         [JsonIgnore]
         public CsdlSchemaModel Owner {
-            get {
-                return this._Owner;
-            }
-            set {
-                if (ReferenceEquals(this._Owner, value)) { return; }
-                if (this._Owner != null) {
-                    this.ThrowIfFrozen();
-                }
-                this._Owner = value;
-            }
+            get => this._Owner;
+            internal set => this.SetOwner(ref _Owner, value);
         }
 
         public FreezeableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlAssociationSetModel> AssociationSet => this._AssociationSet;

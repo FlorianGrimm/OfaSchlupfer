@@ -97,6 +97,7 @@
                     var entitySetName = entitySet.Name;
                     var modelEntity = metaModelBuilder.CreateModelEntity(
                         entitySetName,
+                        ModelEntityKind.EntitySet,
                         errors);
                     if (modelEntity.Owner == null) { modelSchema.Entities.Add(modelEntity); }
                     modelEntity.EntityType = modelComplexType;

@@ -1,33 +1,27 @@
 ﻿namespace OfaSchlupfer.Model {
     using System;
+    using System.Collections.Generic;
+    using System.Text;
 
     using Newtonsoft.Json;
 
     using OfaSchlupfer.Freezable;
 
     [JsonObject]
-    public class MappingModelProperty
-        : MappingObjectString<MappingModelComplexType, ModelProperty> {
+    public class MappingModelComplexType
+         : MappingObjectString<MappingModelSchema, ModelComplexType> {
         [JsonIgnore]
-        private string _Conversion;
+        private readonly FreezeableOwnedCollection<MappingModelComplexType, MappingModelProperty> _PropertyMappings;
 
-        public MappingModelProperty() {
+        public MappingModelComplexType() {
+            this._PropertyMappings = new FreezeableOwnedCollection<MappingModelComplexType, MappingModelProperty>(this, (owner, item) => { item.Owner = owner; });
+
         }
-              
-        [JsonProperty]
-        public string Conversion {
-            get {
-                return this._Conversion;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Conversion = value;
-            }
-        }
-        
+        public FreezeableOwnedCollection<MappingModelComplexType, MappingModelProperty> PropertyMappings => this._PropertyMappings;
+
         public override void ResolveNameSource(ModelErrors errors) {
             if (((object)this._Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
-                var lstFound = this.Owner.Source.Properties.FindByKey(this._SourceName);
+                var lstFound = this.Owner.Source.ComplexTypes.FindByKey(this._SourceName);
                 if (lstFound.Count == 1) {
                     this._Source = lstFound[0];
                     this._SourceName = null;
@@ -41,7 +35,7 @@
 
         public override void ResolveNameTarget(ModelErrors errors) {
             if (((object)this._Owner != null) && ((object)this._Target == null) && ((object)this._TargetName != null)) {
-                var lstFound = this.Owner.Target.Properties.FindByKey(this._TargetName);
+                var lstFound = this.Owner.Target.ComplexTypes.FindByKey(this._TargetName);
                 if (lstFound.Count == 1) {
                     this._Target = lstFound[0];
                     this._TargetName = null;

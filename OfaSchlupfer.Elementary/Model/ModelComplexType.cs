@@ -25,7 +25,7 @@
                 (owner, item) => { item.Owner = owner; });
         }
 
-        public IMetaEntityArrayValues GetMetaEntity() {
+        public IMetaEntityFlexible GetMetaEntity() {
             var result = this._GetMetaEntity;
             if ((object)result == null) {
                 result = new ModelComplexTypeMetaEntity(this);
@@ -44,14 +44,14 @@
             return result;
         }
 
-        public override Type GetClrType() => typeof(OfaSchlupfer.Entity.AccessorArrayValues);
+        public override Type GetClrType() => typeof(OfaSchlupfer.Entity.AccessorFlexible);
     }
 
     [JsonObject]
     public class ModelComplexTypeMetaEntity
         : FreezeableObject
         , IMetaEntity
-        , IMetaEntityArrayValues {
+        , IMetaEntityFlexible {
         [JsonIgnore]
         private readonly ModelComplexType _ModelComplexType;
         [JsonIgnore]

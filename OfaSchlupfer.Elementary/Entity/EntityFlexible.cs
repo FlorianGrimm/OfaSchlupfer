@@ -2,16 +2,18 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Newtonsoft.Json;
     using OfaSchlupfer.Freezable;
     using OfaSchlupfer.SqlAccess;
 
     /// <summary>
     /// An entity that stores it's data in an array.
     /// </summary>
-    public class EntityArrayValues
+    [JsonObject()]
+    public class EntityFlexible
         : FreezeableObject
         , IEntity
-        , IEntityArrayValues {
+        , IEntityFlexible {
         /// <summary>
         /// Convert the rows to ProjectChange
         /// </summary>
@@ -19,10 +21,10 @@
         /// <param name="sqlResult">the read values</param>
         /// <param name="factory">a factory for the target instances</param>
         /// <returns>the list of read items.</returns>
-        public static List<T> ConvertFromSqlResult<T>(string entityTypeName, SqlReadResult sqlResult, Func<MetaEntityArrayValues /*metaData*/, object[] /*values*/, T> factory)
-            where T : EntityArrayValues {
+        public static List<T> ConvertFromSqlResult<T>(string entityTypeName, SqlReadResult sqlResult, Func<MetaEntityFlexible /*metaData*/, object[] /*values*/, T> factory)
+            where T : EntityFlexible {
             var result = new List<T>(sqlResult.Rows.Count);
-            var meta = new MetaEntityArrayValues(entityTypeName, sqlResult.FieldNames);
+            var meta = new MetaEntityFlexible(entityTypeName, sqlResult.FieldNames);
             var length = sqlResult.FieldNames.Length;
             foreach (var row in sqlResult.Rows) {
                 result.Add(factory(meta, row));
@@ -30,18 +32,64 @@
             return result;
         }
 
+        private IMetaEntityFlexible _MetaData;
+        private object[] _Values;
+
+        /// <summary>
+        /// For Deserialization
+        /// </summary>
+        public EntityFlexible() {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EntityFlexible"/> class.
+        /// </summary>
+        /// <param name="metaData">the metadata</param>
+        /// <param name="values">the values</param>
+        public EntityFlexible(IMetaEntityFlexible metaData, object[] values) {
+            this._MetaData = metaData;
+            if ((object)values == null) {
+                var cnt = metaData.GetPropertiesByIndex().Count;
+                this._Values = new object[cnt];
+            } else {
+                this.Validate(values, false);
+                this._Values = values;
+            }
+        }
+
+#warning soon MetaDataEntityTypeName
         /*
-        private static EntityArrayProp Factory(MetaEntityArrayProp metaData, object[] values) {
-            return new EntityArrayProp(metaData, values);
+        public string MetaDataEntityTypeName {
+        get {
+                return this._MetaData?.EntityTypeName;
+            }
+            set {
+            }
         }
         */
-        private IMetaEntityArrayValues _MetaData;
-        private object[] _Values;
 
         /// <summary>
         /// Gets the metadata.
         /// </summary>
-        public IMetaEntity MetaData { get { return this._MetaData; } }
+#warning soon        [JsonProperty(ItemIsReference = true)]
+        [JsonIgnore]
+        public IMetaEntity MetaData {
+            get {
+                return this._MetaData;
+            }
+            set {
+                if (value is IMetaEntityFlexible metaEntityFlexible) {
+                    if (this.SetRefPropertyOnce<IMetaEntityFlexible>(ref this._MetaData, metaEntityFlexible)) {
+                        if (this._Values == null) {
+                            var cnt = metaEntityFlexible.GetPropertiesByIndex().Count;
+                            this._Values = new object[cnt];
+                        }
+                    }
+                } else {
+                    throw new InvalidCastException("IMetaEntityFlexible needed");
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the values.
@@ -77,23 +125,6 @@
             this._MetaData.Validate(metaProperty, value, false);
             this._Values[index] = value;
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EntityArrayValues"/> class.
-        /// </summary>
-        /// <param name="metaData">the metadata</param>
-        /// <param name="values">the values</param>
-        public EntityArrayValues(IMetaEntityArrayValues metaData, object[] values) {
-            this._MetaData = metaData;
-            if ((object)values == null) {
-                var cnt = metaData.GetPropertiesByIndex().Count;
-                this._Values = new object[cnt];
-            } else {
-                this.Validate(values, false);
-                this._Values = values;
-            }
-        }
-
 
         public string Validate(object[] values, bool validateOrThrow) => this._MetaData?.Validate(values, validateOrThrow);
     }

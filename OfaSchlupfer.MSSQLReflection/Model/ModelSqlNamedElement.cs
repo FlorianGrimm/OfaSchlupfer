@@ -31,6 +31,7 @@
         /// <summary>
         /// Gets or sets the type
         /// </summary>
+#warning kill this?
         public ModelSqlElementType Type { get; set; }
     }
 }

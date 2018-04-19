@@ -55,47 +55,29 @@
         }
 
         public IMetaEntity MetaEntity {
-            get {
-                return this._MetaEntity;
-            }
-            set {
-                if (ReferenceEquals(this._MetaEntity, value)) { return; }
-                if ((object)this._MetaEntity != null) {
-                    this.ThrowIfFrozen();
-                    throw new ArgumentException("Cannot be set again");
-                }
-                this._MetaEntity = value;
-            }
+            get => this._MetaEntity;
+            set => this.SetRefPropertyOnce(ref this._MetaEntity, value);
         }
 
         /// <summary>
         /// Gets or sets the name
         /// </summary>
         public string Name {
-            get { return this._Name; }
-            set {
-                this.ThrowIfFrozen();
-                this._Name = value;
-            }
+            get => this._Name;
+            set => this.SetRefProperty(ref this._Name, value);
         }
 
         public Type PropertyType {
-            get { return this._PropertyType; }
-            set {
-                this.ThrowIfFrozen();
-                this._PropertyType = value;
-            }
+            get => this._PropertyType;
+            set => this.SetRefProperty(ref this._PropertyType, value);
         }
 
         /// <summary>
         /// Gets or sets the index
         /// </summary>
         public int Index {
-            get { return this._Index; }
-            set {
-                this.ThrowIfFrozen();
-                this._Index = value;
-            }
+            get => this._Index;
+            set => this.SetValueProperty(ref this._Index, value);
         }
 
         /// <summary>
@@ -104,7 +86,7 @@
         /// <param name="entity">the entity to access.</param>
         /// <returns>the bound accessor</returns>
         public virtual IAccessor GetAccessor(object entity) {
-            return new AccessorArrayValues(this, (IEntityArrayValues)entity);
+            return new AccessorFlexible(this, (IEntityFlexible)entity);
         }
 
 

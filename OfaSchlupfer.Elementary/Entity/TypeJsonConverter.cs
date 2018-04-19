@@ -31,6 +31,8 @@
                 Add(typeof(short?), "short?");
                 Add(typeof(int), "int");
                 Add(typeof(int?), "int?");
+                Add(typeof(long), "long");
+                Add(typeof(long?), "long?");
                 Add(typeof(decimal), "decimal");
                 Add(typeof(decimal?), "decimal?");
                 Add(typeof(float), "float");

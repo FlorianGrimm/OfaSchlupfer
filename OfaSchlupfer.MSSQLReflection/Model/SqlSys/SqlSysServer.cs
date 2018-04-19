@@ -8,7 +8,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
     /// <summary>
     /// Access for sys.schema
     /// </summary>
-    public sealed class SqlSysServer : EntityArrayValues {
+    public sealed class SqlSysServer : EntityFlexible {
         public const string SELECTStatment = "SELECT servername=@@SERVERNAME, servicename=@@SERVICENAME, version=@@VERSION;";
 
         /// <summary>
@@ -16,7 +16,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
         /// </summary>
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
-        public SqlSysServer(MetaEntityArrayValues metaData, object[] values)
+        public SqlSysServer(MetaEntityFlexible metaData, object[] values)
             : base(metaData, values) {
             this.Databases = new Dictionary<SqlName, SqlSysDatabase>();
         }
@@ -41,7 +41,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
         /// <returns>a new instance</returns>
-        public static SqlSysServer Factory(MetaEntityArrayValues metaData, object[] values) {
+        public static SqlSysServer Factory(MetaEntityFlexible metaData, object[] values) {
             return new SqlSysServer(metaData, values);
         }
     }

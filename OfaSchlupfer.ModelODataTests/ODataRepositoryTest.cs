@@ -21,33 +21,21 @@ namespace OfaSchlupfer.ModelOData {
             //    //builder.AddSharePointOnlineCredentials
             //});
             services.AddServiceClientCredentials((builder) => { });
-            services.AddODataRepository();
+            services.AddOfaSchlupferODataRepository();
+            services.AddOfaSchlupferModel();
+            services.AddOfaSchlupferEntity();
 
             var serviceProvider = services.BuildServiceProvider();
 
-            var modelRoot = new ModelRoot();
-            var modelRepository1 = new ModelRepository();
-            modelRepository1.Name = "one";
-            modelRepository1.RepositoryType = "OData";
+            var modelRoot = new ModelRoot(serviceProvider);
+            var modelRepository1 = modelRoot.CreateRepository("one", "OData");
 
-            var modelRepository2 = new ModelRepository();
-            modelRepository2.Name = "two";
-            modelRepository2.RepositoryType = "OData";
+            var modelRepository2 = modelRoot.CreateRepository("two", "OData");
 
-            modelRoot.Repositories.Add(modelRepository1);
-            modelRoot.Repositories.Add(modelRepository2);
-
-            var odataRepository1 = modelRepository1.GetReferenceRepositoryModel(serviceProvider);
-            var odataRepository2 = modelRepository2.GetReferenceRepositoryModel(serviceProvider);
+            var odataRepository1 = modelRepository1.GetReferenceRepositoryModel();
+            var odataRepository2 = modelRepository2.GetReferenceRepositoryModel();
             Assert.NotNull(odataRepository1);
             Assert.NotNull(odataRepository2);
-
-            //modelRepository1.ModelDefinition.
-            //var oDataRepository = serviceProvider.GetRequiredService<ODataRepository>();
-            //oDataRepository.ConnectionString = testCfg.ProjectServer;
-            //oDataRepository.BuildSchema(contentMetaDataXml);
-
-
         }
 
 #if lateragain

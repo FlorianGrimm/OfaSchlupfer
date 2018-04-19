@@ -36,15 +36,8 @@ namespace OfaSchlupfer.ModelOData.Edm {
 
         [JsonIgnore]
         public CsdlEntityContainerModel Owner {
-            get {
-                return this._Owner;
-            }
-            internal set {
-                if (ReferenceEquals(this._Owner, value)) { return; }
-                if ((object)this._Owner == null) { this._Owner = value; return; }
-                this.ThrowIfFrozen();
-                this._Owner = value;
-            }
+            get => this._Owner;
+            internal set => this.SetOwner(ref _Owner, value);
         }
 
         public string Name {

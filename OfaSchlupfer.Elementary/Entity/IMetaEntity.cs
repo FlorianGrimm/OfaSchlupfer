@@ -33,7 +33,7 @@
         string Validate(IMetaProperty metaProperty, object value, bool validateOrThrow);
     }
 
-    public interface IMetaEntityArrayValues : IMetaEntity {
+    public interface IMetaEntityFlexible : IMetaEntity {
         /// <summary>
         /// Gets the property by index.
         /// </summary>

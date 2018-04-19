@@ -10,19 +10,13 @@
     [JsonObject]
     public class MappingModelEntity
         : MappingObjectString<MappingModelSchema, ModelEntity> {
-        [JsonIgnore]
-        private readonly FreezeableOwnedCollection<MappingModelEntity, MappingModelProperty> _PropertyMappings;
-
-        [JsonIgnore]
+                [JsonIgnore]
         private readonly FreezeableOwnedCollection<MappingModelEntity, MappingModelConstraint> _ConstraintMappings;
 
         public MappingModelEntity() {
-            this._PropertyMappings = new FreezeableOwnedCollection<MappingModelEntity, MappingModelProperty>(this, (owner, item) => { item.Owner = owner; });
             this._ConstraintMappings = new FreezeableOwnedCollection<MappingModelEntity, MappingModelConstraint>(this, (owner, item) => { item.Owner = owner; });
         }
-
-        public FreezeableOwnedCollection<MappingModelEntity, MappingModelProperty> PropertyMappings => this._PropertyMappings;
-
+      
         public FreezeableOwnedCollection<MappingModelEntity, MappingModelConstraint> ConstraintMappings => this._ConstraintMappings;
 
         public override void ResolveNameSource(ModelErrors errors) {

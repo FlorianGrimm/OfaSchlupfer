@@ -74,7 +74,7 @@
                 writer.WriteNull();
             } else {
                 var metaData = entity.MetaData;
-                if (entity is IEntityArrayValues entityArrayValues && metaData is IMetaEntityArrayValues metaEntityArray) {
+                if (entity is IEntityFlexible entityArrayValues && metaData is IMetaEntityFlexible metaEntityArray) {
                     var metaProperties = metaEntityArray.GetPropertiesByIndex();
                     writer.WriteStartObject();
                     {

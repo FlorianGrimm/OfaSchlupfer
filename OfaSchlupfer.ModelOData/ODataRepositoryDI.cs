@@ -20,14 +20,19 @@
 
 namespace Microsoft.Extensions.DependencyInjection {
     using System;
+
+    using Microsoft.Extensions.DependencyInjection.Extensions;
+
     using OfaSchlupfer.ModelOData;
+    using OfaSchlupfer.ModelOData.Edm;
 
     public static class ODataRepositoryExtension {
-        public static IODataRepositoryBuilder AddODataRepository(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) => AddODataRepository(services, _ => { });
-        public static IODataRepositoryBuilder AddODataRepository(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Action<ODataRepositoryOptions> configure) {
+        public static IODataRepositoryBuilder AddOfaSchlupferODataRepository(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) => AddOfaSchlupferODataRepository(services, _ => { });
+        public static IODataRepositoryBuilder AddOfaSchlupferODataRepository(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Action<ODataRepositoryOptions> configure) {
             services.Configure(configure);
-            services.AddSingleton(typeof(OfaSchlupfer.Model.IReferenceRepositoryModelType), typeof(ODataRepositoryModelType));
-            services.AddTransient(typeof(ODataRepository), typeof(ODataRepositoryImplementation));
+            services.TryAddSingleton<OfaSchlupfer.Model.IReferencedRepositoryModelType, ODataRepositoryModelType>();
+            services.TryAddTransient<ODataRepository, ODataRepositoryImplementation>();            
+            services.TryAddTransient<CachedMetadataResolver, CachedMetadataResolver>();
             return new ODataRepositoryBuilder(services);
         }
     }

@@ -52,5 +52,24 @@
             }
             target = value;
         }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public static bool SetPropertyAndOwner<TThis, TProperty>(this TThis that, ref TProperty thisProperty, TProperty value)
+            where TThis : class, IFreezeable
+            where TProperty : class, IObjectWithOwner<TThis> {            
+            if (ReferenceEquals(thisProperty, value)) { return false; }
+            that.ThrowIfFrozen();
+            var oldValue = thisProperty;
+            thisProperty = value;
+            if (!(value is null)) {
+                value.Owner = that;
+            }
+            if (!(oldValue is null)) {
+                if (ReferenceEquals(oldValue.Owner, that)) {
+                    oldValue.Owner = null;
+                }
+            }
+            return true;
+        }
     }
 }

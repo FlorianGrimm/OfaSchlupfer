@@ -29,6 +29,9 @@
         [JsonIgnore]
         protected TThisKey _Name;
 
+        [JsonIgnore]
+        protected bool _Enabled;
+
         protected MappingModelObject() { }
 
         [JsonProperty]
@@ -124,6 +127,18 @@
         protected abstract bool AreThisNamesEqual(TThisKey thisName, ref TThisKey value);
 
         public TThisKey GetName() => this._Name;
+
+        [JsonProperty]
+        public bool Enabled {
+            get {
+                return this._Enabled;
+            }
+            set {
+                this.ThrowIfFrozen();
+                this._Enabled = value;
+            }
+        }
+
     }
 
     [JsonObject]
@@ -138,16 +153,10 @@
 
         [JsonIgnore]
         public TOwner Owner {
-            get {
-                return this._Owner;
-            }
-            internal set {
-                if (ReferenceEquals(this._Owner, value)) { return; }
-                if ((object)this._Owner == null) { this._Owner = value; return; }
-                this.ThrowIfFrozen();
-                this._Owner = value;
-            }
+            get => this._Owner;
+            internal set => this.SetOwner(ref _Owner, value);
         }
+
         protected override bool AreSourceNamesEqual(string sourceName, ref string value)
             => MappingObjectHelper.AreNamesEqual(sourceName, ref value);
 

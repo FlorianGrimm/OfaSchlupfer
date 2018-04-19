@@ -4,9 +4,6 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     public interface IAuthorization {
-        Identifier Owner {
-            get;
-            set;
-        }
+        Identifier Owner { get; set; }
     }
 }

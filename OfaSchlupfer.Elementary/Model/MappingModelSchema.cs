@@ -11,10 +11,16 @@
     public class MappingModelSchema
         : MappingObjectString<MappingModelRepository, ModelSchema> {
         [JsonIgnore]
+        private readonly FreezeableOwnedCollection<MappingModelSchema, MappingModelComplexType> _ComplexTypeMappings;
+           
+        [JsonIgnore]
         private readonly FreezeableOwnedCollection<MappingModelSchema, MappingModelEntity> _EntityMappings;
 
         [JsonIgnore]
         private readonly FreezeableOwnedCollection<MappingModelSchema, MappingModelRelation> _RelationMappings;
+
+        [JsonProperty]
+        public FreezeableOwnedCollection<MappingModelSchema, MappingModelComplexType> ComplexTypeMappings => this._ComplexTypeMappings;
 
         [JsonProperty]
         public FreezeableOwnedCollection<MappingModelSchema, MappingModelEntity> EntityMappings => this._EntityMappings;
@@ -23,6 +29,7 @@
         public FreezeableOwnedCollection<MappingModelSchema, MappingModelRelation> RelationMappings => this._RelationMappings;
 
         public MappingModelSchema() {
+            this._ComplexTypeMappings = new FreezeableOwnedCollection<MappingModelSchema, MappingModelComplexType>(this, (owner, item) => { item.Owner = owner; });
             this._EntityMappings = new FreezeableOwnedCollection<MappingModelSchema, MappingModelEntity>(this, (owner, item) => { item.Owner = owner; });
             this._RelationMappings = new FreezeableOwnedCollection<MappingModelSchema, MappingModelRelation>(this, (owner, item) => { item.Owner = owner; });
         }

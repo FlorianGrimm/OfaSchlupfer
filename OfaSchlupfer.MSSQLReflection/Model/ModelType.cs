@@ -27,13 +27,17 @@
         public static explicit operator ModelType(ModelSqlType modelSqlType) {
             if (modelSqlType == null) { return null; }
             ModelSystemDataType dataType = ModelSystemDataType.None;
+            if (!(modelSqlType.BaseOnType is null)) {
+                dataType = ModelSystemDataTypeUtility.ConvertFromSqlName(modelSqlType.BaseOnType.Name);
+            } else {
+                dataType = ModelSystemDataTypeUtility.ConvertFromSqlName(modelSqlType.Name);
+            }
 
-            // TODO: Convert name to dataType
             return new ModelTypeScalar() {
                 Name = modelSqlType.Name,
                 SystemDataType = dataType,
                 CollationName = modelSqlType.CollationName,
-                IsNullable = modelSqlType.IsNullable,
+                IsNullable = modelSqlType.Nullable,
                 MaxLength = modelSqlType.MaxLength,
                 Precision = modelSqlType.Precision,
                 Scale = modelSqlType.Scale

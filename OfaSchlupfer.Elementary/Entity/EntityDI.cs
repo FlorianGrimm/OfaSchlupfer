@@ -27,13 +27,16 @@
 
 namespace Microsoft.Extensions.DependencyInjection {
     using System;
+
+    using Microsoft.Extensions.DependencyInjection.Extensions;
+
     using OfaSchlupfer.Entity;
 
     public static class EntityExtension {
-        public static IEntityBuilder AddEntity(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) => AddEntity(services, _ => { });
-        public static IEntityBuilder AddEntity(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Action<EntityOptions> configure) {
+        public static IEntityBuilder AddOfaSchlupferEntity(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) => AddOfaSchlupferEntity(services, _ => { });
+        public static IEntityBuilder AddOfaSchlupferEntity(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Action<EntityOptions> configure) {
             services.Configure(configure);
-            services.AddSingleton(typeof(IEntityDispatcherFactory), typeof(EntityDispatcherFactory));
+            services.TryAddScoped<IEntityDispatcherFactory, EntityDispatcherFactory>();
             //services.AddTransient<IHttpClientTypedFactory, HttpClientDefaultFactory>();
             return new EntityBuilder(services);
         }

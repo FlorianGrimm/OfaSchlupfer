@@ -13,7 +13,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         private byte _Precision;
         private byte _Scale;
         private string _CollationName;
-        private bool _IsNullable;
+        private bool _Nullable;
 
         public ModelSqlType() { }
 
@@ -24,7 +24,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             this.Scale = src.Scale;
             this.Precision = src.Precision;
             this.CollationName = src.CollationName;
-            this.IsNullable = src.IsNullable;
+            this.Nullable = src.Nullable;
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets or sets a value indicating whether gets or sets the type is null-able.
         /// </summary>
-        public bool IsNullable { get { return this._IsNullable; } set { this._IsNullable = value; } }
+        public bool Nullable { get { return this._Nullable; } set { this._Nullable = value; } }
 
         public ModelSqlType BaseOnType { get; set; }
 
@@ -89,17 +89,25 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// Get the scalar type.
         /// </summary>
         /// <returns>The scalartype or null</returns>
-        public ModelTypeScalar GetScalarType() {
-            return this._ScalarType ?? (this._ScalarType = new ModelTypeScalar() {
+        public override ModelTypeScalar GetScalarType() {
+#warning TODO respect BaseOnType
+            var modelType=(ModelType)this;
+            if (modelType is ModelTypeScalar modelTypeScalar) {
+                return modelTypeScalar;
+            }
+#warning TODO NOW respect Freeze
+            //return this._ScalarType ?? (this._ScalarType = new ModelTypeScalar() {
+            return new ModelTypeScalar() {
                 Name = this.Name,
+                SystemDataType = this.GetSystemDataType(),
                 MaxLength = this.MaxLength,
                 Precision = this.Precision,
                 Scale = this.Scale,
                 CollationName = this.CollationName,
-                IsNullable = this.IsNullable
-            });
+                IsNullable = this.Nullable
+            };
         }
-
+        
         /// <summary>
         /// a equals b
         /// </summary>
@@ -131,7 +139,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
                 && (this.Precision == other.Precision)
                 && (this.Scale == other.Scale)
                 && (this.CollationName == other.CollationName)
-                && (this.IsNullable == other.IsNullable)
+                && (this.Nullable == other.Nullable)
                 ;
         }
 
@@ -140,5 +148,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         /// <inheritdoc/>
         public override string ToString() => this.Name.ToString();
+
+
+        private ModelSystemDataType GetSystemDataType() {
+            return ModelSystemDataTypeUtility.ConvertFromSqlName(this.Name);            
+        }
     }
 }

@@ -6,7 +6,7 @@
     /// <summary>
     /// Access for sys.schema
     /// </summary>
-    public sealed class SqlSysObject : EntityArrayValues {
+    public sealed class SqlSysObject : EntityFlexible {
         /// <summary>
         /// SELECT o.name, o.object_id, o.schema_id, o.parent_object_id, o.type, o.create_date, o.modify_date, m.definition, sn.base_object_name
         /// FROM sys.objects o
@@ -55,7 +55,7 @@ WHERE (o.object_id>0) AND (o.is_ms_shipped=0)
         /// </summary>
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
-        public SqlSysObject(MetaEntityArrayValues metaData, object[] values)
+        public SqlSysObject(MetaEntityFlexible metaData, object[] values)
             : base(metaData, values) {
             this.Columns = new List<SqlSysColumn>();
             this.Parameters = new List<SqlSysParameter>();
@@ -198,7 +198,7 @@ WHERE (o.object_id>0) AND (o.is_ms_shipped=0)
         /// <param name="metaData">the metadata</param>
         /// <param name="values">the values</param>
         /// <returns>a new instance</returns>
-        public static SqlSysObject Factory(MetaEntityArrayValues metaData, object[] values) {
+        public static SqlSysObject Factory(MetaEntityFlexible metaData, object[] values) {
             return new SqlSysObject(metaData, values);
         }
     }

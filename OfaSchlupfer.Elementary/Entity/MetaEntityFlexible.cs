@@ -11,10 +11,10 @@
     /// MetaData for EntityArrayProp
     /// </summary>
     [JsonObject]
-    public class MetaEntityArrayValues
+    public class MetaEntityFlexible
         : FreezeableObject
         , IMetaEntity
-        , IMetaEntityArrayValues {
+        , IMetaEntityFlexible {
         [JsonIgnore]
         private FreezeableCollection<IMetaIndexedProperty> _PropertyByIndex;
         [JsonIgnore]
@@ -27,35 +27,35 @@
         private FreezedList<IMetaIndexedProperty> _GetPropertiesByIndex;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MetaEntityArrayValues"/> class.
+        /// Initializes a new instance of the <see cref="MetaEntityFlexible"/> class.
         /// </summary>
-        public MetaEntityArrayValues() {
+        public MetaEntityFlexible() {
             this._PropertyByIndex = new FreezeableCollection<IMetaIndexedProperty>();
             this._PropertyByName = new FreezeableDictionary<string, IMetaIndexedProperty>();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MetaEntityArrayValues"/> class.
+        /// Initializes a new instance of the <see cref="MetaEntityFlexible"/> class.
         /// </summary>
         /// <param name="names">names of properties.</param>
-        public MetaEntityArrayValues(string entityTypeName, IEnumerable<string> names)
+        public MetaEntityFlexible(string entityTypeName, IEnumerable<string> names)
             : this() {
             this.EntityTypeName = entityTypeName;
             if (names != null) {
                 int idx = 0;
                 foreach (var name in names) {
-                    this.AddProperty(new MetaPropertyArrayValues(idx, name, null));
+                    this.AddProperty(new MetaPropertyFlexible(idx, name, null));
                     idx++;
                 }
             }
         }
 
-        public MetaEntityArrayValues(string entityTypeName, IEnumerable<IMetaProperty> properties) {
+        public MetaEntityFlexible(string entityTypeName, IEnumerable<IMetaProperty> properties) {
             this.EntityTypeName = entityTypeName;
             if (properties != null) {
                 int idx = 0;
                 foreach (var property in properties) {
-                    this.AddProperty(new MetaPropertyArrayValues(idx, property));
+                    this.AddProperty(new MetaPropertyFlexibleChained(idx, property));
                     idx++;
                 }
             }
