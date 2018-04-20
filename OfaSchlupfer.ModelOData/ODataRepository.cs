@@ -17,7 +17,7 @@
     using OfaSchlupfer.ModelOData.Edm;
     using OfaSchlupfer.SPO;
 
-    public class ODataRepositoryModelType : ReferencedRepositoryModelType {
+    public class ODataRepositoryModelType : ExternalRepositoryModelType {
         public const string ModelTypeName = "OData";
 
         public ODataRepositoryModelType(IServiceProvider serviceProvider) : base(serviceProvider) {
@@ -25,7 +25,7 @@
             this.Description = "Read access to OData sources.";
         }
 
-        public override IReferencedRepositoryModel CreateReferencedRepositoryModel() {
+        public override IExternalRepositoryModel CreateExternalRepositoryModel() {
 
             try {
                 return this.ServiceProvider.GetRequiredService<ODataRepository>();
@@ -37,7 +37,7 @@
         }
     }
 
-    public abstract class ODataRepository : ReferenceRepositoryModelBase {
+    public abstract class ODataRepository : ExternalRepositoryModelBase {
         protected EdmxModel _EdmxModel;
         //protected IHttpClientDispatcherFactory _ClientFactory;
         //protected IHttpClientCredentials _HttpClientCredentials;
@@ -108,7 +108,7 @@
         public abstract Task<string> GetMetadataAsync();
     }
 
-    public class ODataRepositoryImplementation : ODataRepository, IReferencedRepositoryModel {
+    public class ODataRepositoryImplementation : ODataRepository, IExternalRepositoryModel {
 
         //  https://m365x235962.sharepoint.com/sites/pwa/_api/projectserver
         // https://code.msdn.microsoft.com/office/Invoke-SharePoint-REST-API-078a0638/sourcecode?fileId=136158&pathId=613790383

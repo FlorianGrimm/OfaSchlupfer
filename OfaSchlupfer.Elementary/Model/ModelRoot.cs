@@ -27,10 +27,6 @@
         [JsonIgnore]
         private readonly FreezeableOwnedKeyedCollection<ModelRoot, string, MappingModelRepository> _RepositoryMappings;
 
-        public FreezeableOwnedKeyedCollection<ModelRoot, string, ModelRepository> Repositories => this._Repositories;
-
-        public FreezeableOwnedKeyedCollection<ModelRoot, string, MappingModelRepository> RepositoryMappings => this._RepositoryMappings;
-
         public ModelRoot() {
             this._Repositories = new FreezeableOwnedKeyedCollection<ModelRoot, string, ModelRepository>(
                 this, (item) => item.Name,
@@ -82,11 +78,17 @@
             set => this.SetRefPropertyOnce<IServiceProvider>(ref this._ServiceProvider, value);
         }
 
-        [JsonProperty]
+        [JsonProperty(Order = 1)]
         public string Name {
             get => this._Name;
             set => this.SetStringProperty(ref this._Name, value);
         }
+
+        [JsonProperty(Order = 2)]
+        public FreezeableOwnedKeyedCollection<ModelRoot, string, ModelRepository> Repositories => this._Repositories;
+
+        [JsonProperty(Order = 3)]
+        public FreezeableOwnedKeyedCollection<ModelRoot, string, MappingModelRepository> RepositoryMappings => this._RepositoryMappings;
 
         /// <summary>
         /// 

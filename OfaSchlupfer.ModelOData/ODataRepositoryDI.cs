@@ -30,7 +30,7 @@ namespace Microsoft.Extensions.DependencyInjection {
         public static IODataRepositoryBuilder AddOfaSchlupferODataRepository(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) => AddOfaSchlupferODataRepository(services, _ => { });
         public static IODataRepositoryBuilder AddOfaSchlupferODataRepository(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Action<ODataRepositoryOptions> configure) {
             services.Configure(configure);
-            services.TryAddSingleton<OfaSchlupfer.Model.IReferencedRepositoryModelType, ODataRepositoryModelType>();
+            services.TryAddSingleton<OfaSchlupfer.Model.IExternalRepositoryModelType, ODataRepositoryModelType>();
             services.TryAddTransient<ODataRepository, ODataRepositoryImplementation>();            
             services.TryAddTransient<CachedMetadataResolver, CachedMetadataResolver>();
             return new ODataRepositoryBuilder(services);

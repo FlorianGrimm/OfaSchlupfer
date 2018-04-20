@@ -16,7 +16,7 @@
         //, IMappingNamedObject<ModelEntityName> 
         {
         [JsonIgnore]
-        private IReferencedRepositoryModel _ReferencedRepositoryModel;
+        private IExternalRepositoryModel _ReferencedRepositoryModel;
 
         [JsonIgnore]
         private ModelDefinition _ModelDefinition;
@@ -34,13 +34,13 @@
         public ModelRepository() {
         }
 
-        [JsonProperty]
+        [JsonProperty(Order = 4)]
         public ModelDefinition ModelDefinition {
             get => this._ModelDefinition;
             set => this.SetPropertyAndOwner<ModelRepository, ModelDefinition>(ref this._ModelDefinition, value);
         }
 
-        [JsonProperty]
+        [JsonProperty(Order = 3)]
         public string RepositoryTypeName {
             get {
                 if (!(this._ReferencedRepositoryModel is null)) {
@@ -52,15 +52,37 @@
                 return this._RepositoryTypeName;
             }
             set {
-#warning HEERERERERERE                
                 if (value == string.Empty) { value = null; }
                 if (string.Equals(this._RepositoryTypeName, value, StringComparison.Ordinal)) { return; }
                 this.ThrowIfFrozen();
                 this._RepositoryTypeName = value;
+                if (!(this.ReferencedRepositoryModel is null)) {
+                    if (string.Equals(this.ReferencedRepositoryModel.GetRepositoryTypeName(), value, StringComparison.OrdinalIgnoreCase)) {
+                        //OK 
+                    } else {
+                        // the type doesn't match
+                        this.ReferencedRepositoryModel = null;
+                    }
+                }
+                if (!(this.ModelDefinition is null)) {
+                    if (string.Equals(this.ModelDefinition.RepositoryTypeName, value, StringComparison.OrdinalIgnoreCase)) {
+                        //OK 
+                    } else {
+                        // the type doesn't match
+                        this.ModelDefinition = null;
+                    }
+                }
             }
         }
 
-        [JsonProperty]
+        public ModelSchema CreateModelSchema(string name) {
+            var result = new ModelSchema();
+            result.Name = name ?? this.Name;
+            this.ModelSchema = result;
+            return result;
+        }
+
+        [JsonProperty(Order = 5)]
         public ModelSchema ModelSchema {
             get => this._ModelSchema;
             set => this.SetPropertyAndOwner(ref this._ModelSchema, value);
@@ -77,25 +99,33 @@
         }
 
         [JsonIgnore]
-        public IReferencedRepositoryModel ReferencedRepositoryModel {
+        public IExternalRepositoryModel ReferencedRepositoryModel {
             get {
                 return this._ReferencedRepositoryModel;
             }
             set {
-#warning HERERERERER
-                if (ReferenceEquals(this._ReferencedRepositoryModel, value)) {
-                    return;
-                }
-                if (this._ReferencedRepositoryModel != null) {
-                    this.ThrowIfFrozen();
-                }
+                if (ReferenceEquals(this._ReferencedRepositoryModel, value)) { return; }
+                if (this._ReferencedRepositoryModel != null) { this.ThrowIfFrozen(); }
+                var oldValue = this._ReferencedRepositoryModel;
+                
                 this._ReferencedRepositoryModel = value;
-                if (value != null) {
-                    //if (this.RepositoryTypeName == null) {
-                    //    this._RepositoryTypeName = value.GetRepositoryTypeName();
-                    //}
-#warning later check this._RepositoryType = value.GetModelTypeName();
-                    value.ModelRepository = this;
+
+                if (!(value is null)) {
+                    this._RepositoryTypeName = value.GetRepositoryTypeName();
+                    value.Owner = this;
+                }
+                if (!(oldValue is null)) {
+                    if (ReferenceEquals(oldValue.Owner, this)) {
+                        oldValue.Owner = null;
+                    }
+                }
+                if (!(this.ModelDefinition is null)) {
+                    if (string.Equals(this.ModelDefinition.RepositoryTypeName, value.GetRepositoryTypeName(), StringComparison.OrdinalIgnoreCase)) {
+                        //OK 
+                    } else {
+                        // the type doesn't match
+                        this.ModelDefinition = null;
+                    }
                 }
             }
         }
@@ -109,15 +139,15 @@
             return result;
         }
 
-        public IReferencedRepositoryModel GetReferenceRepositoryModel() {
+        public IExternalRepositoryModel GetReferenceRepositoryModel() {
             if (this.ReferencedRepositoryModel != null) { return this.ReferencedRepositoryModel; }
             if (this.RepositoryTypeName == null) {
                 return null;
             }
             {
                 if (this.Owner is null) { throw new ModelException("Owner is not set."); }
-                var rtf = (this.Owner.ServiceProvider.GetService<ReferencedRepositoryModelFactory>())
-                    ?? (new ReferencedRepositoryModelFactory(this.Owner.ServiceProvider));
+                var rtf = (this.Owner.ServiceProvider.GetService<ExternalRepositoryModelFactory>())
+                    ?? (new ExternalRepositoryModelFactory(this.Owner.ServiceProvider));
                 var instance = rtf.CreateRepository(this.RepositoryTypeName);
                 var result = System.Threading.Interlocked.CompareExchange(ref this._ReferencedRepositoryModel, instance, null);
                 if (ReferenceEquals(result, null)) {
@@ -127,7 +157,7 @@
                 }
             }
         }
-        
+
         public ModelDefinition CreateModelDefinition(string repositoryType) {
             if (repositoryType is null) {
                 if (this.RepositoryTypeName is null) {

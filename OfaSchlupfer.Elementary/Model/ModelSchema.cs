@@ -69,9 +69,6 @@
                 (owner, item) => { item.Owner = owner; });
         }
 
-        public void PostDeserialize() {
-        }
-
         public override bool Freeze() {
             var result = base.Freeze();
             if (result) {
@@ -96,6 +93,21 @@
                     result.Add(null, metaEntity);
                 }
             }
+            return result;
+        }
+
+        public ModelEntity CreateEntity(string name) {
+            var result = new ModelEntity();
+            result.Kind = ModelEntityKind.EntitySet;
+            result.Name = name;
+            this.Entities.Add(result);
+            return result;
+        }
+
+        public ModelComplexType CreateComplexType(string name) {
+            var result = new ModelComplexType();
+            result.Name = name;
+            this.ComplexTypes.Add(result);
             return result;
         }
     }

@@ -45,6 +45,13 @@
         }
 
         public override Type GetClrType() => typeof(OfaSchlupfer.Entity.AccessorFlexible);
+
+        public ModelProperty CreateProperty(string name) {
+            var result = new ModelProperty();
+            result.Name = name;
+            this.Properties.Add(result);
+            return result;
+        }
     }
 
     [JsonObject]

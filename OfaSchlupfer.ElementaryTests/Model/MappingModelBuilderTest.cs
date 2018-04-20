@@ -53,6 +53,19 @@
 
                 if (errors.HasErrors()) { output.WriteLine(errors.ToString()); }
                 Assert.False(errors.HasErrors());
+
+                {
+                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings();
+                    serializeSettings.TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple;
+                    serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+                    var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(modelRoot, Newtonsoft.Json.Formatting.Indented, serializeSettings);
+                    try {
+                        string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\MappingModelBuilder_1_Test.json");
+                        System.IO.File.WriteAllText(outputPath, schemaAsJson);
+                    } catch {
+                        throw;
+                    }
+                }
             }
         }
     }

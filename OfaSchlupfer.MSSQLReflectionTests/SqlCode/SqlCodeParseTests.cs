@@ -308,6 +308,30 @@ DROP TABLE #x;
             Assert.False(scope.HasContent);
         }
 
+        [Fact]
+        public void SqlCodeParse_Analyse_Select_Join_Test() {
+            var modelDatabase = ReadAllCached();
+
+            var sca = new SqlCodeAnalyse();
+            var node = sca.ParseTransport(@"
+SELECT o.name, o.object_id, o.schema_id, o.parent_object_id, o.type, o.create_date, o.modify_date, o.is_ms_shipped, m.definition, sn.base_object_name
+FROM sys.all_objects o
+LEFT JOIN sys.sql_modules m
+    ON o.object_id = m.object_id
+LEFT JOIN sys.synonyms sn
+    ON o.object_id = sn.object_id
+");
+            Assert.NotNull(node);
+
+            var analysis = sca.Analyse(node, modelDatabase).FirstOrDefault();
+            Assert.NotNull(analysis);
+
+            var scope = ((SqlScript)node).Batches[0].Analyse.SqlCodeScope;
+            Assert.NotNull(scope);
+            Assert.Equal("TSqlBatch", scope.Name);
+            Assert.False(scope.HasContent);
+        }
+
         static Model.ModelSqlDatabase _ModelSqlDatabase;
 
         private static Model.ModelSqlDatabase ReadAllCached() {

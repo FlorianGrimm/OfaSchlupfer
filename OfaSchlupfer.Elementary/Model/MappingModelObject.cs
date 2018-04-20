@@ -32,6 +32,9 @@
         [JsonIgnore]
         protected bool _Enabled;
 
+        [JsonIgnore]
+        protected bool _Disabled;
+
         protected MappingModelObject() { }
 
         [JsonProperty]
@@ -130,15 +133,16 @@
 
         [JsonProperty]
         public bool Enabled {
-            get {
-                return this._Enabled;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Enabled = value;
-            }
+            get => this._Enabled;
+            set => this.SetValueProperty(ref this._Enabled, value);
         }
 
+
+        [JsonProperty]
+        public bool Disabled {
+            get => this._Disabled;
+            set => this.SetValueProperty(ref this._Disabled, value);
+        }
     }
 
     [JsonObject]

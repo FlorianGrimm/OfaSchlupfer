@@ -27,7 +27,7 @@
 
         [JsonProperty]
         public FreezeableOwnedCollection<MappingModelSchema, MappingModelRelation> RelationMappings => this._RelationMappings;
-
+        
         public MappingModelSchema() {
             this._ComplexTypeMappings = new FreezeableOwnedCollection<MappingModelSchema, MappingModelComplexType>(this, (owner, item) => { item.Owner = owner; });
             this._EntityMappings = new FreezeableOwnedCollection<MappingModelSchema, MappingModelEntity>(this, (owner, item) => { item.Owner = owner; });
@@ -57,6 +57,24 @@
                     this._TargetName = null;
                 }
             }
+        }
+
+        public MappingModelEntity CreateEntityMapping(string name, ModelEntity source, ModelEntity target) {
+            var result = new MappingModelEntity();
+            result.Name = name;
+            result.Source = source;
+            result.Target = target;
+            this.EntityMappings.Add(result);
+            return result;
+        }
+
+        public MappingModelComplexType CreateComplexTypeMapping(string name, ModelComplexType source, ModelComplexType target) {
+            var result = new MappingModelComplexType();
+            result.Name = name;
+            result.Source = source;
+            result.Target = target;
+            this.ComplexTypeMappings.Add(result);
+            return result;
         }
     }
 }
