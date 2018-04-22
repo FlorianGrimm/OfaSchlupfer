@@ -83,21 +83,21 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             this._Schema.AddType(this);
         }
 
-        private ModelTypeScalar _ScalarType;
+        private ModelSematicScalarType _ScalarType;
 
         /// <summary>
         /// Get the scalar type.
         /// </summary>
         /// <returns>The scalartype or null</returns>
-        public override ModelTypeScalar GetScalarType() {
+        public override ModelSematicScalarType GetScalarType() {
 #warning TODO respect BaseOnType
-            var modelType=(ModelType)this;
-            if (modelType is ModelTypeScalar modelTypeScalar) {
+            var modelType=(ModelSematicType)this;
+            if (modelType is ModelSematicScalarType modelTypeScalar) {
                 return modelTypeScalar;
             }
 #warning TODO NOW respect Freeze
             //return this._ScalarType ?? (this._ScalarType = new ModelTypeScalar() {
-            return new ModelTypeScalar() {
+            return new ModelSematicScalarType() {
                 Name = this.Name,
                 SystemDataType = this.GetSystemDataType(),
                 MaxLength = this.MaxLength,

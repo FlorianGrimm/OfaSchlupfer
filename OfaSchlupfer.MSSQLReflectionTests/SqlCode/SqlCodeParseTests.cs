@@ -4,12 +4,20 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using Xunit;
+
     using OfaSchlupfer.MSSQLReflection.AST;
     using OfaSchlupfer.MSSQLReflection.SqlCode;
 
-    
+    using Xunit;
+    using Xunit.Abstractions;
+
     public class SqlCodeParseTests {
+        private ITestOutputHelper output;
+
+        public SqlCodeParseTests(ITestOutputHelper output) {
+            this.output = output;
+        }
+
         [Fact]
         public void SqlCodeParse_Parse_String_Test() {
             var sut = new SqlCodeAnalyse();
@@ -312,7 +320,15 @@ DROP TABLE #x;
         public void SqlCodeParse_Analyse_Select_Join_Test() {
             var modelDatabase = ReadAllCached();
 
+            //var logger = new Microsoft.Extensions.Logging.Debug.DebugLogger("SqlCodeAnalyse");
+            //var logger = new Microsoft.Extensions.Logging.Console.ConsoleLogger("SqlCodeAnalyse", (msg, level) => true, true);
+
             var sca = new SqlCodeAnalyse();
+
+            var logger = new Microsoft.Extensions.Logging.Xunit.XunitLogger(this.output, "SqlCodeAnalyse");
+            sca.Logger = logger;
+            this.output.WriteLine("x");
+
             var node = sca.ParseTransport(@"
 SELECT o.name, o.object_id, o.schema_id, o.parent_object_id, o.type, o.create_date, o.modify_date, o.is_ms_shipped, m.definition, sn.base_object_name
 FROM sys.all_objects o

@@ -9,19 +9,19 @@
     /// A scalar value
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{Type}-{Value}")]
-    public sealed class ModelValueScalar {
+    public sealed class ModelSematicValueScalar {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ModelValueScalar"/> class.
+        /// Initializes a new instance of the <see cref="ModelSematicValueScalar"/> class.
         /// </summary>
-        public ModelValueScalar() { }
+        public ModelSematicValueScalar() { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ModelValueScalar"/> class.
+        /// Initializes a new instance of the <see cref="ModelSematicValueScalar"/> class.
         /// </summary>
         /// <param name="type">the type</param>
         /// <param name="value">the value</param>
         /// <param name="isConst">const</param>
-        public ModelValueScalar(ModelTypeScalar type, object value, bool isConst) {
+        public ModelSematicValueScalar(ModelSematicScalarType type, object value, bool isConst) {
             this.Type = type;
             this.Value = value;
             this.IsConst = isConst;
@@ -30,7 +30,7 @@
         /// <summary>
         /// Gets or sets the type
         /// </summary>
-        public ModelTypeScalar Type { get; set; }
+        public ModelSematicScalarType Type { get; set; }
 
         /// <summary>
         /// Gets or sets the value

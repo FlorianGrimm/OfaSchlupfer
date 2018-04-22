@@ -8,9 +8,9 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     /// add lazyness
     /// </summary>
     public sealed class SqlCodeType : ISqlCodeType {
-        public readonly OfaSchlupfer.MSSQLReflection.Model.ModelType ModelType;
+        public readonly OfaSchlupfer.MSSQLReflection.Model.ModelSematicType ModelType;
 
-        public SqlCodeType(OfaSchlupfer.MSSQLReflection.Model.ModelType modelType) {
+        public SqlCodeType(OfaSchlupfer.MSSQLReflection.Model.ModelSematicType modelType) {
             this.ModelType = modelType;
         }
 

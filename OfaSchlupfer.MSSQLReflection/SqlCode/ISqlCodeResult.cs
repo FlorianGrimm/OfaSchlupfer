@@ -40,9 +40,9 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     }
 
     public sealed class SqlCodeResultConst : ISqlCodeResult {
-        public OfaSchlupfer.MSSQLReflection.Model.ModelValueScalar ScalarValue;
+        public OfaSchlupfer.MSSQLReflection.Model.ModelSematicValueScalar ScalarValue;
 
-        public SqlCodeResultConst(OfaSchlupfer.MSSQLReflection.Model.ModelValueScalar scalarValue) {
+        public SqlCodeResultConst(OfaSchlupfer.MSSQLReflection.Model.ModelSematicValueScalar scalarValue) {
             this.ScalarValue = scalarValue;
         }
 

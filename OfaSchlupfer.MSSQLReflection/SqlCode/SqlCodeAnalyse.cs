@@ -1,8 +1,13 @@
 ﻿namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     using System.Collections.Generic;
     using System.IO;
+
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.Abstractions;
+
     using OfaSchlupfer.MSSQLReflection.AST;
     using OfaSchlupfer.MSSQLReflection.Model;
+
     using ScriptDom = Microsoft.SqlServer.TransactSql.ScriptDom;
 
     /// <summary>
@@ -18,6 +23,8 @@
         /// Gets or sets a value indicating whether QuotedIdentifiers is set - default true.
         /// </summary>
         public bool InitialQuotedIdentifiers { get; set; }
+
+        public Microsoft.Extensions.Logging.ILogger Logger { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlCodeAnalyse"/> class.
@@ -82,6 +89,7 @@
             var scopeNameResolverContext = new ScopeNameResolverContext(modelDatabase);
             var dbScope = SqlCodeScope.CreateRoot(scopeNameResolverContext);
             var bindVisitor = new AnalyseVisitor(dbScope);
+            bindVisitor.Logger = this.Logger;
             var result = bindVisitor.Run(node);
             return result;
         }

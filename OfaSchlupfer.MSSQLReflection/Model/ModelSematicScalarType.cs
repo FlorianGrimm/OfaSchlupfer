@@ -9,11 +9,11 @@
     /// the scalar type of sql
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{Name}-{SystemDataType}")]
-    public sealed class ModelTypeScalar : ModelType {
+    public sealed class ModelSematicScalarType : ModelSematicType {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ModelTypeScalar"/> class.
+        /// Initializes a new instance of the <see cref="ModelSematicScalarType"/> class.
         /// </summary>
-        public ModelTypeScalar() { }
+        public ModelSematicScalarType() { }
 
         /// <summary>
         /// Gets the name
@@ -32,10 +32,10 @@
         }
         
         /// <summary>
-        /// Initializes a new instance of the <see cref="ModelTypeScalar"/> class.
+        /// Initializes a new instance of the <see cref="ModelSematicScalarType"/> class.
         /// </summary>
         /// <param name="src">the source</param>
-        public ModelTypeScalar(ModelTypeScalar src) {
+        public ModelSematicScalarType(ModelSematicScalarType src) {
             if ((object)src != null) {
                 this.SystemDataType = src.SystemDataType;
                 this.Name = src.Name;
