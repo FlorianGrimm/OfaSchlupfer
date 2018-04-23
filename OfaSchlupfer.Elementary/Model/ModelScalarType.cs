@@ -37,6 +37,13 @@
             this._Unicode = true;
         }
 
+#waring  ModelScalarTypes in ModelSchema if missing
+        //   [JsonIgnore]
+        //public override ModelSchema Owner {
+        //    get => this._Owner;
+        //    set => this.SetOwner(ref _Owner, value, (owner) => owner.Relations);
+        //}
+
         [JsonProperty(Order = 2)]
         [JsonConverter(typeof(OfaSchlupfer.Entity.TypeJsonConverter))]
         public Type Type {

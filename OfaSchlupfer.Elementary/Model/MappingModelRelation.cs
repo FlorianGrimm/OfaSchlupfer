@@ -10,21 +10,13 @@
     [JsonObject]
     public class MappingModelRelation
         : MappingObjectString<MappingModelSchema, ModelRelation> {
-        [JsonIgnore]
-        private bool _Enabled;
-
         public MappingModelRelation() {
         }
 
-        [JsonProperty]
-        public bool Enabled {
-            get {
-                return this._Enabled;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Enabled = value;
-            }
+        [JsonIgnore]
+        public override MappingModelSchema Owner {
+            get => this._Owner;
+            set => this.SetOwner(ref _Owner, value, (owner) => owner.RelationMappings);
         }
 
         public void ResolveName(ModelErrors errors) {

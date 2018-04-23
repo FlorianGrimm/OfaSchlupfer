@@ -12,6 +12,12 @@
 
         public ModelProperty() { }
 
+        [JsonIgnore]
+        public override ModelComplexType Owner {
+            get => this._Owner;
+            set => this.SetOwner(ref _Owner, value, (owner) => owner.Properties);
+        }
+
         [JsonProperty]
         public ModelType Type {
             get {

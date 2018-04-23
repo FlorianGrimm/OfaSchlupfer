@@ -69,6 +69,12 @@
                 (owner, item) => { item.Owner = owner; });
         }
 
+        [JsonIgnore]
+        public override ModelRepository Owner {
+            get => this._Owner;
+            set => this.SetOwnerAndProperty(ref _Owner, value, (owner)=>owner.ModelSchema, (owner, newValue) => owner.ModelSchema = newValue);
+        }
+
         public void PostDeserialize() {
         }
 

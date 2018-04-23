@@ -31,6 +31,12 @@
         //}
 
         public MappingModelRepository() {        }
+        
+        [JsonIgnore]
+        public override ModelRoot Owner {
+            get => this._Owner;
+            set => this.SetOwner(ref _Owner, value, (owner) => owner.RepositoryMappings);
+        }
 
         public void ResolveName(ModelErrors errors) {
             this.ResolveNameSource(errors);

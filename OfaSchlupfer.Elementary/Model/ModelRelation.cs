@@ -24,7 +24,13 @@
 
         public ModelRelation() { }
 
-              [JsonProperty(Order = 2)]
+        public override ModelSchema Owner {
+            [JsonIgnore]
+            get => this._Owner;
+            set => this.SetOwner(ref _Owner, value, (owner) => owner.Relations);
+        }
+
+        [JsonProperty(Order = 2)]
         public string MasterName {
             get {
                 if ((object)this._MasterEntity != null) {

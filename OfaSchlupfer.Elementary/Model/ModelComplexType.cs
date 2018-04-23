@@ -25,6 +25,12 @@
                 (owner, item) => { item.Owner = owner; });
         }
 
+        [JsonIgnore]
+        public override ModelSchema Owner {
+            get => this._Owner;
+            set => this.SetOwner(ref _Owner, value, (owner) => owner.ComplexTypes);
+        }
+
         public IMetaEntityFlexible GetMetaEntity() {
             var result = this._GetMetaEntity;
             if ((object)result == null) {
@@ -129,7 +135,7 @@
             }
             return result;
         }
-     
+
         /// <summary>
         /// Gets the properties sorted by index.
         /// </summary>

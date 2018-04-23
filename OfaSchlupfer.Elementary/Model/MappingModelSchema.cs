@@ -34,6 +34,14 @@
             this._RelationMappings = new FreezeableOwnedCollection<MappingModelSchema, MappingModelRelation>(this, (owner, item) => { item.Owner = owner; });
         }
 
+        /*
+        [JsonIgnore]
+        public override MappingModelRepository Owner {
+            get => this._Owner;
+            set => this.SetOwner(ref _Owner, value, (owner) => owner.r);
+        }
+        */
+
         public virtual void ResolveNames(ModelErrors errors) {
             this.ResolveNameSource(errors);
             this.ResolveNameTarget(errors);
