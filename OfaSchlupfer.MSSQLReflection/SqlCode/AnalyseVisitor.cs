@@ -285,6 +285,10 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             var selectScope = parentScope.CreateChildScope("SELECT", null);
             nodeAnalyse.SqlCodeScope = selectScope;
             this.currentScopeRef.Push(selectScope);
+            if (node.Into != null) {
+                //nodeAnalyse.OutputType
+            }
+            // node.WithCtesAndXmlNamespaces.CommonTableExpressions
             // node.QueryExpression
             base.ExplicitVisit(node);
 

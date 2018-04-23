@@ -35,7 +35,14 @@ namespace OfaSchlupfer.MSSQLReflection.AST {
             Copier.CopyList(this.ComputeClauses, src.ComputeClauses);
         }
         public QueryExpression QueryExpression;
+        /// <summary>
+        /// Specifies the name of a new table to be created, based on the columns in the select list and the rows chosen from the data source. 
+        /// </summary>
         public SchemaObjectName Into;
+        /// <summary>
+        /// filegroup
+        /// Specifies the name of the filegroup in which new table will be created. The filegroup specified should exist on the database else the SQL Server engine throws an error. This option is only supported beginning with SQL Server 2017 (14.x).
+        /// </summary>
         public Identifier On;
         public List<ComputeClause> ComputeClauses { get; } = new List<ComputeClause>();
         public override void Accept(SqlFragmentVisitor visitor) => visitor?.ExplicitVisit(this);
