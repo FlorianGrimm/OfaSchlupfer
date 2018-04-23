@@ -54,7 +54,7 @@
             thisPropertyOwner = value;
             return true;
         }
-
+        
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         protected bool SetRefPropertyOnce<TProperty>(ref TProperty thisProperty, TProperty value, [CallerMemberName]string callerMemberName = null)
             where TProperty : class {

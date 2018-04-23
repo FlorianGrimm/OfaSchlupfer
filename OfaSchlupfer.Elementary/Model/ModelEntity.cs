@@ -33,6 +33,12 @@
                 (owner, item) => { item.Owner = owner; });
         }
 
+        [JsonIgnore]
+        public override ModelSchema Owner {
+            get => this._Owner;
+            set => this.SetOwner(ref _Owner, value, (owner) => owner.Entities);
+        }
+
         [JsonProperty(Order = 2)]
         [JsonConverter(typeof(StringEnumConverter))]
         public ModelEntityKind Kind {

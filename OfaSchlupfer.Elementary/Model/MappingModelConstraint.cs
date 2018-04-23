@@ -9,7 +9,14 @@
     [JsonObject]
     public class MappingModelConstraint
         : MappingObjectString<MappingModelEntity, ModelConstraint> {
+
         public MappingModelConstraint() { }
+
+        [JsonIgnore]
+        public override MappingModelEntity Owner {
+            get => this._Owner;
+            set => this.SetOwner(ref _Owner, value, (owner) => owner.ConstraintMappings);
+        }
 
         public override void ResolveNameSource(ModelErrors errors) {
             if (((object)this._Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {

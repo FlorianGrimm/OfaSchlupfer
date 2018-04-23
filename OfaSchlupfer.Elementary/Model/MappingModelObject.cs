@@ -156,9 +156,9 @@
         protected MappingObjectString() { }
 
         [JsonIgnore]
-        public TOwner Owner {
+        public virtual TOwner Owner {
             get => this._Owner;
-            internal set => this.SetOwner(ref _Owner, value);
+            set => this.SetOwner(ref _Owner, value);
         }
 
         protected override bool AreSourceNamesEqual(string sourceName, ref string value)

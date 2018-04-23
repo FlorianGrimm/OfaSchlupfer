@@ -56,7 +56,7 @@
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public static bool SetPropertyAndOwner<TThis, TProperty>(this TThis that, ref TProperty thisProperty, TProperty value)
             where TThis : class, IFreezeable
-            where TProperty : class, IObjectWithOwner<TThis> {            
+            where TProperty : class, IObjectWithOwner<TThis> {
             if (ReferenceEquals(thisProperty, value)) { return false; }
             that.ThrowIfFrozen();
             var oldValue = thisProperty;
@@ -67,6 +67,59 @@
             if (!(oldValue is null)) {
                 if (ReferenceEquals(oldValue.Owner, that)) {
                     oldValue.Owner = null;
+                }
+            }
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public static bool SetOwnerAndProperty<TThis, TProperty>(this TThis that, ref TProperty thisProperty, TProperty value, Func<TProperty, TThis> getOwnerProperty, Action<TProperty, TThis> setOwnerProperty)
+            where TThis : class, IFreezeable
+            where TProperty : class {
+            if (ReferenceEquals(thisProperty, value)) { return false; }
+            that.ThrowIfFrozen();
+            var oldValue = thisProperty;
+            thisProperty = value;
+            if (!(value is null)) {
+                setOwnerProperty(value, that);
+            }
+            if (!(oldValue is null)) {
+                if (ReferenceEquals(getOwnerProperty(oldValue), that)) {
+                    setOwnerProperty(oldValue, null);
+                }
+            }
+            return true;
+        }
+
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public static bool SetOwner<TThis, TOwner>(this TThis that, ref TOwner thisPropertyOwner, TOwner value, Func<TOwner, IList<TThis>> getChildren)
+            where TThis : class, IFreezeable
+            where TOwner : class {
+            if (ReferenceEquals(thisPropertyOwner, value)) {
+                return false;
+            }
+            if (!(thisPropertyOwner is null)) {
+                that.ThrowIfFrozen();
+            }
+            var oldValue = thisPropertyOwner;
+            thisPropertyOwner = value;
+            if (!(oldValue is null)) {
+                var lst = getChildren(oldValue);
+                lst.Remove(that);
+            }
+            if (!(value is null)) {
+                var lst=getChildren(value);
+                var cnt = lst.Count;
+                if (cnt > 0) {
+                    if (ReferenceEquals(lst[cnt - 1], that)) {
+                        // already added
+                        return true;
+                    }
+                }
+                var pos = lst.IndexOf(that);
+                if (pos < 0) {
+                    lst.Add(that);
                 }
             }
             return true;

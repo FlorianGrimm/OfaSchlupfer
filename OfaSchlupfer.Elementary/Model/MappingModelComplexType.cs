@@ -17,8 +17,15 @@
             this._PropertyMappings = new FreezeableOwnedCollection<MappingModelComplexType, MappingModelProperty>(this, (owner, item) => { item.Owner = owner; });
 
         }
-        public FreezeableOwnedCollection<MappingModelComplexType, MappingModelProperty> PropertyMappings => this._PropertyMappings;
 
+        [JsonIgnore]
+        public override MappingModelSchema Owner {         
+            get => this._Owner;
+            set => this.SetOwner(ref _Owner, value, (owner) => owner.ComplexTypeMappings);
+        }
+                
+        public FreezeableOwnedCollection<MappingModelComplexType, MappingModelProperty> PropertyMappings => this._PropertyMappings;
+        
         public override void ResolveNameSource(ModelErrors errors) {
             if (((object)this._Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
                 var lstFound = this.Owner.Source.ComplexTypes.FindByKey(this._SourceName);

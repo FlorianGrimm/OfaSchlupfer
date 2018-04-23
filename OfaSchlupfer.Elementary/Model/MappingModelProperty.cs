@@ -13,7 +13,13 @@
 
         public MappingModelProperty() {
         }
-              
+
+        [JsonIgnore]
+        public override MappingModelComplexType Owner {
+            get => this._Owner;
+            set => this.SetOwner(ref _Owner, value, (owner) => owner.PropertyMappings);
+        }
+
         [JsonProperty]
         public string Conversion {
             get {
@@ -24,7 +30,7 @@
                 this._Conversion = value;
             }
         }
-        
+
         public override void ResolveNameSource(ModelErrors errors) {
             if (((object)this._Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
                 var lstFound = this.Owner.Source.Properties.FindByKey(this._SourceName);

@@ -19,12 +19,19 @@
         private ModelEntity _Owner;
 
         [JsonIgnore]
-
         private readonly FreezeableCollection<ModelProperty> _Properties;
 
         public ModelConstraint() {
             this._Properties = new FreezeableCollection<ModelProperty>();
         }
+
+#warning owner missong
+        /*
+         [JsonIgnore]
+            get => this._Owner;
+            set => this.SetOwner(ref _Owner, value, (owner) => owner.);
+        }
+             */
 
         [JsonProperty]
         public string Type {

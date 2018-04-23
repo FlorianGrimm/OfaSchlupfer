@@ -34,6 +34,11 @@
         public ModelRepository() {
         }
 
+        public override ModelRoot Owner {
+            get => this._Owner;
+            set => this.SetOwner(ref _Owner, value, (owner) => owner.Repositories);
+        }
+
         [JsonProperty(Order = 4)]
         public ModelDefinition ModelDefinition {
             get => this._ModelDefinition;
