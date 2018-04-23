@@ -130,6 +130,6 @@
             return null;
         }
 
-        public override ModelTypeScalar GetScalarType() => null;
+        public override ModelSematicScalarType GetScalarType() => null;
     }
 }

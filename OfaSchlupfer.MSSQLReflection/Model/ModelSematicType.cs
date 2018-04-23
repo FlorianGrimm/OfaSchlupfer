@@ -3,11 +3,11 @@
     /// base we will see
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{TypeName}")]
-    public class ModelType {
+    public class ModelSematicType {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ModelType"/> class.
+        /// Initializes a new instance of the <see cref="ModelSematicType"/> class.
         /// </summary>
-        public ModelType() { }
+        public ModelSematicType() { }
 
         /// <summary>
         /// Gets the name
@@ -24,7 +24,7 @@
         /// Convert a <see cref="ModelSqlType"/> to a ModelSystemDataType
         /// </summary>
         /// <param name="modelSqlType">the instance to convert.</param>
-        public static explicit operator ModelType(ModelSqlType modelSqlType) {
+        public static explicit operator ModelSematicType(ModelSqlType modelSqlType) {
             if (modelSqlType == null) { return null; }
             ModelSystemDataType dataType = ModelSystemDataType.None;
             if (!(modelSqlType.BaseOnType is null)) {
@@ -33,7 +33,7 @@
                 dataType = ModelSystemDataTypeUtility.ConvertFromSqlName(modelSqlType.Name);
             }
 
-            return new ModelTypeScalar() {
+            return new ModelSematicScalarType() {
                 Name = modelSqlType.Name,
                 SystemDataType = dataType,
                 CollationName = modelSqlType.CollationName,

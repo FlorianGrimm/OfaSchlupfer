@@ -53,5 +53,17 @@
                 }
             }
         }
+
+        public MappingModelProperty CreatePropertyMapping(
+            string name, 
+            ModelProperty source,
+            ModelProperty target) {
+            var result = new MappingModelProperty();
+            result.Name = name;
+            result.Source = source;
+            result.Target = target;
+            this.PropertyMappings.Add(result);
+            return result;
+        }
     }
 }

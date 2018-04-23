@@ -28,7 +28,7 @@ namespace Microsoft.Extensions.DependencyInjection {
         public static ISqlRepositoryBuilder AddSqlRepository(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) => AddSqlRepository(services, _ => { });
         public static ISqlRepositoryBuilder AddSqlRepository(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Action<SqlRepositoryOptions> configure) {
             services.Configure(configure);
-            services.AddSingleton(typeof(OfaSchlupfer.Model.IReferencedRepositoryModelType), typeof(SqlRepositoryModelType));
+            services.AddSingleton(typeof(OfaSchlupfer.Model.IExternalRepositoryModelType), typeof(SqlRepositoryModelType));
             services.AddTransient(typeof(SqlRepositoryModel), typeof(SqlRepositoryImplementation));
             return new SqlRepositoryBuilder(services);
         }

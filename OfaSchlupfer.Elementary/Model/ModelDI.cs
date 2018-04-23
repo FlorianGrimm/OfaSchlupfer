@@ -38,7 +38,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             services.Configure(configure);
             //services.AddSingleton(typeof(IEntityDispatcherFactory), typeof(EntityDispatcherFactory));
             
-            services.TryAddScoped<ReferencedRepositoryModelFactory>();
+            services.TryAddScoped<ExternalRepositoryModelFactory>();
             services.TryAddScoped<ModelRoot>();
             services.AddTransient<ModelRepository>();
             services.AddTransient<ModelDefinition>();

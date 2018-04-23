@@ -11,27 +11,16 @@
     /// Maps 2 repositories
     /// </summary>
     [JsonObject]
-    public class MappingModelRepository
+    public sealed class MappingModelRepository
         : MappingObjectString<ModelRoot, ModelRepository> {
-        //[JsonIgnore]
-        //private MappingSchema _Mapping;
+        [JsonIgnore]
+        private readonly FreezeableOwnedCollection<MappingModelRepository, MappingModelSchema> _ModelSchemaMappings;
 
-        //[JsonProperty]
-        //public MappingSchema Mapping {
-        //    get {
-        //        return this._Mapping;
-        //    }
-        //    set {
-        //        this.ThrowIfFrozen();
-        //        this._Mapping = value;
-        //        if ((object)value != null) {
-        //            value.Owner = this;
-        //        }
-        //    }
-        //}
+        public MappingModelRepository() {
+            this._ModelSchemaMappings = new FreezeableOwnedCollection<MappingModelRepository, MappingModelSchema>(this, (owner, item) => { item.Owner = owner; });
+        }
 
-        public MappingModelRepository() {        }
-        
+              
         [JsonIgnore]
         public override ModelRoot Owner {
             get => this._Owner;
@@ -56,7 +45,16 @@
                 }
             }
         }
-        
+
+        public MappingModelSchema CreateMappingModelSchema(string name, ModelSchema modelSchemaSource, ModelSchema modelSchemaTarget) {
+            var result = new MappingModelSchema();
+            result.Name = name;
+            result.Source = modelSchemaSource;
+            result.Target = modelSchemaTarget;
+            this.ModelSchemaMappings.Add(result);
+            return result;
+        }
+
         public override void ResolveNameTarget(ModelErrors errors) {
             if (((object)this._Target == null) && ((object)this._TargetName != null)) {
                 if (((object)this.Owner != null) && ((object)this._Target == null) && ((object)this._TargetName != null)) {
@@ -71,6 +69,14 @@
                     }
                 }
             }
+        }
+
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._ModelSchemaMappings.Freeze();
+            }
+            return result;
         }
     }
 }

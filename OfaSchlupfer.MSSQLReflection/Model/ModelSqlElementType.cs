@@ -15,6 +15,6 @@
         /// </summary>
         protected ModelSqlElementType() { }
 
-        public abstract ModelTypeScalar GetScalarType();
+        public abstract ModelSematicScalarType GetScalarType();
     }
 }

@@ -13,7 +13,7 @@
     using OfaSchlupfer.Model;
     using OfaSchlupfer.MSSQLReflection.Model;
 
-    public class SqlRepositoryModelType : ReferencedRepositoryModelType {
+    public class SqlRepositoryModelType : ExternalRepositoryModelType {
         public const string TypeName = "SQL";
 
         public SqlRepositoryModelType(
@@ -23,7 +23,7 @@
             this.Name = TypeName;
             this.Description = "Read access to ShrePointOnline sources.";
         }
-        public override IReferencedRepositoryModel CreateReferencedRepositoryModel() {
+        public override IExternalRepositoryModel CreateExternalRepositoryModel() {
             try {
                 return this.ServiceProvider.GetRequiredService<SqlRepositoryModel>();
             } catch (InvalidOperationException) {
@@ -32,7 +32,7 @@
         }
     }
 
-    public abstract class SqlRepositoryModel : ReferenceRepositoryModelBase {
+    public abstract class SqlRepositoryModel : ExternalRepositoryModelBase {
         protected SqlRepositoryModel() {
         }
 
@@ -55,7 +55,7 @@
     }
 
     [JsonObject]
-    public class SqlRepositoryImplementation : SqlRepositoryModel, IReferencedRepositoryModel {
+    public class SqlRepositoryImplementation : SqlRepositoryModel, IExternalRepositoryModel {
         public SqlRepositoryImplementation() {
         }
         

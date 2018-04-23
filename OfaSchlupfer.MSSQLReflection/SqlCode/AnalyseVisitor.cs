@@ -3,6 +3,9 @@
 namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     using System.Collections.Generic;
     using System.Linq;
+
+    using Microsoft.Extensions.Logging;
+
     using OfaSchlupfer.MSSQLReflection.AST;
     using OfaSchlupfer.MSSQLReflection.Model;
 
@@ -15,6 +18,8 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         private SqlCodeScope _DBScope;
         private SqlName _sqlSysName;
         private List<AnalyseResult> _AnalyseResults;
+
+        public Microsoft.Extensions.Logging.ILogger Logger { get; set; }
 
         public AnalyseVisitor(SqlCodeScope dbScope) {
             this._DBScope = dbScope;
@@ -32,6 +37,11 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             if ((object)node == null) { return null; }
             node.Accept(this);
             return this._AnalyseResults;
+        }
+
+        public override void Start<T>(T node) {
+            base.Start(node);
+            this.Logger?.LogDebug($"Start: {typeof(T).Name}");
         }
 
         /// <summary>
@@ -107,7 +117,7 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             if (nodeAnalyse.SqlCodeScope == null) {
                 nodeAnalyse.SqlCodeScope = this.currentScopeRef.Current;
             }
-            System.Diagnostics.Debug.WriteLine(node.GetType().Name);
+            // System.Diagnostics.Debug.WriteLine(node.GetType().Name);
             base.Visit(node);
         }
 
@@ -212,11 +222,11 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
 
         public override void ExplicitVisit(IntegerLiteral node) {
             var sys_int_name = this.GetSqlNameSys().ChildWellkown("int");
-            var t = new ModelTypeScalar() {
+            var t = new ModelSematicScalarType() {
                 Name = sys_int_name,
                 SystemDataType = ModelSystemDataType.Int
             };
-            var v = new ModelValueScalar() {
+            var v = new ModelSematicValueScalar() {
                 Type = t,
                 Value = node.Value,
                 IsConst = true
@@ -269,7 +279,16 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         }
 
         public override void ExplicitVisit(SelectStatement node) {
+            var nodeAnalyse = node.Analyse;
+
+            var parentScope = this.currentScopeRef.Current;
+            var selectScope = parentScope.CreateChildScope("SELECT", null);
+            nodeAnalyse.SqlCodeScope = selectScope;
+            this.currentScopeRef.Push(selectScope);
+            // node.QueryExpression
             base.ExplicitVisit(node);
+
+            this.currentScopeRef.Pop();
         }
 
         public override void ExplicitVisit(BinaryQueryExpression node) {
@@ -281,6 +300,9 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         }
 
         public override void ExplicitVisit(QuerySpecification node) {
+            //node.FromClause
+            //node.ForClause
+            //node.SelectElements
             base.ExplicitVisit(node);
         }
 

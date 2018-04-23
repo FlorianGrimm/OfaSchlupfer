@@ -2,6 +2,6 @@
     /// <summary>
     /// Columns - table, view, table type - whatever
     /// </summary>
-    public sealed class ModelTypeColumns : ModelType {
+    public sealed class ModelSematicComplexType : ModelSematicType {
     }
 }

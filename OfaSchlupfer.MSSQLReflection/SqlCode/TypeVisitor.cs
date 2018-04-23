@@ -40,7 +40,7 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
             }
             if (sqlDataTypeOption != ModelSystemDataType.None) {
                 // happyness
-                var scalarType = new ModelTypeScalar();
+                var scalarType = new ModelSematicScalarType();
                 scalarType.Name = typename;
                 scalarType.MaxLength = (isMax) ? ((short)-1) : length;
                 scalarType.Precision = precision;
@@ -54,7 +54,7 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
                 }
                 var resolved = this.scope.ResolveObject(typename, null);
                 if (resolved != null) {
-                    if (resolved is ModelType modelType) {
+                    if (resolved is ModelSematicType modelType) {
                         node.Analyse.ResultType = new SqlCodeType(modelType);
                     }
                 }

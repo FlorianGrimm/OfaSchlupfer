@@ -54,7 +54,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         public ModelScalarType SuggestType(MetaModelBuilder metaModelBuilder) {
             //ModelTypeScalar scalarType = this.Type?.GetScalarType();
-            ModelTypeScalar scalarType = this.SqlType.GetScalarType();
+            ModelSematicScalarType scalarType = this.SqlType.GetScalarType();
             var result = new ModelScalarType();
             result.Name = scalarType.Name.GetQFullName("[", 2);
             result.ExternalName = scalarType.GetCondensed();

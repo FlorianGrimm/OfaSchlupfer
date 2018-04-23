@@ -12,11 +12,13 @@
     using OfaSchlupfer.Freezable;
     using OfaSchlupfer.Entity;
 
-    public interface IReferencedRepositoryModel
-        : IFreezeable {
+    public interface IExternalRepositoryModel
+        : IFreezeable
+        , IObjectWithOwner<ModelRepository> 
+        {
         string GetRepositoryTypeName();
 
-        ModelRepository ModelRepository { get; set; }
+        //ModelRepository Owner { get; set; }
 
         ModelSchema ModelSchema { get; set; }
 
@@ -34,22 +36,25 @@
         List<string> BuildSchema(string metadataContent);
     }
 
-    public interface IReferencedRepositoryModelType {
+    public interface IExternalRepositoryModelType {
         string Name { get; }
         string Description { get; }
-        IReferencedRepositoryModel CreateReferencedRepositoryModel();
+        IExternalRepositoryModel CreateExternalRepositoryModel();
     }
 
-    public abstract class ReferenceRepositoryModelBase
+    public abstract class ExternalRepositoryModelBase
         : FreezeableObject
-        , IReferencedRepositoryModel {
-        protected ModelRepository _ModelRepository;
+        , IExternalRepositoryModel {
+        [JsonIgnore]
+        protected ModelRepository _Owner;
 
+        [JsonIgnore]
         protected ModelSchema _ModelSchema;
 
+        [JsonIgnore]
         protected ModelDefinition _ModelDefinition;
 
-        protected ReferenceRepositoryModelBase() {
+        protected ExternalRepositoryModelBase() {
         }
 
         public abstract string GetRepositoryTypeName();
@@ -57,22 +62,22 @@
         public abstract IEntity CreateEntityByExternalTypeName(string externalTypeName);
 
         [JsonIgnore]
-        public virtual ModelRepository ModelRepository {
+        public virtual ModelRepository Owner {
             get {
-                return this._ModelRepository;
+                return this._Owner;
             }
             set {
-                if (ReferenceEquals(this._ModelRepository, value)) { return; }
-                this.ThrowIfFrozen();
-                if ((object)this._ModelRepository != null) {
-                    if (ReferenceEquals(this._ModelRepository.ReferencedRepositoryModel, this)) {
-                        this._ModelRepository.ReferencedRepositoryModel = null;
+                if (ReferenceEquals(this._Owner, value)) { return; }
+                if (!(this._Owner is null)) { this.ThrowIfFrozen(); }
+                if ((object)this._Owner != null) {
+                    if (ReferenceEquals(this._Owner.ReferencedRepositoryModel, this)) {
+                        this._Owner.ReferencedRepositoryModel = null;
                     }
                 }
-                this._ModelRepository = value;
-                if ((object)this._ModelRepository != null) {
-                    if (ReferenceEquals(this._ModelRepository.ReferencedRepositoryModel, null)) {
-                        this._ModelRepository.ReferencedRepositoryModel = this;
+                this._Owner = value;
+                if ((object)this._Owner != null) {
+                    if (ReferenceEquals(this._Owner.ReferencedRepositoryModel, null)) {
+                        this._Owner.ReferencedRepositoryModel = this;
                     }
                 }
             }
@@ -82,8 +87,8 @@
         public virtual ModelSchema ModelSchema {
             get {
                 if (this._ModelSchema == null) {
-                    if (this.ModelRepository != null) {
-                        this._ModelSchema = this.ModelRepository.ModelSchema;
+                    if (this.Owner != null) {
+                        this._ModelSchema = this.Owner.ModelSchema;
                     }
                 }
                 return this._ModelSchema;
@@ -92,8 +97,8 @@
                 if (ReferenceEquals(this._ModelSchema, value)) { return; }
                 this.ThrowIfFrozen();
                 this._ModelSchema = value;
-                if (this._ModelRepository != null) {
-                    this._ModelRepository.ModelSchema = value;
+                if (this._Owner != null) {
+                    this._Owner.ModelSchema = value;
                 }
             }
         }
@@ -117,7 +122,7 @@
         public override bool Freeze() {
             var result = base.Freeze();
             if (result) {
-                this._ModelRepository?.Freeze();
+                this._Owner?.Freeze();
                 this._ModelSchema?.Freeze();
                 this._ModelDefinition?.Freeze();
             }
@@ -125,10 +130,10 @@
         }
     }
 
-    public class ReferencedRepositoryModelType : IReferencedRepositoryModelType {
+    public class ExternalRepositoryModelType : IExternalRepositoryModelType {
         public readonly IServiceProvider ServiceProvider;
 
-        public ReferencedRepositoryModelType(IServiceProvider serviceProvider) {
+        public ExternalRepositoryModelType(IServiceProvider serviceProvider) {
             this.ServiceProvider = serviceProvider;
             this.Description = this.Name = this.GetType().Name;
         }
@@ -137,25 +142,25 @@
 
         public string Description { get; protected set; }
 
-        public virtual IReferencedRepositoryModel CreateReferencedRepositoryModel() {
+        public virtual IExternalRepositoryModel CreateExternalRepositoryModel() {
             return null;
         }
     }
 
-    public class ReferencedRepositoryModelFactory {
+    public class ExternalRepositoryModelFactory {
         public IServiceProvider ServiceProvider { get; }
 
-        public ReferencedRepositoryModelFactory(IServiceProvider serviceProvider) {
+        public ExternalRepositoryModelFactory(IServiceProvider serviceProvider) {
             this.ServiceProvider = serviceProvider;
         }
 
-        public List<IReferencedRepositoryModelType> GetRepositoryTypes()
-            => this.ServiceProvider.GetServices<IReferencedRepositoryModelType>().ToList();
+        public List<IExternalRepositoryModelType> GetRepositoryTypes()
+            => this.ServiceProvider.GetServices<IExternalRepositoryModelType>().ToList();
 
-        public IReferencedRepositoryModel CreateRepository(string name) {
-            var repositoryType = this.ServiceProvider.GetServices<IReferencedRepositoryModelType>().FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.OrdinalIgnoreCase));
+        public IExternalRepositoryModel CreateRepository(string name) {
+            var repositoryType = this.ServiceProvider.GetServices<IExternalRepositoryModelType>().FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.OrdinalIgnoreCase));
             if (repositoryType != null) {
-                return repositoryType.CreateReferencedRepositoryModel();
+                return repositoryType.CreateExternalRepositoryModel();
             }
             return null;
         }

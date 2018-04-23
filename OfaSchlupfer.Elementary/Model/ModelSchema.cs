@@ -104,5 +104,20 @@
             }
             return result;
         }
+
+        public ModelEntity CreateEntity(string name) {
+            var result = new ModelEntity();
+            result.Kind = ModelEntityKind.EntitySet;
+            result.Name = name;
+            this.Entities.Add(result);
+            return result;
+        }
+
+        public ModelComplexType CreateComplexType(string name) {
+            var result = new ModelComplexType();
+            result.Name = name;
+            this.ComplexTypes.Add(result);
+            return result;
+        }
     }
 }
