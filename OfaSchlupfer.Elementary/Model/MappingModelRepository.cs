@@ -19,13 +19,16 @@
         public MappingModelRepository() {
             this._ModelSchemaMappings = new FreezeableOwnedCollection<MappingModelRepository, MappingModelSchema>(this, (owner, item) => { item.Owner = owner; });
         }
-
               
         [JsonIgnore]
         public override ModelRoot Owner {
             get => this._Owner;
             set => this.SetOwner(ref _Owner, value, (owner) => owner.RepositoryMappings);
         }
+
+        [JsonProperty]
+        public FreezeableOwnedCollection<MappingModelRepository, MappingModelSchema> ModelSchemaMappings => _ModelSchemaMappings;
+
 
         public void ResolveName(ModelErrors errors) {
             this.ResolveNameSource(errors);

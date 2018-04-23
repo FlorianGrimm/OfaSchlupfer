@@ -37,7 +37,8 @@
             this._Unicode = true;
         }
 
-#waring  ModelScalarTypes in ModelSchema if missing
+#warning  ModelScalarTypes in ModelSchema if missing
+     
         //   [JsonIgnore]
         //public override ModelSchema Owner {
         //    get => this._Owner;

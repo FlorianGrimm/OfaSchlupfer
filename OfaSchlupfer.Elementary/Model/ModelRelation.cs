@@ -9,7 +9,7 @@
 
     [JsonObject]
     public class ModelRelation
-        : ModelNamedOwnedElement<ModelSchema>{
+        : ModelNamedOwnedElement<ModelSchema> {
         [JsonIgnore]
         private string _MasterName;
 
@@ -24,8 +24,8 @@
 
         public ModelRelation() { }
 
+        [JsonIgnore]
         public override ModelSchema Owner {
-            [JsonIgnore]
             get => this._Owner;
             set => this.SetOwner(ref _Owner, value, (owner) => owner.Relations);
         }
