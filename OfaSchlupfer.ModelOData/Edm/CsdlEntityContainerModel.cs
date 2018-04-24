@@ -46,9 +46,7 @@
                 this._Name = value;
             }
         }
-
-
-
+        
         [JsonProperty]
         public bool IsDefaultEntityContainer {
             get {

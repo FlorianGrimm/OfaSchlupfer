@@ -26,31 +26,11 @@
         public FreezeableOwnedCollection<MappingModelEntity, MappingModelConstraint> ConstraintMappings => this._ConstraintMappings;
 
         public override void ResolveNameSource(ModelErrors errors) {
-            if (((object)this._Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
-                var lstFound = this._Owner.Source.FindEntity(this._SourceName);
-                if (lstFound.Count == 1) {
-                    this._Source = lstFound[0];
-                    this._SourceName = null;
-                } else if (lstFound.Count == 0) {
-                    errors.AddErrorOrThrow($"{this._SourceName} not found", this.Name, ResolveNameNotFoundException.Factory);
-                } else {
-                    errors.AddErrorOrThrow($"{this._SourceName} found #{lstFound.Count} times.", this.Name, ResolveNameNotUniqueException.Factory);
-                }
-            }
+            this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Source.Entities.FindByKey(name), errors);
         }
 
         public override void ResolveNameTarget(ModelErrors errors) {
-            if (((object)this._Owner != null) && ((object)this._Target == null) && ((object)this._TargetName != null)) {
-                var lstFound = this._Owner.Target.FindEntity(this._TargetName);
-                if (lstFound.Count == 1) {
-                    this._Target = lstFound[0];
-                    this._TargetName = null;
-                } else if (lstFound.Count == 0) {
-                    errors.AddErrorOrThrow($"{this._TargetName} not found", this.Name, ResolveNameNotFoundException.Factory);
-                } else {
-                    errors.AddErrorOrThrow($"{this._TargetName} found #{lstFound.Count} times.", this.Name, ResolveNameNotUniqueException.Factory);
-                }
-            }
+            this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Target.Entities.FindByKey(name), errors);
         }
     }
 }

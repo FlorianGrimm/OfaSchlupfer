@@ -1,5 +1,6 @@
 ﻿namespace OfaSchlupfer.Model {
     using System;
+    using System.Collections.Generic;
     using Newtonsoft.Json;
     using OfaSchlupfer.Freezable;
 
@@ -93,6 +94,22 @@
         //public virtual void ResolveNameSource(ModelErrors errors) { }
         public abstract void ResolveNameSource(ModelErrors errors);
 
+        protected void ResolveNameSourceHelper<T>(T owner, Func<T, TMappingKey, List<TMappingValue>> findByKey, ModelErrors errors)
+            where T : class {
+            if (owner is null) { return; }
+            if (((object)this._Source == null) && ((object)this._SourceName != null)) {
+                var lstFound = findByKey(owner, this._SourceName);
+                if (lstFound.Count == 1) {
+                    this._Source = lstFound[0];
+                    this._SourceName = null;
+                } else if (lstFound.Count == 0) {
+                    errors.AddErrorOrThrow($"Source {this._SourceName} not found", this.Name?.ToString(), ResolveNameNotFoundException.Factory);
+                } else {
+                    errors.AddErrorOrThrow($"Source {this._SourceName} found #{lstFound.Count} times.", this.Name?.ToString(), ResolveNameNotUniqueException.Factory);
+                }
+            }
+        }
+
 
         [JsonIgnore]
         public virtual TMappingValue Target {
@@ -112,7 +129,22 @@
 
         //public virtual void ResolveNameTarget(ModelErrors errors) { }
         public abstract void ResolveNameTarget(ModelErrors errors);
-
+        
+        protected void ResolveNameTargetHelper<T>(T owner, Func<T, TMappingKey, List<TMappingValue>> findByKey, ModelErrors errors)
+            where T : class {
+            if (owner is null) { return; }
+            if (((object)this._Target == null) && ((object)this._TargetName != null)) {
+                var lstFound = findByKey(owner, this._TargetName);
+                if (lstFound.Count == 1) {
+                    this._Target = lstFound[0];
+                    this._TargetName = null;
+                } else if (lstFound.Count == 0) {
+                    errors.AddErrorOrThrow($"Target {this._TargetName} not found", this.Name?.ToString(), ResolveNameNotFoundException.Factory);
+                } else {
+                    errors.AddErrorOrThrow($"Target {this._TargetName} found #{lstFound.Count} times.", this.Name?.ToString(), ResolveNameNotUniqueException.Factory);
+                }
+            }
+        }
 
         [JsonProperty]
         public virtual TThisKey Name {
@@ -169,6 +201,21 @@
 
         protected override bool AreThisNamesEqual(string thisName, ref string value)
             => MappingObjectHelper.AreNamesEqual(thisName, ref value);
+
+
+        //protected void ResolveHelper(ref TValue thisST, ref string thisSTKey, Func<TOwner, string, FreezedList<TValue>> findByKey, ModelErrors errors) {
+        //    if (((object)this._Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
+        //        var lstFound = findByKey(this.Owner, this._SourceName);
+        //        if (lstFound.Count == 1) {
+        //            this._Source = lstFound[0];
+        //            this._SourceName = null;
+        //        } else if (lstFound.Count == 0) {
+        //            errors.AddErrorOrThrow($"Source {this._SourceName} not found", this.Name?.ToString(), ResolveNameNotFoundException.Factory);
+        //        } else {
+        //            errors.AddErrorOrThrow($"Source {this._SourceName} found #{lstFound.Count} times.", this.Name?.ToString(), ResolveNameNotUniqueException.Factory);
+        //        }
+        //    }
+        //}
     }
 
     public static class MappingObjectHelper {

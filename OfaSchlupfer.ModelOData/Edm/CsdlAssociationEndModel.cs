@@ -10,7 +10,7 @@
     /// <summary>
     /// AssociationEnd
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("{Role}")]
+    [System.Diagnostics.DebuggerDisplay("{RoleName}")]
     [JsonObject]
     public class CsdlAssociationEndModel : CsdlAnnotationalModel {
         // parents

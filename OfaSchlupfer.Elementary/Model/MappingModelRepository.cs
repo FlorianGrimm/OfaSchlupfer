@@ -36,19 +36,13 @@
         }
 
         public override void ResolveNameSource(ModelErrors errors) {
-            if (((object)this.Owner != null) && ((object)this._Source == null) && ((object)this._SourceName != null)) {
-                var lstFound = this.Owner.Repositories.FindByKey(this.SourceName);
-                if (lstFound.Count == 1) {
-                    this._Source = lstFound[0];
-                    this._SourceName = null;
-                } else if (lstFound.Count == 0) {
-                    errors.AddErrorOrThrow($"Repository {this.SourceName} in {this.Owner?.Name} not found.", this.Owner?.Name, ResolveNameNotFoundException.Factory);
-                } else {
-                    errors.AddErrorOrThrow($"Repository {this.SourceName} in {this.Owner?.Name} found #{lstFound.Count} times.", this.Owner?.Name, ResolveNameNotUniqueException.Factory);
-                }
-            }
+            this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Repositories.FindByKey(name), errors);
         }
 
+        public override void ResolveNameTarget(ModelErrors errors) {
+            this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Repositories.FindByKey(name), errors);
+        }
+        
         public MappingModelSchema CreateMappingModelSchema(string name, ModelSchema modelSchemaSource, ModelSchema modelSchemaTarget) {
             var result = new MappingModelSchema();
             result.Name = name;
@@ -57,23 +51,7 @@
             this.ModelSchemaMappings.Add(result);
             return result;
         }
-
-        public override void ResolveNameTarget(ModelErrors errors) {
-            if (((object)this._Target == null) && ((object)this._TargetName != null)) {
-                if (((object)this.Owner != null) && ((object)this._Target == null) && ((object)this._TargetName != null)) {
-                    var lstFound = this.Owner.Repositories.FindByKey(this.TargetName);
-                    if (lstFound.Count == 1) {
-                        this._Target = lstFound[0];
-                        this._TargetName = null;
-                    } else if (lstFound.Count == 0) {
-                        errors.AddErrorOrThrow($"Repository {this.TargetName} in {this.Owner?.Name} not found.", this.Owner?.Name, ResolveNameNotFoundException.Factory);
-                    } else {
-                        errors.AddErrorOrThrow($"Repository {this.TargetName} in {this.Owner?.Name} found #{lstFound.Count} times.", this.Owner?.Name, ResolveNameNotUniqueException.Factory);
-                    }
-                }
-            }
-        }
-
+        
         public override bool Freeze() {
             var result = base.Freeze();
             if (result) {

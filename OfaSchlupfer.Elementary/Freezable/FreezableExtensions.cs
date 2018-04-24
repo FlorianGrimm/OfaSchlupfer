@@ -2,7 +2,6 @@
     using System;
     using System.Collections.Generic;
     using System.Runtime.CompilerServices;
-    using System.Text;
 
     public static class FreezableExtensions {
 
@@ -77,7 +76,7 @@
             where TThis : class, IFreezeable
             where TProperty : class {
             if (ReferenceEquals(thisProperty, value)) { return false; }
-            that.ThrowIfFrozen();
+            if (!(thisProperty is null)) { that.ThrowIfFrozen(); }
             var oldValue = thisProperty;
             thisProperty = value;
             if (!(value is null)) {
