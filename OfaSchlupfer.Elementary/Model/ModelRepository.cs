@@ -93,11 +93,11 @@
             set => this.SetPropertyAndOwner(ref this._ModelSchema, value);
         }
 
-        public ModelSchema GetModelSchema() {
+        public ModelSchema GetModelSchema(MetaModelBuilder metaModelBuilder, ModelErrors errors) {
             var result = this.ModelSchema;
             if (result == null) {
                 if (this.ReferencedRepositoryModel != null) {
-                    return this.ReferencedRepositoryModel.GetModelSchema();
+                    return this.ReferencedRepositoryModel.GetModelSchema(metaModelBuilder, errors);
                 }
             }
             return result;

@@ -60,7 +60,12 @@
                 this._MasterName = null;
             }
         }
+        
+        public string MasterNavigationPropertyName { get; set; }
+        public ModelNavigationProperty MasterNavigationProperty { get; set; }
 
+        public string ForeignNavigationPropertyName { get; set; }
+        public ModelNavigationProperty ForeignNavigationProperty { get; set; }
 
         [JsonProperty(Order = 3)]
         public string ForeignName {

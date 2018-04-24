@@ -11,7 +11,7 @@
         private readonly RulesForKind<ModelProperty> _RulesModelProperty;
         private readonly RulesForKind<ModelPrimaryKey> _RulesModelPrimaryKey;
         private readonly RulesForKind<ModelScalarType> _RulesModelScalarType;
-
+        private readonly RulesForKind<ModelRelation> _RulesModelRelation;
 
         public MetaModelBuilder() {
             this._RulesModelEntity = new RulesForKind<ModelEntity>();
@@ -19,6 +19,7 @@
             this._RulesModelProperty = new RulesForKind<ModelProperty>();
             this._RulesModelPrimaryKey = new RulesForKind<ModelPrimaryKey>();
             this._RulesModelScalarType = new RulesForKind<ModelScalarType>();
+            this._RulesModelRelation = new RulesForKind<ModelRelation>();
         }
 
         public bool GenerateRules { get; set; }
@@ -30,6 +31,7 @@
                 this._RulesModelProperty.Initialize(rules.ModelPropertyRules);
                 this._RulesModelPrimaryKey.Initialize(rules.ModelPrimaryKeyRules);
                 this._RulesModelScalarType.Initialize(rules.ModelScalarTypeRules);
+                this._RulesModelRelation.Initialize(rules.ModelRelationRules);
             }
         }
 
@@ -132,6 +134,25 @@
             }
         }
 
+        public ModelRelation CreateModelRelation(
+            string associationName,
+            string associationExternalName,
+            string masterEntityName,
+            string masterNavigationPropertyName,
+            string foreignEntityName,
+            string foreignNavigationPropertyName
+            ) {
+            var result =  new ModelRelation();
+            result.Name = associationName;
+            result.ExternalName = associationExternalName;
+            result.MasterName = masterEntityName;
+            result.MasterNavigationPropertyName = masterNavigationPropertyName;
+            result.ForeignName = foreignEntityName;
+            result.ForeignNavigationPropertyName = foreignNavigationPropertyName;
+            var key = (associationExternalName ?? associationName);
+            return this._RulesModelRelation.HandleRules(key, result, this.GenerateRules);
+        }
+
         private class RulesForKind<T>
             where T: ModelNamedElement
             {
@@ -193,6 +214,8 @@
         public readonly List<MetaModelBuilderRule> ModelPrimaryKeyRules;
         [JsonProperty]
         public readonly List<MetaModelBuilderRule> ModelScalarTypeRules;
+        [JsonProperty]
+        public readonly List<MetaModelBuilderRule> ModelRelationRules;
 
         public MetaModelBuilderRules() {
             this.ModelEntityRules = new List<MetaModelBuilderRule>();
@@ -200,8 +223,8 @@
             this.ModelPropertyRules = new List<MetaModelBuilderRule>();
             this.ModelPrimaryKeyRules = new List<MetaModelBuilderRule>();
             this.ModelScalarTypeRules = new List<MetaModelBuilderRule>();
+            this.ModelRelationRules = new List<MetaModelBuilderRule>();
         }
-
     }
 
     [JsonObject]

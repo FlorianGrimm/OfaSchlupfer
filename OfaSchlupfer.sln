@@ -25,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{142FE167-6
 	ProjectSection(SolutionItems) = preProject
 		test\ProjectOnlineData-Projects.json = test\ProjectOnlineData-Projects.json
 		test\ProjectOnlinemetadata.xml = test\ProjectOnlinemetadata.xml
+		test\ProjectOnlinemetadataTaskRelation.xml = test\ProjectOnlinemetadataTaskRelation.xml
 		test\ProjectOnlineModelSchema.json = test\ProjectOnlineModelSchema.json
 		test\v3northwindmetadata.xml = test\v3northwindmetadata.xml
 		test\v4northwindmetadata.xml = test\v4northwindmetadata.xml

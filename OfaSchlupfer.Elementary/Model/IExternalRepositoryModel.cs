@@ -22,7 +22,7 @@
 
         ModelSchema ModelSchema { get; set; }
 
-        ModelSchema GetModelSchema();
+        ModelSchema GetModelSchema(MetaModelBuilder metaModelBuilder, ModelErrors errors);
 
         ModelDefinition ModelDefinition { get; set; }
 
@@ -103,7 +103,7 @@
             }
         }
 
-        public abstract ModelSchema GetModelSchema();
+        public abstract ModelSchema GetModelSchema(MetaModelBuilder metaModelBuilder, ModelErrors errors);
 
         [JsonIgnore]
         public virtual ModelDefinition ModelDefinition {

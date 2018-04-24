@@ -1,0 +1,38 @@
+<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" Version="1.0">
+  <edmx:DataServices xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" m:DataServiceVersion="1.0" m:MaxDataServiceVersion="3.0">
+    <Schema xmlns="http://schemas.microsoft.com/ado/2007/05/edm" Namespace="ReportingData">
+      <EntityType Name="Project">
+        <Key>
+          <PropertyRef Name="ProjectId"/>
+        </Key>
+        <Property Name="ProjectId" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="EnterpriseProjectTypeDescription" Type="Edm.String"/>
+        <NavigationProperty Name="Tasks" Relationship="ReportingData.Project_Tasks_Task_Project" ToRole="Task_Project" FromRole="Project_Tasks"/>
+      </EntityType>
+      <EntityType Name="Task">
+        <Key>
+          <PropertyRef Name="ProjectId"/>
+          <PropertyRef Name="TaskId"/>
+        </Key>
+        <Property Name="ProjectId" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="TaskId" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="ProjectName" Type="Edm.String"/>
+        <NavigationProperty Name="Project" Relationship="ReportingData.Project_Tasks_Task_Project" ToRole="Project_Tasks" FromRole="Task_Project"/>
+        </EntityType>
+      <Association Name="Project_Tasks_Task_Project">
+        <End Type="ReportingData.Task" Role="Task_Project" Multiplicity="*"/>
+        <End Type="ReportingData.Project" Role="Project_Tasks" Multiplicity="0..1"/>
+      </Association>
+    </Schema>
+    <Schema xmlns="http://schemas.microsoft.com/ado/2007/05/edm" Namespace="Microsoft.Office.Project.Server">
+      <EntityContainer Name="ReportingData" m:IsDefaultEntityContainer="true">
+        <EntitySet Name="Projects" EntityType="ReportingData.Project"/>
+        <EntitySet Name="Tasks" EntityType="ReportingData.Task"/>
+        <AssociationSet Name="Relation_Projects_Tasks_Tasks_Project_Tasks_Project_Projects_Tasks" Association="ReportingData.Project_Tasks_Task_Project">
+          <End Role="Project_Tasks" EntitySet="Projects"/>
+          <End Role="Task_Project" EntitySet="Tasks"/>
+        </AssociationSet>
+      </EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

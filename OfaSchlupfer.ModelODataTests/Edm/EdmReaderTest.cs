@@ -33,9 +33,9 @@ namespace OfaSchlupfer.ModelOData.Edm {
             Assert.Equal(0, edmxModel.DataServices[0].EntityContainer.Count);
             Assert.Equal(1, edmxModel.DataServices[1].EntityContainer.Count);
 
-            var schemaModels = edmxModel.DataServices.ToArray();
+            var csdlSchemaModels = edmxModel.DataServices.ToArray();
 
-            var entityContainers = schemaModels
+            var entityContainers = csdlSchemaModels
                 .SelectMany((schema) => schema.EntityContainer)
                 .ToArray();
 
@@ -70,8 +70,8 @@ namespace OfaSchlupfer.ModelOData.Edm {
                 Assert.NotNull(end.Owner.AssociationModel.FindAssociationEnd(end.RoleName));
             }
 
-            var entityTypes = schemaModels
-                .SelectMany((schemaModel) => schemaModel.EntityType)
+            var entityTypes = csdlSchemaModels
+                .SelectMany((csdlSchemaModel) => csdlSchemaModel.EntityType)
                 .ToArray();
 
             foreach (var entityType in entityTypes) {
@@ -90,11 +90,10 @@ namespace OfaSchlupfer.ModelOData.Edm {
                     }
                     //foreach(var end in property.en)
                 }
-
             }
 
 
-            var associations = schemaModels
+            var associations = csdlSchemaModels
                 .SelectMany((schemaModel) => schemaModel.Association)
                 .ToArray();
 
@@ -239,9 +238,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
 
                     //foreach(var end in property.en)
                 }
-
             }
-
 
             var associations = schemaModels
                 .SelectMany((schemaModel) => schemaModel.Association)

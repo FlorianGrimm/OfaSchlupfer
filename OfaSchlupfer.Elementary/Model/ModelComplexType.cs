@@ -17,6 +17,9 @@
         private readonly FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelProperty> _Properties;
 
         [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelNavigationProperty> _NavigationProperty;
+
+        [JsonIgnore]
         private ModelComplexTypeMetaEntity _GetMetaEntity;
 
         [JsonProperty(Order = 3)]
@@ -25,6 +28,9 @@
         [JsonProperty(Order = 4)]
         public FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelProperty> Properties => this._Properties;
 
+        [JsonProperty(Order = 5)]
+        public FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelNavigationProperty> NavigationProperty => this._NavigationProperty;
+
         public ModelComplexType() {
             this._Keys = new FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelPrimaryKey>(
                 this,
@@ -32,6 +38,11 @@
                 ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
             this._Properties = new FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelProperty>(
+                this,
+                (property) => property.Name,
+                ModelUtility.Instance.StringComparer,
+                (owner, item) => { item.Owner = owner; });
+            this._NavigationProperty = new FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelNavigationProperty>(
                 this,
                 (property) => property.Name,
                 ModelUtility.Instance.StringComparer,
@@ -68,10 +79,31 @@
 
         public override Type GetClrType() => typeof(OfaSchlupfer.Entity.AccessorFlexible);
 
-        public ModelProperty CreateProperty(string name) {
+        public ModelProperty CreateProperty(
+                string name,
+                string externalName
+            ) {
             var result = new ModelProperty();
             result.Name = name;
+            result.ExternalName = externalName ?? name;
             this.Properties.Add(result);
+            return result;
+        }
+
+        public ModelNavigationProperty CreateNavigationProperty(
+                string name,
+                string externalName,
+                ModelComplexType toComplexType,
+                bool isOptional,
+                bool isCollection
+            ) {
+            var result = new ModelNavigationProperty();
+            result.Name = name;
+            result.ExternalName = externalName ?? name;
+            result.IsCollection = isCollection;
+            result.IsOptional = isOptional;
+            result.ItemType = toComplexType;
+            this.NavigationProperty.Add(result);
             return result;
         }
     }

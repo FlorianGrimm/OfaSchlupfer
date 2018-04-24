@@ -82,7 +82,7 @@
             throw new NotImplementedException();
         }
 
-        public override ModelSchema GetModelSchema() {
+        public override ModelSchema GetModelSchema(MetaModelBuilder metaModelBuilder, ModelErrors errors) {
             throw new NotImplementedException();
         }
     }

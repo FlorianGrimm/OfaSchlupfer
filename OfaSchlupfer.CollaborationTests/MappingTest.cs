@@ -54,9 +54,7 @@ namespace OfaSchlupfer.CollaborationTests {
                 modelRepositorySource.ReferencedRepositoryModel = oDataRepositorySource;
                 oDataRepositorySource.EdmxModel = edmxModel;
 
-                Assert.NotNull(modelRepositorySource.GetModelSchema());
-
-          
+                Assert.NotNull(modelRepositorySource.GetModelSchema(null, null));
 
                 var modelSchemaSource = modelRepositorySource.ModelSchema;
                 Assert.NotNull(modelSchemaSource);

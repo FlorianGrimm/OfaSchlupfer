@@ -62,13 +62,13 @@
         }
 
 
-        public override ModelSchema GetModelSchema() {
+        public override ModelSchema GetModelSchema(MetaModelBuilder metaModelBuilder, ModelErrors errors) {
             var result = this.ModelSchema;
             if ((object)result == null) {
                 if (this._EdmxModel != null) {
                     var builder = new EdmxModelSchemaBuilder();
                     result = new ModelSchema();
-                    builder.Build(this._EdmxModel, result, null, null);
+                    builder.Build(this._EdmxModel, result, metaModelBuilder, errors);
                     result.Freeze();
                     if (this.ModelSchema == null) {
                         this.ModelSchema = result;

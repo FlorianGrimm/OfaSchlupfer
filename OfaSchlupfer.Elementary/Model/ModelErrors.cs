@@ -46,10 +46,8 @@
             this.Errors?.Add(item);
         }
 
-        public static ModelErrors GetIgnorance() {
-            var result = new ModelErrors(true);
-            return result;
-        }
+        private static ModelErrors _Ignorance;
+        public static ModelErrors GetIgnorance() => (_Ignorance ?? (_Ignorance = new ModelErrors(true)));
 
         private ModelErrors(SerializationInfo info, StreamingContext context) {
             try {

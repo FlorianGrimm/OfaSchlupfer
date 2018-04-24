@@ -57,6 +57,15 @@
             }
         }
 
+        public MultiplicityKind GetMultiplicity() {
+            switch (this._Multiplicity) {
+                case "0..1": return MultiplicityKind.OneOptional;
+                case "1": return MultiplicityKind.One;
+                case "*": return MultiplicityKind.Multiple;
+            }
+            return MultiplicityKind.Unknown;
+        }
+
         [JsonIgnore]
         public CsdlAssociationModel Owner {
             get => this._Owner;

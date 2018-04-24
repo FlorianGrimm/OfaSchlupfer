@@ -2,6 +2,7 @@
     using System;
     using System.Collections.Generic;
     using System.Runtime.CompilerServices;
+    using OfaSchlupfer.Model;
 
     public static class FreezableExtensions {
 
@@ -76,7 +77,7 @@
             where TThis : class, IFreezeable
             where TProperty : class {
             if (ReferenceEquals(thisProperty, value)) { return false; }
-            if (!(thisProperty is null)) { that.ThrowIfFrozen(); }            
+            if (!(thisProperty is null)) { that.ThrowIfFrozen(); }
             var oldValue = thisProperty;
             thisProperty = value;
             if (!(value is null)) {
@@ -108,7 +109,7 @@
                 lst.Remove(that);
             }
             if (!(value is null)) {
-                var lst=getChildren(value);
+                var lst = getChildren(value);
                 var cnt = lst.Count;
                 if (cnt > 0) {
                     if (ReferenceEquals(lst[cnt - 1], that)) {
@@ -122,6 +123,32 @@
                 }
             }
             return true;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public static void ResolveNameHelper<TOwner, TName, TMappingKey, TMappingValue>(
+            this IFreezeable freezeable,
+            TOwner owner,
+            TName name,
+            ref TMappingKey thisPropertyName,
+            ref TMappingValue thisPropertyValue,
+            Func<TOwner, TMappingKey, List<TMappingValue>> findByKey,
+            ModelErrors errors)
+            where TOwner : class
+            where TMappingKey : class
+            where TMappingValue : class {
+            if (owner is null) { return; }
+            if (((object)thisPropertyValue == null) && !((object)thisPropertyName != null)) {
+                var lstFound = findByKey(owner, thisPropertyName);
+                if (lstFound.Count == 1) {
+                    thisPropertyValue = lstFound[0];
+                    thisPropertyName = null;
+                } else if (lstFound.Count == 0) {
+                    errors.AddErrorOrThrow($"Source {thisPropertyName} not found", name?.ToString(), ResolveNameNotFoundException.Factory);
+                } else {
+                    errors.AddErrorOrThrow($"Source {thisPropertyName} found #{lstFound.Count} times.", name?.ToString(), ResolveNameNotUniqueException.Factory);
+                }
+            }
         }
     }
 }

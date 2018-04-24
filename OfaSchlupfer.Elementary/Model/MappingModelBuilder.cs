@@ -203,13 +203,14 @@
             foreach (var propertySource in complexTypeSource.Properties) {
                 var propertyMapping = mappingByNameSource.GetValueOrDefault(propertySource.Name);
 
-                // magic needed here
-                var propertyNameTarget = propertySource.Name;
+                var propertyExternalNameTarget = propertySource.Name;
+#warning magic needed here
+                var propertyNameTarget = propertyExternalNameTarget;
 
                 if (propertyMapping is null || propertyMapping.Target is null) {
                     var lstProperty = complexTypeTarget.Properties.FindByKey(propertyNameTarget);
                     if (lstProperty.Count == 0) {
-                        var propertyTarget = complexTypeTarget.CreateProperty(propertyNameTarget);
+                        var propertyTarget = complexTypeTarget.CreateProperty(propertyNameTarget, propertyExternalNameTarget);
 #warning                        //entityTarget.Type = propertySource.Type;
 
                         propertyTarget.Type = this.BuildScalarType(propertySource.Type);
