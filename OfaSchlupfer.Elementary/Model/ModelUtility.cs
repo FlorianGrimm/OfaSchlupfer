@@ -20,6 +20,6 @@
             }
 
             internal static readonly ModelUtility instance = new ModelUtility();
-        }
+        }        
     }
 }

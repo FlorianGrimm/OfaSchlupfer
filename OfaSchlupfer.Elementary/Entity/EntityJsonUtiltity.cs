@@ -12,7 +12,8 @@
         /// </summary>
         /// <param name="settings"></param>
         /// <returns></returns>
-        public static string SerializeToJson<T>(
+        public static string SerializeEntityToJson<T>
+            (
             this T that, 
             JsonSerializerSettings settings,
             EntitySchema entitySchema)
@@ -22,7 +23,7 @@
             return result;
         }
 
-        public static T DeserializeFromJson<T>(
+        public static T SerializeEntityFromJson<T>(
             string json, 
             JsonSerializerSettings settings, 
             //IServiceProvider serviceProvider
@@ -30,7 +31,7 @@
             where T : class, IEntityFlexible {
             if (string.IsNullOrEmpty(json)) { return null; }
             settings = EnsureDeserializeObjectSettings(settings, entitySchema);
-            var result = JsonConvert.DeserializeObject<T>(json, settings);
+            var result = JsonConvert.DeserializeObject<T>(json, settings);           
             return result;
         }
 

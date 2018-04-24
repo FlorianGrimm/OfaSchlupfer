@@ -38,7 +38,8 @@
                 var mappingModelRepository = new MappingModelRepository();
                 mappingModelRepository = modelRoot.CreateMapping("SourceTarget", modelRepositorySource, modelRepositoryTarget);
 
-                var modelSchemaSource = JsonConvert.DeserializeObject<ModelSchema>(System.IO.File.ReadAllText(srcPath));
+                var jsonContent = System.IO.File.ReadAllText(srcPath);
+                var modelSchemaSource = ModelJsonUtility.DeserializeModelFromJson<ModelSchema>(jsonContent, null);
                 Assert.NotNull(modelSchemaSource);
                 modelRepositorySource.ModelSchema = modelSchemaSource;
 

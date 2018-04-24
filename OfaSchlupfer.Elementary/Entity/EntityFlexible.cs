@@ -78,6 +78,7 @@
                 return this._MetaData;
             }
             set {
+                this.ThrowIfFrozen();
                 if (value is IMetaEntityFlexible metaEntityFlexible) {
                     if (this.SetRefPropertyOnce<IMetaEntityFlexible>(ref this._MetaData, metaEntityFlexible)) {
                         if (this._Values == null) {

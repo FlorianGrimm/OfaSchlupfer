@@ -9,7 +9,7 @@
 
     [JsonObject]
     public class MappingModelSchema
-        : MappingObjectString<MappingModelRepository, ModelSchema> {
+        : MappingObjectString<MappingModelRepository, ModelSchema> {        
         [JsonIgnore]
         private readonly FreezeableOwnedCollection<MappingModelSchema, MappingModelComplexType> _ComplexTypeMappings;
            

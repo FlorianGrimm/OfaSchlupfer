@@ -1,4 +1,5 @@
 ﻿namespace OfaSchlupfer.Freezable {
+    using System;
     using System.Runtime.CompilerServices;
     using Newtonsoft.Json;
 
@@ -54,7 +55,7 @@
             thisPropertyOwner = value;
             return true;
         }
-        
+
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         protected bool SetRefPropertyOnce<TProperty>(ref TProperty thisProperty, TProperty value, [CallerMemberName]string callerMemberName = null)
             where TProperty : class {
@@ -62,6 +63,19 @@
             if (!(thisProperty is null)) { throw new System.ArgumentException($"{callerMemberName} is already set."); }
             thisProperty = value;
             return true;
+        }
+      
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        protected TProperty CreateOrGetCacheObject<TProperty, TArg0>(ref TProperty thisProperty, TArg0 arg0, Func<TArg0, TProperty> generator)
+            where TProperty : class {
+            var result = thisProperty;
+            if (result is null) {
+                result = generator(arg0);
+                if (this._IsFrozen == 1) {
+                    thisProperty = result;
+                }
+            }
+            return result;
         }
     }
 

@@ -106,7 +106,7 @@
                     if (lstComplexType.Count == 0) {
                         var complexTypeTarget = modelSchemaTarget.CreateComplexType(complexTypeNameTarget);
                         if (complexTypeMapping is null) {
-                            mappingModelSchema.CreateComplexTypeMapping(null, complexTypeSource, complexTypeTarget);
+                            complexTypeMapping = mappingModelSchema.CreateComplexTypeMapping(null, complexTypeSource, complexTypeTarget);
                         } else {
                             complexTypeMapping.Target = complexTypeTarget;
                         }
@@ -211,6 +211,8 @@
                     if (lstProperty.Count == 0) {
                         var propertyTarget = complexTypeTarget.CreateProperty(propertyNameTarget);
 #warning                        //entityTarget.Type = propertySource.Type;
+
+                        propertyTarget.Type = this.BuildScalarType(propertySource.Type);
                         if (propertyMapping is null) {
                             complexTypeMapping.CreatePropertyMapping(null, propertySource, propertyTarget);
                         } else {
@@ -230,6 +232,16 @@
                     // ??
                 }
             }
+        }
+
+        private ModelType BuildScalarType(ModelType type) {
+            if (type is null) { return null; }
+            if (type is ModelScalarType modelScalarType) {
+#warning TODO handle owner
+                var result = new ModelScalarType(modelScalarType);
+                return result;
+            }
+            throw new NotImplementedException(type.GetType().Name);
         }
     }
 }

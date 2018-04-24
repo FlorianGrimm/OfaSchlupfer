@@ -12,6 +12,8 @@
     public class ModelComplexType : ModelType {
         [JsonIgnore]
         private readonly FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelProperty> _Properties;
+
+        [JsonIgnore]
         private ModelComplexTypeMetaEntity _GetMetaEntity;
 
         [JsonProperty(Order = 2)]
@@ -31,16 +33,19 @@
             set => this.SetOwner(ref _Owner, value, (owner) => owner.ComplexTypes);
         }
 
-        public IMetaEntityFlexible GetMetaEntity() {
-            var result = this._GetMetaEntity;
-            if ((object)result == null) {
-                result = new ModelComplexTypeMetaEntity(this);
-                if (this.IsFrozen()) {
-                    this._GetMetaEntity = result;
-                }
-            }
-            return result;
-        }
+        public IMetaEntityFlexible GetMetaEntity()
+            => this.CreateOrGetCacheObject(ref this._GetMetaEntity, this, (that) => new ModelComplexTypeMetaEntity(this));
+#warning weichei
+        //    {
+        //    var result = this._GetMetaEntity;
+        //    if ((object)result == null) {
+        //        result = new ModelComplexTypeMetaEntity(this);
+        //        if (this.IsFrozen()) {
+        //            this._GetMetaEntity = result;
+        //        }
+        //    }
+        //    return result;
+        //}
 
         public override bool Freeze() {
             var result = base.Freeze();
@@ -67,8 +72,10 @@
         , IMetaEntityFlexible {
         [JsonIgnore]
         private readonly ModelComplexType _ModelComplexType;
+
         [JsonIgnore]
         private FreezeableCollection<IMetaIndexedProperty> _PropertyByIndex;
+
         [JsonIgnore]
         private FreezeableDictionary<string, IMetaIndexedProperty> _PropertyByName;
 
@@ -130,33 +137,38 @@
         /// Get all properties.
         /// </summary>
         /// <returns>a list of properties.</returns>
-        public IList<IMetaProperty> GetProperties() {
-            var result = this._GetProperties;
-            if ((object)result == null) {
-                result = this._PropertyByIndex.Cast<IMetaProperty>().AsFreezedList();
-                // if it is frozen it is save to cache.
-                if (this.IsFrozen()) {
-
-                    this._GetProperties = result;
-                }
-            }
-            return result;
-        }
+        public IList<IMetaProperty> GetProperties()
+            => this.CreateOrGetCacheObject(ref this._GetProperties, this, (that) => that._PropertyByIndex.Cast<IMetaProperty>().AsFreezedList());
+#warning weichei test first
+        //{
+        //    var result = this._GetProperties;
+        //    if ((object)result == null) {
+        //        result = this._PropertyByIndex.Cast<IMetaProperty>().AsFreezedList();
+        //        // if it is frozen it is save to cache.
+        //        if (this.IsFrozen()) {
+        //            this._GetProperties = result;
+        //        }
+        //    }
+        //    return result;
+        //}
 
         /// <summary>
         /// Gets the properties sorted by index.
         /// </summary>
-        public IList<IMetaIndexedProperty> GetPropertiesByIndex() {
-            var result = this._GetPropertiesByIndex;
-            if ((object)result == null) {
-                result = this._PropertyByIndex.AsFreezedList();
-                // if it is frozen it is save to cache.
-                if (this.IsFrozen()) {
-                    this._GetPropertiesByIndex = result;
-                }
-            }
-            return result;
-        }
+        public IList<IMetaIndexedProperty> GetPropertiesByIndex()
+            => this.CreateOrGetCacheObject(ref this._GetPropertiesByIndex, this, (that) => that._PropertyByIndex.AsFreezedList());
+#warning weichei test first
+        //    {
+        //    var result = this._GetPropertiesByIndex;
+        //    if ((object)result == null) {
+        //        result = this._PropertyByIndex.AsFreezedList();
+        //        // if it is frozen it is save to cache.
+        //        if (this.IsFrozen()) {
+        //            this._GetPropertiesByIndex = result;
+        //        }
+        //    }
+        //    return result;
+        //}
 
         /// <summary>
         /// Get the named property
@@ -196,6 +208,19 @@
                 if (validateOrThrow && (object)subResult != null) { return subResult; }
             }
             return null;
+        }
+
+        public override bool Freeze() {
+            // ?? dep on this._ModelComplexType ??
+            if (this._ModelComplexType.IsFrozen()) {
+                var result = base.Freeze();
+                if (result) {
+                    this._PropertyByIndex.Freeze();
+                    this._PropertyByName.Freeze();
+                }
+                return result;
+            }
+            return false;
         }
     }
 }
