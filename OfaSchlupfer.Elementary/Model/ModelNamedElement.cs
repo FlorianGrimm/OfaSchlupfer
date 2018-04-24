@@ -8,15 +8,15 @@
         : FreezeableObject
         , IMappingNamedObject<string> {
         [JsonIgnore]
-        private string _Name;
+        protected string _Name;
 
         [JsonIgnore]
-        private string _ExternalName;
+        protected string _ExternalName;
 
         public ModelNamedElement() { }
 
         [JsonProperty(Order = 1, DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Name {
+        public virtual string Name {
             get {
                 return this._Name;
             }
@@ -27,7 +27,7 @@
         }
 
         [JsonProperty(Order = 2, DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string ExternalName {
+        public virtual string ExternalName {
             get {
                 return this._ExternalName;
             }

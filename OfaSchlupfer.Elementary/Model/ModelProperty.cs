@@ -1,6 +1,8 @@
 ﻿namespace OfaSchlupfer.Model {
     using System;
+
     using Newtonsoft.Json;
+
     using OfaSchlupfer.Entity;
     using OfaSchlupfer.Freezable;
 

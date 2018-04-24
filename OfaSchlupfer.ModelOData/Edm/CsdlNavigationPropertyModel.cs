@@ -64,7 +64,9 @@
             }
         }
 
-        // V3
+        /// <summary>
+        ///  V3
+        /// </summary>
         [JsonProperty]
         public string RelationshipName {
             get {
@@ -83,6 +85,9 @@
             }
         }
 
+        /// <summary>
+        ///  V3
+        /// </summary>
         [JsonIgnore]
         public CsdlAssociationModel RelationshipModel {
             get {
@@ -98,6 +103,9 @@
             }
         }
 
+        /// <summary>
+        ///  V3
+        /// </summary>
         [JsonProperty]
         public string FromRoleName {
             get {
@@ -117,10 +125,13 @@
             }
         }
 
+        /// <summary>
+        ///  V3
+        /// </summary>
         [JsonIgnore]
         public CsdlAssociationEndModel FromRoleModel {
             get {
-                if (this._ToRoleModel == null && this._ToRoleName != null) {
+                if (this._FromRoleModel == null && this._FromRoleName != null) {
                     this.ResolveNamesFromRole(ModelErrors.GetIgnorance());
                 }
                 return this._FromRoleModel;
@@ -132,6 +143,9 @@
             }
         }
 
+        /// <summary>
+        ///  V3
+        /// </summary>
         [JsonProperty]
         public string ToRoleName {
             get {
@@ -151,6 +165,9 @@
             }
         }
 
+        /// <summary>
+        ///  V3
+        /// </summary>
         [JsonIgnore]
         public CsdlAssociationEndModel ToRoleModel {
             get {
@@ -166,9 +183,11 @@
             }
         }
 
-        public bool ContainsTarget;
+        public bool ContainsTarget { get; set; }
 
-        // V4
+        /// <summary>
+        ///  V4
+        /// </summary>
         [JsonProperty]
         public string TypeName {
             get {
@@ -187,6 +206,9 @@
             }
         }
 
+        /// <summary>
+        ///  V4
+        /// </summary>
         [JsonIgnore]
         public ICsdlTypeModel TypeModel {
             get {
@@ -202,6 +224,9 @@
             }
         }
 
+        /// <summary>
+        ///  V4
+        /// </summary>
         [JsonProperty]
         public string PartnerName {
             get {
@@ -221,6 +246,9 @@
         }
 
 
+        /// <summary>
+        ///  V4
+        /// </summary>
         [JsonIgnore]
         public CsdlNavigationPropertyModel PartnerModel {
             get {

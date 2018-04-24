@@ -11,15 +11,26 @@
     [JsonObject]
     public class ModelComplexType : ModelType {
         [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelPrimaryKey> _Keys;
+
+        [JsonIgnore]
         private readonly FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelProperty> _Properties;
 
         [JsonIgnore]
         private ModelComplexTypeMetaEntity _GetMetaEntity;
 
-        [JsonProperty(Order = 2)]
+        [JsonProperty(Order = 3)]
+        public FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelPrimaryKey> Keys => this._Keys;
+
+        [JsonProperty(Order = 4)]
         public FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelProperty> Properties => this._Properties;
 
         public ModelComplexType() {
+            this._Keys = new FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelPrimaryKey>(
+                this,
+                (key) => key.Name,
+                ModelUtility.Instance.StringComparer,
+                (owner, item) => { item.Owner = owner; });
             this._Properties = new FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelProperty>(
                 this,
                 (property) => property.Name,
