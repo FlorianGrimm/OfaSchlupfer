@@ -16,7 +16,7 @@
         [JsonIgnore]
         public override MappingModelSchema Owner {
             get => this._Owner;
-            set => this.SetOwner(ref _Owner, value, (owner) => owner.RelationMappings);
+            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.RelationMappings);
         }
 
         public void ResolveName(ModelErrors errors) {

@@ -6,7 +6,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     using System.Collections.Generic;
 
     using Newtonsoft.Json;
-
+    using OfaSchlupfer.Freezable;
     using OfaSchlupfer.MSSQLReflection.AST;
 
     /// <summary>
@@ -15,27 +15,13 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     [System.Diagnostics.DebuggerDisplay("{Name}-{ObjectLevel}")]
     [JsonObject(
         IsReference = true,
-        ItemConverterType = typeof(SqlNameJsonConverter), 
+        ItemConverterType = typeof(SqlNameJsonConverter),
         MemberSerialization = MemberSerialization.OptIn)]
-#warning JsonConverter
-    public sealed class SqlName : IEquatable<SqlName> {
-        private static SqlName _Root;
+    public sealed class SqlName
+        : FreezeableObject
+        , IEquatable<SqlName> {
         private static IEqualityComparer<NameLevel> nameLevelComparer = new NameLevelEqualityComparer();
         private static IEqualityComparer<string> stringComparer = StringComparer.OrdinalIgnoreCase;
-
-        /// <summary>
-        /// Gets the Root.
-        /// </summary>
-        public static SqlName Root {
-            [System.Diagnostics.DebuggerStepThrough]
-            get {
-                if ((object)_Root == null) {
-                    var root = new SqlName("%");
-                    System.Threading.Interlocked.CompareExchange(ref _Root, root, null);
-                }
-                return _Root;
-            }
-        }
 
         /// <summary>
         /// Parse
@@ -119,7 +105,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="name">the name of the schema</param>
         /// <returns>A new name.</returns>
         [System.Diagnostics.DebuggerStepThrough]
-        public static SqlName Schema(string name) => Root.Child(name, ObjectLevel.Schema);
+        public static SqlName Schema(string name) => new SqlName(null, name, ObjectLevel.Schema);
 
         /// <summary>
         /// Creates a object - name.
@@ -129,10 +115,12 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <returns>A new name.</returns>
         [System.Diagnostics.DebuggerStepThrough]
         public static SqlName Object(string schema, string name)
-            => ((string.IsNullOrEmpty(schema))
-                ? Root
-                : Root.Child(schema, ObjectLevel.Schema))
-            .Child(name, ObjectLevel.Object);
+            => new SqlName(
+                ((string.IsNullOrEmpty(schema))
+                    ? null
+                    : new SqlName(null, schema, ObjectLevel.Schema)),
+                name,
+                ObjectLevel.Object);
 
         /// <summary>
         /// Creates a object name.
@@ -140,7 +128,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="schema">the schema</param>
         /// <param name="name">the name</param>
         /// <returns>a new name</returns>
-        public static SqlName Object(SqlName schema, string name) => (schema ?? Root).Child(name, ObjectLevel.Object);
+        public static SqlName Object(SqlName schema, string name) => new SqlName(schema, name, ObjectLevel.Object);
 
         /// <summary>
         /// Create a SqlName from a schemaObjectname.
@@ -175,20 +163,49 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         private int _HashCode;
         private Dictionary<NameLevel, SqlName> _Wellknown;
-        public readonly int LevelCount;
-        public readonly ObjectLevel ObjectLevel;
+
+        private SqlName _Parent;
+        private string _Name;
+        private int _LevelCount;
+        private ObjectLevel _ObjectLevel;
 
         /// <summary>
         /// Gets the name.
         /// </summary>
-        [JsonIgnore]
-        public SqlName Parent { get; }
+        [JsonProperty]
+        public SqlName Parent {
+            get => this._Parent;
+            set {
+                if (this.SetRefPropertyOnce(ref this._Parent, value)) {
+                    if (value is null) {
+                        this._LevelCount = 1;
+                    } else {
+                        this._LevelCount = value._LevelCount + 1;
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the name.
         /// </summary>
-        [JsonIgnore]
-        public string Name { get; }
+        [JsonProperty]
+        public string Name {
+            get => this._Name;
+            set => this.SetStringProperty(ref this._Name, value);
+        }
+
+        [JsonProperty]
+        public int LevelCount {
+            get => this._LevelCount;
+            set => this.SetValueProperty(ref this._LevelCount, value);
+        }
+
+        [JsonProperty]
+        public ObjectLevel ObjectLevel {
+            get => this._ObjectLevel;
+            set => this.SetValueProperty(ref this._ObjectLevel, value);
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlName"/> class.
@@ -198,23 +215,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="objectLevel">the ObjectLevel.</param>
         [System.Diagnostics.DebuggerStepThrough]
         public SqlName(SqlName parent, string name, ObjectLevel objectLevel) {
-            if ((object)name == null) {
-                throw new ArgumentNullException(nameof(name));
-            }
-            this.Parent = parent ?? SqlName.Root;
-            this.Name = name;
+            this.Name = name ?? throw new ArgumentNullException(nameof(name));
+            this.Parent = parent;
             this.LevelCount = (parent == null) ? 1 : (parent.LevelCount + 1);
             this.ObjectLevel = objectLevel;
-        }
-
-        private SqlName(string name) {
-            if ((object)name == null) {
-                throw new ArgumentNullException(nameof(name));
-            }
-            //this.Parent = this;
-            this.Name = name;
-            this.LevelCount = 0;
-            this.ObjectLevel = ObjectLevel.Unknown;
         }
 
         /// <summary>

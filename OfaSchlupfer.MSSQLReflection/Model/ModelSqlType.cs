@@ -2,7 +2,10 @@
 
 namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
+
     using Newtonsoft.Json;
+
+    using OfaSchlupfer.Freezable;
 
     /// <summary>
     /// ModelSqlType
@@ -43,6 +46,13 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             this.Name = schema.Name.Child(name, ObjectLevel.Object);
             this._Schema = schema;
         }
+
+        [JsonIgnore]
+        public override ModelSqlSchema Owner {
+            get => this._Schema;
+            set => this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.Types);
+        }
+
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
 
@@ -98,7 +108,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <returns>The scalartype or null</returns>
         public override ModelSematicScalarType GetScalarType() {
 #warning TODO respect BaseOnType
-            var modelType=(ModelSematicType)this;
+            var modelType = (ModelSematicType)this;
             if (modelType is ModelSematicScalarType modelTypeScalar) {
                 return modelTypeScalar;
             }
@@ -114,7 +124,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
                 IsNullable = this.Nullable
             };
         }
-        
+
         /// <summary>
         /// a equals b
         /// </summary>
@@ -158,7 +168,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
 
         private ModelSystemDataType GetSystemDataType() {
-            return ModelSystemDataTypeUtility.ConvertFromSqlName(this.Name);            
+            return ModelSystemDataTypeUtility.ConvertFromSqlName(this.Name);
         }
     }
 }

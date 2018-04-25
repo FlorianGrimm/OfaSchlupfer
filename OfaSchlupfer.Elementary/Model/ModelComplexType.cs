@@ -52,7 +52,7 @@
         [JsonIgnore]
         public override ModelSchema Owner {
             get => this._Owner;
-            set => this.SetOwner(ref _Owner, value, (owner) => owner.ComplexTypes);
+            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.ComplexTypes);
         }
 
         public IMetaEntityFlexible GetMetaEntity()

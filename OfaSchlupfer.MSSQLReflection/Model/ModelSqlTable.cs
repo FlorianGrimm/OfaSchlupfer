@@ -2,6 +2,7 @@
     using System;
 
     using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
 
     /// <summary>
     /// a sql table
@@ -46,6 +47,12 @@
         /// <param name="src">Copy source</param>
         public ModelSqlTable(ModelSqlTable src)
             : base(src) { }
+
+        [JsonIgnore]
+        public override ModelSqlSchema Owner {
+            get => this._Schema;
+            set => this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.Tables);
+        }
 
         /// <summary>
         /// Add this to the parent

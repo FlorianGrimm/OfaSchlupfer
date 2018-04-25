@@ -21,7 +21,7 @@
         [JsonIgnore]
         public override ModelComplexType Owner {
             get => this._Owner;
-            set => this.SetOwner(ref _Owner, value, (owner) => owner.NavigationProperty);
+            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.NavigationProperty);
         }
 
         [JsonProperty(Order = 3)]

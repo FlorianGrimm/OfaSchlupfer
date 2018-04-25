@@ -9,29 +9,63 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
     using Newtonsoft.Json;
 
+    using OfaSchlupfer.Freezable;
     using OfaSchlupfer.SqlAccess;
 
-    [JsonObject(MemberSerialization= MemberSerialization.OptIn)]
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public sealed class ModelSqlSchema
-        : IEquatable<ModelSqlSchema>
+        : FreezeableObject
+        , IEquatable<ModelSqlSchema>
         , IScopeNameResolver {
-        private readonly Dictionary<SqlName, ModelSqlType> _Types;
-        private readonly Dictionary<SqlName, ModelSqlTable> _Tables;
-        private readonly Dictionary<SqlName, ModelSqlTableType> _TableTypes;
-        private readonly Dictionary<SqlName, ModelSqlView> _Views;
-        private readonly Dictionary<SqlName, ModelSqlProcedure> _Procedures;
-        private readonly Dictionary<SqlName, ModelSqlSynonym> _Synonyms;
+
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlType> _Types;
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTable> _Tables;
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTableType> _TableTypes;
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlView> _Views;
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlProcedure> _Procedures;
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlSynonym> _Synonyms;
         private SqlName _Name;
         private SqlScope _Scope;
         private ModelSqlDatabase _Database;
 
         public ModelSqlSchema() {
-            this._Types = new Dictionary<SqlName, ModelSqlType>(SqlNameEqualityComparer.Level2);
-            this._Tables = new Dictionary<SqlName, ModelSqlTable>(SqlNameEqualityComparer.Level2);
-            this._TableTypes = new Dictionary<SqlName, ModelSqlTableType>(SqlNameEqualityComparer.Level2);
-            this._Views = new Dictionary<SqlName, ModelSqlView>(SqlNameEqualityComparer.Level2);
-            this._Procedures = new Dictionary<SqlName, ModelSqlProcedure>(SqlNameEqualityComparer.Level2);
-            this._Synonyms = new Dictionary<SqlName, ModelSqlSynonym>(SqlNameEqualityComparer.Level2);
+            var keyComparer = SqlNameEqualityComparer.Level2;
+            this._Types = new FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlType>(
+                this,
+                (item) => item.Name,
+                keyComparer,
+                (owner, item) => item.Owner = owner
+                );
+            this._Tables = new FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTable>(
+                this,
+                (item) => item.Name,
+                keyComparer,
+                (owner, item) => item.Owner = owner
+                );
+            this._TableTypes = new FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTableType>(
+                this,
+                (item) => item.Name,
+                keyComparer,
+                (owner, item) => item.Owner = owner
+                );
+            this._Views = new FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlView>(
+                this,
+                (item) => item.Name,
+                keyComparer,
+                (owner, item) => item.Owner = owner
+                );
+            this._Procedures = new FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlProcedure>(
+                this,
+                (item) => item.Name,
+                keyComparer,
+                (owner, item) => item.Owner = owner
+                );
+            this._Synonyms = new FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlSynonym>(
+                this,
+                (item) => item.Name,
+                keyComparer,
+                (owner, item) => item.Owner = owner
+                );
         }
 
         /// <summary>
@@ -134,39 +168,59 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Gets the types.
-        /// </summary>
-        public Dictionary<SqlName, ModelSqlType> Types => this._Types;
 
-        /// <summary>
-        /// Gets the tables.
-        /// </summary>
-        //[JsonProperty]
-        public Dictionary<SqlName, ModelSqlTable> Tables => this._Tables;
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlType> Types => _Types;
 
-        //[JsonProperty("Tables")]
-        public List<ModelSqlTable> TableList => this._Tables.Values.ToList();
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTable> Tables => _Tables;
 
-        /// <summary>
-        /// Gets the tables.
-        /// </summary>
-        public Dictionary<SqlName, ModelSqlTableType> TableTypes => this._TableTypes;
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTableType> TableTypes => _TableTypes;
 
-        /// <summary>
-        /// Gets the views.
-        /// </summary>
-        public Dictionary<SqlName, ModelSqlView> Views => this._Views;
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlView> Views => _Views;
 
-        /// <summary>
-        /// Gets the procedures.
-        /// </summary>
-        public Dictionary<SqlName, ModelSqlProcedure> Procedures => this._Procedures;
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlProcedure> Procedures => _Procedures;
 
-        /// <summary>
-        /// Gets the Synonyms
-        /// </summary>
-        public Dictionary<SqlName, ModelSqlSynonym> Synonyms => this._Synonyms;
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlSynonym> Synonyms => _Synonyms;
+
+#warning weichei
+        ///// <summary>
+        ///// Gets the types.
+        ///// </summary>
+        //public Dictionary<SqlName, ModelSqlType> Types => this._Types;
+
+        ///// <summary>
+        ///// Gets the tables.
+        ///// </summary>
+        ////[JsonProperty]
+        //public Dictionary<SqlName, ModelSqlTable> Tables => this._Tables;
+
+        ////[JsonProperty("Tables")]
+        //public List<ModelSqlTable> TableList => this._Tables.Values.ToList();
+
+        ///// <summary>
+        ///// Gets the tables.
+        ///// </summary>
+        //public Dictionary<SqlName, ModelSqlTableType> TableTypes => this._TableTypes;
+
+        ///// <summary>
+        ///// Gets the views.
+        ///// </summary>
+        //public Dictionary<SqlName, ModelSqlView> Views => this._Views;
+
+        ///// <summary>
+        ///// Gets the procedures.
+        ///// </summary>
+        //public Dictionary<SqlName, ModelSqlProcedure> Procedures => this._Procedures;
+
+        ///// <summary>
+        ///// Gets the Synonyms
+        ///// </summary>
+        //public Dictionary<SqlName, ModelSqlSynonym> Synonyms => this._Synonyms;
 
         public static bool operator ==(ModelSqlSchema a, ModelSqlSchema b) => ((object)a == null) ? ((object)b == null) : a.Equals(b);
 

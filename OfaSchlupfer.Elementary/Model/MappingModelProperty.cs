@@ -17,7 +17,7 @@
         [JsonIgnore]
         public override MappingModelComplexType Owner {
             get => this._Owner;
-            set => this.SetOwner(ref _Owner, value, (owner) => owner.PropertyMappings);
+            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.PropertyMappings);
         }
 
         [JsonProperty]

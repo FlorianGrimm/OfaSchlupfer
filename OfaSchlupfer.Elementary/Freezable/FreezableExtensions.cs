@@ -122,7 +122,7 @@
         /// <param name="getChildren">owener.ChildrenList</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        public static bool SetOwner<TThis, TOwner>(this TThis that, ref TOwner thisPropertyOwner, TOwner value, Func<TOwner, IList<TThis>> getChildren)
+        public static bool SetOwnerWithChildren<TThis, TOwner>(this TThis that, ref TOwner thisPropertyOwner, TOwner value, Func<TOwner, IList<TThis>> getChildren)
             where TThis : class, IFreezeable
             where TOwner : class {
             if (ReferenceEquals(thisPropertyOwner, value)) {

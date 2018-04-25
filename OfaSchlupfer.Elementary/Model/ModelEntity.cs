@@ -36,7 +36,7 @@
         [JsonIgnore]
         public override ModelSchema Owner {
             get => this._Owner;
-            set => this.SetOwner(ref _Owner, value, (owner) => owner.Entities);
+            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.Entities);
         }
 
         [JsonProperty(Order = 2)]

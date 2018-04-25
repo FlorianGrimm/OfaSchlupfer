@@ -5,12 +5,12 @@
     public class ModelSqlDatabaseTests {
         private static ModelSqlDatabase GetTestModelSqlDatabase() {
             ModelSqlServer modelSqlServer = new ModelSqlServer();
-            modelSqlServer.Name = SqlName.Root.ChildWellkown("default");
+            modelSqlServer.Name = new SqlName(null, "default", ObjectLevel.Server);
 
             var serverScope = modelSqlServer.GetScope();
 
             var result = new ModelSqlDatabase(modelSqlServer, "OfaSchlupfer").AddToParent();
-            result.Name = SqlName.Root.ChildWellkown("OfaSchlupfer");
+            result.Name = new SqlName(null, "OfaSchlupfer", ObjectLevel.Database);
 
             ModelSqlSchema schema = new ModelSqlSchema(result, "dbo");
             schema.AddToParent();

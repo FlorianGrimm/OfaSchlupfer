@@ -40,20 +40,18 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         [Fact]
         public void SqlName_IsRootTest() {
-            Assert.True(SqlName.Root.IsRoot);
-            Assert.True(SqlName.Root.Parent.IsRoot);
             Assert.True(SqlName.Parse("a", ObjectLevel.Child).Parent.IsRoot);
             Assert.False(SqlName.Parse("a", ObjectLevel.Child).IsRoot);
         }
 
         [Fact]
         public void SqlName_ChildTest() {
-            Assert.Equal("a.b.c", SqlName.Root.Child("a").Child("b").Child("c").GetQFullName(null, 0));
+            Assert.Equal("a.b.c", new SqlName(null, "a", ObjectLevel.Schema).Child("b").Child("c").GetQFullName(null, 0));
         }
 
         [Fact]
         public void SqlName_ChildWellkownTest() {
-            var a = SqlName.Root.ChildWellkown("a");
+            var a = new SqlName(null, "a", ObjectLevel.Database);
             Assert.Equal("a.b.c", a.ChildWellkown("b").ChildWellkown("c").GetQFullName(null, 0));
             Assert.True(ReferenceEquals(a.ChildWellkown("b").ChildWellkown("c"), a.ChildWellkown("b").ChildWellkown("c")));
             Assert.False(ReferenceEquals(a.ChildWellkown("b").Child("c"), a.ChildWellkown("b").ChildWellkown("c")));

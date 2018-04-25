@@ -51,7 +51,7 @@
         [JsonIgnore]
         public ModelEntity Owner {
             get => this._Owner;
-            set => this.SetOwner(ref _Owner, value, (owner) => owner.Constraints);
+            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.Constraints);
         }
 
         public override bool Freeze() {

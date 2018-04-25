@@ -1,6 +1,7 @@
 ﻿namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
     using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
 
     /// <summary>
     /// a sql view
@@ -33,6 +34,13 @@
             : this(schema.GetScope()) {
             this.Name = schema.Name.Child(name, ObjectLevel.Object);
             this._Schema = schema;
+        }
+
+
+        [JsonIgnore]
+        public override ModelSqlSchema Owner {
+            get => this._Schema;
+            set => this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.Views);
         }
 
         /// <summary>

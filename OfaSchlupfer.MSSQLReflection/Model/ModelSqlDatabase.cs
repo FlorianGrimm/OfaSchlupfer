@@ -4,12 +4,15 @@
 
     using Newtonsoft.Json;
 
+    using OfaSchlupfer.Freezable;
+
     /// <summary>
     /// the database
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public sealed class ModelSqlDatabase
-        : IScopeNameResolver {
+        : FreezeableObject
+        , IScopeNameResolver {
         [JsonIgnore]
         private readonly Dictionary<SqlName, ModelSqlSchema> _Schemas;
         [JsonIgnore]

@@ -1,11 +1,13 @@
 ﻿using Newtonsoft.Json;
+using OfaSchlupfer.Freezable;
 
 namespace OfaSchlupfer.MSSQLReflection.Model {
     /// <summary>
     /// a child of a schema.
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
-    public abstract class ModelSqlSchemaChild {
+    public abstract class ModelSqlSchemaChild
+        : FreezeableObject {
         /// <summary>
         /// the name.
         /// </summary>
@@ -30,6 +32,12 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="src">the copy source.</param>
         public ModelSqlSchemaChild(ModelSqlSchemaChild src) {
             this._Name = src._Name;
+        }
+
+        [JsonIgnore]
+        public virtual ModelSqlSchema Owner {
+            get => this._Schema;
+            set => this._Schema = value;
         }
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line

@@ -23,7 +23,7 @@
         [JsonIgnore]
         public override ModelRoot Owner {
             get => this._Owner;
-            set => this.SetOwner(ref _Owner, value, (owner) => owner.RepositoryMappings);
+            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.RepositoryMappings);
         }
 
         [JsonProperty]

@@ -4,6 +4,8 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
 
     /// <summary>
     /// the type of an table like element
@@ -50,6 +52,12 @@
             : base() {
             this.Name = src.Name;
             this.Columns.AddRange(src.Columns);
+        }
+        
+        [JsonIgnore]
+        public override ModelSqlSchema Owner {
+            get => this._Schema;
+            set => this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.TableTypes);
         }
 
         /// <summary>

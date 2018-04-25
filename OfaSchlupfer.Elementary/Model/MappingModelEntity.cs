@@ -20,7 +20,7 @@
         [JsonIgnore]
         public override MappingModelSchema Owner {
             get => this._Owner;
-            set => this.SetOwner(ref _Owner, value, (owner) => owner.EntityMappings);
+            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.EntityMappings);
         }
 
         public FreezeableOwnedCollection<MappingModelEntity, MappingModelConstraint> ConstraintMappings => this._ConstraintMappings;

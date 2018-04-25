@@ -339,7 +339,7 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
         private SqlName GetSqlNameSys() {
             var sqlSysName = this._sqlSysName;
             if (sqlSysName == null) {
-                sqlSysName = SqlName.Root.Child("sys", ObjectLevel.Schema);
+                sqlSysName = SqlName.Schema("sys");
 
                 // think
                 // this._sqlSysName = this._DBScope.ModelDatabase.Schemas.GetValueOrDefault(sqlSysName)?.Name ?? sqlSysName;

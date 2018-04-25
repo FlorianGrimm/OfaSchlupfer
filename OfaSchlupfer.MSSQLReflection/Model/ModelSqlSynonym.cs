@@ -1,5 +1,7 @@
 ﻿namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
+    using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
 
     /// <summary>
     /// a sql alias
@@ -44,6 +46,13 @@
         public ModelSqlSynonym(ModelSqlSynonym src) {
             this._Name = src._Name;
             this._For = src._For;
+        }
+
+
+        [JsonIgnore]
+        public override ModelSqlSchema Owner {
+            get => this._Schema;
+            set => this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.Synonyms);
         }
 
         /// <summary>

@@ -55,9 +55,9 @@ namespace OfaSchlupfer.MSSQLReflection {
             if ((object)result == null) {
                 result = new ModelSqlServer();
                 if ((object)this.SysServer == null) {
-                    result.Name = SqlName.Root.ChildWellkown("default");
+                    result.Name = new SqlName(null, "default", ObjectLevel.Server);
                 } else {
-                    result.Name = SqlName.Root.ChildWellkown(this.SysServer.servername);
+                    result.Name = new SqlName(null, this.SysServer.servername, ObjectLevel.Server);
                 }
                 this.ModelServer = result;
             }

@@ -2,6 +2,8 @@
 
 namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
+    using Newtonsoft.Json;
+    using OfaSchlupfer.Freezable;
 
     /// <summary>
     /// ModelSqlProcedure
@@ -47,6 +49,12 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public ModelSqlProcedure(ModelSqlProcedure src) {
             this._Name = src._Name;
             this._Definition = src._Definition;
+        }
+
+        [JsonIgnore]
+        public override ModelSqlSchema Owner {
+            get => this._Schema;
+            set => this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.Procedures);
         }
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line

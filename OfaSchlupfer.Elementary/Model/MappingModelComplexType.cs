@@ -21,7 +21,7 @@
         [JsonIgnore]
         public override MappingModelSchema Owner {
             get => this._Owner;
-            set => this.SetOwner(ref _Owner, value, (owner) => owner.ComplexTypeMappings);
+            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.ComplexTypeMappings);
         }
 
         public FreezeableOwnedCollection<MappingModelComplexType, MappingModelProperty> PropertyMappings => this._PropertyMappings;
