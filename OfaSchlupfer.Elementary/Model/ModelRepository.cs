@@ -90,14 +90,19 @@
         [JsonProperty(Order = 5)]
         public ModelSchema ModelSchema {
             get => this._ModelSchema;
-            set => this.SetPropertyAndOwner(ref this._ModelSchema, value);
+            set {
+                if (this.SetPropertyAndOwner(ref this._ModelSchema, value)) {
+                }
+            }
         }
 
         public ModelSchema GetModelSchema(MetaModelBuilder metaModelBuilder, ModelErrors errors) {
             var result = this.ModelSchema;
             if (result == null) {
                 if (this.ReferencedRepositoryModel != null) {
-                    return this.ReferencedRepositoryModel.GetModelSchema(metaModelBuilder, errors);
+                    result = this.ReferencedRepositoryModel.GetModelSchema(metaModelBuilder, errors);
+                    this.ModelSchema = result;
+                    return result;
                 }
             }
             return result;
@@ -112,7 +117,7 @@
                 if (ReferenceEquals(this._ReferencedRepositoryModel, value)) { return; }
                 if (this._ReferencedRepositoryModel != null) { this.ThrowIfFrozen(); }
                 var oldValue = this._ReferencedRepositoryModel;
-                
+
                 this._ReferencedRepositoryModel = value;
 
                 if (!(value is null)) {
@@ -153,13 +158,9 @@
                 if (this.Owner is null) { throw new ModelException("Owner is not set."); }
                 var rtf = (this.Owner.ServiceProvider.GetService<ExternalRepositoryModelFactory>())
                     ?? (new ExternalRepositoryModelFactory(this.Owner.ServiceProvider));
-                var instance = rtf.CreateRepository(this.RepositoryTypeName);
-                var result = System.Threading.Interlocked.CompareExchange(ref this._ReferencedRepositoryModel, instance, null);
-                if (ReferenceEquals(result, null)) {
-                    return instance;
-                } else {
-                    return this.ReferencedRepositoryModel;
-                }
+                var result = rtf.CreateRepository(this.RepositoryTypeName);
+                this.ReferencedRepositoryModel = result;
+                return result;
             }
         }
 
@@ -194,5 +195,7 @@
 
         //ModelEntityName IMappingNamedObject<ModelEntityName>.GetName() => this._Name;
         //string IMappingNamedObject<string>.GetName() => this._Name.GetName();
+
+        public IModelBuilderNamingService GetNamingService() => this.ReferencedRepositoryModel?.GetNamingService();
     }
 }

@@ -57,6 +57,7 @@
             result.Name = name;
             result.Source = source;
             result.Target = target;
+            this.RepositoryMappings.Add(result);
             return result;
         }
 

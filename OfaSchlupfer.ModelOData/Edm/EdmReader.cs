@@ -14,10 +14,13 @@
     using OfaSchlupfer.Model;
 
     public class EdmReader {
-        private ServiceProvider serviceProvider;
+        //private IServiceProvider _ServiceProvider;
 
-        public EdmReader(ServiceProvider serviceProvider) {
-            this.serviceProvider = serviceProvider;
+        //public EdmReader(IServiceProvider serviceProvider) {
+        //    this._ServiceProvider = serviceProvider;
+        //}
+
+        public EdmReader() {
         }
 
         public IMetadataResolver MetadataResolver { get; set; }
@@ -26,6 +29,14 @@
             var streamReader = this.MetadataResolver.Resolve(location);
             return this.Read(streamReader, freeze, errors);
         }
+        public EdmxModel Read(TextReader textReader, bool freeze, ModelErrors errors) {
+            var xDoc = XDocument.Load(XmlReader.Create(textReader, new XmlReaderSettings() {
+                CloseInput = true,
+                IgnoreComments = true,
+                IgnoreWhitespace = true
+            }));
+            return this.Read(xDoc, freeze, errors);
+        }
 
         public EdmxModel Read(StreamReader streamReader, bool freeze, ModelErrors errors) {
             var xDoc = XDocument.Load(XmlReader.Create(streamReader, new XmlReaderSettings() {
@@ -33,6 +44,11 @@
                 IgnoreComments = true,
                 IgnoreWhitespace = true
             }));
+            return this.Read(xDoc, freeze, errors);
+        }
+
+        public EdmxModel Read(XDocument xDoc, bool freeze, ModelErrors errors) {
+
             var result = this.ReadDocument(xDoc.Root, errors);
             result.AddCoreSchemaIfNeeded(errors);
             if (freeze) {

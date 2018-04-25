@@ -33,8 +33,14 @@
         [JsonIgnore]
         protected bool _Enabled;
 
+        //[JsonIgnore]
+        //protected bool _Disabled;
+
         [JsonIgnore]
-        protected bool _Disabled;
+        private bool _Generated;
+
+        [JsonIgnore]
+        private string _Comment;
 
         protected MappingModelObject() { }
 
@@ -146,7 +152,7 @@
             }
         }
 
-        [JsonProperty]
+        [JsonProperty(Order = 1)]
         public virtual TThisKey Name {
             get {
                 return this._Name;
@@ -163,17 +169,28 @@
 
         public TThisKey GetName() => this._Name;
 
-        [JsonProperty]
+        [JsonProperty(Order = 2)]
         public bool Enabled {
             get => this._Enabled;
             set => this.SetValueProperty(ref this._Enabled, value);
         }
+        
+        //[JsonProperty(Order = 3)]
+        //public bool Disabled {
+        //    get => this._Disabled;
+        //    set => this.SetValueProperty(ref this._Disabled, value);
+        //}
 
+        [JsonProperty(Order = 4)]
+        public bool Generated {
+            get => this._Generated;
+            set => this.SetValueProperty(ref this._Generated, value);
+        }
 
-        [JsonProperty]
-        public bool Disabled {
-            get => this._Disabled;
-            set => this.SetValueProperty(ref this._Disabled, value);
+        [JsonProperty(Order = 5)]
+        public string Comment {
+            get => this._Comment;
+            set => this.SetStringProperty(ref this._Comment, value);
         }
     }
 

@@ -6,13 +6,29 @@
     using OfaSchlupfer.Freezable;
 
     public class MappingModelBuilder {
-#warning HHHHHHEEEEEEEEEERRRRRRRRRRRRREEEEEEEEEEE
+        public IModelBuilderNamingService NamingServiceTarget;
+
         public MappingModelBuilder(MappingModelRepository mappingModelRepository = null) {
             this.MappingModelRepository = mappingModelRepository;
+            this.EnabledForCreatedMappingModelSchema = true;
         }
 
         public MappingModelRepository MappingModelRepository { get; set; }
 
+        public string Comment { get; set; }
+
+        public bool EnabledForCreatedMappings { get; set; }
+        public bool EnabledForCreatedMappingModelSchema { get; set; }
+        public bool EnabledForCreatedMappingModelEntity { get; set; }
+        public bool EnabledForCreatedMappingModelComplexType { get; set; }
+        public bool EnabledForCreatedMappingModelProperty { get; set; }
+
+        private string getComment() {
+            if (string.IsNullOrEmpty(Comment)) {
+                return this.Comment = ("Generated" + System.DateTime.Now.ToString("s"));
+            }
+            return this.Comment;
+        }
         /// <summary>
         /// magic
         /// </summary>
@@ -23,16 +39,28 @@
             if (this.MappingModelRepository is null) { throw new ArgumentNullException(nameof(this.MappingModelRepository)); }
             var repositorySource = this.MappingModelRepository.Source ?? throw new ArgumentNullException(nameof(this.MappingModelRepository.Source));
             var repositoryTarget = this.MappingModelRepository.Target ?? throw new ArgumentNullException(nameof(this.MappingModelRepository.Target));
+            if (repositoryTarget.ModelSchema is null) {
+                repositoryTarget.CreateModelSchema(null);
+            }
+            this.NamingServiceTarget= this.MappingModelRepository.Target.GetNamingService();
 
             var lstMappingModelSchema = this.MappingModelRepository.ModelSchemaMappings;
+
             if (lstMappingModelSchema.Count == 0) {
-                if (repositoryTarget.ModelSchema is null) {
-                    repositoryTarget.CreateModelSchema(null);
+                this.MappingModelRepository.CreateMappingModelSchema(
+                    null,
+                    repositorySource.ModelSchema,
+                    repositoryTarget.ModelSchema,
+                    this.EnabledForCreatedMappings || this.EnabledForCreatedMappingModelSchema,
+                    true,
+                    this.getComment());
+            }
+            {
+                var lstMappingModelSchemaEnabled = lstMappingModelSchema.Where(_ => _.Enabled).ToList();
+                foreach (var mappingModelSchemaEnabled in lstMappingModelSchemaEnabled) {
+                    this.BuildSchema(mappingModelSchemaEnabled, errors);
                 }
-                var mappingModelSchema = this.MappingModelRepository.CreateMappingModelSchema(null, repositorySource.ModelSchema, repositoryTarget.ModelSchema);
-                this.BuildSchema(mappingModelSchema, errors);
-            } else {
-                // ???
+
             }
             //this.BuildSchema(this.MappingModelRepository.MappingModelSchema, source.ModelSchema, target.ModelSchema, errors);
             //errors.AddErrorOrThrow(new ModelErrorInfo("", ""));
@@ -53,6 +81,39 @@
             ModelSchema modelSchemaSource = mappingModelSchema.Source;
             ModelSchema modelSchemaTarget = mappingModelSchema.Target;
 
+            var lstEntityMappings = mappingModelSchema.EntityMappings.Where(_ => _.Enabled).ToList();
+            foreach (var entityMapping in lstEntityMappings) {
+                if (entityMapping.Target is null) {
+                    modelSchemaTarget.CreateEntity(entityMapping.TargetName);
+                }
+            }
+
+            var knownEntityMappingSourceName = new HashSet<string>();
+            foreach (var entityMapping in mappingModelSchema.EntityMappings) {
+                knownEntityMappingSourceName.Add(entityMapping.SourceName);
+            }
+            foreach (var entitySource in modelSchemaSource.Entities) {
+                if (knownEntityMappingSourceName.Contains(entitySource.Name)) {
+                    continue;
+                }
+                var entityNameTarget = entitySource.Name;
+                // var entityExternalNameTarget = entityNameTarget;
+                var mapping = mappingModelSchema.CreateEntityMapping(
+                    null,
+                    entitySource.Name,
+                    entityNameTarget,
+                    this.EnabledForCreatedMappings || this.EnabledForCreatedMappingModelEntity,
+                    true,
+                    this.getComment()
+                    );
+                if (mapping.Enabled) {
+                    if (mapping.Target is null) {
+                        modelSchemaTarget.CreateEntity(mapping.Name);
+                    }
+                }
+            }
+
+#if weichei
             var mappingByNameSource = mappingModelSchema.EntityMappings.ToDictionary(_ => _.SourceName, StringComparer.OrdinalIgnoreCase);
             foreach (var entitySource in modelSchemaSource.Entities) {
                 var entityMapping = mappingByNameSource.GetValueOrDefault(entitySource.Name);
@@ -67,14 +128,14 @@
                         // magic needed here
                         entityTarget.EntityTypeName = entitySource.EntityTypeName;
                         if (entityMapping is null) {
-                            mappingModelSchema.CreateEntityMapping(null, entitySource, entityTarget);
+                            mappingModelSchema.CreateEntityMapping(null, entitySource, entityTarget, true, true, "TODO");
                         } else {
                             entityMapping.Target = entityTarget;
                         }
                     } else if (lstEntityTarget.Count == 1) {
                         var entityTarget = lstEntityTarget[0];
                         if (entityMapping is null) {
-                            mappingModelSchema.CreateEntityMapping(null, entitySource, entityTarget);
+                            mappingModelSchema.CreateEntityMapping(null, entitySource, entityTarget, true,true,"TODO");
                         } else {
                             entityMapping.Target = entityTarget;
                         }
@@ -85,6 +146,7 @@
                     // ??
                 }
             }
+#endif
         }
 
         public void BuildComplexTypes(
@@ -106,14 +168,14 @@
                     if (lstComplexType.Count == 0) {
                         var complexTypeTarget = modelSchemaTarget.CreateComplexType(complexTypeNameTarget);
                         if (complexTypeMapping is null) {
-                            complexTypeMapping = mappingModelSchema.CreateComplexTypeMapping(null, complexTypeSource, complexTypeTarget);
+                            complexTypeMapping = mappingModelSchema.CreateComplexTypeMapping(null, complexTypeSource, complexTypeTarget, true, true, "TODO");
                         } else {
                             complexTypeMapping.Target = complexTypeTarget;
                         }
                     } else if (lstComplexType.Count == 1) {
                         var complexTypeTarget = lstComplexType[0];
                         if (complexTypeMapping is null) {
-                            mappingModelSchema.CreateComplexTypeMapping(null, complexTypeSource, complexTypeTarget);
+                            mappingModelSchema.CreateComplexTypeMapping(null, complexTypeSource, complexTypeTarget, true, true, "TODO");
                         } else {
                             complexTypeMapping.Target = complexTypeTarget;
                         }
@@ -130,6 +192,7 @@
                     this.BuildComplexTypeProperties(complexTypeMapping, errors);
                 }
             }
+#if weichei
 
             //foreach (var entityMapping in mappingModelSchema.EntityMappings) {
             //    entityMapping.Source
@@ -164,35 +227,36 @@
         }
         */
 
-//            var modelSchemaMappings = (this.MappingModelRepository.ModelSchemaMappings.Where(_ => _.Name == modelSchemaSource.Name)).ToList();
-//            var modelSchemaMappingsDisabled = modelSchemaMappings.Where(_ => _.Disabled).ToList();
-//            var modelSchemaMappingsEnabled = modelSchemaMappings.Where(_ => !_.Disabled).ToList();
+            //            var modelSchemaMappings = (this.MappingModelRepository.ModelSchemaMappings.Where(_ => _.Name == modelSchemaSource.Name)).ToList();
+            //            var modelSchemaMappingsDisabled = modelSchemaMappings.Where(_ => _.Disabled).ToList();
+            //            var modelSchemaMappingsEnabled = modelSchemaMappings.Where(_ => !_.Disabled).ToList();
 
-//            foreach (var modelSchemaMapping in modelSchemaMappingsEnabled) {
-//            }
-
-
+            //            foreach (var modelSchemaMapping in modelSchemaMappingsEnabled) {
+            //            }
 
 
-//            foreach (var entitySource in modelSchemaSource.Entities) {
-//                var entitySourceName = entitySource.Name;
 
-//                ModelEntity entityTarget = new ModelEntity();
-//                entityTarget.Kind = entitySource.Kind;
-//                entityTarget.Name = entitySource.Name;
-//                entityTarget.ExternalName = entitySource.ExternalName;
 
-//                // entityTarget.EntityType = sourceEntity.EntityType;
-//                entityTarget.EntityTypeName = entitySource.EntityTypeName;
+            //            foreach (var entitySource in modelSchemaSource.Entities) {
+            //                var entitySourceName = entitySource.Name;
 
-//                modelSchemaTarget.Entities.Add(entityTarget);
-//                var mappingModelEntity = new MappingModelEntity() {
-//                    Enabled = true,
-//                    Source = entitySource,
-//                    Target = entityTarget
-//                };
-//#warning where to store mappingModelEntity
-//            }
+            //                ModelEntity entityTarget = new ModelEntity();
+            //                entityTarget.Kind = entitySource.Kind;
+            //                entityTarget.Name = entitySource.Name;
+            //                entityTarget.ExternalName = entitySource.ExternalName;
+
+            //                // entityTarget.EntityType = sourceEntity.EntityType;
+            //                entityTarget.EntityTypeName = entitySource.EntityTypeName;
+
+            //                modelSchemaTarget.Entities.Add(entityTarget);
+            //                var mappingModelEntity = new MappingModelEntity() {
+            //                    Enabled = true,
+            //                    Source = entitySource,
+            //                    Target = entityTarget
+            //                };
+            //#warning where to store mappingModelEntity
+            //            }
+#endif
         }
 
         public void BuildComplexTypeProperties(MappingModelComplexType complexTypeMapping, ModelErrors errors) {

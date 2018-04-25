@@ -53,6 +53,15 @@
             target = value;
         }
 
+        /// <summary>
+        /// set this.Property = value and value.Owner = this;
+        /// </summary>
+        /// <typeparam name="TThis">this owner</typeparam>
+        /// <typeparam name="TProperty">child</typeparam>
+        /// <param name="that">this</param>
+        /// <param name="thisProperty">this.Child</param>
+        /// <param name="value">value</param>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public static bool SetPropertyAndOwner<TThis, TProperty>(this TThis that, ref TProperty thisProperty, TProperty value)
             where TThis : class, IFreezeable
@@ -72,26 +81,46 @@
             return true;
         }
 
+        /// <summary>
+        /// Set this.Owner to value and value.Dynamic = this;
+        /// </summary>
+        /// <typeparam name="TThis">this</typeparam>
+        /// <typeparam name="TOwner">the owner</typeparam>
+        /// <param name="that">this</param>
+        /// <param name="thisProperty">this.Owner</param>
+        /// <param name="value">value</param>
+        /// <param name="getChildPropertyofOwner">gets value.Dynamic</param>
+        /// <param name="setChildPropertyofOwner">sets value.Dynamic</param>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        public static bool SetOwnerAndProperty<TThis, TProperty>(this TThis that, ref TProperty thisProperty, TProperty value, Func<TProperty, TThis> getOwnerProperty, Action<TProperty, TThis> setOwnerProperty)
+        public static bool SetOwnerAndProperty<TThis, TOwner>(this TThis that, ref TOwner thisProperty, TOwner value, Func<TOwner, TThis> getChildPropertyofOwner, Action<TOwner, TThis> setChildPropertyofOwner)
             where TThis : class, IFreezeable
-            where TProperty : class {
+            where TOwner : class {
             if (ReferenceEquals(thisProperty, value)) { return false; }
             if (!(thisProperty is null)) { that.ThrowIfFrozen(); }
             var oldValue = thisProperty;
             thisProperty = value;
             if (!(value is null)) {
-                setOwnerProperty(value, that);
+                setChildPropertyofOwner(value, that);
             }
             if (!(oldValue is null)) {
-                if (ReferenceEquals(getOwnerProperty(oldValue), that)) {
-                    setOwnerProperty(oldValue, null);
+                if (ReferenceEquals(getChildPropertyofOwner(oldValue), that)) {
+                    setChildPropertyofOwner(oldValue, null);
                 }
             }
             return true;
         }
 
-
+        /// <summary>
+        /// set this.Owner = value and add/removes it from the children list
+        /// </summary>
+        /// <typeparam name="TThis">this</typeparam>
+        /// <typeparam name="TOwner">the owner</typeparam>
+        /// <param name="that">this</param>
+        /// <param name="thisPropertyOwner">this.Owner</param>
+        /// <param name="value">value</param>
+        /// <param name="getChildren">owener.ChildrenList</param>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public static bool SetOwner<TThis, TOwner>(this TThis that, ref TOwner thisPropertyOwner, TOwner value, Func<TOwner, IList<TThis>> getChildren)
             where TThis : class, IFreezeable

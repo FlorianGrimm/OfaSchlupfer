@@ -56,7 +56,7 @@
 
                 var cachedMetadataResolver = new CachedMetadataResolver();
                 cachedMetadataResolver.SetDynamicResolution((location) => new System.IO.StreamReader(location));
-                var edmReader = new EdmReader(serviceProvider);
+                var edmReader = new EdmReader();
                 edmReader.MetadataResolver = cachedMetadataResolver;
                 var edmxModel = edmReader.Read(srcPath, true, null);
 
@@ -166,7 +166,7 @@
             var srcPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\ProjectOnlinemetadata.xml");
             var cachedMetadataResolver = new CachedMetadataResolver();
             cachedMetadataResolver.SetDynamicResolution((location) => new System.IO.StreamReader(location));
-            var edmReader = new EdmReader(serviceProvider);
+            var edmReader = new EdmReader();
             edmReader.MetadataResolver = cachedMetadataResolver;
             var edmxModel = edmReader.Read(srcPath, true, null);
 

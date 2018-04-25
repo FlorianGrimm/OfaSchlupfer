@@ -35,19 +35,17 @@
     public abstract class SqlRepositoryModel : ExternalRepositoryModelBase {
         protected SqlRepositoryModel() {
         }
-
-        [JsonProperty]
-        public RepositoryConnectionString ConnectionString { get; set; }
-
-        public virtual void ReadSQLSchema(
+        
+        public virtual ModelSchema ReadSQLSchema(
             MetaModelBuilder metaModelBuilder,
             ModelErrors errors
-            ) { }
+            ) {
+            throw new NotImplementedException();
+        }
 
         [JsonIgnore]
         public ModelSqlDatabase ModelDatabase { get; set; }
-
-
+        
         public override IEntity CreateEntityByExternalTypeName(string externalTypeName) {
 #warning TODO
             throw new NotImplementedException();
@@ -58,10 +56,10 @@
     public class SqlRepositoryImplementation : SqlRepositoryModel, IExternalRepositoryModel {
         public SqlRepositoryImplementation() {
         }
-        
+
         public override string GetRepositoryTypeName() => SqlRepositoryModelType.TypeName;
 
-        public override void ReadSQLSchema(
+        public override ModelSchema ReadSQLSchema(
             MetaModelBuilder metaModelBuilder,
             ModelErrors errors
             ) {
@@ -71,11 +69,10 @@
             this.ModelDatabase = modelDatabase;
 
             var modelSchemaBuilder = new SQLSModelSchemaBuilder();
-            var modelSchema = new ModelSchema();            
+            var modelSchema = new ModelSchema();
             modelSchemaBuilder.Build(modelDatabase, modelSchema, metaModelBuilder, errors);
             this.ModelSchema = modelSchema;
-
-            // modelDatabase.Tables.Values.Where(tbl=>tbl.Schema==)
+            return this.ModelSchema;
         }
 
         public override List<string> BuildSchema(string metadataContent) {

@@ -27,7 +27,7 @@
 
         [JsonProperty]
         public FreezeableOwnedCollection<MappingModelSchema, MappingModelRelation> RelationMappings => this._RelationMappings;
-        
+
         public MappingModelSchema() {
             this._ComplexTypeMappings = new FreezeableOwnedCollection<MappingModelSchema, MappingModelComplexType>(this, (owner, item) => { item.Owner = owner; });
             this._EntityMappings = new FreezeableOwnedCollection<MappingModelSchema, MappingModelEntity>(this, (owner, item) => { item.Owner = owner; });
@@ -67,20 +67,38 @@
             }
         }
 
-        public MappingModelEntity CreateEntityMapping(string name, ModelEntity source, ModelEntity target) {
+        public MappingModelEntity CreateEntityMapping(string name, ModelEntity source, ModelEntity target, bool enabled, bool generated, string comment) {
             var result = new MappingModelEntity();
             result.Name = name;
             result.Source = source;
             result.Target = target;
+            result.Enabled = enabled;
+            result.Generated = generated;
+            result.Comment = comment;
             this.EntityMappings.Add(result);
             return result;
         }
 
-        public MappingModelComplexType CreateComplexTypeMapping(string name, ModelComplexType source, ModelComplexType target) {
+        public MappingModelEntity CreateEntityMapping(string name, string sourceName, string targetName, bool enabled, bool generated, string comment) {
+            var result = new MappingModelEntity();
+            result.Name = name;
+            result.SourceName = sourceName;
+            result.TargetName = targetName;
+            result.Enabled = enabled;
+            result.Generated = generated;
+            result.Comment = comment;
+            this.EntityMappings.Add(result);
+            return result;
+        }
+
+        public MappingModelComplexType CreateComplexTypeMapping(string name, ModelComplexType source, ModelComplexType target, bool enabled, bool generated, string comment) {
             var result = new MappingModelComplexType();
             result.Name = name;
             result.Source = source;
             result.Target = target;
+            result.Enabled = enabled;
+            result.Generated = generated;
+            result.Comment = comment;
             this.ComplexTypeMappings.Add(result);
             return result;
         }

@@ -61,6 +61,20 @@
             }
         }
 
+        public virtual EdmxModel GetEdmxModel() {
+            if (!(this._EdmxModel is null)) { return this._EdmxModel; }
+            if (this.ModelDefinition is null) {
+                return null;
+            }
+            {
+                var edmReader = new EdmReader();
+                using (var sr = new System.IO.StringReader(this.ModelDefinition.MetaData)) {
+                    var edmxModel = edmReader.Read(sr, true, null);
+                    this.EdmxModel = edmxModel;
+                }
+            }
+            return this.EdmxModel;
+        }
 
         public override ModelSchema GetModelSchema(MetaModelBuilder metaModelBuilder, ModelErrors errors) {
             var result = this.ModelSchema;

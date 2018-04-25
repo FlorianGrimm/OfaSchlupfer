@@ -11,14 +11,16 @@
     using OfaSchlupfer.HttpAccess;
     using OfaSchlupfer.Freezable;
     using OfaSchlupfer.Entity;
+    using OfaSchlupfer.Elementary;
 
     public interface IExternalRepositoryModel
         : IFreezeable
-        , IObjectWithOwner<ModelRepository> 
-        {
+        , IObjectWithOwner<ModelRepository> {
         string GetRepositoryTypeName();
+        
+        // IObjectWithOwner<ModelRepository> defines ModelRepository Owner { get; set; }
 
-        //ModelRepository Owner { get; set; }
+        RepositoryConnectionString ConnectionString { get; set; }
 
         ModelSchema ModelSchema { get; set; }
 
@@ -34,6 +36,8 @@
         /// <param name="metadataContent">the content</param>
         /// <returns>a list of errors.</returns>
         List<string> BuildSchema(string metadataContent);
+
+        IModelBuilderNamingService GetNamingService();
     }
 
     public interface IExternalRepositoryModelType {
@@ -56,6 +60,9 @@
 
         protected ExternalRepositoryModelBase() {
         }
+
+        [JsonProperty]
+        public RepositoryConnectionString ConnectionString { get; set; }
 
         public abstract string GetRepositoryTypeName();
 
@@ -86,19 +93,17 @@
         [JsonIgnore]
         public virtual ModelSchema ModelSchema {
             get {
-                if (this._ModelSchema == null) {
-                    if (this.Owner != null) {
-                        this._ModelSchema = this.Owner.ModelSchema;
-                    }
+                if (this._Owner is null) {
+                    return this._ModelSchema;
+                } else {
+                    return this._Owner.ModelSchema;
                 }
-                return this._ModelSchema;
             }
             set {
-                if (ReferenceEquals(this._ModelSchema, value)) { return; }
-                this.ThrowIfFrozen();
-                this._ModelSchema = value;
-                if (this._Owner != null) {
-                    this._Owner.ModelSchema = value;
+                if (this.SetRefProperty(ref this._ModelSchema, value)) {
+                    if (this._Owner != null) {
+                        this._Owner.ModelSchema = value;
+                    }
                 }
             }
         }
@@ -108,17 +113,25 @@
         [JsonIgnore]
         public virtual ModelDefinition ModelDefinition {
             get {
-                return this._ModelDefinition;
+                if (this._Owner is null) {
+                    return this._ModelDefinition;
+                } else {
+                    return this._Owner.ModelDefinition;
+                }
             }
             set {
-                if (ReferenceEquals(this._ModelDefinition, value)) { return; }
-                this.ThrowIfFrozen();
-                this._ModelDefinition = value;
+                if (this.SetRefProperty(ref this._ModelDefinition, value)) {
+                    if (!(value is null) && !(this._Owner is null)) {
+                        this._Owner.ModelDefinition = value;
+                    }
+                }
             }
         }
 
         public abstract List<string> BuildSchema(string metadataContent);
 
+
+        public virtual IModelBuilderNamingService GetNamingService() => new ModelBuilderNamingService();
         public override bool Freeze() {
             var result = base.Freeze();
             if (result) {

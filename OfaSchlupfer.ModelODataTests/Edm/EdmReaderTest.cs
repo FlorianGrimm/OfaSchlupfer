@@ -23,7 +23,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
 
             var cachedMetadataResolver = new CachedMetadataResolver();
             cachedMetadataResolver.SetDynamicResolution((location) => new System.IO.StreamReader(location));
-            var sut = new EdmReader(serviceProvider);
+            var sut = new EdmReader();
             sut.MetadataResolver = cachedMetadataResolver;
 
             var edmxModel = sut.Read(srcPath, true, null);
@@ -127,7 +127,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
 
             var cachedMetadataResolver = new CachedMetadataResolver();
             cachedMetadataResolver.SetDynamicResolution((location) => new System.IO.StreamReader(location));
-            var sut = new EdmReader(serviceProvider);
+            var sut = new EdmReader();
             sut.MetadataResolver = cachedMetadataResolver;
 
             var edmxModel = sut.Read(srcPath, true, null);
@@ -163,7 +163,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
 
             var cachedMetadataResolver = new CachedMetadataResolver();
             cachedMetadataResolver.SetDynamicResolution((location) => new System.IO.StreamReader(location));
-            var sut = new EdmReader(serviceProvider);
+            var sut = new EdmReader();
             sut.MetadataResolver = cachedMetadataResolver;
 
             var edmxModel = sut.Read(srcPath, true, null);

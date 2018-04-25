@@ -43,11 +43,14 @@
             this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Repositories.FindByKey(name), errors);
         }
         
-        public MappingModelSchema CreateMappingModelSchema(string name, ModelSchema modelSchemaSource, ModelSchema modelSchemaTarget) {
+        public MappingModelSchema CreateMappingModelSchema(string name, ModelSchema modelSchemaSource, ModelSchema modelSchemaTarget, bool enabled, bool generated, string comment) {
             var result = new MappingModelSchema();
-            result.Name = name;
+            result.Name = name ?? $"{modelSchemaSource.Name} - {modelSchemaTarget.Name}";
             result.Source = modelSchemaSource;
             result.Target = modelSchemaTarget;
+            result.Enabled = enabled;
+            result.Generated = generated;
+            result.Comment = comment;
             this.ModelSchemaMappings.Add(result);
             return result;
         }

@@ -11,19 +11,20 @@ namespace OfaSchlupfer.CollaborationTests {
     using OfaSchlupfer.ModelOData;
     using OfaSchlupfer.ModelOData.Edm;
     using OfaSchlupfer.ModelOData.ODataAccess;
+    using OfaSchlupfer.ModelSql;
     using OfaSchlupfer.SPO;
 
     using Xunit;
     using Xunit.Abstractions;
 
-    public class MappingTest {
+    public class MappingODataSqlTest {
         private readonly ITestOutputHelper output;
-        public MappingTest(ITestOutputHelper output) {
+        public MappingODataSqlTest(ITestOutputHelper output) {
             this.output = output;
         }
 
         [Fact]
-        public void MappingTest1() {
+        public void Mapping_OData_SQL_ProjectOnlinemetadata_Test() {
             var testCfg = OfaSchlupfer.TestCfg.Get();
 
             var repCSProjectServer = testCfg.ProjectServer.CreateWithSuffix("/_api/ProjectData/[en-us]");
@@ -35,47 +36,71 @@ namespace OfaSchlupfer.CollaborationTests {
             services.AddLogging((builder) => { builder.AddDebug(); });
             services.AddOfaSchlupferModel();
             services.AddOfaSchlupferEntity();
+            services.AddOfaSchlupferODataRepository();
+            services.AddSqlRepository();
             services.AddServiceClientCredentials((builder) => { });
             //services.AddHttpClient((builder) => { });
             var serviceProvider = services.BuildServiceProvider();
-            
+
             using (var scope = serviceProvider.CreateScope()) {
                 var scopedServiceProvider = scope.ServiceProvider;
                 var modelRoot = scopedServiceProvider.GetRequiredService<ModelRoot>();
                 var modelRepositorySource = modelRoot.CreateRepository("Source", "OData");
+                var modelDefininition = modelRepositorySource.CreateModelDefinition(null);
+                Assert.Same(modelDefininition, modelRepositorySource.ModelDefinition);
+                modelDefininition.MetaData = System.IO.File.ReadAllText(srcPath);
 
-                var cachedMetadataResolver = new CachedMetadataResolver();
-                cachedMetadataResolver.SetDynamicResolution((location) => new System.IO.StreamReader(location));
-                var edmReader = new EdmReader(serviceProvider);
-                edmReader.MetadataResolver = cachedMetadataResolver;
-                var edmxModel = edmReader.Read(srcPath, true, null);
 
-                var oDataRepositorySource = new ODataRepositoryImplementation();
-                modelRepositorySource.ReferencedRepositoryModel = oDataRepositorySource;
-                oDataRepositorySource.EdmxModel = edmxModel;
+                var oDataRepositorySource = (ODataRepositoryImplementation)modelRepositorySource.GetReferenceRepositoryModel();
+                Assert.NotNull(oDataRepositorySource);
+                Assert.Same(modelRepositorySource, oDataRepositorySource.Owner);
+                Assert.NotNull(oDataRepositorySource.GetEdmxModel());
 
-                Assert.NotNull(modelRepositorySource.GetModelSchema(null, null));
-
-                var modelSchemaSource = modelRepositorySource.ModelSchema;
+                var modelSchemaSource = modelRepositorySource.GetModelSchema(null, null);
                 Assert.NotNull(modelSchemaSource);
+
                 EntitySchema entitySchema = modelRepositorySource.ModelSchema.GetEntitySchema();
                 Assert.NotNull(entitySchema);
-                var modelRepositoryTarget = modelRoot.CreateRepository("Target", null);
 
-                var mappingModelRepository = new MappingModelRepository();
-                mappingModelRepository = modelRoot.CreateMapping("SourceTarget", modelRepositorySource, modelRepositoryTarget);
+                var modelRepositoryTarget = modelRoot.CreateRepository("Target", "SQL");
+                var sqlRepositoryTarget = (SqlRepositoryImplementation)modelRepositoryTarget.GetReferenceRepositoryModel();
+                sqlRepositoryTarget.ConnectionString = testCfg.SQLConnectionString;
+                    
+                Assert.NotNull(sqlRepositoryTarget);
+                
+                {
 
-                var modelSchemaTarget = new ModelSchema();
-                modelRepositoryTarget.ModelSchema = modelSchemaTarget;
+                    //var mappingModelBuilder = new MappingModelBuilder();
+                    //mappingModelBuilder.MappingModelRepository = mappingModelRepository;
+                    var metaModelBuilder = new MetaModelBuilder();
+                    var errors = new ModelErrors();
+                    var modelSchemaTarget = sqlRepositoryTarget.ReadSQLSchema(metaModelBuilder, errors);
+                    
+                    //mappingModelBuilder.Build(errors);
 
-                var mappingModelBuilder = new MappingModelBuilder();
-                mappingModelBuilder.MappingModelRepository = mappingModelRepository;
+                    if (errors.HasErrors()) { output.WriteLine(errors.ToString()); }
+                    Assert.False(errors.HasErrors());
 
-                var errors = new ModelErrors();
-                mappingModelBuilder.Build(errors);
+                    Assert.NotNull(modelSchemaTarget);
+                    Assert.True(modelSchemaTarget.Entities.Count > 0);
+                    Assert.True(modelSchemaTarget.ComplexTypes.Count > 0);
+                }
+                
 
-                if (errors.HasErrors()) { output.WriteLine(errors.ToString()); }
-                Assert.False(errors.HasErrors());
+                {
+                    var mappingModelRepositorySourceTarget = modelRoot.CreateMapping("SourceTarget", modelRepositorySource, modelRepositoryTarget);
+                    var mappingModelSchema = mappingModelRepositorySourceTarget.CreateMappingModelSchema("SourceTarget", modelRepositorySource.ModelSchema, modelRepositoryTarget.ModelSchema, true, false, "");
+
+                    var mappingModelBuilder = new MappingModelBuilder();
+                    mappingModelBuilder.MappingModelRepository = mappingModelRepositorySourceTarget;
+
+                    var errors = new ModelErrors();
+                    mappingModelBuilder.Build(errors);
+
+                    if (errors.HasErrors()) { output.WriteLine(errors.ToString()); }
+                    Assert.False(errors.HasErrors());
+                    
+                }
 
                 var cred = new SharePointOnlineServiceClientCredentials(repCSProjectServer, null);
                 var oDataClient = new ODataServiceClient(new Uri(repCSProjectServer.GetUrlNormalized()), cred, null);
@@ -105,7 +130,7 @@ namespace OfaSchlupfer.CollaborationTests {
                     serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
                     var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(modelRoot, Newtonsoft.Json.Formatting.Indented, serializeSettings);
                     try {
-                        string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\MappingTest1.json");
+                        string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\Mapping_OData_SQL_ProjectOnlinemetadata_Test-root.json");
                         System.IO.File.WriteAllText(outputPath, schemaAsJson);
                     } catch {
                         throw;

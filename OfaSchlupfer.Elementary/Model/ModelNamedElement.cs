@@ -17,24 +17,14 @@
 
         [JsonProperty(Order = 1, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public virtual string Name {
-            get {
-                return this._Name;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Name = value;
-            }
+            get => this._Name;
+            set => this.SetStringProperty(ref this._Name, value);
         }
 
         [JsonProperty(Order = 2, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public virtual string ExternalName {
-            get {
-                return this._ExternalName;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._ExternalName = value;
-            }
+            get => this._ExternalName;
+            set => this.SetStringProperty(ref this._ExternalName, value);
         }
 
         public override string ToString() {

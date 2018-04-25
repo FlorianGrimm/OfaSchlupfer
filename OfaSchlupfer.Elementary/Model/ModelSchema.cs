@@ -89,8 +89,43 @@
             set => this.SetOwnerAndProperty(ref _Owner, value, (owner)=>owner.ModelSchema, (owner, newValue) => owner.ModelSchema = newValue);
         }
 
-        public void PostDeserialize() {
+        [JsonProperty(Order = 1, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public override string Name {
+            get {
+                if (this.Owner is null) {
+                    return this._Name;
+                } else {
+                    return this.Owner.Name;
+                }
+            }
+            set {
+                if (this.SetStringProperty(ref this._Name, value)) {
+                    if (!(this.Owner is null)) {
+                        this.Owner.Name = value;
+                    }
+                }
+            }
         }
+
+        [JsonProperty(Order = 2, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public override string ExternalName {
+            get {
+                if (this.Owner is null) {
+                    return this._ExternalName;
+                } else {
+                    return this.Owner.ExternalName;
+                }
+            }
+
+            set {
+                if (this.SetStringProperty(ref this._ExternalName, value)) {
+                    if (!(this.Owner is null)) {
+                        this.Owner.ExternalName = value;
+                    }
+                }
+            }
+        }
+
 
         public override bool Freeze() {
             var result = base.Freeze();
@@ -119,17 +154,20 @@
             return result;
         }
 
-        public ModelEntity CreateEntity(string name) {
+        public ModelEntity CreateEntity(string name, string externalName, string entityTypeName) {
             var result = new ModelEntity();
             result.Kind = ModelEntityKind.EntitySet;
             result.Name = name;
+            result.ExternalName = externalName;
+            result.EntityTypeName = entityTypeName;
             this.Entities.Add(result);
             return result;
         }
 
-        public ModelComplexType CreateComplexType(string name) {
+        public ModelComplexType CreateComplexType(string name, string externalName) {
             var result = new ModelComplexType();
             result.Name = name;
+            result.ExternalName = externalName;
             this.ComplexTypes.Add(result);
             return result;
         }

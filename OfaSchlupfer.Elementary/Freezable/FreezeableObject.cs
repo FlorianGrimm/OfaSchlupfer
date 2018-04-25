@@ -47,6 +47,13 @@
             return true;
         }
 
+        /// <summary>
+        /// sets this.Property = value. -relaxed ThrowIfFrozen if not set before
+        /// </summary>
+        /// <typeparam name="TOwner">this</typeparam>
+        /// <param name="thisPropertyOwner">this._Property</param>
+        /// <param name="value">value</param>
+        /// <returns>changed</returns>
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         protected bool SetOwner<TOwner>(ref TOwner thisPropertyOwner, TOwner value)
             where TOwner : class {
