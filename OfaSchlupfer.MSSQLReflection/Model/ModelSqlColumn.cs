@@ -6,6 +6,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
     using Newtonsoft.Json;
 
+    using OfaSchlupfer.Freezable;
     using OfaSchlupfer.Model;
     using OfaSchlupfer.SqlAccess;
 
@@ -23,6 +24,36 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         [JsonIgnore]
         private IModelSqlObjectWithColumns _Owner;
+
+        [JsonIgnore]
+        private int _ColumnId;
+
+        [JsonIgnore]
+        private short _system_type_id;
+
+        [JsonIgnore]
+        private int _user_type_id;
+
+        [JsonIgnore]
+        private short _MaxLength;
+
+        [JsonIgnore]
+        private byte _Precision;
+
+        [JsonIgnore]
+        private byte _Scale;
+
+        [JsonIgnore]
+        private string _CollationName;
+
+        [JsonIgnore]
+        private bool _Nullable;
+
+        [JsonIgnore]
+        private bool _FixedLength;
+
+        [JsonIgnore]
+        private bool _Unicode;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlColumn"/> class.
@@ -73,31 +104,37 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             return result;
         }
 
+        public IModelSqlObjectWithColumns Owner {
+            get => this._Owner;
+            set => this.SetOwnerWithChildren(ref this._Owner, value, (owner) => owner.Columns);
+        }
+
+
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
 
         [JsonProperty]
-        public int ColumnId { get; set; }
+        public int ColumnId { get => this._ColumnId; set => this.SetValueProperty(ref this._ColumnId, value); }
 
         [JsonProperty]
-        public short system_type_id { get; set; }
+        public short system_type_id { get => this._system_type_id; set => this.SetValueProperty(ref this._system_type_id, value); }
 
         [JsonProperty]
-        public int user_type_id { get; set; }
+        public int user_type_id { get => this._user_type_id; set => this.SetValueProperty(ref this._user_type_id, value); }
 
         [JsonProperty]
-        public short MaxLength { get; set; }
+        public short MaxLength { get => this._MaxLength; set => this.SetValueProperty(ref this._MaxLength, value); }
 
         [JsonProperty]
-        public byte Precision { get; set; }
+        public byte Precision { get => this._Precision; set => this.SetValueProperty(ref this._Precision, value); }
 
         [JsonProperty]
-        public byte Scale { get; set; }
+        public byte Scale { get => this._Scale; set => this.SetValueProperty(ref this._Scale, value); }
 
         [JsonProperty]
-        public string CollationName { get; set; }
+        public string CollationName { get => this._CollationName; set => this.SetStringProperty(ref this._CollationName, value); }
 
         [JsonProperty]
-        public bool Nullable { get; set; }
+        public bool Nullable { get => this._Nullable; set => this.SetValueProperty(ref this._Nullable, value); }
 
         /// <summary>
         /// Gets or sets the reference to the SqlType
@@ -130,10 +167,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         }
 
         [JsonProperty]
-        public bool FixedLength { get; set; }
+        public bool FixedLength { get => this._FixedLength; set => this.SetValueProperty(ref this._FixedLength, value); }
 
         [JsonProperty]
-        public bool Unicode { get; set; }
+        public bool Unicode { get => this._Unicode; set => this.SetValueProperty(ref this._Unicode, value); }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
@@ -170,7 +207,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         /// <inheritdoc/>
         public override bool Equals(object obj) {
-            return this.Equals(obj as ModelSqlColumn);
+            if (obj is ModelSqlColumn other) {
+                return this.Equals(other);
+            }
+            return false;
         }
 
         /// <inheritdoc/>

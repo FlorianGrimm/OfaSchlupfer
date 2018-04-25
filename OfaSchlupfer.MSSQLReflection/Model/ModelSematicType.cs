@@ -1,11 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿namespace OfaSchlupfer.MSSQLReflection.Model {
+    using Newtonsoft.Json;
 
-namespace OfaSchlupfer.MSSQLReflection.Model {
+    using OfaSchlupfer.Freezable;
+
     /// <summary>
     /// base we will see
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{TypeName}")]
-    public class ModelSematicType {
+    public class ModelSematicType
+        : FreezeableObject {
+        private SqlName _Name;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSematicType"/> class.
         /// </summary>
@@ -22,10 +27,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         //[JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
         [JsonIgnore]
-        public virtual SqlName Name { get; set; }
+        public virtual SqlName Name { get => this._Name; set => this.SetOrThrowIfFrozen(ref this._Name, value); }
 
         [JsonProperty]
-        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this.Name = SqlNameJsonConverter.ConvertFromValue(value); } }
+        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this.ThrowIfFrozen(); this.Name = SqlNameJsonConverter.ConvertFromValue(value); } }
 
 
         /// <summary>

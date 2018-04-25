@@ -7,11 +7,14 @@
 
     using Newtonsoft.Json;
 
+    using OfaSchlupfer.Freezable;
+
     /// <summary>
     /// a element with an name
     /// </summary>
-    [JsonObject]
-    public class ModelSqlNamedElement {
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+    public class ModelSqlNamedElement
+        : FreezeableObject {
         /// <summary>
         /// backfield for Name
         /// </summary>
@@ -30,10 +33,10 @@
         /// </summary>
         //[JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
         [JsonIgnore]
-        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Child); } }
+        public SqlName Name { get { return this._Name; } set { this.ThrowIfFrozen(); this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Child); } }
 
         [JsonProperty]
-        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
+        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this.ThrowIfFrozen(); this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 

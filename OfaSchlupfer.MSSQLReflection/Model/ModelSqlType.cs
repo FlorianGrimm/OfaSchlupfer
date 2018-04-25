@@ -143,7 +143,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         /// <inheritdoc/>
         public override bool Equals(object obj) {
-            return base.Equals(obj as ModelSqlType);
+            if (obj is ModelSqlType other) {
+                return this.Equals(other);
+            }
+            return false;
         }
 
         /// <inheritdoc/>

@@ -97,6 +97,9 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             this.Name = src.Name;
         }
 
+        public ModelSqlDatabase Database { get => this._Database; set => this.SetOwnerWithChildren(ref this._Database, value, (owner) => owner.Schemas); }
+
+
         /// <summary>
         /// Add this to the parent
         /// </summary>
@@ -107,32 +110,38 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         }
 
         public void AddType(ModelSqlType modelSqlType) {
-            this._Types[modelSqlType.Name] = modelSqlType;
+            // this._Types[modelSqlType.Name] = modelSqlType;
+            this._Types.Add(modelSqlType);
             this._Database.AddType(modelSqlType);
         }
 
         public void AddTable(ModelSqlTable modelSqlTable) {
-            this._Tables[modelSqlTable.Name] = modelSqlTable;
+            // this._Tables[modelSqlTable.Name] = modelSqlTable;
+            this._Tables.Add(modelSqlTable);
             this._Database.AddTable(modelSqlTable);
         }
 
         public void AddView(ModelSqlView modelSqlView) {
-            this._Views[modelSqlView.Name] = modelSqlView;
+            // this._Views[modelSqlView.Name] = modelSqlView;
+            this._Views.Add(modelSqlView);
             this._Database.AddView(modelSqlView);
         }
 
         public void AddProcedure(ModelSqlProcedure modelSqlProcedure) {
-            this._Procedures[modelSqlProcedure.Name] = modelSqlProcedure;
+            // this._Procedures[modelSqlProcedure.Name] = modelSqlProcedure;
+            this._Procedures.Add(modelSqlProcedure);
             this._Database.AddProcedure(modelSqlProcedure);
         }
 
         public void AddSynonym(ModelSqlSynonym modelSqlSynonym) {
-            this._Synonyms[modelSqlSynonym.Name] = modelSqlSynonym;
+            // this._Synonyms[modelSqlSynonym.Name] = modelSqlSynonym;
+            this._Synonyms.Add(modelSqlSynonym);
             this._Database.AddSynonym(modelSqlSynonym);
         }
 
         public void AddTableType(ModelSqlTableType modelSqlTableType) {
-            this._TableTypes[modelSqlTableType.Name] = modelSqlTableType;
+            // this._TableTypes[modelSqlTableType.Name] = modelSqlTableType;
+            this._TableTypes.Add(modelSqlTableType);
             this._Database.AddTableType(modelSqlTableType);
         }
 
@@ -143,10 +152,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         //[JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
         [JsonIgnore]
-        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Schema); } }
+        public SqlName Name { get { return this._Name; } set { this.ThrowIfFrozen(); this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Schema); } }
 
         [JsonProperty]
-        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
+        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this.ThrowIfFrozen(); this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
@@ -168,7 +177,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             throw new NotImplementedException();
         }
 
-
         [JsonProperty]
         public FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlType> Types => _Types;
 
@@ -186,6 +194,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         [JsonProperty]
         public FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlSynonym> Synonyms => _Synonyms;
+
 
 #warning weichei
         ///// <summary>
@@ -226,8 +235,12 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         public static bool operator !=(ModelSqlSchema a, ModelSqlSchema b) => !(((object)a == null) ? ((object)b == null) : a.Equals(b));
 
+        /// <inheritdoc/>
         public override bool Equals(object obj) {
-            return base.Equals(obj as ModelSqlSchema);
+            if (obj is ModelSqlSchema other) {
+                return this.Equals(other);
+            }
+            return false;
         }
 
         public bool Equals(ModelSqlSchema other) {
@@ -240,5 +253,18 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public override int GetHashCode() => this.Name.GetHashCode();
 
         public override string ToString() => this.Name.ToString();
+
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this._Types.Freeze();
+                this._Tables.Freeze();
+                this._TableTypes.Freeze();
+                this._Views.Freeze();
+                this._Procedures.Freeze();
+                this._Synonyms.Freeze();
+            }
+            return result;
+        }
     }
 }

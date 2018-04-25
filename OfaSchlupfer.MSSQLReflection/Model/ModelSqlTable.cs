@@ -75,7 +75,10 @@
 
         /// <inheritdoc/>
         public override bool Equals(object obj) {
-            return this.Equals(obj as ModelSqlColumn);
+            if (obj is ModelSqlTable other) {
+                return this.Equals(other);
+            }
+            return false;
         }
 
         /// <inheritdoc/>

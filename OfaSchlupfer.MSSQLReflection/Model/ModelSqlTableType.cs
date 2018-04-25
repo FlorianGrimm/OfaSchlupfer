@@ -4,25 +4,36 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+
     using Newtonsoft.Json;
+
     using OfaSchlupfer.Freezable;
 
     /// <summary>
     /// the type of an table like element
     /// </summary>
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public sealed class ModelSqlTableType
         : ModelSqlElementType
         , IEquatable<ModelSqlTableType>
         , IScopeNameResolver
         , IModelSqlObjectWithColumns {
-        private readonly List<ModelSqlColumn> _Columns;
+        [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlTableType, SqlName, ModelSqlColumn> _Columns;
+
+        [JsonIgnore]
         private SqlScope _Scope;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlTableType"/> class.
         /// </summary>
         public ModelSqlTableType() {
-            this._Columns = new List<ModelSqlColumn>();
+            this._Columns = new FreezeableOwnedKeyedCollection<ModelSqlTableType, SqlName, ModelSqlColumn>(
+                this,
+                (item) => item.Name,
+                SqlNameEqualityComparer.Level1,
+                (owner, item) => item.Owner = owner
+                );
         }
 
         /// <summary>
@@ -53,7 +64,7 @@
             this.Name = src.Name;
             this.Columns.AddRange(src.Columns);
         }
-        
+
         [JsonIgnore]
         public override ModelSqlSchema Owner {
             get => this._Schema;
@@ -63,8 +74,10 @@
         /// <summary>
         /// Gets the Columns
         /// </summary>
-        public List<ModelSqlColumn> Columns => this._Columns;
+        public FreezeableOwnedKeyedCollection<ModelSqlTableType, SqlName, ModelSqlColumn> Columns => this._Columns;
 
+        [JsonIgnore]
+        IList<ModelSqlColumn> IModelSqlObjectWithColumns.Columns => this._Columns;
         /// <summary>
         /// Add this to the parent
         /// </summary>
@@ -86,7 +99,10 @@
 
         /// <inheritdoc/>
         public override bool Equals(object obj) {
-            return this.Equals(obj as ModelSqlColumn);
+            if (obj is ModelSqlTableType other) {
+                return this.Equals(other);
+            }
+            return false;
         }
 
         /// <inheritdoc/>

@@ -44,6 +44,16 @@
             }
         }
 
+        public void AddRange(IEnumerable<TValue> items) {
+            if (!(items is null)) {
+                foreach (var item in items) {
+                    if (!(item is null)) {
+                        this.Add(item);
+                    }
+                }
+            }
+        }
+
         public int Count => this._Items.Count;
 
         public bool IsReadOnly => (this._IsFrozen == 1);
@@ -124,6 +134,39 @@
                         }
                     }
                     return result;
+                }
+            }
+        }
+
+        public TValue GetValueOrDefault(TKey key, TValue defaultValue=default(TValue)) {
+            if (this._IsFrozen == 0) {
+                if ((object)key != null) {
+                    var items = this._Items.ToArray();
+                    foreach (var item in items) {
+                        var itemKey = this._GetKey(item);
+                        if (itemKey.Equals(key)) {
+                            return item;
+                        }
+                    }
+                }
+                return defaultValue;
+            } else {
+                if ((object)this._ItemsByKey == null) {
+                    var dict = new Dictionary<TKey, TValue>(this._Items.Count, this._KeyComparer);
+                    foreach (var item in this._Items) {
+                        var itemKey = this._GetKey(item);
+                        dict[itemKey] = item;
+                    }
+                    this._ItemsByKey = dict;
+                }
+                {
+                    TValue item;
+                    if ((object)key != null) {
+                        if (this._ItemsByKey.TryGetValue(key, out item)) {
+                            return item;
+                        }
+                    }
+                    return defaultValue;
                 }
             }
         }

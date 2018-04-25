@@ -2,7 +2,9 @@
 
 namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
+
     using Newtonsoft.Json;
+
     using OfaSchlupfer.Freezable;
 
     /// <summary>
@@ -62,7 +64,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets or sets the name of the type.
         /// </summary>
-        public string Definition { get { return this._Definition; } set { this._Definition = value ?? string.Empty; } }
+        public string Definition { get => this._Definition; set => this.SetStringProperty(ref this._Definition, value); }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
@@ -101,7 +103,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         /// <inheritdoc/>
         public override bool Equals(object obj) {
-            return base.Equals(obj as ModelSqlProcedure);
+            if (obj is ModelSqlProcedure other) {
+                return this.Equals(other);
+            }
+            return false;
         }
 
         /// <inheritdoc/>

@@ -14,7 +14,7 @@
         : FreezeableObject
         , IScopeNameResolver {
         [JsonIgnore]
-        private readonly Dictionary<SqlName, ModelSqlSchema> _Schemas;
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSchema> _Schemas;
         [JsonIgnore]
         private readonly Dictionary<SqlName, ModelSqlType> _Types;
         [JsonIgnore]
@@ -39,7 +39,13 @@
         /// Initializes a new instance of the <see cref="ModelSqlDatabase"/> class.
         /// </summary>
         public ModelSqlDatabase() {
-            this._Schemas = new Dictionary<SqlName, ModelSqlSchema>(SqlNameEqualityComparer.Level1);
+            this._Schemas = new FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSchema>(
+                this,
+                (item) => item.Name,
+                SqlNameEqualityComparer.Level1,
+                (owner, item) => item.Database = owner
+                );
+            
             this._Types = new Dictionary<SqlName, ModelSqlType>(SqlNameEqualityComparer.Level2);
             this._Tables = new Dictionary<SqlName, ModelSqlTable>(SqlNameEqualityComparer.Level2);
             this._TableTypes = new Dictionary<SqlName, ModelSqlTableType>(SqlNameEqualityComparer.Level2);
@@ -73,24 +79,24 @@
         /// </summary>
         //[JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
         [JsonIgnore]
-        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Database); } }
+        public SqlName Name { get { return this._Name; } set { this.ThrowIfFrozen(); this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Database); } }
 
         [JsonProperty]
-        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
+        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this.ThrowIfFrozen(); this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
 
         /// <summary>
         /// Gets the server.
         /// </summary>
         [JsonIgnore]
-        public ModelSqlServer SqlServer => this._SqlServer;
+        public ModelSqlServer SqlServer { get => this._SqlServer; set => this.SetOwnerWithChildren(ref this._SqlServer, value, (owner) => owner.Database); }
 
         /// <summary>
         /// Gets the schemas.
         /// </summary>
         //[JsonIgnore]
         [JsonProperty(ItemIsReference = true)]
-        public Dictionary<SqlName, ModelSqlSchema> Schemas => this._Schemas;
-        
+        public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSchema> Schemas => this._Schemas;
+
         /// <summary>
         /// Gets the types.
         /// </summary>
@@ -168,7 +174,7 @@
         /// <param name="schema">the schema to add.</param>
         public void AddSchema(ModelSqlSchema schema) {
             if ((object)schema == null) { throw new ArgumentNullException(nameof(schema)); }
-            this.Schemas[schema.Name] = schema;
+            this.Schemas.Add(schema);
         }
 
         /// <summary>
@@ -231,6 +237,22 @@
         /// <returns>this scope</returns>
         public SqlScope GetScope() {
             return this._Scope ?? (this._Scope = new SqlScope(null, this));
+        }
+
+        public override bool Freeze() {
+            var result = base.Freeze();
+            if (result) {
+                this.Schemas.Freeze();
+                /*
+                this._Types 
+                this._Tables 
+                this._TableTypes 
+                this._Views 
+                this._Procedures 
+                this._Synonyms 
+                */
+            }
+            return result;
         }
     }
 }

@@ -164,8 +164,8 @@ namespace OfaSchlupfer.CollaborationTests {
                     serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects;
                     serializeSettings.Converters.Add(new OfaSchlupfer.MSSQLReflection.Model.SqlNameJsonConverter());
                     //serializeSettings.Converters.Add(new OfaSchlupfer.MSSQLReflection.Model.ModelSqlTableJsonConverter());
-                    serializeSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
-                    serializeSettings.TraceWriter = new XunitTraceWriter(output);
+                    //serializeSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+                    //serializeSettings.TraceWriter = new XunitTraceWriter(output);
                     try {
                         var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(sqlRepositoryTarget.ModelDatabase, Newtonsoft.Json.Formatting.Indented, serializeSettings);
                         string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\Mapping_OData_SQL_ProjectOnlinemetadata_Test-target-ModelDatabase.json");

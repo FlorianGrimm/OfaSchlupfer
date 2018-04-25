@@ -47,10 +47,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// </summary>
         //[JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
         [JsonIgnore]
-        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
+        public SqlName Name { get { return this._Name; } set { this.ThrowIfFrozen(); this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
 
         [JsonProperty]
-        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
+        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this.ThrowIfFrozen(); this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 

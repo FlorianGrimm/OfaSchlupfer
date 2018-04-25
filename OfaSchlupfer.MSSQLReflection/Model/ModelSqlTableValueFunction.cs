@@ -59,7 +59,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         /// <inheritdoc/>
         public override bool Equals(object obj) {
-            return base.Equals(obj as ModelSqlTableValueFunction);
+            if (obj is ModelSqlTableValueFunction other) {
+                return this.Equals(other);
+            }
+            return false;
         }
 
         /// <inheritdoc/>

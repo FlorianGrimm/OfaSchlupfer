@@ -4,15 +4,18 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+
     using Newtonsoft.Json;
 
+    using OfaSchlupfer.Freezable;
     /// <summary>
     /// Server
     /// </summary>
     [JsonObject]
     public class ModelSqlServer
-        : IScopeNameResolver {
-        private readonly Dictionary<SqlName, ModelSqlDatabase> _Database;
+        : FreezeableObject
+        , IScopeNameResolver {
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlServer, SqlName, ModelSqlDatabase> _Database;
         private SqlScope _Scope;
         private SqlName _Name;
 
@@ -20,7 +23,12 @@
         /// Initializes a new instance of the <see cref="ModelSqlServer"/> class.
         /// </summary>
         public ModelSqlServer() {
-            this._Database = new Dictionary<SqlName, ModelSqlDatabase>(SqlNameEqualityComparer.Level1);
+            this._Database = new FreezeableOwnedKeyedCollection<ModelSqlServer, SqlName, ModelSqlDatabase>(
+                this,
+                (item) => item.Name,
+                SqlNameEqualityComparer.Level1,
+                (owner, item) => item.SqlServer = owner
+                );
         }
 
         /// <summary>
@@ -28,15 +36,15 @@
         /// </summary>
         //[JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
         [JsonIgnore]
-        public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Server); } }
+        public SqlName Name { get { return this._Name; } set { this.ThrowIfFrozen(); this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Server); } }
 
         [JsonProperty]
-        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
+        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this.ThrowIfFrozen(); this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
 
         /// <summary>
         /// Gets the databases.
         /// </summary>
-        public Dictionary<SqlName, ModelSqlDatabase> Database => this._Database;
+        public FreezeableOwnedKeyedCollection<ModelSqlServer, SqlName, ModelSqlDatabase> Database => this._Database;
 
         /// <summary>
         /// Gets the type by its's name
@@ -51,9 +59,10 @@
         /// <param name="modelSqlDatabase">the datbase to add</param>
         public void AddDatabase(ModelSqlDatabase modelSqlDatabase) {
             if ((object)modelSqlDatabase == null) { throw new ArgumentNullException(nameof(modelSqlDatabase)); }
-            this.Database.Add(modelSqlDatabase.Name, modelSqlDatabase);
+            this.Database.Add(modelSqlDatabase);
         }
 
+#if weichei
         /// <summary>
         /// Set the database
         /// </summary>
@@ -62,7 +71,7 @@
             if ((object)modelSqlDatabase == null) { throw new ArgumentNullException(nameof(modelSqlDatabase)); }
             this.Database[modelSqlDatabase.Name] = modelSqlDatabase;
         }
-
+#endif
         /// <summary>
         /// Resolve the name.
         /// </summary>

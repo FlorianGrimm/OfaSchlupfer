@@ -89,7 +89,10 @@
 
         /// <inheritdoc/>
         public override bool Equals(object obj) {
-            return base.Equals(obj as ModelSqlSynonym);
+            if (obj is ModelSqlSynonym other) {
+                return this.Equals(other);
+            }
+            return false;
         }
 
         /// <inheritdoc/>

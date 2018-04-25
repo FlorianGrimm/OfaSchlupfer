@@ -361,7 +361,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="obj">another instance</param>
         /// <returns>true if equal</returns>
         public override bool Equals(object obj) {
-            return this.Equals(obj as SqlName);
+            if (obj is SqlName other) {
+                return this.Equals(other);
+            }
+            return false;
         }
 
         /// <inheritdoc/>

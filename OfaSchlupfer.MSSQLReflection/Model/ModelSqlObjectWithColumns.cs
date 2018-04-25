@@ -2,7 +2,10 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+
     using Newtonsoft.Json;
+
+    using OfaSchlupfer.Freezable;
 
     /// <summary>
     /// anything that owns columns
@@ -16,13 +19,18 @@
         /// the columns
         /// </summary>
         [JsonIgnore]
-        protected List<ModelSqlColumn> _Columns;
-
+        protected FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlColumn> _Columns;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlObjectWithColumns"/> class.
         /// </summary>
         public ModelSqlObjectWithColumns() {
-            this._Columns = new List<ModelSqlColumn>();
+            this._Columns = new FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlColumn>(
+                this,
+                (item)=>item.Name,
+                SqlNameEqualityComparer.Level1,
+                (owner, item) => item.Owner=owner
+                );
         }
 
         /// <summary>
@@ -46,9 +54,11 @@
         /// <summary>
         /// Gets the columns
         /// </summary>
-        //[JsonIgnore]
         [JsonProperty]
-        public List<ModelSqlColumn> Columns => this._Columns;
+        public FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlColumn> Columns => this._Columns;
+
+        [JsonIgnore]
+        IList<ModelSqlColumn> IModelSqlObjectWithColumns.Columns => this._Columns;
 
         /// <summary>
         /// Resolve the name.
