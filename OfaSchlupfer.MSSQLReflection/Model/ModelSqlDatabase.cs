@@ -68,8 +68,12 @@
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
-        [JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
+        //[JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
+        [JsonIgnore]
         public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Database); } }
+
+        [JsonProperty]
+        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
 
         /// <summary>
         /// Gets the server.
@@ -80,8 +84,10 @@
         /// <summary>
         /// Gets the schemas.
         /// </summary>
+        //[JsonIgnore]
+        [JsonProperty(ItemIsReference = true)]
         public Dictionary<SqlName, ModelSqlSchema> Schemas => this._Schemas;
-
+        
         /// <summary>
         /// Gets the types.
         /// </summary>
@@ -90,6 +96,7 @@
         /// <summary>
         /// Gets the tables.
         /// </summary>
+        [JsonProperty(ItemIsReference = true)]
         public Dictionary<SqlName, ModelSqlTable> Tables => this._Tables;
 
         /// <summary>

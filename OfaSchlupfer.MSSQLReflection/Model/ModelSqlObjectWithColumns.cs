@@ -46,8 +46,8 @@
         /// <summary>
         /// Gets the columns
         /// </summary>
-        //[JsonProperty]
-        [JsonIgnore]
+        //[JsonIgnore]
+        [JsonProperty]
         public List<ModelSqlColumn> Columns => this._Columns;
 
         /// <summary>

@@ -20,8 +20,13 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets or sets the type.
         /// </summary>
-        [JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
+        //[JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
+        [JsonIgnore]
         public virtual SqlName Name { get; set; }
+
+        [JsonProperty]
+        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this.Name = SqlNameJsonConverter.ConvertFromValue(value); } }
+
 
         /// <summary>
         /// Convert a <see cref="ModelSqlType"/> to a ModelSystemDataType

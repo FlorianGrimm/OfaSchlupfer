@@ -26,8 +26,12 @@
         /// <summary>
         /// Gets or sets the Name.
         /// </summary>
-        [JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
+        //[JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
+        [JsonIgnore]
         public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Server); } }
+
+        [JsonProperty]
+        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
 
         /// <summary>
         /// Gets the databases.

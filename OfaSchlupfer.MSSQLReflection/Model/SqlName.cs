@@ -13,7 +13,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     /// Name
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{Name}-{ObjectLevel}")]
-    [JsonObject(ItemConverterType = typeof(SqlNameJsonConverter), MemberSerialization = MemberSerialization.OptIn)]
+    [JsonObject(
+        IsReference = true,
+        ItemConverterType = typeof(SqlNameJsonConverter), 
+        MemberSerialization = MemberSerialization.OptIn)]
 #warning JsonConverter
     public sealed class SqlName : IEquatable<SqlName> {
         private static SqlName _Root;
@@ -208,7 +211,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             if ((object)name == null) {
                 throw new ArgumentNullException(nameof(name));
             }
-            this.Parent = this;
+            //this.Parent = this;
             this.Name = name;
             this.LevelCount = 0;
             this.ObjectLevel = ObjectLevel.Unknown;

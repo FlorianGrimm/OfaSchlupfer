@@ -11,7 +11,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
     using OfaSchlupfer.SqlAccess;
 
-    [JsonObject]
+    [JsonObject(MemberSerialization= MemberSerialization.OptIn)]
     public sealed class ModelSqlSchema
         : IEquatable<ModelSqlSchema>
         , IScopeNameResolver {
@@ -107,8 +107,12 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
-        [JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
+        //[JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
+        [JsonIgnore]
         public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Schema); } }
+
+        [JsonProperty]
+        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
@@ -138,7 +142,11 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets the tables.
         /// </summary>
+        //[JsonProperty]
         public Dictionary<SqlName, ModelSqlTable> Tables => this._Tables;
+
+        //[JsonProperty("Tables")]
+        public List<ModelSqlTable> TableList => this._Tables.Values.ToList();
 
         /// <summary>
         /// Gets the tables.

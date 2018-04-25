@@ -32,6 +32,9 @@
         [JsonIgnore]
         public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Child); } }
 
+        [JsonProperty]
+        public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
+
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
         /// <summary>

@@ -6,7 +6,9 @@
     /// <summary>
     /// a sql table
     /// </summary>
-    [JsonObject(MemberSerialization = MemberSerialization.OptIn, ItemConverterType = typeof(ModelSqlTableJsonConverter))]
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn
+        //ItemConverterType = typeof(ModelSqlTableJsonConverter)
+        )]
     public sealed class ModelSqlTable
         : ModelSqlObjectWithColumns
         , IEquatable<ModelSqlTable>

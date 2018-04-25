@@ -1,18 +1,20 @@
 ﻿namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
     using Newtonsoft.Json;
-
-    public class ModelSqlTableJsonConverter : JsonConverter<ModelSqlType> {
-        public override ModelSqlType ReadJson(JsonReader reader, Type objectType, ModelSqlType existingValue, bool hasExistingValue, JsonSerializer serializer) {
-            //throw new NotImplementedException();
-            return new ModelSqlType();
+    public class ModelSqlTableJsonConverter : JsonConverter<ModelSqlTable> {
+        public ModelSqlTableJsonConverter() {
         }
 
-        public override void WriteJson(JsonWriter writer, ModelSqlType value, JsonSerializer serializer) {
+        public override ModelSqlTable ReadJson(JsonReader reader, Type objectType, ModelSqlTable existingValue, bool hasExistingValue, JsonSerializer serializer) {
+            throw new NotImplementedException();
+        }
+
+        public override void WriteJson(JsonWriter writer, ModelSqlTable value, JsonSerializer serializer) {
             writer.WriteStartObject();
             writer.WritePropertyName("Name");
             writer.WriteRawValue(SqlNameJsonConverter.ConvertToValue(value.Name));
             writer.WriteEndObject();
+
         }
     }
 }

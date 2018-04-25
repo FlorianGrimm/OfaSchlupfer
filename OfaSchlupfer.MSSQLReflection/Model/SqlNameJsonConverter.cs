@@ -4,7 +4,7 @@
     using Newtonsoft.Json;
 
     public class SqlNameJsonConverter : JsonConverter<SqlName> {
-        private Tuple<ObjectLevel, string>[] ObjectLevelNameValues;
+        private static Tuple<ObjectLevel, string>[] ObjectLevelNameValues;
 
         public override SqlName ReadJson(
             JsonReader reader,
@@ -12,8 +12,23 @@
             SqlName existingValue,
             bool hasExistingValue,
             JsonSerializer serializer) {
-            var content = reader.ReadAsString();
-            if (string.IsNullOrEmpty(content)) { return null; }
+            var content = (string)reader.Value;
+            return ConvertFromValue(content);
+        }
+
+        public override void WriteJson(JsonWriter writer, SqlName value, JsonSerializer serializer) {
+            var txt = ConvertToValue(value);
+            writer.WriteValue(txt);
+        }
+
+        public static string ConvertToValue(SqlName value) {
+            if (value is null) { return null; }
+            return value.ObjectLevel.ToString() + ";" + value.GetQFullName("[", 0);
+        }
+
+        public static SqlName ConvertFromValue(string value) {
+
+            if (string.IsNullOrEmpty(value)) { return null; }
             var objectLevelNameValues = ObjectLevelNameValues;
             if (objectLevelNameValues is null) {
                 objectLevelNameValues = ((ObjectLevel[])System.Enum.GetValues(typeof(ObjectLevel)))
@@ -23,22 +38,13 @@
             }
 
             foreach (var nameValue in objectLevelNameValues) {
-                if (content.StartsWith(nameValue.Item2 + ";", StringComparison.Ordinal)) {
-                    var names = content.Substring(nameValue.Item2.Length + 1);
+                if (value.StartsWith(nameValue.Item2 + ";", StringComparison.Ordinal)) {
+                    var names = value.Substring(nameValue.Item2.Length + 1);
                     return SqlName.Parse(names, nameValue.Item1);
                 }
             }
 
             return null;
-        }
-
-        public override void WriteJson(JsonWriter writer, SqlName value, JsonSerializer serializer) {
-            var txt = ConvertToValue(value);
-            writer.WriteValue(txt);
-        }
-
-        public static string ConvertToValue(SqlName value) {
-            return value.ObjectLevel.ToString() + ";" + value.GetQFullName("[", 0);
         }
     }
 }

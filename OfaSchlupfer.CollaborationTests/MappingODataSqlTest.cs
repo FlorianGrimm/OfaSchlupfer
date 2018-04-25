@@ -157,20 +157,17 @@ namespace OfaSchlupfer.CollaborationTests {
                     }
                 }
 
+                
                 {
                     var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings();
                     serializeSettings.TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple;
-                    serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.None;
+                    serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects;
                     serializeSettings.Converters.Add(new OfaSchlupfer.MSSQLReflection.Model.SqlNameJsonConverter());
-                    serializeSettings.Converters.Add(new OfaSchlupfer.MSSQLReflection.Model.ModelSqlTableJsonConverter());
+                    //serializeSettings.Converters.Add(new OfaSchlupfer.MSSQLReflection.Model.ModelSqlTableJsonConverter());
                     serializeSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
-                    var x = sqlRepositoryTarget.ModelDatabase.Tables.Values.First();
-                    var contract = serializeSettings.ContractResolver.ResolveContract(x.GetType());
-                    
                     serializeSettings.TraceWriter = new XunitTraceWriter(output);
-                    //var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(sqlRepositoryTarget.ModelDatabase.Tables.Values.First(), Newtonsoft.Json.Formatting.Indented, serializeSettings);
                     try {
-                        var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(x, Newtonsoft.Json.Formatting.Indented, serializeSettings);
+                        var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(sqlRepositoryTarget.ModelDatabase, Newtonsoft.Json.Formatting.Indented, serializeSettings);
                         string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\Mapping_OData_SQL_ProjectOnlinemetadata_Test-target-ModelDatabase.json");
                         System.IO.File.WriteAllText(outputPath, schemaAsJson);
                     } catch (Exception error) {
