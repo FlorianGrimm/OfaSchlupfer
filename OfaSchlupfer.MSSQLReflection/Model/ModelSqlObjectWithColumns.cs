@@ -2,10 +2,12 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// anything that owns columns
     /// </summary>
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public abstract class ModelSqlObjectWithColumns
         : ModelSqlSchemaChild
         , IScopeNameResolver
@@ -13,6 +15,7 @@
         /// <summary>
         /// the columns
         /// </summary>
+        [JsonIgnore]
         protected List<ModelSqlColumn> _Columns;
 
         /// <summary>
@@ -43,6 +46,8 @@
         /// <summary>
         /// Gets the columns
         /// </summary>
+        //[JsonProperty]
+        [JsonIgnore]
         public List<ModelSqlColumn> Columns => this._Columns;
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// a sql view

@@ -6,6 +6,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// dev
@@ -24,11 +25,13 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets the current database
         /// </summary>
+        [JsonIgnore]
         public ModelSqlDatabase ModelDatabase { get; }
 
         /// <summary>
         /// Gets the current sever
         /// </summary>
+        [JsonIgnore]
         public ModelSqlServer ModelSqlServer { get; }
 
         // default schema?

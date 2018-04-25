@@ -1,13 +1,17 @@
 ﻿namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
 
+    using Newtonsoft.Json;
+
     /// <summary>
     /// a sql table
     /// </summary>
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn, ItemConverterType = typeof(ModelSqlTableJsonConverter))]
     public sealed class ModelSqlTable
         : ModelSqlObjectWithColumns
         , IEquatable<ModelSqlTable>
         , IScopeNameResolver {
+        [JsonIgnore]
         private SqlScope _Scope;
 
         /// <summary>

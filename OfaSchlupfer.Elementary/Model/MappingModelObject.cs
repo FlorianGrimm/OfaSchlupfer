@@ -79,7 +79,7 @@
         }
 
         protected virtual bool AreTargetNamesEqual(TMappingKey targetName, ref TMappingKey value) => false;
-
+        
         [JsonIgnore]
         public virtual TMappingValue Source {
             get {

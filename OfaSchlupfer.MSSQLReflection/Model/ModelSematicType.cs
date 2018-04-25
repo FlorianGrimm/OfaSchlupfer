@@ -1,4 +1,6 @@
-﻿namespace OfaSchlupfer.MSSQLReflection.Model {
+﻿using Newtonsoft.Json;
+
+namespace OfaSchlupfer.MSSQLReflection.Model {
     /// <summary>
     /// base we will see
     /// </summary>
@@ -18,6 +20,7 @@
         /// <summary>
         /// Gets or sets the type.
         /// </summary>
+        [JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
         public virtual SqlName Name { get; set; }
 
         /// <summary>

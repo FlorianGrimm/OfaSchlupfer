@@ -1,23 +1,35 @@
 ﻿namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
+
+    using Newtonsoft.Json;
 
     /// <summary>
     /// the database
     /// </summary>
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public sealed class ModelSqlDatabase
         : IScopeNameResolver {
+        [JsonIgnore]
         private readonly Dictionary<SqlName, ModelSqlSchema> _Schemas;
+        [JsonIgnore]
         private readonly Dictionary<SqlName, ModelSqlType> _Types;
+        [JsonIgnore]
         private readonly Dictionary<SqlName, ModelSqlTable> _Tables;
+        [JsonIgnore]
         private readonly Dictionary<SqlName, ModelSqlTableType> _TableTypes;
+        [JsonIgnore]
         private readonly Dictionary<SqlName, ModelSqlView> _Views;
+        [JsonIgnore]
         private readonly Dictionary<SqlName, ModelSqlProcedure> _Procedures;
+        [JsonIgnore]
         private readonly Dictionary<SqlName, ModelSqlSynonym> _Synonyms;
 
+        [JsonIgnore]
         private SqlScope _Scope;
+        [JsonIgnore]
         private ModelSqlServer _SqlServer;
+        [JsonIgnore]
         private SqlName _Name;
 
         /// <summary>
@@ -56,11 +68,13 @@
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
+        [JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
         public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Database); } }
 
         /// <summary>
         /// Gets the server.
         /// </summary>
+        [JsonIgnore]
         public ModelSqlServer SqlServer => this._SqlServer;
 
         /// <summary>

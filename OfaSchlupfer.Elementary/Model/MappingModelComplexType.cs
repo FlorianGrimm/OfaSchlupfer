@@ -26,13 +26,9 @@
 
         public FreezeableOwnedCollection<MappingModelComplexType, MappingModelProperty> PropertyMappings => this._PropertyMappings;
 
-        public override void ResolveNameSource(ModelErrors errors) {
-            this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Source.ComplexTypes.FindByKey(name), errors);
-        }
+        public override void ResolveNameSource(ModelErrors errors) => this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Source.ComplexTypes.FindByKey(name), errors);
 
-        public override void ResolveNameTarget(ModelErrors errors) {
-            this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Target.ComplexTypes.FindByKey(name), errors);
-        }
+        public override void ResolveNameTarget(ModelErrors errors) => this.ResolveNameTargetHelper(this.Owner, (owner, name) => owner.Target.ComplexTypes.FindByKey(name), errors);
 
         public MappingModelProperty CreatePropertyMapping(
             string name,

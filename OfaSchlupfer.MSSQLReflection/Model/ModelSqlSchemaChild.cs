@@ -1,16 +1,21 @@
-﻿namespace OfaSchlupfer.MSSQLReflection.Model {
+﻿using Newtonsoft.Json;
+
+namespace OfaSchlupfer.MSSQLReflection.Model {
     /// <summary>
     /// a child of a schema.
     /// </summary>
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public abstract class ModelSqlSchemaChild {
         /// <summary>
         /// the name.
         /// </summary>
+        [JsonIgnore]
         protected SqlName _Name;
 
         /// <summary>
         /// the owning schema
         /// </summary>
+        [JsonIgnore]
         protected ModelSqlSchema _Schema;
 
         /// <summary>
@@ -32,6 +37,7 @@
         /// <summary>
         /// Gets or sets the name of the type.
         /// </summary>
+        [JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
         public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line

@@ -83,10 +83,8 @@
                     var builder = new EdmxModelSchemaBuilder();
                     result = new ModelSchema();
                     builder.Build(this._EdmxModel, result, metaModelBuilder, errors);
-                    result.Freeze();
-                    if (this.ModelSchema == null) {
-                        this.ModelSchema = result;
-                    }
+#warning result.Freeze();
+                    this.ModelSchema = result;
                 }
             }
             return result;

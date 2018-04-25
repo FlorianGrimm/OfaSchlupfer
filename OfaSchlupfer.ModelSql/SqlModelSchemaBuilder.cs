@@ -5,11 +5,11 @@
     using OfaSchlupfer.Model;
     using OfaSchlupfer.MSSQLReflection.Model;
 
-    public class SQLSModelSchemaBuilder {
-        public SQLSModelSchemaBuilder() {
+    public class SqlModelSchemaBuilder {
+        public SqlModelSchemaBuilder() {
         }
 
-        public void Build(
+        public void BuildModelSchema(
             ModelSqlDatabase modelDatabase,
             ModelSchema modelSchema,
             MetaModelBuilder metaModelBuilder,
@@ -75,6 +75,30 @@
                     errors);
                 if (modelEntity.Owner == null) { modelSchema.Entities.Add(modelEntity); }
                 modelEntity.EntityType = modelComplexType;
+            }
+        }
+
+        public void BuildModelSqlDatabase(
+            ModelSchema modelSchema,
+            ModelSqlDatabase modelDatabase,
+            MetaModelBuilder metaModelBuilder,
+            ModelErrors errors) {
+            foreach (var modelEntitySource in modelSchema.Entities) {
+                if (modelEntitySource.EntityType is null) {
+#warning SOON add error
+                } else {
+
+                    var tableNameTarget = modelEntitySource.ExternalName ?? modelEntitySource.Name;
+                    var sqlTableNameTarget = SqlName.Parse(tableNameTarget, ObjectLevel.Unknown);
+                    var tableTarget = modelDatabase.Tables.GetValueOrDefault(sqlTableNameTarget);
+                    if (tableTarget is null) {
+                        tableTarget = new ModelSqlTable();
+                        tableTarget.Name = sqlTableNameTarget;
+                        modelDatabase.AddTable(tableTarget);
+                    } else {
+                        // found
+                    }
+                }
             }
         }
     }

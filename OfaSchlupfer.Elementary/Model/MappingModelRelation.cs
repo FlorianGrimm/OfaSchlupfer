@@ -24,12 +24,8 @@
             this.ResolveNameTarget(errors);
         }
 
-        public override void ResolveNameSource(ModelErrors errors) {
-            this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Source.Relations.FindByKey(name), errors);
-        }
+        public override void ResolveNameSource(ModelErrors errors) => this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Source.Relations.FindByKey(name), errors);
 
-        public override void ResolveNameTarget(ModelErrors errors) {
-            this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Target.Relations.FindByKey(name), errors);
-        }
+        public override void ResolveNameTarget(ModelErrors errors) => this.ResolveNameTargetHelper(this.Owner, (owner, name) => owner.Target.Relations.FindByKey(name), errors);
     }
 }

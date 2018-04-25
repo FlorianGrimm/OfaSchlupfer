@@ -12,12 +12,8 @@
         public MappingModelPrimaryKey() {
         }
 
-        public override void ResolveNameSource(ModelErrors errors) {
-            this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Source.Keys.FindByKey(name), errors);
-        }
+        public override void ResolveNameSource(ModelErrors errors) => this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Source.Keys.FindByKey(name), errors);
 
-        public override void ResolveNameTarget(ModelErrors errors) {
-            this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Target.Keys.FindByKey(name), errors);
-        }
+        public override void ResolveNameTarget(ModelErrors errors) => this.ResolveNameTargetHelper(this.Owner, (owner, name) => owner.Target.Keys.FindByKey(name), errors);
     }
 }

@@ -4,10 +4,12 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Server
     /// </summary>
+    [JsonObject]
     public class ModelSqlServer
         : IScopeNameResolver {
         private readonly Dictionary<SqlName, ModelSqlDatabase> _Database;
@@ -24,6 +26,7 @@
         /// <summary>
         /// Gets or sets the Name.
         /// </summary>
+        [JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
         public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Server); } }
 
         /// <summary>

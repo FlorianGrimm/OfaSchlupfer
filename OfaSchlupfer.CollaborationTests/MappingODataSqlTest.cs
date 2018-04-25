@@ -1,6 +1,7 @@
 namespace OfaSchlupfer.CollaborationTests {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
@@ -65,19 +66,15 @@ namespace OfaSchlupfer.CollaborationTests {
                 var modelRepositoryTarget = modelRoot.CreateRepository("Target", "SQL");
                 var sqlRepositoryTarget = (SqlRepositoryImplementation)modelRepositoryTarget.GetReferenceRepositoryModel();
                 sqlRepositoryTarget.ConnectionString = testCfg.SQLConnectionString;
-                    
-                Assert.NotNull(sqlRepositoryTarget);
-                
-                {
 
-                    //var mappingModelBuilder = new MappingModelBuilder();
-                    //mappingModelBuilder.MappingModelRepository = mappingModelRepository;
+                Assert.NotNull(sqlRepositoryTarget);
+
+                {
                     var metaModelBuilder = new MetaModelBuilder();
                     var errors = new ModelErrors();
-                    var modelSchemaTarget = sqlRepositoryTarget.ReadSQLSchema(metaModelBuilder, errors);
+                    var modelSchemaTarget = modelRepositoryTarget.GetModelSchema(metaModelBuilder, errors);
+                    Assert.NotNull(modelSchemaTarget);
                     
-                    //mappingModelBuilder.Build(errors);
-
                     if (errors.HasErrors()) { output.WriteLine(errors.ToString()); }
                     Assert.False(errors.HasErrors());
 
@@ -86,7 +83,6 @@ namespace OfaSchlupfer.CollaborationTests {
                     Assert.True(modelSchemaTarget.ComplexTypes.Count > 0);
                 }
                 
-
                 {
                     var mappingModelRepositorySourceTarget = modelRoot.CreateMapping("SourceTarget", modelRepositorySource, modelRepositoryTarget);
                     var mappingModelSchema = mappingModelRepositorySourceTarget.CreateMappingModelSchema("SourceTarget", modelRepositorySource.ModelSchema, modelRepositoryTarget.ModelSchema, true, false, "");
@@ -95,13 +91,37 @@ namespace OfaSchlupfer.CollaborationTests {
                     mappingModelBuilder.MappingModelRepository = mappingModelRepositorySourceTarget;
 
                     var errors = new ModelErrors();
+                    mappingModelBuilder.EnabledForCreatedMappings = true;
+                    mappingModelBuilder.Comment = "Mapping_OData_SQL_ProjectOnlinemetadata_Test";
                     mappingModelBuilder.Build(errors);
 
                     if (errors.HasErrors()) { output.WriteLine(errors.ToString()); }
                     Assert.False(errors.HasErrors());
-                    
+
+                    foreach (var modelEntityTarget in modelRepositoryTarget.ModelSchema.Entities) {
+                        Assert.NotNull(modelEntityTarget.EntityTypeName);
+                        Assert.NotNull(modelEntityTarget.EntityType);
+                    }
+
+                    foreach (var modelComplexTypesTarget in modelRepositoryTarget.ModelSchema.ComplexTypes) {
+                        Assert.True(modelComplexTypesTarget.Properties.Count > 0);
+                    }
                 }
 
+                {
+#warning HEEEEEEEEEEEEEEERE
+                    var metaModelBuilder = new MetaModelBuilder();
+                    var errors = new ModelErrors();
+                    var sqlModelSchemaBuilder = new SqlModelSchemaBuilder();
+                    sqlModelSchemaBuilder.BuildModelSqlDatabase(
+                        modelRepositoryTarget.ModelSchema,
+                        sqlRepositoryTarget.ModelDatabase,
+                        metaModelBuilder,
+                        errors
+                        );
+                    if (errors.HasErrors()) { output.WriteLine(errors.ToString()); }
+                    Assert.False(errors.HasErrors());
+                }
                 var cred = new SharePointOnlineServiceClientCredentials(repCSProjectServer, null);
                 var oDataClient = new ODataServiceClient(new Uri(repCSProjectServer.GetUrlNormalized()), cred, null);
                 oDataClient.ModelRepository = modelRepositorySource;
@@ -133,6 +153,28 @@ namespace OfaSchlupfer.CollaborationTests {
                         string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\Mapping_OData_SQL_ProjectOnlinemetadata_Test-root.json");
                         System.IO.File.WriteAllText(outputPath, schemaAsJson);
                     } catch {
+                        throw;
+                    }
+                }
+
+                {
+                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings();
+                    serializeSettings.TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple;
+                    serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.None;
+                    serializeSettings.Converters.Add(new OfaSchlupfer.MSSQLReflection.Model.SqlNameJsonConverter());
+                    serializeSettings.Converters.Add(new OfaSchlupfer.MSSQLReflection.Model.ModelSqlTableJsonConverter());
+                    serializeSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+                    var x = sqlRepositoryTarget.ModelDatabase.Tables.Values.First();
+                    var contract = serializeSettings.ContractResolver.ResolveContract(x.GetType());
+                    
+                    serializeSettings.TraceWriter = new XunitTraceWriter(output);
+                    //var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(sqlRepositoryTarget.ModelDatabase.Tables.Values.First(), Newtonsoft.Json.Formatting.Indented, serializeSettings);
+                    try {
+                        var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(x, Newtonsoft.Json.Formatting.Indented, serializeSettings);
+                        string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\Mapping_OData_SQL_ProjectOnlinemetadata_Test-target-ModelDatabase.json");
+                        System.IO.File.WriteAllText(outputPath, schemaAsJson);
+                    } catch (Exception error) {
+                        output.WriteLine(error.ToString());
                         throw;
                     }
                 }

@@ -7,10 +7,12 @@
 
     public class MappingModelBuilder {
         public IModelBuilderNamingService NamingServiceTarget;
+        private HashSet<string> _KnownEntityMappingSourceName;
+        private HashSet<string> _KnownComplexTypeMappingSourceName;
 
         public MappingModelBuilder(MappingModelRepository mappingModelRepository = null) {
             this.MappingModelRepository = mappingModelRepository;
-            this.EnabledForCreatedMappingModelSchema = true;
+            //this.EnabledForCreatedMappingModelSchema = true;
         }
 
         public MappingModelRepository MappingModelRepository { get; set; }
@@ -42,7 +44,7 @@
             if (repositoryTarget.ModelSchema is null) {
                 repositoryTarget.CreateModelSchema(null);
             }
-            this.NamingServiceTarget= this.MappingModelRepository.Target.GetNamingService();
+            this.NamingServiceTarget = this.MappingModelRepository.Target.GetNamingService(this.MappingModelRepository);
 
             var lstMappingModelSchema = this.MappingModelRepository.ModelSchemaMappings;
 
@@ -54,6 +56,22 @@
                     this.EnabledForCreatedMappings || this.EnabledForCreatedMappingModelSchema,
                     true,
                     this.getComment());
+            }
+            {
+                var lstMappingModelSchemaEnabled = lstMappingModelSchema.Where(_ => _.Enabled).ToList();
+                foreach (var mappingModelSchema in lstMappingModelSchemaEnabled) {
+                    var knownEntityMappingSourceName = new HashSet<string>();
+                    foreach (var entityMapping in mappingModelSchema.EntityMappings) {
+                        knownEntityMappingSourceName.Add(entityMapping.SourceName);
+                    }
+                    this._KnownEntityMappingSourceName = knownEntityMappingSourceName;
+
+                    var knownComplexTypeMappingSourceName = new HashSet<string>();
+                    foreach (var complexTypeMapping in mappingModelSchema.ComplexTypeMappings) {
+                        knownComplexTypeMappingSourceName.Add(complexTypeMapping.SourceName);
+                    }
+                    this._KnownComplexTypeMappingSourceName = knownComplexTypeMappingSourceName;
+                }
             }
             {
                 var lstMappingModelSchemaEnabled = lstMappingModelSchema.Where(_ => _.Enabled).ToList();
@@ -84,31 +102,75 @@
             var lstEntityMappings = mappingModelSchema.EntityMappings.Where(_ => _.Enabled).ToList();
             foreach (var entityMapping in lstEntityMappings) {
                 if (entityMapping.Target is null) {
-                    modelSchemaTarget.CreateEntity(entityMapping.TargetName);
+                    var targetName = entityMapping.TargetName;
+                    string extenalName = targetName;
+                    string typeName = null;
+#warning SOON thinkof what's in the mapping.
+                    if (this.NamingServiceTarget.EntitiesHaveFakeComplexTypes) {
+                        typeName = targetName;
+                    }
+                    modelSchemaTarget.CreateEntity(targetName, extenalName, typeName);
                 }
             }
 
-            var knownEntityMappingSourceName = new HashSet<string>();
-            foreach (var entityMapping in mappingModelSchema.EntityMappings) {
-                knownEntityMappingSourceName.Add(entityMapping.SourceName);
-            }
             foreach (var entitySource in modelSchemaSource.Entities) {
-                if (knownEntityMappingSourceName.Contains(entitySource.Name)) {
+                if (this._KnownEntityMappingSourceName.Contains(entitySource.Name)) {
                     continue;
                 }
-                var entityNameTarget = entitySource.Name;
-                // var entityExternalNameTarget = entityNameTarget;
-                var mapping = mappingModelSchema.CreateEntityMapping(
+
+                (string targetName, string extenalName, string typeName, string typeExternalName) = this.NamingServiceTarget.SuggestEntityName(entitySource.Name);
+
+                if (typeName is null && this.NamingServiceTarget.EntitiesHaveFakeComplexTypes) {
+                    typeName = targetName;
+                }
+
+                var entityMapping = mappingModelSchema.CreateEntityMapping(
                     null,
                     entitySource.Name,
-                    entityNameTarget,
+                    targetName,
                     this.EnabledForCreatedMappings || this.EnabledForCreatedMappingModelEntity,
                     true,
                     this.getComment()
                     );
-                if (mapping.Enabled) {
-                    if (mapping.Target is null) {
-                        modelSchemaTarget.CreateEntity(mapping.Name);
+                if (entityMapping.Enabled) {
+                    if (entityMapping.Target is null) {
+                        modelSchemaTarget.CreateEntity(entityMapping.TargetName, extenalName, typeName);
+                    }
+                }
+                if (this._KnownComplexTypeMappingSourceName.Contains(entitySource.EntityTypeName)) {
+                    // if there is a rule ... ok
+                } else {
+                    var complexTypeSource = entitySource.EntityType;
+                    if (complexTypeSource is null) {
+#warning SOON error??
+                        errors.AddErrorOrThrow($"EntityType {entitySource.EntityTypeName} does not exists.", entitySource.Name);
+                    } else {
+                        var complexTypeMapping = mappingModelSchema.CreateComplexTypeMapping(
+                                null,
+                                complexTypeSource.Name,
+                                typeName,
+                                this.EnabledForCreatedMappings || this.EnabledForCreatedMappingModelComplexType,
+                                true,
+                                this.getComment()
+                            );
+                        this._KnownComplexTypeMappingSourceName.Add(complexTypeSource.Name);
+                        if (complexTypeMapping.Enabled && !string.IsNullOrEmpty(complexTypeMapping.TargetName)) {
+                            if (complexTypeMapping.Target is null) {
+                                modelSchemaTarget.CreateComplexType(complexTypeMapping.TargetName ?? typeName, typeExternalName);
+                            }
+                            if (    (!(complexTypeMapping.Source is null))
+                                && (!(complexTypeMapping.Target is null))
+                                ) {
+                                this.BuildComplexTypeProperties(complexTypeMapping, errors);
+                            } else {
+                                if (complexTypeMapping.Source is null) {
+                                    errors.AddErrorOrThrow($"complexTypeMapping.Source {complexTypeMapping.SourceName} is null", $"complexTypeMapping.Name: {complexTypeMapping.Name}");
+                                }
+                                if (complexTypeMapping.Target is null) {
+                                    errors.AddErrorOrThrow($"complexTypeMapping.Target {complexTypeMapping.TargetName} is null", $"complexTypeMapping.Name: {complexTypeMapping.Name}");
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -156,6 +218,47 @@
             ModelSchema modelSchemaSource = mappingModelSchema.Source;
             ModelSchema modelSchemaTarget = mappingModelSchema.Target;
 
+            var lstComplexTypeMappingsEnabled = mappingModelSchema.ComplexTypeMappings.Where(_ => _.Enabled).ToList();
+            foreach (var complexTypeMapping in lstComplexTypeMappingsEnabled) {
+                if (complexTypeMapping.Target is null) {
+                    var targetName = complexTypeMapping.TargetName;
+                    string extenalName = targetName;
+                    modelSchemaTarget.CreateComplexType(targetName, extenalName);
+                }
+            }
+
+            foreach (var complexTypeSource in modelSchemaSource.ComplexTypes) {
+                if (this._KnownComplexTypeMappingSourceName.Contains(complexTypeSource.Name)) {
+                    continue;
+                }
+
+                (string targetName, string extenalName) = this.NamingServiceTarget.SuggestComplexType(complexTypeSource.Name);
+
+                var complexTypeMapping = mappingModelSchema.CreateComplexTypeMapping(
+                        null,
+                        complexTypeSource.Name,
+                        targetName,
+                        this.EnabledForCreatedMappings || this.EnabledForCreatedMappingModelComplexType,
+                        true,
+                        this.getComment()
+                    );
+                this._KnownComplexTypeMappingSourceName.Add(complexTypeSource.Name);
+                if (complexTypeMapping.Enabled) {
+                    if (complexTypeMapping.Target is null) {
+                        modelSchemaTarget.CreateComplexType(complexTypeMapping.TargetName, extenalName);
+                    }
+                    if ((!(complexTypeMapping is null))
+                        && (!(complexTypeMapping.Source is null))
+                        && (!(complexTypeMapping.Target is null))
+                        ) {
+                        this.BuildComplexTypeProperties(complexTypeMapping, errors);
+                    }
+                }
+            }
+
+            return;
+#warning SOON this is the old Logic -> copy from this.BuildEntities
+
             var mappingByNameSource = mappingModelSchema.ComplexTypeMappings.ToDictionary(_ => _.SourceName, StringComparer.OrdinalIgnoreCase);
             foreach (var complexTypeSource in modelSchemaSource.ComplexTypes) {
                 var complexTypeMapping = mappingByNameSource.GetValueOrDefault(complexTypeSource.Name);
@@ -166,16 +269,28 @@
                 if (complexTypeMapping is null || complexTypeMapping.Target is null) {
                     var lstComplexType = modelSchemaTarget.ComplexTypes.FindByKey(complexTypeNameTarget);
                     if (lstComplexType.Count == 0) {
-                        var complexTypeTarget = modelSchemaTarget.CreateComplexType(complexTypeNameTarget);
+                        var complexTypeTarget = modelSchemaTarget.CreateComplexType(complexTypeNameTarget, null);
                         if (complexTypeMapping is null) {
-                            complexTypeMapping = mappingModelSchema.CreateComplexTypeMapping(null, complexTypeSource, complexTypeTarget, true, true, "TODO");
+                            complexTypeMapping = mappingModelSchema.CreateComplexTypeMapping(
+                                null,
+                                complexTypeSource,
+                                complexTypeTarget,
+                                true,
+                                true,
+                                "TODO");
                         } else {
                             complexTypeMapping.Target = complexTypeTarget;
                         }
                     } else if (lstComplexType.Count == 1) {
                         var complexTypeTarget = lstComplexType[0];
                         if (complexTypeMapping is null) {
-                            mappingModelSchema.CreateComplexTypeMapping(null, complexTypeSource, complexTypeTarget, true, true, "TODO");
+                            mappingModelSchema.CreateComplexTypeMapping(
+                                null,
+                                complexTypeSource,
+                                complexTypeTarget,
+                                true,
+                                true,
+                                "TODO");
                         } else {
                             complexTypeMapping.Target = complexTypeTarget;
                         }

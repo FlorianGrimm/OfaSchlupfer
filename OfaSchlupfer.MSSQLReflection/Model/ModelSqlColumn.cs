@@ -3,18 +3,25 @@
 namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
     using System.Linq;
+
+    using Newtonsoft.Json;
+
     using OfaSchlupfer.Model;
     using OfaSchlupfer.SqlAccess;
 
     /// <summary>
     /// column
     /// </summary>
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public sealed class ModelSqlColumn
         : ModelSqlNamedElement
         , IEquatable<ModelSqlColumn>
         , IScopeNameResolver
         , IModelScalarTypeFacade {
+        [JsonIgnore]
         private SqlScope _Scope;
+
+        [JsonIgnore]
         private IModelSqlObjectWithColumns _Owner;
 
         /// <summary>
@@ -68,25 +75,35 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
 
+        [JsonProperty]
         public int ColumnId { get; set; }
 
+        [JsonProperty]
         public short system_type_id { get; set; }
 
+        [JsonProperty]
         public int user_type_id { get; set; }
 
+        [JsonProperty]
         public short MaxLength { get; set; }
 
+        [JsonProperty]
         public byte Precision { get; set; }
 
+        [JsonProperty]
         public byte Scale { get; set; }
 
+        [JsonProperty]
         public string CollationName { get; set; }
 
+        [JsonProperty]
         public bool Nullable { get; set; }
 
         /// <summary>
         /// Gets or sets the reference to the SqlType
         /// </summary>
+#warning [JsonIgnore]
+        [JsonIgnore]
         public ModelSqlType SqlType { get; set; }
 
         public IModelScalarTypeFacade ItemType {
@@ -99,6 +116,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             }
         }
 
+        [JsonIgnore]
         public bool Collection {
             get {
                 return false;
@@ -111,8 +129,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             }
         }
 
+        [JsonProperty]
         public bool FixedLength { get; set; }
 
+        [JsonProperty]
         public bool Unicode { get; set; }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line

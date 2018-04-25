@@ -196,6 +196,6 @@
         //ModelEntityName IMappingNamedObject<ModelEntityName>.GetName() => this._Name;
         //string IMappingNamedObject<string>.GetName() => this._Name.GetName();
 
-        public IModelBuilderNamingService GetNamingService() => this.ReferencedRepositoryModel?.GetNamingService();
+        public IModelBuilderNamingService GetNamingService(MappingModelRepository mappingModelRepository) => this.ReferencedRepositoryModel?.GetNamingService(mappingModelRepository);
     }
 }

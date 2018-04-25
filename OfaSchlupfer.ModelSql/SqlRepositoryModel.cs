@@ -45,7 +45,9 @@
 
         [JsonIgnore]
         public ModelSqlDatabase ModelDatabase { get; set; }
-        
+
+        public override IModelBuilderNamingService GetNamingService(MappingModelRepository mappingModelRepository) => new SqlModelBuilderNamingService(mappingModelRepository);
+
         public override IEntity CreateEntityByExternalTypeName(string externalTypeName) {
 #warning TODO
             throw new NotImplementedException();
@@ -68,11 +70,11 @@
             var modelDatabase = utility.ModelDatabase;
             this.ModelDatabase = modelDatabase;
 
-            var modelSchemaBuilder = new SQLSModelSchemaBuilder();
-            var modelSchema = new ModelSchema();
-            modelSchemaBuilder.Build(modelDatabase, modelSchema, metaModelBuilder, errors);
-            this.ModelSchema = modelSchema;
-            return this.ModelSchema;
+            var modelSchemaBuilder = new SqlModelSchemaBuilder();
+            var result = new ModelSchema();
+            modelSchemaBuilder.BuildModelSchema(modelDatabase, result, metaModelBuilder, errors);
+            this.ModelSchema = result;
+            return result;
         }
 
         public override List<string> BuildSchema(string metadataContent) {
@@ -80,7 +82,23 @@
         }
 
         public override ModelSchema GetModelSchema(MetaModelBuilder metaModelBuilder, ModelErrors errors) {
-            throw new NotImplementedException();
+            var result = this.ModelSchema;
+            if ((object)result == null) {
+                var modelDatabase = this.ModelDatabase;
+                if (modelDatabase is null) {
+                    var utility = new MSSQLReflection.Utility() { ConnectionString = this.ConnectionString.Url };
+                    utility.ReadAll();
+                    modelDatabase = utility.ModelDatabase;
+                    this.ModelDatabase = modelDatabase;
+                }
+                if (!(modelDatabase is null)) {
+                    var modelSchemaBuilder = new SqlModelSchemaBuilder();
+                    result = new ModelSchema();
+                    modelSchemaBuilder.BuildModelSchema(modelDatabase, result, metaModelBuilder, errors);
+                    this.ModelSchema = result;
+                }
+            }
+            return result;
         }
     }
 }

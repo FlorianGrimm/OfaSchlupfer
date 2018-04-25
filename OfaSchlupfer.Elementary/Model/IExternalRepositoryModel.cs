@@ -37,7 +37,7 @@
         /// <returns>a list of errors.</returns>
         List<string> BuildSchema(string metadataContent);
 
-        IModelBuilderNamingService GetNamingService();
+        IModelBuilderNamingService GetNamingService(MappingModelRepository mappingModelRepository);
     }
 
     public interface IExternalRepositoryModelType {
@@ -129,9 +129,9 @@
         }
 
         public abstract List<string> BuildSchema(string metadataContent);
+        
+        public virtual IModelBuilderNamingService GetNamingService(MappingModelRepository mappingModelRepository) => new ModelBuilderNamingService(mappingModelRepository);
 
-
-        public virtual IModelBuilderNamingService GetNamingService() => new ModelBuilderNamingService();
         public override bool Freeze() {
             var result = base.Freeze();
             if (result) {

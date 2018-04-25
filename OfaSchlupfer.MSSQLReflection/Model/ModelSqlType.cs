@@ -2,17 +2,24 @@
 
 namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// ModelSqlType
     /// </summary>
+    [JsonObject]
     public sealed class ModelSqlType
         : ModelSqlElementType
         , IEquatable<ModelSqlType> {
+        [JsonIgnore]
         private short _MaxLength;
+        [JsonIgnore]
         private byte _Precision;
+        [JsonIgnore]
         private byte _Scale;
+        [JsonIgnore]
         private string _CollationName;
+        [JsonIgnore]
         private bool _Nullable;
 
         public ModelSqlType() { }

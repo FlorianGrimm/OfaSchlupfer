@@ -4,13 +4,17 @@
 namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
     using System.Collections.Generic;
-    using System.Text;
+
+    using Newtonsoft.Json;
+
     using OfaSchlupfer.MSSQLReflection.AST;
 
     /// <summary>
     /// Name
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{Name}-{ObjectLevel}")]
+    [JsonObject(ItemConverterType = typeof(SqlNameJsonConverter), MemberSerialization = MemberSerialization.OptIn)]
+#warning JsonConverter
     public sealed class SqlName : IEquatable<SqlName> {
         private static SqlName _Root;
         private static IEqualityComparer<NameLevel> nameLevelComparer = new NameLevelEqualityComparer();
@@ -174,11 +178,13 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets the name.
         /// </summary>
+        [JsonIgnore]
         public SqlName Parent { get; }
 
         /// <summary>
         /// Gets the name.
         /// </summary>
+        [JsonIgnore]
         public string Name { get; }
 
         /// <summary>

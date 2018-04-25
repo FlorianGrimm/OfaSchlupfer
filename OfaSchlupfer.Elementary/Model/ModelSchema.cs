@@ -158,7 +158,7 @@
             var result = new ModelEntity();
             result.Kind = ModelEntityKind.EntitySet;
             result.Name = name;
-            result.ExternalName = externalName;
+            result.ExternalName = externalName ?? name;
             result.EntityTypeName = entityTypeName;
             this.Entities.Add(result);
             return result;
@@ -167,7 +167,7 @@
         public ModelComplexType CreateComplexType(string name, string externalName) {
             var result = new ModelComplexType();
             result.Name = name;
-            result.ExternalName = externalName;
+            result.ExternalName = externalName ?? name;
             this.ComplexTypes.Add(result);
             return result;
         }

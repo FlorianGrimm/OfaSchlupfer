@@ -6,8 +6,12 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+
+    using Newtonsoft.Json;
+
     using OfaSchlupfer.SqlAccess;
 
+    [JsonObject]
     public sealed class ModelSqlSchema
         : IEquatable<ModelSqlSchema>
         , IScopeNameResolver {
@@ -103,6 +107,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
+        [JsonProperty(ItemConverterType = typeof(SqlNameJsonConverter))]
         public SqlName Name { get { return this._Name; } set { this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Schema); } }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line

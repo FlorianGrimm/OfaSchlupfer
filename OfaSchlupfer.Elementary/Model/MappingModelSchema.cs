@@ -102,5 +102,16 @@
             this.ComplexTypeMappings.Add(result);
             return result;
         }
+        public MappingModelComplexType CreateComplexTypeMapping(string name, string sourceName, string targetName, bool enabled, bool generated, string comment) {
+            var result = new MappingModelComplexType();
+            result.Name = name;
+            result.SourceName = sourceName;
+            result.TargetName = targetName;
+            result.Enabled = enabled;
+            result.Generated = generated;
+            result.Comment = comment;
+            this.ComplexTypeMappings.Add(result);
+            return result;
+        }
     }
 }

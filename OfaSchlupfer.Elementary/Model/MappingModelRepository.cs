@@ -35,14 +35,10 @@
             this.ResolveNameTarget(errors);
         }
 
-        public override void ResolveNameSource(ModelErrors errors) {
-            this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Repositories.FindByKey(name), errors);
-        }
+        public override void ResolveNameSource(ModelErrors errors) => this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Repositories.FindByKey(name), errors);
 
-        public override void ResolveNameTarget(ModelErrors errors) {
-            this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Repositories.FindByKey(name), errors);
-        }
-        
+        public override void ResolveNameTarget(ModelErrors errors) => this.ResolveNameTargetHelper(this.Owner, (owner, name) => owner.Repositories.FindByKey(name), errors);
+
         public MappingModelSchema CreateMappingModelSchema(string name, ModelSchema modelSchemaSource, ModelSchema modelSchemaTarget, bool enabled, bool generated, string comment) {
             var result = new MappingModelSchema();
             result.Name = name ?? $"{modelSchemaSource.Name} - {modelSchemaTarget.Name}";

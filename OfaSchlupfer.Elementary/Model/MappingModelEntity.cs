@@ -25,12 +25,8 @@
 
         public FreezeableOwnedCollection<MappingModelEntity, MappingModelConstraint> ConstraintMappings => this._ConstraintMappings;
 
-        public override void ResolveNameSource(ModelErrors errors) {
-            this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Source.Entities.FindByKey(name), errors);
-        }
+        public override void ResolveNameSource(ModelErrors errors) => this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Source.Entities.FindByKey(name), errors);
 
-        public override void ResolveNameTarget(ModelErrors errors) {
-            this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Target.Entities.FindByKey(name), errors);
-        }
+        public override void ResolveNameTarget(ModelErrors errors) => this.ResolveNameTargetHelper(this.Owner, (owner, name) => owner.Target.Entities.FindByKey(name), errors);
     }
 }

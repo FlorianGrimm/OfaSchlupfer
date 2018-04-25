@@ -7,11 +7,18 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     using System.Text;
     using System.Threading.Tasks;
 
+    using Newtonsoft.Json;
+
     public sealed class SqlResolveScope {
+        [JsonIgnore]
         public SqlResolveScope Parent;
+        [JsonIgnore]
         public SqlScope Scope;
+        [JsonIgnore]
         public ModelSqlDatabase Database;
+        [JsonIgnore]
         public ModelSqlSchema Schema;
+        [JsonIgnore]
         public List<SqlName> Names;
 
         public SqlResolveScope(SqlScope scope) {
