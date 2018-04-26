@@ -109,7 +109,7 @@
                     var items = this._Items.ToArray();
                     foreach (var item in items) {
                         var itemKey = this._GetKey1(item);
-                        if (itemKey.Equals(key)) {
+                        if (this._KeyComparer1.Equals(itemKey, key)) {
                             result.Add(item);
                         }
                     }
@@ -138,7 +138,7 @@
                     var items = this._Items.ToArray();
                     foreach (var item in items) {
                         var itemKey = this._GetKey2(item);
-                        if (itemKey.Equals(key)) {
+                        if (this._KeyComparer2.Equals(itemKey, key)) {
                             result.Add(item);
                         }
                     }

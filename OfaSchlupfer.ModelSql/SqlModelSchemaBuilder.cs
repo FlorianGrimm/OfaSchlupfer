@@ -84,21 +84,29 @@
             MetaModelBuilder metaModelBuilder,
             ModelErrors errors) {
             foreach (var modelEntitySource in modelSchema.Entities) {
-                if (modelEntitySource.EntityType is null) {
+                var modelEntityTypeSource = modelEntitySource.EntityType;
+                if (modelEntityTypeSource is null) {
 #warning SOON add error
                 } else {
 
                     var tableNameTarget = modelEntitySource.ExternalName ?? modelEntitySource.Name;
-                    var sqlTableNameTarget = SqlName.Parse(tableNameTarget, ObjectLevel.Unknown);
-                    var tableTarget = modelDatabase.Tables.GetValueOrDefault(sqlTableNameTarget);
-                    if (tableTarget is null) {
-                        tableTarget = new ModelSqlTable {
-                            Name = sqlTableNameTarget
-                        };
-                        modelDatabase.AddTable(tableTarget);
-                    } else {
-                        // found
+                    var sqlTableNameTarget = SqlName.Parse(tableNameTarget, ObjectLevel.Object);
+                    var tableTarget = ModelSqlTable.Ensure(modelDatabase, sqlTableNameTarget);
+
+                    foreach(var property in modelEntityTypeSource.Properties) {
+                        var column = ModelSqlColumn.Ensure(tableTarget, property.ExternalName ?? property.Name);
+#warning HERE HERE add type
                     }
+
+                    //var tableTarget = modelDatabase.Tables.GetValueOrDefault(sqlTableNameTarget);
+                    //if (tableTarget is null) {
+                    //    tableTarget = new ModelSqlTable {
+                    //        Name = sqlTableNameTarget
+                    //    };
+                    //    modelDatabase.AddTable(tableTarget);
+                    //} else {
+                    //    // found
+                    //}
                 }
             }
         }

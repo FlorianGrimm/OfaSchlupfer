@@ -15,7 +15,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         , IEquatable<ModelSqlProcedure>
         , IScopeNameResolver {
         public static ModelSqlProcedure Ensure(ModelSqlSchema modelSqlSchema, string name) {
-            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Schema);
+            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Object);
             return modelSqlSchema.Procedures.GetValueOrDefault(sqlName)
                 ?? new ModelSqlProcedure(modelSqlSchema, name);
         }

@@ -15,9 +15,14 @@
         , IEquatable<ModelSqlTable>
         , IScopeNameResolver {
         public static ModelSqlTable Ensure(ModelSqlSchema modelSqlSchema, string name) {
-            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Schema);
+            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Object);
             return modelSqlSchema.Tables.GetValueOrDefault(sqlName)
                 ?? new ModelSqlTable(modelSqlSchema, name);
+        }
+
+        public static ModelSqlTable Ensure(ModelSqlDatabase database, SqlName name) {
+            var schema = ModelSqlSchema.Ensure(database, name.Parent?.Name ?? "dbo");
+            return Ensure(schema, name.Name);
         }
 
         [JsonIgnore]
@@ -106,7 +111,7 @@
             return (this.Name == other.Name)
                 ;
         }
-
+        
         /// <summary>
         /// Resolve the name.
         /// </summary>

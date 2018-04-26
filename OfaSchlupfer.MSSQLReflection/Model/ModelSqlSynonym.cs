@@ -11,7 +11,7 @@
         , IEquatable<ModelSqlSynonym>
         , IScopeNameResolver {
         public static ModelSqlSynonym Ensure(ModelSqlSchema modelSqlSchema, string name) {
-            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Schema);
+            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Object);
             return modelSqlSchema.Synonyms.GetValueOrDefault(sqlName)
                 ?? new ModelSqlSynonym(modelSqlSchema, name);
         }

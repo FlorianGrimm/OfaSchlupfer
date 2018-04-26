@@ -78,9 +78,27 @@ namespace OfaSchlupfer.CollaborationTests {
                     if (errors.HasErrors()) { this.output.WriteLine(errors.ToString()); }
                     Assert.False(errors.HasErrors());
 
+                    Assert.True(sqlRepositoryTarget.ModelDatabase.Tables.Count > 0);
+                    foreach (var table in sqlRepositoryTarget.ModelDatabase.Tables) {
+                        Assert.True(table.Columns.Count>0);
+                    }
+
                     Assert.NotNull(modelSchemaTarget);
                     Assert.True(modelSchemaTarget.Entities.Count > 0);
                     Assert.True(modelSchemaTarget.ComplexTypes.Count > 0);
+
+                    foreach (var modelEntityTarget in modelRepositoryTarget.ModelSchema.Entities) {
+                        Assert.NotNull(modelEntityTarget.EntityTypeName);
+                        Assert.NotNull(modelEntityTarget.EntityType);
+                    }
+
+                    foreach (var modelComplexTypesTarget in modelRepositoryTarget.ModelSchema.ComplexTypes) {
+                        if (modelComplexTypesTarget.Properties.Count == 0) {
+                            var message = $"{modelComplexTypesTarget.Name} has no properties";
+                            this.output.WriteLine(message);
+                            Assert.Equal("Error", message);
+                        }
+                    }
                 }
                 
                 {

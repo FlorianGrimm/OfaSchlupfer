@@ -15,7 +15,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         : ModelSqlElementType
         , IEquatable<ModelSqlType> {
         public static ModelSqlType Ensure(ModelSqlSchema modelSqlSchema, string name) {
-            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Schema);
+            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Object);
             return modelSqlSchema.Types.GetValueOrDefault(sqlName)
                 ?? new ModelSqlType(modelSqlSchema, name);
         }

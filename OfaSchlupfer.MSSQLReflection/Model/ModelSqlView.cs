@@ -11,7 +11,7 @@
         , IEquatable<ModelSqlView>
         , IScopeNameResolver {
         public static ModelSqlView Ensure(ModelSqlSchema modelSqlSchema, string name) {
-            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Schema);
+            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Object);
             return modelSqlSchema.Views.GetValueOrDefault(sqlName)
                 ?? new ModelSqlView(modelSqlSchema, name);
         }

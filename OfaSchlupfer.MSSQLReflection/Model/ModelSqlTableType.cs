@@ -19,7 +19,7 @@
         , IScopeNameResolver
         , IModelSqlObjectWithColumns {
         public static ModelSqlTableType Ensure(ModelSqlSchema modelSqlSchema, string name) {
-            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Schema);
+            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Object);
             return modelSqlSchema.TableTypes.GetValueOrDefault(sqlName)
                 ?? new ModelSqlTableType(modelSqlSchema, name);
         }

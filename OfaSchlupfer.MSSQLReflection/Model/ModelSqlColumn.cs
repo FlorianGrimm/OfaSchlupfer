@@ -20,7 +20,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         , IScopeNameResolver
         , IModelScalarTypeFacade {
         public static ModelSqlColumn Ensure(IModelSqlObjectWithColumns objectWithColumns, string name) {
-            var sqlName = objectWithColumns.Name.Child(name, ObjectLevel.Schema);
+            var sqlName = objectWithColumns.Name.Child(name, ObjectLevel.Child);
             return objectWithColumns.Columns.GetValueOrDefault(sqlName)
                 ?? new ModelSqlColumn(objectWithColumns, name);
         }
@@ -83,7 +83,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public ModelSqlColumn(IModelSqlObjectWithColumns owner, string name)
             : this(owner.GetScope()) {
             this.Name = owner.Name.ChildWellkown(name);
-            this._Owner = owner;
+            this.Owner = owner;
         }
 
         public ModelSqlColumn(ModelSqlColumn src) {
