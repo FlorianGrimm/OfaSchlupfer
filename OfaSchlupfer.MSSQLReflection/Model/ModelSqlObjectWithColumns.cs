@@ -20,16 +20,16 @@
         /// </summary>
         [JsonIgnore]
         protected FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlColumn> _Columns;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlObjectWithColumns"/> class.
         /// </summary>
         public ModelSqlObjectWithColumns() {
             this._Columns = new FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlColumn>(
                 this,
-                (item)=>item.Name,
+                (item) => item.Name,
                 SqlNameEqualityComparer.Level1,
-                (owner, item) => item.Owner=owner
+                (owner, item) => item.Owner = owner
                 );
         }
 
@@ -58,7 +58,7 @@
         public FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlColumn> Columns => this._Columns;
 
         [JsonIgnore]
-        IList<ModelSqlColumn> IModelSqlObjectWithColumns.Columns => this._Columns;
+        IFreezeableOwnedKeyedCollection<SqlName, ModelSqlColumn> IModelSqlObjectWithColumns.Columns => this._Columns;
 
         /// <summary>
         /// Resolve the name.

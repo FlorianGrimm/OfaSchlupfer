@@ -30,14 +30,14 @@
             get {
                 var name = this._Property.ProjectedName ?? this._Property.Name;
                 var metaProperty = this._Entity.MetaData.GetProperty(name);
-                if (metaProperty == null) { throw new InvalidOperationException(string.Format("Property {0} not found.", name)); }
+                if (metaProperty is null) { throw new InvalidOperationException(string.Format("Property {0} not found.", name)); }
                 return metaProperty.GetAccessor(this._Entity._ProjectedEntity).Value;
             }
 
             set {
                 var name = this._Property.ProjectedName ?? this._Property.Name;
                 var metaProperty = this._Entity.MetaData.GetProperty(name);
-                if (metaProperty == null) { throw new InvalidOperationException(string.Format("Property {0} not found.", name)); }
+                if (metaProperty is null) { throw new InvalidOperationException(string.Format("Property {0} not found.", name)); }
                 metaProperty.GetAccessor(this._Entity._ProjectedEntity).Value = value;
             }
         }

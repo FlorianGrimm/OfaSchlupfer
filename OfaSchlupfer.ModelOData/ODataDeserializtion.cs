@@ -106,7 +106,7 @@
                             continue;
                         }
                         var metaProperty = entityMetaData.GetProperty(propertyName);
-                        if (metaProperty == null) {
+                        if (metaProperty is null) {
                             var deferred_uri = jProperty.Value.SelectToken("__deferred.uri");
                             if (deferred_uri != null && deferred_uri.Type == JTokenType.String) {
                                 // navigation url...

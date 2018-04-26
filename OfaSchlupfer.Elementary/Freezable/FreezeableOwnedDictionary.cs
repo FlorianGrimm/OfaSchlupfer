@@ -5,7 +5,8 @@
     using System.Text;
 
     public class FreezeableOwnedDictionary<TOwner, TKey, TValue>
-        : IFreezeable, IDictionary<TKey, TValue> {
+        : IFreezeable, IDictionary<TKey, TValue> 
+        where TValue : class{
         private readonly TOwner _Owner;
         private readonly Action<TOwner, TValue> _ActionOnInsertSet;
         private readonly Dictionary<TKey, TValue> _Items;
@@ -36,7 +37,7 @@
 
             set {
                 this.ThrowIfFrozen();
-                if ((object)value == null) { throw new ArgumentNullException("Items"); }
+                if (value is null) { throw new ArgumentNullException("Items"); }
                 this._Items[key] = value;
                 this._ActionOnInsertSet?.Invoke(this._Owner, value);
             }
@@ -52,7 +53,7 @@
 
         public void Add(TKey key, TValue value) {
             this.ThrowIfFrozen();
-            if ((object)value == null) { throw new ArgumentNullException("Items"); }
+            if (value is null) { throw new ArgumentNullException("Items"); }
             this._Items.Add(key, value);
             this._ActionOnInsertSet?.Invoke(this._Owner, value);
         }

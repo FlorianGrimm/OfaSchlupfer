@@ -48,7 +48,7 @@
         /// <param name="values">the values</param>
         public EntityFlexible(IMetaEntityFlexible metaData, object[] values) {
             this._MetaData = metaData;
-            if ((object)values == null) {
+            if (values is null) {
                 var cnt = metaData.GetPropertiesByIndex().Count;
                 this._Values = new object[cnt];
             } else {
@@ -81,7 +81,7 @@
                 this.ThrowIfFrozen();
                 if (value is IMetaEntityFlexible metaEntityFlexible) {
                     if (this.SetRefPropertyOnce<IMetaEntityFlexible>(ref this._MetaData, metaEntityFlexible)) {
-                        if (this._Values == null) {
+                        if (this._Values is null) {
                             var cnt = metaEntityFlexible.GetPropertiesByIndex().Count;
                             this._Values = new object[cnt];
                         }

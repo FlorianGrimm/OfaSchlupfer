@@ -39,7 +39,7 @@
             JsonSerializerSettings settings,
             //IServiceProvider serviceProvider,
             EntitySchema entitySchema) {
-            if (settings == null) {
+            if (settings is null) {
                 settings = new JsonSerializerSettings();
             }
             if (!(settings.Converters.Any((converter) => converter is EntityJsonConverter))) {
@@ -53,7 +53,7 @@
             JsonSerializerSettings settings, 
             //IServiceProvider serviceProvider,
             EntitySchema entitySchema) {
-            if (settings == null) {
+            if (settings is null) {
                 settings = new JsonSerializerSettings();
             }
             if (!(settings.Converters.Any((converter) => converter is EntityJsonConverter))) {

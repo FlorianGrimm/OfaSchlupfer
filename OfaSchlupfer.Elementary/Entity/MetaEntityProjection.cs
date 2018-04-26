@@ -49,7 +49,7 @@
         /// </summary>
         /// <param name="metaProperty">the property to add.</param>
         public void AddProperty(MetaPropertyProjection metaProperty) {
-            if (metaProperty == null) { throw new ArgumentNullException(nameof(metaProperty)); }
+            if (metaProperty is null) { throw new ArgumentNullException(nameof(metaProperty)); }
 
             // check if property exists.
             if (this._PropertyByName.ContainsKey(metaProperty.Name)) {
@@ -69,9 +69,8 @@
         /// <param name="name">the property names</param>
         /// <returns>an unbound accessor or null</returns>
         public IMetaProperty GetProperty(string name) {
-            if (name == null) { throw new ArgumentNullException(nameof(name)); }
-            MetaPropertyProjection result = null;
-            if (this._PropertyByName.TryGetValue(name, out result)) {
+            if (name is null) { throw new ArgumentNullException(nameof(name)); }
+            if (this._PropertyByName.TryGetValue(name, out var result)) {
                 return result;
             } else {
                 return null;

@@ -13,7 +13,7 @@
         /// <param name="value">any value</param>
         /// <returns>The value or DBNull.Value</returns>
         public static object OrDBNull(object value) {
-            if (value == null) { return DBNull.Value; }
+            if (value is null) { return DBNull.Value; }
             return value;
         }
 

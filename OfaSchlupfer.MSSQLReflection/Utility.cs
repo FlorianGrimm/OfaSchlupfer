@@ -52,7 +52,7 @@ namespace OfaSchlupfer.MSSQLReflection {
         /// <returns>the ModelServer.</returns>
         public ModelSqlServer GetModelServer() {
             var result = this.ModelServer;
-            if ((object)result == null) {
+            if (result is null) {
                 result = new ModelSqlServer();
                 if ((object)this.SysServer == null) {
                     result.Name = new SqlName(null, "default", ObjectLevel.Server);
@@ -119,40 +119,20 @@ namespace OfaSchlupfer.MSSQLReflection {
             var typeById = new Dictionary<int, ModelSqlType>();
 
             foreach (var src in sysDatabase.SchemaById.Values.ToArray()) {
-                var dstSchema = new ModelSqlSchema(targetDatabase, src.name);
-                ModelSqlSchema foundSchema = targetDatabase.Schemas.GetValueOrDefault(dstSchema.Name);
-                if (((object)foundSchema == null) || (foundSchema != dstSchema)) {
-                    dstSchema.AddToParent();
-                } else {
-                    dstSchema = foundSchema;
-                }
-                schemaById[src.schema_id] = dstSchema;
+                schemaById[src.schema_id] = ModelSqlSchema.Ensure(targetDatabase, src.name);
             }
 
             #region types
             {
                 foreach (var srcType in sysDatabase.Types) {
-                    ModelSqlSchema modelSqlSchema;
-                    if (schemaById.TryGetValue(srcType.schema_id, out modelSqlSchema)) {
-                        ModelSqlType dstType = new ModelSqlType(modelSqlSchema, srcType.name);
-                        ModelSqlType foundType = targetDatabase.Types.GetValueOrDefault(dstType.Name);
+                    if (schemaById.TryGetValue(srcType.schema_id, out var modelSqlSchema)) {
+                        ModelSqlType dstType = ModelSqlType.Ensure(modelSqlSchema, srcType.name);
                         dstType.MaxLength = srcType.max_length;
                         dstType.Precision = srcType.precision;
                         dstType.Scale = srcType.scale;
                         dstType.CollationName = srcType.collation_name;
                         dstType.Nullable = srcType.is_nullable;
-                        //srcType.system_type_id
-                        //switch (srcType.user_type_id) {
-                        //    case 1:
-                        //        dstType.s
-                        //    default:break;
-                        //}
-                            
-                        if (((object)foundType == null) && (foundType != dstType)) {
-                            dstType.AddToParent();
-                        } else {
-                            dstType = foundType;
-                        }
+
                         typeById[srcType.user_type_id] = dstType;
                         typeByName[dstType.Name] = dstType;
                     }
@@ -162,10 +142,8 @@ namespace OfaSchlupfer.MSSQLReflection {
             #region tabletypes
             {
                 foreach (var srcTableType in sysDatabase.GetTableType()) {
-                    ModelSqlSchema modelSqlSchema;
-                    if (schemaById.TryGetValue(srcTableType.schema_id, out modelSqlSchema)) {
-                        var dstTableType = new ModelSqlTableType(modelSqlSchema, srcTableType.name);
-                        var foundTableType = targetDatabase.TableTypes.GetValueOrDefault(dstTableType.Name);
+                    if (schemaById.TryGetValue(srcTableType.schema_id, out var modelSqlSchema)) {
+                        var dstTableType = ModelSqlTableType.Ensure(modelSqlSchema, srcTableType.name);
 
                         // srcTable.Columns
                         var srcTableType_Columns = srcTableType.Columns;
@@ -182,11 +160,6 @@ namespace OfaSchlupfer.MSSQLReflection {
                         }
 
                         // store back
-                        if (((object)foundTableType == null) || (foundTableType != dstTableType)) {
-                            dstTableType.AddToParent();
-                        } else {
-                            dstTableType = foundTableType;
-                        }
                         objectById[srcTableType.object_id] = dstTableType;
                     }
                 }
@@ -195,31 +168,24 @@ namespace OfaSchlupfer.MSSQLReflection {
             #region tables
             {
                 foreach (var srcTable in sysDatabase.GetTables()) {
-                    ModelSqlSchema modelSqlSchema;
-                    if (schemaById.TryGetValue(srcTable.schema_id, out modelSqlSchema)) {
-                        var dstTable = new ModelSqlTable(modelSqlSchema, srcTable.name);
-                        var foundTable = targetDatabase.Tables.GetValueOrDefault(dstTable.Name);
+                    if (schemaById.TryGetValue(srcTable.schema_id, out var modelSqlSchema)) {
+                        var dstTable = ModelSqlTable.Ensure(modelSqlSchema, srcTable.name);
 
                         // srcTable.Columns
                         var srcTable_Columns = srcTable.Columns;
                         if (srcTable_Columns != null) {
                             foreach (var srcColumn in srcTable_Columns) {
+#warning
                                 var dstColumn = ConvertSysToModelColumn(typeById, dstTable, srcColumn);
-                                var foundColumn = dstTable.GetColumnByName(dstColumn.Name);
-                                if ((foundColumn == null) || (foundColumn != dstColumn)) {
-                                    dstColumn.AddToParent();
-                                } else {
-                                    dstColumn = foundColumn;
-                                }
+                                //var foundColumn = dstTable.GetColumnByName(dstColumn.Name);
+                                //if ((foundColumn == null) || (foundColumn != dstColumn)) {
+                                //    dstColumn.AddToParent();
+                                //} else {
+                                //    dstColumn = foundColumn;
+                                //}
                             }
                         }
 
-                        // store back
-                        if (((object)foundTable == null) || (foundTable != dstTable)) {
-                            dstTable.AddToParent();
-                        } else {
-                            dstTable = foundTable;
-                        }
                         objectById[srcTable.object_id] = dstTable;
                     }
                 }
@@ -228,10 +194,8 @@ namespace OfaSchlupfer.MSSQLReflection {
             #region view
             {
                 foreach (var srcView in sysDatabase.GetViews()) {
-                    ModelSqlSchema modelSqlSchema;
-                    if (schemaById.TryGetValue(srcView.schema_id, out modelSqlSchema)) {
-                        var dstView = new ModelSqlView(modelSqlSchema, srcView.name);
-                        var foundView = targetDatabase.Views.GetValueOrDefault(dstView.Name);
+                    if (schemaById.TryGetValue(srcView.schema_id, out var modelSqlSchema)) {
+                        var dstView = ModelSqlView.Ensure(modelSqlSchema, srcView.name);
 
                         // srcTable.Columns
                         var srcTable_Columns = srcView.Columns;
@@ -247,12 +211,6 @@ namespace OfaSchlupfer.MSSQLReflection {
                             }
                         }
 
-                        // store back
-                        if (((object)foundView == null) || (foundView != dstView)) {
-                            dstView.AddToParent();
-                        } else {
-                            dstView = foundView;
-                        }
                         objectById[srcView.object_id] = dstView;
                     }
                 }
@@ -261,17 +219,8 @@ namespace OfaSchlupfer.MSSQLReflection {
             #region Synonyms
             {
                 foreach (var srcSynonym in sysDatabase.GetSynonyms()) {
-                    ModelSqlSchema modelSqlSchema;
-                    if (schemaById.TryGetValue(srcSynonym.schema_id, out modelSqlSchema)) {
-                        var dstSynonym = new ModelSqlSynonym(modelSqlSchema, srcSynonym.name);
-                        var foundSynonym = targetDatabase.Synonyms.GetValueOrDefault(dstSynonym.Name);
-
-                        // store back
-                        if (((object)foundSynonym == null) || (foundSynonym != dstSynonym)) {
-                            dstSynonym.AddToParent();
-                        } else {
-                            dstSynonym = foundSynonym;
-                        }
+                    if (schemaById.TryGetValue(srcSynonym.schema_id, out var modelSqlSchema)) {
+                        var dstSynonym = ModelSqlSynonym.Ensure(modelSqlSchema, srcSynonym.name);
                         objectById[srcSynonym.object_id] = dstSynonym;
                     }
                 }
@@ -280,17 +229,8 @@ namespace OfaSchlupfer.MSSQLReflection {
             #region StoredProdedures
             {
                 foreach (var srcProcedure in sysDatabase.GetSqlStoredProcedures()) {
-                    ModelSqlSchema modelSqlSchema;
-                    if (schemaById.TryGetValue(srcProcedure.schema_id, out modelSqlSchema)) {
-                        var dstProcedure = new ModelSqlProcedure(modelSqlSchema, srcProcedure.name);
-                        var foundProcedure = targetDatabase.Procedures.GetValueOrDefault(dstProcedure.Name);
-
-                        // store back
-                        if (((object)foundProcedure == null) || (foundProcedure != dstProcedure)) {
-                            dstProcedure.AddToParent();
-                        } else {
-                            dstProcedure = foundProcedure;
-                        }
+                    if (schemaById.TryGetValue(srcProcedure.schema_id, out var modelSqlSchema)) {
+                        var dstProcedure = ModelSqlProcedure.Ensure(modelSqlSchema, srcProcedure.name);
                         objectById[srcProcedure.object_id] = dstProcedure;
                     }
                 }
@@ -302,16 +242,17 @@ namespace OfaSchlupfer.MSSQLReflection {
             Dictionary<int, ModelSqlType> typeById,
             IModelSqlObjectWithColumns dstObjectWithColumns,
             SqlSysColumn srcColumn) {
-            var dstColumn = new ModelSqlColumn(dstObjectWithColumns, srcColumn.name);
+            var dstColumn = ModelSqlColumn.Ensure(dstObjectWithColumns, srcColumn.name);
             dstColumn.ColumnId = srcColumn.column_id;
             ModelSqlType foundSqlType = typeById.GetValueOrDefault(srcColumn.user_type_id);
-            var typeScalar = new ModelSqlType();
-            typeScalar.BaseOnType = foundSqlType;
-            typeScalar.MaxLength = srcColumn.max_length;
-            typeScalar.Precision = srcColumn.precision;
-            typeScalar.Scale = srcColumn.scale;
-            typeScalar.CollationName = srcColumn.collation_name;
-            typeScalar.Nullable = srcColumn.is_nullable;
+            var typeScalar = new ModelSqlType {
+                BaseOnType = foundSqlType,
+                MaxLength = srcColumn.max_length,
+                Precision = srcColumn.precision,
+                Scale = srcColumn.scale,
+                CollationName = srcColumn.collation_name,
+                Nullable = srcColumn.is_nullable
+            };
             dstColumn.SqlType = foundSqlType;
             return dstColumn;
         }

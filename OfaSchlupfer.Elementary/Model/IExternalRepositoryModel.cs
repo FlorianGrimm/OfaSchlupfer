@@ -83,7 +83,7 @@
                 }
                 this._Owner = value;
                 if ((object)this._Owner != null) {
-                    if (ReferenceEquals(this._Owner.ReferencedRepositoryModel, null)) {
+                    if (this._Owner.ReferencedRepositoryModel is null) {
                         this._Owner.ReferencedRepositoryModel = this;
                     }
                 }

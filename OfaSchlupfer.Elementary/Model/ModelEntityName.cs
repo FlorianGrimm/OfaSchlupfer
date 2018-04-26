@@ -75,11 +75,15 @@
 
         public string GetName() => this.ToString();
 
-        public override bool Equals(object obj)
-            => this.Equals(obj as ModelEntityName);
+        public override bool Equals(object obj) {
+            if (obj is ModelEntityName other) {
+                return this.Equals(other);
+            }
+            return false;
+        }
 
         public bool Equals(ModelEntityName other) {
-            if (ReferenceEquals(other, null)) { return false; }
+            if (other is null) { return false; }
             var stringComparer = ModelUtility.Instance.StringComparer;
             return stringComparer.Equals(this._Name, other._Name)
                 && stringComparer.Equals(this._NamespaceUri, other._NamespaceUri)
@@ -121,8 +125,8 @@
     public sealed class ModelEntityNameEqualityComparer
         : IEqualityComparer<ModelEntityName>, IEqualityComparer {
         public bool Equals(ModelEntityName x, ModelEntityName y) {
-            var nx = ReferenceEquals(x, null);
-            var ny = ReferenceEquals(y, null);
+            var nx = x is null;
+            var ny = y is null;
             if (nx && ny) { return true; }
             if (nx != ny) { return true; }
             var stringComparer = ModelUtility.Instance.StringComparer;

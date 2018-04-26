@@ -78,7 +78,7 @@
 
         public override ModelSchema GetModelSchema(MetaModelBuilder metaModelBuilder, ModelErrors errors) {
             var result = this.ModelSchema;
-            if ((object)result == null) {
+            if (result is null) {
                 if (this._EdmxModel != null) {
                     var builder = new EdmxModelSchemaBuilder();
                     result = new ModelSchema();

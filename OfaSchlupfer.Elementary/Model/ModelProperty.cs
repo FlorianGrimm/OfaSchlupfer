@@ -106,7 +106,7 @@
         /// <returns>an error message or null.</returns>
         public virtual string Validate(object value, bool validateOrThrow) {
             if ((object)this._PropertyType != null) {
-                if ((object)value == null) {
+                if (value is null) {
                     if (this._PropertyType.IsValueType && (Nullable.GetUnderlyingType(this._PropertyType) == null)) {
                         var msg = $"${this.Name} is not nullable.";
                         if (validateOrThrow) {

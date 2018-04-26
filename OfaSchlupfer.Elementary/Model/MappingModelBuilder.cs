@@ -25,8 +25,8 @@
         public bool EnabledForCreatedMappingModelComplexType { get; set; }
         public bool EnabledForCreatedMappingModelProperty { get; set; }
 
-        private string getComment() {
-            if (string.IsNullOrEmpty(Comment)) {
+        private string GetComment() {
+            if (string.IsNullOrEmpty(this.Comment)) {
                 return this.Comment = ("Generated" + System.DateTime.Now.ToString("s"));
             }
             return this.Comment;
@@ -55,7 +55,7 @@
                     repositoryTarget.ModelSchema,
                     this.EnabledForCreatedMappings || this.EnabledForCreatedMappingModelSchema,
                     true,
-                    this.getComment());
+                    this.GetComment());
             }
             {
                 var lstMappingModelSchemaEnabled = lstMappingModelSchema.Where(_ => _.Enabled).ToList();
@@ -130,7 +130,7 @@
                     targetName,
                     this.EnabledForCreatedMappings || this.EnabledForCreatedMappingModelEntity,
                     true,
-                    this.getComment()
+                    this.GetComment()
                     );
                 if (entityMapping.Enabled) {
                     if (entityMapping.Target is null) {
@@ -151,7 +151,7 @@
                                 typeName,
                                 this.EnabledForCreatedMappings || this.EnabledForCreatedMappingModelComplexType,
                                 true,
-                                this.getComment()
+                                this.GetComment()
                             );
                         this._KnownComplexTypeMappingSourceName.Add(complexTypeSource.Name);
                         if (complexTypeMapping.Enabled && !string.IsNullOrEmpty(complexTypeMapping.TargetName)) {
@@ -240,7 +240,7 @@
                         targetName,
                         this.EnabledForCreatedMappings || this.EnabledForCreatedMappingModelComplexType,
                         true,
-                        this.getComment()
+                        this.GetComment()
                     );
                 this._KnownComplexTypeMappingSourceName.Add(complexTypeSource.Name);
                 if (complexTypeMapping.Enabled) {

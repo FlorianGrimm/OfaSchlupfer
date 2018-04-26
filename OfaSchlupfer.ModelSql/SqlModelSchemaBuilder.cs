@@ -19,7 +19,7 @@
 
             // modelDatabase.Freeze();
 
-            foreach (var table in modelDatabase.Tables.Values) {
+            foreach (var table in modelDatabase.Tables) {
 
                 var entityTypeModelName = table.Name.GetQFullName(null, 2);
                 var entityTypeModelFullName = table.Name.GetQFullName("[", 2);
@@ -92,8 +92,9 @@
                     var sqlTableNameTarget = SqlName.Parse(tableNameTarget, ObjectLevel.Unknown);
                     var tableTarget = modelDatabase.Tables.GetValueOrDefault(sqlTableNameTarget);
                     if (tableTarget is null) {
-                        tableTarget = new ModelSqlTable();
-                        tableTarget.Name = sqlTableNameTarget;
+                        tableTarget = new ModelSqlTable {
+                            Name = sqlTableNameTarget
+                        };
                         modelDatabase.AddTable(tableTarget);
                     } else {
                         // found

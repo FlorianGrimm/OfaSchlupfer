@@ -6,7 +6,7 @@
     /// <summary>
     /// columns
     /// </summary>
-    public interface IModelSqlObjectWithColumns
+    public interface IModelSqlObjectWithColumns 
         : IModelSqlObjectWithName {
         /// <summary>
         /// think of
@@ -17,7 +17,8 @@
         /// <summary>
         /// Gets the columns
         /// </summary>
-        IList<ModelSqlColumn> Columns { get; }
+        //IList<ModelSqlColumn> Columns { get; }
+        IFreezeableOwnedKeyedCollection<SqlName, ModelSqlColumn> Columns { get; }
 
         /// <summary>
         /// add the column

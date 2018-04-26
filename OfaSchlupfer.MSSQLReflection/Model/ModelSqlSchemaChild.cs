@@ -20,6 +20,9 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         [JsonIgnore]
         protected ModelSqlSchema _Schema;
 
+        [JsonIgnore]
+        protected ModelSqlDatabase _Database;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlSchemaChild"/> class.
         /// </summary>
@@ -35,9 +38,15 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         }
 
         [JsonIgnore]
-        public virtual ModelSqlSchema Owner {
+        public virtual ModelSqlSchema Schema {
             get => this._Schema;
             set => this._Schema = value;
+        }
+
+        [JsonIgnore]
+        public virtual ModelSqlDatabase Database {
+            get => this._Database;
+            set => this._Database = value;
         }
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
@@ -54,11 +63,12 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
+#if weichei
         /// <summary>
         /// Add this to the parent
         /// </summary>
         public abstract void AddToParent();
-
+#endif
         /// <inheritdoc/>
         public override int GetHashCode() => this.Name.GetHashCode();
 

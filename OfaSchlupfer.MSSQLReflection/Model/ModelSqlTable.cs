@@ -14,6 +14,12 @@
         : ModelSqlObjectWithColumns
         , IEquatable<ModelSqlTable>
         , IScopeNameResolver {
+        public static ModelSqlTable Ensure(ModelSqlSchema modelSqlSchema, string name) {
+            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Schema);
+            return modelSqlSchema.Tables.GetValueOrDefault(sqlName)
+                ?? new ModelSqlTable(modelSqlSchema, name);
+        }
+
         [JsonIgnore]
         private SqlScope _Scope;
 
@@ -38,7 +44,7 @@
         public ModelSqlTable(ModelSqlSchema schema, string name)
             : this(schema.GetScope()) {
             this.Name = schema.Name.Child(name, ObjectLevel.Object);
-            this._Schema = schema;
+            this.Schema = schema;
         }
 
         /// <summary>
@@ -49,17 +55,29 @@
             : base(src) { }
 
         [JsonIgnore]
-        public override ModelSqlSchema Owner {
+        public override ModelSqlSchema Schema {
             get => this._Schema;
-            set => this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.Tables);
+            set {
+                if (this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.Tables)) {
+                    this.Database = value?.Database;
+                }
+            }
         }
 
+        [JsonIgnore]
+        public override ModelSqlDatabase Database {
+            get => this._Database;
+            set => this.SetOwnerWithChildren(ref this._Database, value, (owner) => owner.Tables);
+        }
+
+#if weichei
         /// <summary>
         /// Add this to the parent
         /// </summary>
         public override void AddToParent() {
             this._Schema.AddTable(this);
         }
+#endif
 
         /// <summary>
         /// Get the current scope
@@ -83,7 +101,7 @@
 
         /// <inheritdoc/>
         public bool Equals(ModelSqlTable other) {
-            if ((object)other == null) { return false; }
+            if (other is null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
             return (this.Name == other.Name)
                 ;

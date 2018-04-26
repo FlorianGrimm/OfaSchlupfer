@@ -15,7 +15,7 @@
         public readonly IServiceProvider ServiceProvider;
         public readonly EntityOptions Options;
         private IEntityConcreteFactory[] _EntityFactories;
-        private Dictionary<string, IEntityConcreteFactory> _FactoryByAuthenticationMode;
+        // private Dictionary<string, IEntityConcreteFactory> _FactoryByAuthenticationMode;
 
         // EntityOptions
         public EntityDispatcherFactory(
@@ -46,9 +46,7 @@
             //}
             return null;
         }
-
-
-
+        
         public IEntity CreateEntity(string entityTypeName) {
             var factory = GetEntityFactory(entityTypeName);
             if (factory != null) {

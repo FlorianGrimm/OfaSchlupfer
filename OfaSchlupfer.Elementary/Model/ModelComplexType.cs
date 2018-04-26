@@ -60,7 +60,7 @@
 #warning weichei
         //    {
         //    var result = this._GetMetaEntity;
-        //    if ((object)result == null) {
+        //    if (result is null) {
         //        result = new ModelComplexTypeMetaEntity(this);
         //        if (this.IsFrozen()) {
         //            this._GetMetaEntity = result;
@@ -154,7 +154,7 @@
         /// </summary>
         /// <param name="metaProperty">the property to add.</param>
         public void AddProperty(IMetaIndexedProperty metaProperty) {
-            if (metaProperty == null) { throw new ArgumentNullException(nameof(metaProperty)); }
+            if (metaProperty is null) { throw new ArgumentNullException(nameof(metaProperty)); }
             this.ThrowIfFrozen();
 
             // check if property exists
@@ -185,7 +185,7 @@
 #warning weichei test first
         //{
         //    var result = this._GetProperties;
-        //    if ((object)result == null) {
+        //    if (result is null) {
         //        result = this._PropertyByIndex.Cast<IMetaProperty>().AsFreezedList();
         //        // if it is frozen it is save to cache.
         //        if (this.IsFrozen()) {
@@ -203,7 +203,7 @@
 #warning weichei test first
         //    {
         //    var result = this._GetPropertiesByIndex;
-        //    if ((object)result == null) {
+        //    if (result is null) {
         //        result = this._PropertyByIndex.AsFreezedList();
         //        // if it is frozen it is save to cache.
         //        if (this.IsFrozen()) {
@@ -219,7 +219,7 @@
         /// <param name="name">the name of the property</param>
         /// <returns>the property or null</returns>
         public IMetaProperty GetProperty(string name) {
-            if (name == null) { throw new ArgumentNullException(nameof(name)); }
+            if (name is null) { throw new ArgumentNullException(nameof(name)); }
             IMetaIndexedProperty result = null;
             if (this._PropertyByName.TryGetValue(name, out result)) {
                 return result;

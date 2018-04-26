@@ -34,7 +34,7 @@ namespace OfaSchlupfer.TextTemplate {
         }
 
         public virtual IList ToList(SourceSpan span, object value) {
-            if (value == null) {
+            if (value is null) {
                 return null;
             }
 
@@ -157,7 +157,7 @@ namespace OfaSchlupfer.TextTemplate {
         /// <returns>The integer value</returns>
         public virtual int ToInt(SourceSpan span, object value) {
             try {
-                if (value == null) return 0;
+                if (value is null) return 0;
                 if (value is int) return (int)value;
                 return Convert.ToInt32(value, CurrentCulture);
             } catch (FormatException ex) {
@@ -191,7 +191,7 @@ namespace OfaSchlupfer.TextTemplate {
             }
 
             // Handle null case
-            if (value == null) {
+            if (value is null) {
                 if (destinationType == typeof(double)) {
                     return (double)0.0;
                 }

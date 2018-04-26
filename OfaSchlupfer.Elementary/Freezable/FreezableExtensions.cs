@@ -17,7 +17,7 @@
         public static void ThrowIfFrozen(this IFreezeable that, string name = null) {
             if ((object)that != null) {
                 if (that.IsFrozen()) {
-                    if ((object)name == null) {
+                    if (name is null) {
                         throw new InvalidOperationException($"{that.GetType().FullName} is frozen.");
                     } else {
                         throw new InvalidOperationException($"{name} is frozen.");
@@ -30,7 +30,7 @@
         public static void ThrowIfNotFrozen(this IFreezeable that, string name = null) {
             if ((object)that != null) {
                 if (!(that.IsFrozen())) {
-                    if ((object)name == null) {
+                    if (name is null) {
                         throw new InvalidOperationException($"{that.GetType().FullName} is NOT frozen.");
                     } else {
                         throw new InvalidOperationException($"{name} is NOT frozen.");
@@ -43,7 +43,7 @@
         public static void SetOrThrowIfFrozen<T>(this IFreezeable that, ref T target, T value, string name = null) {
             if ((object)that != null) {
                 if (that.IsFrozen()) {
-                    if ((object)name == null) {
+                    if (name is null) {
                         throw new InvalidOperationException($"{that.GetType().FullName} is frozen.");
                     } else {
                         throw new InvalidOperationException($"{name} is frozen.");
@@ -167,7 +167,7 @@
             where TMappingKey : class
             where TMappingValue : class {
             if (owner is null) { return; }
-            if (((object)thisPropertyValue == null) && !((object)thisPropertyName != null)) {
+            if ((thisPropertyValue is null) && !(thisPropertyName is null)) {
                 var lstFound = findByKey(owner, thisPropertyName);
                 if (lstFound.Count == 1) {
                     thisPropertyValue = lstFound[0];

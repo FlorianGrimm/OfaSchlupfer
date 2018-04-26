@@ -14,7 +14,7 @@
         /// </returns>
         public static TValue GetValueOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> that, TKey key, TValue defaultValue = default(TValue)) {
             TValue result = defaultValue;
-            if ((ReferenceEquals(that, null)) || (ReferenceEquals(key, null))) {
+            if ((that is null) || (key == null)) {
                 return defaultValue;
             } else if ((that.TryGetValue(key, out result))) {
                     return result;

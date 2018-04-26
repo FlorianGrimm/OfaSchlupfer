@@ -14,6 +14,12 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     public sealed class ModelSqlType
         : ModelSqlElementType
         , IEquatable<ModelSqlType> {
+        public static ModelSqlType Ensure(ModelSqlSchema modelSqlSchema, string name) {
+            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Schema);
+            return modelSqlSchema.Types.GetValueOrDefault(sqlName)
+                ?? new ModelSqlType(modelSqlSchema, name);
+        }
+        
         [JsonIgnore]
         private short _MaxLength;
         [JsonIgnore]
@@ -24,6 +30,9 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         private string _CollationName;
         [JsonIgnore]
         private bool _Nullable;
+
+        [JsonIgnore]
+        private ModelSematicScalarType _ScalarType;
 
         public ModelSqlType() { }
 
@@ -44,15 +53,24 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="name">the name</param>
         public ModelSqlType(ModelSqlSchema schema, string name) {
             this.Name = schema.Name.Child(name, ObjectLevel.Object);
-            this._Schema = schema;
+            this.Schema = schema;
         }
 
         [JsonIgnore]
-        public override ModelSqlSchema Owner {
+        public override ModelSqlSchema Schema {
             get => this._Schema;
-            set => this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.Types);
+            set {
+                if (this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.Types)) {
+                    this.Database = value?.Database;
+                }
+            }
         }
 
+        [JsonIgnore]
+        public override ModelSqlDatabase Database {
+            get => this._Database;
+            set => this.SetOwnerWithChildren(ref this._Database, value, (owner) => owner.Types);
+        }
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
 
@@ -67,41 +85,42 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets or sets the MaxLength of char types.
         /// </summary>
-        public short MaxLength { get { return this._MaxLength; } set { this._MaxLength = value; } }
+        public short MaxLength { get { return this._MaxLength; } set { this.SetValueProperty(ref this._MaxLength, value); } }
 
         /// <summary>
         /// Gets or sets the Precision of float types.
         /// </summary>
-        public byte Precision { get { return this._Precision; } set { this._Precision = value; } }
+        public byte Precision { get { return this._Precision; } set { this.SetValueProperty(ref this._Precision, value); } }
 
         /// <summary>
         /// Gets or sets the Scale of float types..
         /// </summary>
-        public byte Scale { get { return this._Scale; } set { this._Scale = value; } }
+        public byte Scale { get { return this._Scale; } set { this.SetValueProperty(ref this._Scale, value); } }
 
         /// <summary>
         /// Gets or sets the collation of the type - can be null.
         /// </summary>
-        public string CollationName { get { return this._CollationName; } set { this._CollationName = value; } }
+        public string CollationName { get { return this._CollationName; } set { this.SetStringProperty(ref this._CollationName, value); } }
 
         /// <summary>
         /// Gets or sets a value indicating whether gets or sets the type is null-able.
         /// </summary>
-        public bool Nullable { get { return this._Nullable; } set { this._Nullable = value; } }
+        public bool Nullable { get { return this._Nullable; } set { this.SetValueProperty(ref this._Nullable, value); } }
 
         public ModelSqlType BaseOnType { get; set; }
 
+
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
+#if weichei
         /// <summary>
         /// Add this to the parent
         /// </summary>
         public override void AddToParent() {
             this._Schema.AddType(this);
         }
-
-        private ModelSematicScalarType _ScalarType;
-
+#endif
+    
         /// <summary>
         /// Get the scalar type.
         /// </summary>
@@ -151,9 +170,8 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         /// <inheritdoc/>
         public bool Equals(ModelSqlType other) {
-            if ((object)other == null) { return false; }
+            if (other is null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
-            ((object)null).ToString();
             return (this.Name == other.Name)
                 && (this.MaxLength == other.MaxLength)
                 && (this.Precision == other.Precision)

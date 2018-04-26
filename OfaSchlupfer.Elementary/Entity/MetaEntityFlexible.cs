@@ -84,7 +84,7 @@
         /// </summary>
         /// <param name="metaProperty">the property to add.</param>
         public void AddProperty(IMetaIndexedProperty metaProperty) {
-            if (metaProperty == null) { throw new ArgumentNullException(nameof(metaProperty)); }
+            if (metaProperty is null) { throw new ArgumentNullException(nameof(metaProperty)); }
             this.ThrowIfFrozen();
 
             // check if property exists
@@ -112,9 +112,8 @@
         /// <param name="name">the name of the property</param>
         /// <returns>the property or null</returns>
         public IMetaProperty GetProperty(string name) {
-            if (name == null) { throw new ArgumentNullException(nameof(name)); }
-            IMetaIndexedProperty result = null;
-            if (this._PropertyByName.TryGetValue(name, out result)) {
+            if (name is null) { throw new ArgumentNullException(nameof(name)); }
+            if (this._PropertyByName.TryGetValue(name, out var result)) {
                 return result;
             } else {
                 return null;
@@ -131,7 +130,7 @@
         /// </summary>
         public IList<IMetaIndexedProperty> GetPropertiesByIndex() {
             var result = this._GetPropertiesByIndex;
-            if ((object)result == null) {
+            if (result is null) {
                 result = this.PropertyByIndex.AsFreezedList();
                 // if it is frozen it is save to cache.
                 if (this.IsFrozen()) {
@@ -147,7 +146,7 @@
         /// <returns>a list of properties.</returns>
         public IList<IMetaProperty> GetProperties() {
             var result = this._GetProperties;
-            if ((object)result == null) {
+            if (result is null) {
                 result = this.PropertyByIndex.Cast<IMetaProperty>().AsFreezedList();
                 // if it is frozen it is save to cache.
                 if (this.IsFrozen()) {

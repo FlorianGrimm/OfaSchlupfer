@@ -14,6 +14,12 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         : ModelSqlSchemaChild
         , IEquatable<ModelSqlProcedure>
         , IScopeNameResolver {
+        public static ModelSqlProcedure Ensure(ModelSqlSchema modelSqlSchema, string name) {
+            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Schema);
+            return modelSqlSchema.Procedures.GetValueOrDefault(sqlName)
+                ?? new ModelSqlProcedure(modelSqlSchema, name);
+        }
+
         private SqlScope _Scope;
         private string _Definition;
 
@@ -40,7 +46,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public ModelSqlProcedure(ModelSqlSchema schema, string name)
             : this(schema.GetScope()) {
             this.Name = schema.Name.Child(name, ObjectLevel.Object);
-            this._Schema = schema;
+            this.Schema = schema;
         }
 
         /// <summary>
@@ -54,9 +60,19 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         }
 
         [JsonIgnore]
-        public override ModelSqlSchema Owner {
+        public override ModelSqlSchema Schema {
             get => this._Schema;
-            set => this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.Procedures);
+            set {
+                if (this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.Procedures)) {
+                    this.Database = value?.Database;
+                }
+            }
+        }
+
+        [JsonIgnore]
+        public override ModelSqlDatabase Database {
+            get => this._Database;
+            set => this.SetOwnerWithChildren(ref this._Database, value, (owner) => owner.Procedures);
         }
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
@@ -68,12 +84,14 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
+#if weichei
         /// <summary>
         /// Add this to the parent
         /// </summary>
         public override void AddToParent() {
             this._Schema.AddProcedure(this);
         }
+#endif
 
         /// <summary>
         /// Resolve the name.
@@ -111,9 +129,8 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         /// <inheritdoc/>
         public bool Equals(ModelSqlProcedure other) {
-            if ((object)other == null) { return false; }
+            if (other is null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
-            ((object)null).ToString();
             return (this.Name == other.Name)
                 && (string.Equals(this.Definition, other.Definition, StringComparison.Ordinal))
                 ;

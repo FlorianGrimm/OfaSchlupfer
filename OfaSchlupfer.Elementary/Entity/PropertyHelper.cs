@@ -15,10 +15,10 @@
         /// <param name="ifNotExistsValue">if not exists and ignored return this value.</param>
         /// <returns>The value -or- ifNotExistsValue</returns>
         public static object GetProperty(this IEntity that, string name, bool ignoreIfNotExists = true, object ifNotExistsValue = null) {
-            if ((object)that == null) { throw new ArgumentNullException(nameof(that)); }
-            if ((object)name == null) { throw new ArgumentNullException(nameof(name)); }
+            if (that is null) { throw new ArgumentNullException(nameof(that)); }
+            if (name is null) { throw new ArgumentNullException(nameof(name)); }
             var property = that.MetaData.GetProperty(name);
-            if ((object)property == null) {
+            if (property is null) {
                 if (ignoreIfNotExists) {
                     return ifNotExistsValue;
                 } else {
@@ -51,9 +51,8 @@
         /// <returns>The value -or- ifNotExistsValue</returns>
         public static System.TimeSpan? GetPropertyAsTimeSpanQ(this IEntity that, string name, bool ignoreIfNotExists = true, string ifNotExistsValue = null) {
             object value = GetProperty(that, name, ignoreIfNotExists, ifNotExistsValue);
-            if (value == null) { return null; }
-            if (value is decimal) {
-                var dec = ((decimal)value);
+            if (value is null) { return null; }
+            if (value is decimal dec) {
                 return TimeSpan.FromMinutes((double)dec);
             }
             throw new NotImplementedException("GetPropertyAsTimeSpanQ");
@@ -69,7 +68,7 @@
         /// <returns>The value -or- ifNotExistsValue</returns>
         public static double? GetPropertyAsDoubleQ(this IEntity that, string name, bool ignoreIfNotExists = true, string ifNotExistsValue = null) {
             object value = GetProperty(that, name, ignoreIfNotExists, ifNotExistsValue);
-            if (value == null) { return null; }
+            if (value is null) { return null; }
             if (value is double) {
                 return ((double)value);
             }
@@ -88,10 +87,9 @@
         public static TEnum? GetPropertyAsEnumQ<TEnum>(this IEntity that, string name, bool ignoreIfNotExists = true, string ifNotExistsValue = null)
             where TEnum : struct {
             object value = GetProperty(that, name, ignoreIfNotExists, ifNotExistsValue);
-            if (value == null) { return null; }
+            if (value is null) { return null; }
             if (value is string) {
-                TEnum e;
-                if (Enum.TryParse<TEnum>((string)value, out e)) {
+                if (Enum.TryParse<TEnum>((string)value, out var e)) {
                     return e;
                 } else {
                     return null;
@@ -182,7 +180,7 @@
         /// <returns>The value</returns>
         public static byte? GetPropertyAsByteQ(this IEntity that, string name, bool ignoreIfNotExists = true, byte? ifNotExistsValue = null) {
             object value = GetProperty(that, name, ignoreIfNotExists, ifNotExistsValue);
-            if (value == null) {
+            if (value is null) {
                 return null;
             }
             try {
@@ -219,7 +217,7 @@
         /// <returns>The value</returns>
         public static short? GetPropertyAsShortQ(this IEntity that, string name, bool ignoreIfNotExists = true, short? ifNotExistsValue = null) {
             object value = GetProperty(that, name, ignoreIfNotExists, ifNotExistsValue);
-            if (value == null) {
+            if (value is null) {
                 return null;
             }
             try {
@@ -256,7 +254,7 @@
         /// <returns>The value</returns>
         public static int? GetPropertyAsIntQ(this IEntity that, string name, bool ignoreIfNotExists = true, int? ifNotExistsValue = null) {
             object value = GetProperty(that, name, ignoreIfNotExists, ifNotExistsValue);
-            if (value == null) {
+            if (value is null) {
                 return null;
             }
             try {
@@ -326,10 +324,10 @@
         /// <param name="value">the value.</param>
         /// <param name="ignoreIfNotExists">throw an error or ignore</param>
         public static void SetProperty(this IEntity that, string name, object value, bool ignoreIfNotExists = true) {
-            if ((object)that == null) { throw new ArgumentNullException(nameof(that)); }
-            if ((object)name == null) { throw new ArgumentNullException(nameof(name)); }
+            if (that is null) { throw new ArgumentNullException(nameof(that)); }
+            if (name is null) { throw new ArgumentNullException(nameof(name)); }
             var property = that.MetaData.GetProperty(name);
-            if ((object)property == null) {
+            if (property is null) {
                 if (ignoreIfNotExists) {
                     return;
                 } else {

@@ -16,17 +16,17 @@
         [JsonIgnore]
         private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSchema> _Schemas;
         [JsonIgnore]
-        private readonly Dictionary<SqlName, ModelSqlType> _Types;
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlType> _Types;
         [JsonIgnore]
-        private readonly Dictionary<SqlName, ModelSqlTable> _Tables;
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTable> _Tables;
         [JsonIgnore]
-        private readonly Dictionary<SqlName, ModelSqlTableType> _TableTypes;
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTableType> _TableTypes;
         [JsonIgnore]
-        private readonly Dictionary<SqlName, ModelSqlView> _Views;
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlView> _Views;
         [JsonIgnore]
-        private readonly Dictionary<SqlName, ModelSqlProcedure> _Procedures;
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlProcedure> _Procedures;
         [JsonIgnore]
-        private readonly Dictionary<SqlName, ModelSqlSynonym> _Synonyms;
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSynonym> _Synonyms;
 
         [JsonIgnore]
         private SqlScope _Scope;
@@ -45,13 +45,43 @@
                 SqlNameEqualityComparer.Level1,
                 (owner, item) => item.Database = owner
                 );
-            
-            this._Types = new Dictionary<SqlName, ModelSqlType>(SqlNameEqualityComparer.Level2);
-            this._Tables = new Dictionary<SqlName, ModelSqlTable>(SqlNameEqualityComparer.Level2);
-            this._TableTypes = new Dictionary<SqlName, ModelSqlTableType>(SqlNameEqualityComparer.Level2);
-            this._Views = new Dictionary<SqlName, ModelSqlView>(SqlNameEqualityComparer.Level2);
-            this._Procedures = new Dictionary<SqlName, ModelSqlProcedure>(SqlNameEqualityComparer.Level2);
-            this._Synonyms = new Dictionary<SqlName, ModelSqlSynonym>(SqlNameEqualityComparer.Level2);
+
+            this._Types = new FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlType>(
+                this,
+                (item) => item.Name,
+                SqlNameEqualityComparer.Level2,
+                (owner, item) => item.Database = owner
+                );
+            this._Tables = new FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTable>(
+                this,
+                (item) => item.Name,
+                SqlNameEqualityComparer.Level2,
+                (owner, item) => item.Database = owner
+                );
+            this._TableTypes = new FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTableType>(
+                this,
+                (item) => item.Name,
+                SqlNameEqualityComparer.Level2,
+                (owner, item) => item.Database = owner
+                );
+            this._Views = new FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlView>(
+                this,
+                (item) => item.Name,
+                SqlNameEqualityComparer.Level2,
+                (owner, item) => item.Database = owner
+                );
+            this._Procedures = new FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlProcedure>(
+                this,
+                (item) => item.Name,
+                SqlNameEqualityComparer.Level2,
+                (owner, item) => item.Database = owner
+                );
+            this._Synonyms = new FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSynonym>(
+                this,
+                (item) => item.Name,
+                SqlNameEqualityComparer.Level2,
+                (owner, item) => item.Database = owner
+                );
         }
 
         /// <summary>
@@ -100,33 +130,33 @@
         /// <summary>
         /// Gets the types.
         /// </summary>
-        public Dictionary<SqlName, ModelSqlType> Types => this._Types;
+        public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlType> Types => this._Types;
 
         /// <summary>
         /// Gets the tables.
         /// </summary>
         [JsonProperty(ItemIsReference = true)]
-        public Dictionary<SqlName, ModelSqlTable> Tables => this._Tables;
+        public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTable> Tables => this._Tables;
 
         /// <summary>
         /// Gets the tables.
         /// </summary>
-        public Dictionary<SqlName, ModelSqlTableType> TableTypes => this._TableTypes;
+        public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTableType> TableTypes => this._TableTypes;
 
         /// <summary>
         /// Gets the views.
         /// </summary>
-        public Dictionary<SqlName, ModelSqlView> Views => this._Views;
+        public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlView> Views => this._Views;
 
         /// <summary>
         /// Gets the procedures.
         /// </summary>
-        public Dictionary<SqlName, ModelSqlProcedure> Procedures => this._Procedures;
+        public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlProcedure> Procedures => this._Procedures;
 
         /// <summary>
         /// Gets the Synonyms
         /// </summary>
-        public Dictionary<SqlName, ModelSqlSynonym> Synonyms => this._Synonyms;
+        public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSynonym> Synonyms => this._Synonyms;
 
         /// <summary>
         /// Add this to parent.
@@ -183,7 +213,7 @@
         /// <param name="type">The type to add.</param>
         public void AddType(ModelSqlType type) {
             if ((object)type == null) { throw new ArgumentNullException(nameof(type)); }
-            this.Types[type.Name] = type;
+            this.Types.Add(type);
         }
 
         /// <summary>
@@ -192,8 +222,7 @@
         /// <param name="table">The table to add.</param>
         public void AddTable(ModelSqlTable table) {
             if ((object)table == null) { throw new ArgumentNullException(nameof(table)); }
-            this.Tables.Add(table.Name, table);
-            this.Tables[table.Name] = table;
+            this.Tables.Add(table);
         }
 
         /// <summary>
@@ -202,7 +231,7 @@
         /// <param name="view">The view to add.</param>
         public void AddView(ModelSqlView view) {
             if ((object)view == null) { throw new ArgumentNullException(nameof(view)); }
-            this.Views[view.Name] = view;
+            this.Views.Add(view);
         }
 
         /// <summary>
@@ -211,7 +240,7 @@
         /// <param name="procedure">The procedure to add.</param>
         public void AddProcedure(ModelSqlProcedure procedure) {
             if ((object)procedure == null) { throw new ArgumentNullException(nameof(procedure)); }
-            this.Procedures[procedure.Name] = procedure;
+            this.Procedures.Add(procedure);
         }
 
         /// <summary>
@@ -220,7 +249,7 @@
         /// <param name="synonym">the new item</param>
         public void AddSynonym(ModelSqlSynonym synonym) {
             if ((object)synonym == null) { throw new ArgumentNullException(nameof(synonym)); }
-            this.Synonyms[synonym.Name] = synonym;
+            this.Synonyms.Add(synonym);
         }
 
         /// <summary>
@@ -228,7 +257,7 @@
         /// </summary>
         /// <param name="tableType">the new item</param>
         public void AddTableType(ModelSqlTableType tableType) {
-            this._TableTypes[tableType.Name] = tableType;
+            this._TableTypes.Add(tableType);
         }
 
         /// <summary>

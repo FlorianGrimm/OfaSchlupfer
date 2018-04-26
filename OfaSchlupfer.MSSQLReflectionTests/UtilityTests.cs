@@ -21,8 +21,8 @@
             Assert.True(act.Schemas.Count > 0, "Schemas");
             Assert.True(act.Types.Count > 0, "Types");
             Assert.True(act.Tables.Count > 0, "Tables");
-            Assert.True(act.Tables.Values.FirstOrDefault().Columns.Count > 0, "Columns");
-            foreach (var column in act.Tables.Values.FirstOrDefault().Columns) {
+            Assert.True(act.Tables.FirstOrDefault().Columns.Count > 0, "Columns");
+            foreach (var column in act.Tables.FirstOrDefault().Columns) {
                 Assert.NotNull(column.SqlType); //, "no SqlType in column " + column.Name.ToString());
             }
         }

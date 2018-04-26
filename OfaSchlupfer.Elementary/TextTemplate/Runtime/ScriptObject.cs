@@ -133,7 +133,7 @@ namespace OfaSchlupfer.TextTemplate.Runtime {
         /// <param name="name">The name of the member.</param>
         /// <returns>The value or default{T} is the value is different. Note that this method will override the value in this instance if the value doesn't match the type {T} </returns>
         public T GetSafeValue<T>(string name) {
-            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (name is null) throw new ArgumentNullException(nameof(name));
             var obj = this[name];
             // If value is null, the property does no exist, 
             // so we can safely return immediately with the default value

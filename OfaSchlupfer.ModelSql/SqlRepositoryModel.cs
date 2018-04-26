@@ -83,7 +83,7 @@
 
         public override ModelSchema GetModelSchema(MetaModelBuilder metaModelBuilder, ModelErrors errors) {
             var result = this.ModelSchema;
-            if ((object)result == null) {
+            if (result is null) {
                 var modelDatabase = this.ModelDatabase;
                 if (modelDatabase is null) {
                     var utility = new MSSQLReflection.Utility() { ConnectionString = this.ConnectionString.Url };

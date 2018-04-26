@@ -136,7 +136,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="name">the name to convert</param>
         /// <returns>a SqlName or null</returns>
         public static SqlName From(SchemaObjectName name) {
-            if (name == null) { return null; }
+            if (name is null) { return null; }
             SqlName result = null;
             if (name.ServerIdentifier != null) { result = new SqlName(result, name.ServerIdentifier.Value, ObjectLevel.Server); }
             if ((name.DatabaseIdentifier != null) || (result != null)) { result = new SqlName(result, (name.DatabaseIdentifier?.Value) ?? string.Empty, ObjectLevel.Database); }
@@ -151,7 +151,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="name">the name to convert</param>
         /// <returns>a SqlName or null</returns>
         public static SqlName From(ChildObjectName name) {
-            if (name == null) { return null; }
+            if (name is null) { return null; }
             SqlName result = null;
             if (name.ServerIdentifier != null) { result = new SqlName(result, name.ServerIdentifier.Value, ObjectLevel.Server); }
             if ((name.DatabaseIdentifier != null) || (result != null)) { result = new SqlName(result, (name.DatabaseIdentifier?.Value) ?? string.Empty, ObjectLevel.Database); }
@@ -369,7 +369,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         /// <inheritdoc/>
         public bool Equals(SqlName other) {
-            if ((object)other == null) { return false; }
+            if (other is null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
             var tpn = ((object)this.Parent == null);
             var opn = ((object)other.Parent == null);

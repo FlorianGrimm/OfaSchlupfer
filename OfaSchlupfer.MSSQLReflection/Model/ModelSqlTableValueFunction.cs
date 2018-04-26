@@ -37,9 +37,11 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
+#if weichei
         public override void AddToParent() {
             throw new NotImplementedException();
         }
+#endif
 
         /// <summary>
         /// a equals b
@@ -67,9 +69,8 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         /// <inheritdoc/>
         public bool Equals(ModelSqlTableValueFunction other) {
-            if ((object)other == null) { return false; }
+            if (other is null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
-            ((object)null).ToString();
             return (this.Name == other.Name)
                 && (string.Equals(this.Definition, other.Definition, StringComparison.Ordinal))
                 ;

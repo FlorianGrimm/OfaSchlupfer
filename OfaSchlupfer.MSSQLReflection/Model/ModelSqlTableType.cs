@@ -18,6 +18,12 @@
         , IEquatable<ModelSqlTableType>
         , IScopeNameResolver
         , IModelSqlObjectWithColumns {
+        public static ModelSqlTableType Ensure(ModelSqlSchema modelSqlSchema, string name) {
+            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Schema);
+            return modelSqlSchema.TableTypes.GetValueOrDefault(sqlName)
+                ?? new ModelSqlTableType(modelSqlSchema, name);
+        }
+
         [JsonIgnore]
         private readonly FreezeableOwnedKeyedCollection<ModelSqlTableType, SqlName, ModelSqlColumn> _Columns;
 
@@ -52,7 +58,7 @@
         public ModelSqlTableType(ModelSqlSchema schema, string name)
             : this(schema.GetScope()) {
             this.Name = schema.Name.Child(name, ObjectLevel.Object);
-            this._Schema = schema;
+            this.Schema = schema;
         }
 
         /// <summary>
@@ -66,9 +72,19 @@
         }
 
         [JsonIgnore]
-        public override ModelSqlSchema Owner {
+        public override ModelSqlSchema Schema {
             get => this._Schema;
-            set => this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.TableTypes);
+            set {
+                if (this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.TableTypes)) {
+                    this.Database = value?.Database;
+                }
+            }
+        }
+
+        [JsonIgnore]
+        public override ModelSqlDatabase Database {
+            get => this._Database;
+            set => this.SetOwnerWithChildren(ref this._Database, value, (owner) => owner.TableTypes);
         }
 
         /// <summary>
@@ -77,13 +93,16 @@
         public FreezeableOwnedKeyedCollection<ModelSqlTableType, SqlName, ModelSqlColumn> Columns => this._Columns;
 
         [JsonIgnore]
-        IList<ModelSqlColumn> IModelSqlObjectWithColumns.Columns => this._Columns;
+        IFreezeableOwnedKeyedCollection<SqlName, ModelSqlColumn> IModelSqlObjectWithColumns.Columns => this._Columns;
+
+#if weichei
         /// <summary>
         /// Add this to the parent
         /// </summary>
         public override void AddToParent() {
             this._Schema.AddTableType(this);
         }
+#endif
 
         /// <summary>
         /// Get the current scope
@@ -107,7 +126,7 @@
 
         /// <inheritdoc/>
         public bool Equals(ModelSqlTableType other) {
-            if ((object)other == null) { return false; }
+            if (other is null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
             return (this.Name == other.Name)
                 ;

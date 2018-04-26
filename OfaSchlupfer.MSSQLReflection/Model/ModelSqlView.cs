@@ -10,6 +10,12 @@
         : ModelSqlObjectWithColumns
         , IEquatable<ModelSqlView>
         , IScopeNameResolver {
+        public static ModelSqlView Ensure(ModelSqlSchema modelSqlSchema, string name) {
+            var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Schema);
+            return modelSqlSchema.Views.GetValueOrDefault(sqlName)
+                ?? new ModelSqlView(modelSqlSchema, name);
+        }
+
         private SqlScope _Scope;
 
         /// <summary>
@@ -33,22 +39,33 @@
         public ModelSqlView(ModelSqlSchema schema, string name)
             : this(schema.GetScope()) {
             this.Name = schema.Name.Child(name, ObjectLevel.Object);
-            this._Schema = schema;
+            this.Schema = schema;
         }
-
 
         [JsonIgnore]
-        public override ModelSqlSchema Owner {
+        public override ModelSqlSchema Schema {
             get => this._Schema;
-            set => this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.Views);
+            set {
+                if (this.SetOwnerWithChildren(ref this._Schema, value, (owner) => owner.Views)) {
+                    this.Database = value?.Database;
+                }
+            }
         }
 
+        [JsonIgnore]
+        public override ModelSqlDatabase Database {
+            get => this._Database;
+            set => this.SetOwnerWithChildren(ref this._Database, value, (owner) => owner.Views);
+        }
+
+#if weichei
         /// <summary>
         /// Add this to the parent
         /// </summary>
         public override void AddToParent() {
             this._Schema.AddView(this);
         }
+#endif
 
         /// <summary>
         /// Resolve the name.
@@ -85,7 +102,7 @@
 
         /// <inheritdoc/>
         public bool Equals(ModelSqlView other) {
-            if ((object)other == null) { return false; }
+            if (other is null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
             return (this.Name == other.Name)
                 ;

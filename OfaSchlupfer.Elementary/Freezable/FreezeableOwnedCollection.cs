@@ -25,7 +25,7 @@
             }
             set {
                 this.ThrowIfFrozen();
-                if ((object)value == null) { throw new ArgumentNullException("Items"); }
+                if (value is null) { throw new ArgumentNullException("Items"); }
                 this._Items[index] = value;
                 this._ActionOnInsertSet?.Invoke(this._Owner, value);
             }
@@ -37,7 +37,7 @@
 
         public void Add(TValue item) {
             this.ThrowIfFrozen();
-            if ((object)item == null) { throw new ArgumentNullException(nameof(item)); }
+            if (item is null) { throw new ArgumentNullException(nameof(item)); }
             this._Items.Add(item);
             this._ActionOnInsertSet?.Invoke(this._Owner, item);
         }
@@ -63,7 +63,7 @@
 
         public void Insert(int index, TValue item) {
             this.ThrowIfFrozen();
-            if ((object)item == null) { throw new ArgumentNullException(nameof(item)); }
+            if (item is null) { throw new ArgumentNullException(nameof(item)); }
             this._Items.Insert(index, item);
             this._ActionOnInsertSet?.Invoke(this._Owner, item);
         }
@@ -94,6 +94,6 @@
             }
         }
 
-        public bool IsFrozen() => (_IsFrozen == 1);
+        public bool IsFrozen() => (this._IsFrozen == 1);
     }
 }

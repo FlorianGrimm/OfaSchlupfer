@@ -75,7 +75,7 @@ namespace OfaSchlupfer.CollaborationTests {
                     var modelSchemaTarget = modelRepositoryTarget.GetModelSchema(metaModelBuilder, errors);
                     Assert.NotNull(modelSchemaTarget);
                     
-                    if (errors.HasErrors()) { output.WriteLine(errors.ToString()); }
+                    if (errors.HasErrors()) { this.output.WriteLine(errors.ToString()); }
                     Assert.False(errors.HasErrors());
 
                     Assert.NotNull(modelSchemaTarget);
@@ -95,7 +95,7 @@ namespace OfaSchlupfer.CollaborationTests {
                     mappingModelBuilder.Comment = "Mapping_OData_SQL_ProjectOnlinemetadata_Test";
                     mappingModelBuilder.Build(errors);
 
-                    if (errors.HasErrors()) { output.WriteLine(errors.ToString()); }
+                    if (errors.HasErrors()) { this.output.WriteLine(errors.ToString()); }
                     Assert.False(errors.HasErrors());
 
                     foreach (var modelEntityTarget in modelRepositoryTarget.ModelSchema.Entities) {
@@ -104,7 +104,11 @@ namespace OfaSchlupfer.CollaborationTests {
                     }
 
                     foreach (var modelComplexTypesTarget in modelRepositoryTarget.ModelSchema.ComplexTypes) {
-                        Assert.True(modelComplexTypesTarget.Properties.Count > 0);
+                        if (modelComplexTypesTarget.Properties.Count == 0) {
+                            var message = $"{modelComplexTypesTarget.Name} has no properties";
+                            this.output.WriteLine(message);
+                            Assert.Equal("Error", message);
+                        }
                     }
                 }
 
@@ -119,7 +123,7 @@ namespace OfaSchlupfer.CollaborationTests {
                         metaModelBuilder,
                         errors
                         );
-                    if (errors.HasErrors()) { output.WriteLine(errors.ToString()); }
+                    if (errors.HasErrors()) { this.output.WriteLine(errors.ToString()); }
                     Assert.False(errors.HasErrors());
                 }
                 var cred = new SharePointOnlineServiceClientCredentials(repCSProjectServer, null);
@@ -171,7 +175,7 @@ namespace OfaSchlupfer.CollaborationTests {
                         string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\Mapping_OData_SQL_ProjectOnlinemetadata_Test-target-ModelDatabase.json");
                         System.IO.File.WriteAllText(outputPath, schemaAsJson);
                     } catch (Exception error) {
-                        output.WriteLine(error.ToString());
+                        this.output.WriteLine(error.ToString());
                         throw;
                     }
                 }

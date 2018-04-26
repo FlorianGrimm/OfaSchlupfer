@@ -149,7 +149,7 @@ namespace OfaSchlupfer.TextTemplate.Functions {
         /// ```
         /// </remarks>
         public static string Typeof(object value) {
-            if (value == null) {
+            if (value is null) {
                 return null;
             }
             var type = value.GetType();

@@ -80,13 +80,13 @@ namespace OfaSchlupfer.TextTemplate.Syntax {
         }
 
         public virtual bool Equals(ScriptVariable other) {
-            if (ReferenceEquals(null, other)) return false;
+            if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
             return string.Equals(Name, other.Name) && Scope == other.Scope;
         }
 
         public override bool Equals(object obj) {
-            if (ReferenceEquals(null, obj)) return false;
+            if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
             return obj is ScriptVariable && Equals((ScriptVariable) obj);
         }

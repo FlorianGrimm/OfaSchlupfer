@@ -15,9 +15,9 @@ namespace OfaSchlupfer.MSSQLReflection.SqlCode {
     internal class AnalyseVisitor
         : SqlConcreteFragmentVisitor {
         private readonly SqlCodeScopeReference currentScopeRef;
-        private SqlCodeScope _DBScope;
+        private readonly SqlCodeScope _DBScope;
         private SqlName _sqlSysName;
-        private List<AnalyseResult> _AnalyseResults;
+        private readonly List<AnalyseResult> _AnalyseResults;
 
         public Microsoft.Extensions.Logging.ILogger Logger { get; set; }
 

@@ -31,9 +31,9 @@
             if ((object)func != null) {
                 result = func();
             }
-            if ((object)result == null) {
+            if (result is null) {
                 result = dynamicResolution(location);
-                if ((object)result == null) {
+                if (result is null) {
                     result = next.Resolve(location);
                 }
             }

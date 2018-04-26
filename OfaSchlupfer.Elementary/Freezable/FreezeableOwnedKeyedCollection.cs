@@ -3,10 +3,21 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Text;
+    public interface IFreezeableOwnedKeyedCollection<TKey, TValue>
+        : IFreezeable
+        , IList<TValue>
+        where TKey : IEquatable<TKey>
+        where TValue : class {
+        void AddRange(IEnumerable<TValue> items);
+        List<TValue> FindByKey(TKey key);
+
+        TValue GetValueOrDefault(TKey key, TValue defaultValue = default(TValue));
+    }
 
     public sealed class FreezeableOwnedKeyedCollection<TOwner, TKey, TValue>
         : IFreezeable
         , IList<TValue>
+        , IFreezeableOwnedKeyedCollection<TKey, TValue>
         where TKey : IEquatable<TKey>
         where TValue : class {
         private readonly TOwner _Owner;
@@ -38,7 +49,7 @@
             }
             set {
                 this.ThrowIfFrozen();
-                if ((object)value == null) { throw new ArgumentNullException("Items"); }
+                if (value is null) { throw new ArgumentNullException("Items"); }
                 this._Items[index] = value;
                 this._ActionOnInsertSet?.Invoke(this._Owner, value);
             }
@@ -60,7 +71,7 @@
 
         public void Add(TValue item) {
             this.ThrowIfFrozen();
-            if ((object)item == null) { throw new ArgumentNullException(nameof(item)); }
+            if (item is null) { throw new ArgumentNullException(nameof(item)); }
             this._Items.Add(item);
             this._ActionOnInsertSet?.Invoke(this._Owner, item);
         }
@@ -86,7 +97,7 @@
 
         public void Insert(int index, TValue item) {
             this.ThrowIfFrozen();
-            if ((object)item == null) { throw new ArgumentNullException(nameof(item)); }
+            if (item is null) { throw new ArgumentNullException(nameof(item)); }
             this._Items.Insert(index, item);
             this._ActionOnInsertSet?.Invoke(this._Owner, item);
         }
@@ -127,9 +138,8 @@
                 }
                 {
                     var result = new List<TValue>();
-                    TValue item;
                     if ((object)key != null) {
-                        if (this._ItemsByKey.TryGetValue(key, out item)) {
+                        if (this._ItemsByKey.TryGetValue(key, out var item)) {
                             result.Add(item);
                         }
                     }
@@ -138,7 +148,7 @@
             }
         }
 
-        public TValue GetValueOrDefault(TKey key, TValue defaultValue=default(TValue)) {
+        public TValue GetValueOrDefault(TKey key, TValue defaultValue = default(TValue)) {
             if (this._IsFrozen == 0) {
                 if ((object)key != null) {
                     var items = this._Items.ToArray();
@@ -160,9 +170,8 @@
                     this._ItemsByKey = dict;
                 }
                 {
-                    TValue item;
                     if ((object)key != null) {
-                        if (this._ItemsByKey.TryGetValue(key, out item)) {
+                        if (this._ItemsByKey.TryGetValue(key, out var item)) {
                             return item;
                         }
                     }
@@ -184,6 +193,6 @@
             }
         }
 
-        public bool IsFrozen() => (_IsFrozen == 1);
+        public bool IsFrozen() => (this._IsFrozen == 1);
     }
 }

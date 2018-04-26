@@ -57,8 +57,7 @@ namespace OfaSchlupfer.SPO {
 
             public bool TryGetValue(string domainname, out FederationProviderInfo value) {
                 lock (this.m_lock) {
-                    FederationProviderInfoCacheEntry federationProviderInfoCacheEntry = default(FederationProviderInfoCacheEntry);
-                    if (this.m_cache.TryGetValue(domainname, out federationProviderInfoCacheEntry) && federationProviderInfoCacheEntry.Expires > DateTime.UtcNow) {
+                    if (this.m_cache.TryGetValue(domainname, out var federationProviderInfoCacheEntry) && federationProviderInfoCacheEntry.Expires > DateTime.UtcNow) {
                         value = federationProviderInfoCacheEntry.Value;
                         return true;
                     }
@@ -317,7 +316,7 @@ namespace OfaSchlupfer.SPO {
                 }
             }
             try {
-                HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
+                var httpWebResponse = (HttpWebResponse)(await httpWebRequest.GetResponseAsync());
                 if (httpWebResponse == null) {
                     this._Logger?.LogError("Unexpected response for POST request to {0}", url);
                     throw new InvalidOperationException();
@@ -346,7 +345,7 @@ namespace OfaSchlupfer.SPO {
         }
 
         private Exception HandleWebException(WebException webException) {
-            HttpWebResponse httpWebResponse = webException.Response as HttpWebResponse;
+            var httpWebResponse = (HttpWebResponse)webException.Response;
             if (httpWebResponse != null && httpWebResponse.ContentType != null && httpWebResponse.ContentType.IndexOf("application/soap+xml", StringComparison.OrdinalIgnoreCase) >= 0) {
                 try {
                     using (TextReader textReader = new StreamReader(httpWebResponse.GetResponseStream())) {
@@ -410,8 +409,7 @@ namespace OfaSchlupfer.SPO {
         }
 
         private static int MapPartnerSoapFault(string code) {
-            int result;
-            if (IdcrlAuth.s_partnerSoapErrorMap.TryGetValue(code, out result)) {
+            if (IdcrlAuth.s_partnerSoapErrorMap.TryGetValue(code, out var result)) {
                 return result;
             } else {
                 return -2147186451;
@@ -419,8 +417,7 @@ namespace OfaSchlupfer.SPO {
         }
 
         private static Exception CreateIdcrlException(int hr) {
-            string resourceId = default(string);
-            if (!IdcrlErrorCodes.TryGetErrorStringId(hr, out resourceId)) {
+            if (!IdcrlErrorCodes.TryGetErrorStringId(hr, out var resourceId)) {
                 resourceId = "PPCRL_REQUEST_E_UNKNOWN";
             }
             return new IdcrlException(resourceId, hr);
@@ -443,15 +440,14 @@ namespace OfaSchlupfer.SPO {
         }
 
         private async Task<FederationProviderInfo> GetFederationProviderInfoAsync(string domainname) {
-            FederationProviderInfo federationProviderInfo = default(FederationProviderInfo);
-            if (IdcrlAuth.s_FederationProviderInfoCache.TryGetValue(domainname, out federationProviderInfo)) {
-                this._Logger?.LogDebug("Get federation provider information for {0} from cache. UserRealmServiceUrl={1}, SecurityTokenServiceUrl={2}, FederationTokenIssuer={3}", domainname, (federationProviderInfo == null) ? null : federationProviderInfo.UserRealmServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.SecurityTokenServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.FederationTokenIssuer);
+            if (IdcrlAuth.s_FederationProviderInfoCache.TryGetValue(domainname, out var federationProviderInfo)) {
+                this._Logger?.LogDebug("Get federation provider information for {0} from cache. UserRealmServiceUrl={1}, SecurityTokenServiceUrl={2}, FederationTokenIssuer={3}", domainname, federationProviderInfo?.UserRealmServiceUrl, federationProviderInfo?.SecurityTokenServiceUrl, federationProviderInfo?.FederationTokenIssuer);
                 return federationProviderInfo;
             }
             {
                 federationProviderInfo = await this.RequestFederationProviderInfoAsync(domainname);
                 IdcrlAuth.s_FederationProviderInfoCache.Put(domainname, federationProviderInfo);
-                this._Logger?.LogWarning("Get federation provider information for {0} and put it in cache. UserRealmServcieUrl={1}, SecurityTokenServiceUrl={2}, FederationTokenIssuer={3}", domainname, (federationProviderInfo == null) ? null : federationProviderInfo.UserRealmServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.SecurityTokenServiceUrl, (federationProviderInfo == null) ? null : federationProviderInfo.FederationTokenIssuer);
+                this._Logger?.LogWarning("Get federation provider information for {0} and put it in cache. UserRealmServcieUrl={1}, SecurityTokenServiceUrl={2}, FederationTokenIssuer={3}", domainname, federationProviderInfo?.UserRealmServiceUrl, federationProviderInfo?.SecurityTokenServiceUrl, federationProviderInfo?.FederationTokenIssuer);
                 return federationProviderInfo;
             }
         }
@@ -504,10 +500,11 @@ namespace OfaSchlupfer.SPO {
                     XElement elementAtPath3 = IdcrlUtility.GetElementAtPath(item, IdcrlMessageConstants.URL, IdcrlMessageConstants.ENTITYID);
                     if (elementAtPath != null && elementAtPath2 != null && elementAtPath3 != null) {
                         this._Logger?.LogError("Find federation provider information for federation provider domain name {0}. UserRealmServiceUrl={1}, SecurityTokenServiceUrl={2}, FederationTokenIssuer={3}", fpDomainName, elementAtPath.Value, elementAtPath2.Value, elementAtPath3.Value);
-                        FederationProviderInfo federationProviderInfo = new FederationProviderInfo();
-                        federationProviderInfo.UserRealmServiceUrl = elementAtPath.Value;
-                        federationProviderInfo.SecurityTokenServiceUrl = elementAtPath2.Value;
-                        federationProviderInfo.FederationTokenIssuer = elementAtPath3.Value;
+                        var federationProviderInfo = new FederationProviderInfo {
+                            UserRealmServiceUrl = elementAtPath.Value,
+                            SecurityTokenServiceUrl = elementAtPath2.Value,
+                            FederationTokenIssuer = elementAtPath3.Value
+                        };
                         return federationProviderInfo;
                     }
                     this._Logger?.LogError("Cannot get the user realm service url or security token service url for federation provider {0}", fpDomainName);
@@ -525,7 +522,7 @@ namespace OfaSchlupfer.SPO {
             if (this.m_executingWebRequest != null) {
                 this.m_executingWebRequest(this, new WebRequestEventArgs(httpWebRequest));
             }
-            HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
+            var httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
             if (httpWebResponse == null) {
                 this._Logger?.LogError("Unexpected response for GET request to URL {0}", url);
                 throw new InvalidOperationException();

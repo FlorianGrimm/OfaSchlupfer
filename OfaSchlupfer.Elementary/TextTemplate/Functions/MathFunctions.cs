@@ -30,7 +30,7 @@ namespace OfaSchlupfer.TextTemplate.Functions {
         /// ```
         /// </remarks>
         public static object Abs(TemplateContext context, SourceSpan span, object value) {
-            if (value == null) {
+            if (value is null) {
                 return null;
             }
 
@@ -151,7 +151,7 @@ namespace OfaSchlupfer.TextTemplate.Functions {
         /// ```
         /// </remarks>
         public static string Format(TemplateContext context, SourceSpan span, object value, string format) {
-            if (value == null) {
+            if (value is null) {
                 return string.Empty;
             }
             format = format ?? string.Empty;

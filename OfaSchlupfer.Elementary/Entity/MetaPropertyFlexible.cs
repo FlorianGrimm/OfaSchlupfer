@@ -59,8 +59,8 @@
         /// <returns>an error message or null.</returns>
         public virtual string Validate(object value, bool validateOrThrow) {
             if ((object)this._PropertyType != null) {
-                if ((object)value == null) {
-                    if (this._PropertyType.IsValueType && (Nullable.GetUnderlyingType(this._PropertyType) == null)) {
+                if (value is null) {
+                    if (this._PropertyType.IsValueType && (Nullable.GetUnderlyingType(this._PropertyType) is null)) {
                         var msg = $"${this.Name} is not nullable.";
                         if (validateOrThrow) {
                             return msg;
@@ -97,7 +97,7 @@
         private int _Index;
         private readonly IMetaProperty _ChainedMetaProperty;
         public MetaPropertyFlexibleChained(int index, IMetaProperty chainedMetaProperty) {
-            if ((object)chainedMetaProperty == null) { throw new ArgumentNullException(nameof(chainedMetaProperty)); }
+            if (chainedMetaProperty is null) { throw new ArgumentNullException(nameof(chainedMetaProperty)); }
             this._Index = index;
             this._ChainedMetaProperty = chainedMetaProperty;
         }
@@ -134,7 +134,7 @@
                 this._MetaEntity = value;
 #warning thinkofagain
                 if (this._ChainedMetaProperty != null) {
-                    if (this._ChainedMetaProperty.MetaEntity == null) {
+                    if (this._ChainedMetaProperty.MetaEntity is null) {
                         this._ChainedMetaProperty.MetaEntity = value;
                     }
                 }

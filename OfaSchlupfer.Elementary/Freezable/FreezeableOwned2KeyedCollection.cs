@@ -29,8 +29,8 @@
             IEqualityComparer<TKey2> keyComparer2,
             Action<TOwner, TValue> actionOnInsertSet
             ) {
-            if ((object)getKey1 == null) { throw new ArgumentNullException(nameof(getKey1)); }
-            if ((object)getKey2 == null) { throw new ArgumentNullException(nameof(getKey2)); }
+            if (getKey1 is null) { throw new ArgumentNullException(nameof(getKey1)); }
+            if (getKey2 is null) { throw new ArgumentNullException(nameof(getKey2)); }
 
             this._Items = new List<TValue>();
             this._Owner = owner;
@@ -47,7 +47,7 @@
             }
             set {
                 this.ThrowIfFrozen();
-                if ((object)value == null) { throw new ArgumentNullException("Items"); }
+                if (value is null) { throw new ArgumentNullException("Items"); }
                 this._Items[index] = value;
                 this._ActionOnInsertSet?.Invoke(this._Owner, value);
             }
@@ -59,7 +59,7 @@
 
         public void Add(TValue item) {
             this.ThrowIfFrozen();
-            if ((object)item == null) { throw new ArgumentNullException(nameof(item)); }
+            if (item is null) { throw new ArgumentNullException(nameof(item)); }
             this._Items.Add(item);
             this._ActionOnInsertSet?.Invoke(this._Owner, item);
         }
@@ -85,7 +85,7 @@
 
         public void Insert(int index, TValue item) {
             this.ThrowIfFrozen();
-            if ((object)item == null) { throw new ArgumentNullException(nameof(item)); }
+            if (item is null) { throw new ArgumentNullException(nameof(item)); }
             this._Items.Insert(index, item);
             this._ActionOnInsertSet?.Invoke(this._Owner, item);
         }
@@ -117,13 +117,12 @@
                 return result;
             } else {
                 if ((object)this._ItemsByKey1 == null) {
-                    buildDictionaries();
+                    BuildDictionaries();
                 }
                 {
                     var result = new List<TValue>();
-                    TValue item;
                     if ((object)key != null) {
-                        if (this._ItemsByKey1.TryGetValue(key, out item)) {
+                        if (this._ItemsByKey1.TryGetValue(key, out var item)) {
                             result.Add(item);
                         }
                     }
@@ -147,13 +146,12 @@
                 return result;
             } else {
                 if ((object)this._ItemsByKey1 == null) {
-                    buildDictionaries();
+                    BuildDictionaries();
                 }
                 {
                     var result = new List<TValue>();
-                    TValue item;
                     if ((object)key != null) {
-                        if (this._ItemsByKey2.TryGetValue(key, out item)) {
+                        if (this._ItemsByKey2.TryGetValue(key, out var item)) {
                             result.Add(item);
                         }
                     }
@@ -162,7 +160,7 @@
             }
         }
 
-        private void buildDictionaries() {
+        private void BuildDictionaries() {
             var count = this._Items.Count;
             var dict1 = new Dictionary<TKey1, TValue>(count, this._KeyComparer1);
             var dict2 = new Dictionary<TKey2, TValue>(this._Items.Count, this._KeyComparer2);
@@ -193,6 +191,6 @@
             }
         }
 
-        public bool IsFrozen() => (_IsFrozen == 1);
+        public bool IsFrozen() => (this._IsFrozen == 1);
     }
 }

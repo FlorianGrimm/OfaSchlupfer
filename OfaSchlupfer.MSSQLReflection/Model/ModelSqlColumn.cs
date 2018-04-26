@@ -19,6 +19,12 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         , IEquatable<ModelSqlColumn>
         , IScopeNameResolver
         , IModelScalarTypeFacade {
+        public static ModelSqlColumn Ensure(IModelSqlObjectWithColumns objectWithColumns, string name) {
+            var sqlName = objectWithColumns.Name.Child(name, ObjectLevel.Schema);
+            return objectWithColumns.Columns.GetValueOrDefault(sqlName)
+                ?? new ModelSqlColumn(objectWithColumns, name);
+        }
+
         [JsonIgnore]
         private SqlScope _Scope;
 
@@ -93,14 +99,15 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public ModelScalarType SuggestType(MetaModelBuilder metaModelBuilder) {
             //ModelTypeScalar scalarType = this.Type?.GetScalarType();
             ModelSematicScalarType scalarType = this.SqlType.GetScalarType();
-            var result = new ModelScalarType();
-            result.Name = scalarType.Name.GetQFullName("[", 2);
-            result.ExternalName = scalarType.GetCondensed();
-            result.MaxLength = this.MaxLength;
-            result.Scale = this.Scale;
-            result.Precision = this.Precision;
-            result.Nullable = this.Nullable;
-            result.Type = scalarType.GetClrType();
+            var result = new ModelScalarType {
+                Name = scalarType.Name.GetQFullName("[", 2),
+                ExternalName = scalarType.GetCondensed(),
+                MaxLength = this.MaxLength,
+                Scale = this.Scale,
+                Precision = this.Precision,
+                Nullable = this.Nullable,
+                Type = scalarType.GetClrType()
+            };
             return result;
         }
 
@@ -111,6 +118,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
+#pragma warning disable IDE1006 // Naming Styles
 
         [JsonProperty]
         public int ColumnId { get => this._ColumnId; set => this.SetValueProperty(ref this._ColumnId, value); }
@@ -215,7 +223,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         /// <inheritdoc/>
         public bool Equals(ModelSqlColumn other) {
-            if ((object)other == null) { return false; }
+            if (other is null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
             return (this.Name == other.Name)
                 && (this.ColumnId == other.ColumnId)

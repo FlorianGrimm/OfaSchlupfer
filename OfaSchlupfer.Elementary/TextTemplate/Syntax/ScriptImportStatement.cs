@@ -8,7 +8,7 @@ namespace OfaSchlupfer.TextTemplate.Syntax {
 
         public override object Evaluate(TemplateContext context) {
             var value = context.Evaluate(Expression);
-            if (value == null) {
+            if (value is null) {
                 return null;
             }
             var scriptObject = value as ScriptObject;
