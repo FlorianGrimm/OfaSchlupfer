@@ -162,15 +162,6 @@
         [JsonIgnore]
         public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSynonym> Synonyms => this._Synonyms;
 
-        ///// <summary>
-        ///// Add this to parent.
-        ///// </summary>
-        ///// <returns>this</returns>
-        //public ModelSqlDatabase AddToParent() {
-        //    this._SqlServer.AddDatabase(this);
-        //    return this;
-        //}
-
         /// <summary>
         /// Resolve the name.
         /// </summary>

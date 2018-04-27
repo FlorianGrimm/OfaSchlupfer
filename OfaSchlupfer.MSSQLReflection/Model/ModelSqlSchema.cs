@@ -110,16 +110,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         public ModelSqlDatabase Database { get => this._Database; set => this.SetOwnerWithChildren(ref this._Database, value, (owner) => owner.Schemas); }
 
-
-        ///// <summary>
-        ///// Add this to the parent
-        ///// </summary>
-        ///// <returns>this.</returns>
-        //public ModelSqlSchema AddToParent() {
-        //    this._Database.AddSchema(this);
-        //    return this;
-        //}
-
         public void AddType(ModelSqlType modelSqlType) {
             // this._Types[modelSqlType.Name] = modelSqlType;
             this._Types.Add(modelSqlType);

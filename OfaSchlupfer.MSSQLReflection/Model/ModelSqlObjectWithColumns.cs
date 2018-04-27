@@ -21,11 +21,20 @@
         [JsonIgnore]
         protected FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlColumn> _Columns;
 
+        [JsonIgnore]
+        protected FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlIndex> _Indexes;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlObjectWithColumns"/> class.
         /// </summary>
         public ModelSqlObjectWithColumns() {
             this._Columns = new FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlColumn>(
+                this,
+                (item) => item.Name,
+                SqlNameEqualityComparer.Level1,
+                (owner, item) => item.Owner = owner
+                );
+            this._Indexes = new FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlIndex>(
                 this,
                 (item) => item.Name,
                 SqlNameEqualityComparer.Level1,
@@ -60,6 +69,12 @@
         [JsonIgnore]
         IFreezeableOwnedKeyedCollection<SqlName, ModelSqlColumn> IModelSqlObjectWithColumns.Columns => this._Columns;
 
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlIndex> Indexes => this._Indexes;
+
+        [JsonIgnore]
+        IFreezeableOwnedKeyedCollection<SqlName, ModelSqlIndex> IModelSqlObjectWithColumns.Indexes => this._Indexes;
+
         /// <summary>
         /// Resolve the name.
         /// </summary>
@@ -67,31 +82,6 @@
         /// <param name="context">the resolver context.</param>
         /// <returns>the named object or null.</returns>
         public virtual object ResolveObject(SqlName name, IScopeNameResolverContext context) {
-            for (int idx = 0; idx < this.Columns.Count; idx++) {
-                var column = this.Columns[idx];
-                if (column.Name.Equals(name)) {
-                    return column;
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Add the column
-        /// </summary>
-        /// <param name="modelSqlColumn">the column to add</param>
-        public void AddColumn(ModelSqlColumn modelSqlColumn) {
-            if (modelSqlColumn != null) {
-                this.Columns.Add(modelSqlColumn);
-            }
-        }
-
-        /// <summary>
-        /// Get the column by name
-        /// </summary>
-        /// <param name="name">the name to find</param>
-        /// <returns>the column or null.</returns>
-        public ModelSqlColumn GetColumnByName(SqlName name) {
             for (int idx = 0; idx < this.Columns.Count; idx++) {
                 var column = this.Columns[idx];
                 if (column.Name.Equals(name)) {

@@ -70,15 +70,6 @@
             set => this.SetOwnerWithChildren(ref this._Database, value, (owner) => owner.Synonyms);
         }
 
-#if weichei
-        /// <summary>
-        /// Add this to the parent
-        /// </summary>
-        public override void AddToParent() {
-            this._Schema.AddSynonym(this);
-        }
-#endif
-
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
 
         /// <summary>

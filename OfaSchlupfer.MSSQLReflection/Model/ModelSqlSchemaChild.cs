@@ -66,12 +66,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
-#if weichei
-        /// <summary>
-        /// Add this to the parent
-        /// </summary>
-        public abstract void AddToParent();
-#endif
         /// <inheritdoc/>
         public override int GetHashCode() => this.Name.GetHashCode();
 

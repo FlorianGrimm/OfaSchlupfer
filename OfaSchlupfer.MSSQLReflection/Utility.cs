@@ -150,13 +150,8 @@ namespace OfaSchlupfer.MSSQLReflection {
                         var srcTableType_Columns = srcTableType.Columns;
                         if (srcTableType_Columns != null) {
                             foreach (var srcColumn in srcTableType_Columns) {
+                                var foundColumn = dstTableType.Columns.GetValueOrDefault(new SqlName(dstTableType.Name, srcColumn.name, ObjectLevel.Child));
                                 var dstColumn = ConvertSysToModelColumn(typeById, dstTableType, srcColumn);
-                                ModelSqlColumn foundColumn = dstTableType.GetColumnByName(dstColumn.Name);
-                                if ((foundColumn == null) || (foundColumn != dstColumn)) {
-                                    dstColumn.AddToParent();
-                                } else {
-                                    dstColumn = foundColumn;
-                                }
                             }
                         }
 
@@ -176,14 +171,9 @@ namespace OfaSchlupfer.MSSQLReflection {
                         var srcTable_Columns = srcTable.Columns;
                         if (srcTable_Columns != null) {
                             foreach (var srcColumn in srcTable_Columns) {
-#warning
-                                var dstColumn = ConvertSysToModelColumn(typeById, dstTable, srcColumn);
+#warning here
                                 //var foundColumn = dstTable.GetColumnByName(dstColumn.Name);
-                                //if ((foundColumn == null) || (foundColumn != dstColumn)) {
-                                //    dstColumn.AddToParent();
-                                //} else {
-                                //    dstColumn = foundColumn;
-                                //}
+                                var dstColumn = ConvertSysToModelColumn(typeById, dstTable, srcColumn);
                             }
                         }
 
@@ -198,9 +188,9 @@ namespace OfaSchlupfer.MSSQLReflection {
                                                 throw new NotImplementedException("is_included_column");
                                             } else {
                                                 var sqlColumn = srcTable_Columns[indexColumn.column_id];
-                                                var dstColumn = dstTable.GetColumnByName(new SqlName(null, sqlColumn.name, ObjectLevel.Child));
+                                                var dstColumn = dstTable.Columns.GetValueOrDefault(new SqlName(null, sqlColumn.name, ObjectLevel.Child));
                                                 dstColumn.Nullable = false;
-                                                dstTable.Name
+                                                //dstTable.Name
                                             }
                                         }
                                     }
@@ -229,16 +219,12 @@ namespace OfaSchlupfer.MSSQLReflection {
                         var dstView = ModelSqlView.Ensure(modelSqlSchema, srcView.name);
 
                         // srcTable.Columns
-                        var srcTable_Columns = srcView.Columns;
-                        if (srcTable_Columns != null) {
-                            foreach (var srcColumn in srcTable_Columns) {
+                        var srcView_Columns = srcView.Columns;
+                        if (srcView_Columns != null) {
+                            foreach (var srcColumn in srcView_Columns) {
+                                var foundColumn = dstView.Columns.GetValueOrDefault(new SqlName(dstView.Name, srcColumn.name, ObjectLevel.Child));
                                 var dstColumn = ConvertSysToModelColumn(typeById, dstView, srcColumn);
-                                var foundColumn = dstView.GetColumnByName(dstColumn.Name);
-                                if ((foundColumn == null) || (foundColumn != dstColumn)) {
-                                    dstColumn.AddToParent();
-                                } else {
-                                    dstColumn = foundColumn;
-                                }
+#warning here
                             }
                         }
 

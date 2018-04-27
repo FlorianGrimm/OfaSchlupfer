@@ -75,15 +75,6 @@
             set => this.SetOwnerWithChildren(ref this._Database, value, (owner) => owner.Tables);
         }
 
-#if weichei
-        /// <summary>
-        /// Add this to the parent
-        /// </summary>
-        public override void AddToParent() {
-            this._Schema.AddTable(this);
-        }
-#endif
-
         /// <summary>
         /// Get the current scope
         /// </summary>

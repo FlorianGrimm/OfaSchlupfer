@@ -2,13 +2,11 @@
 
 namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
-    using System.Linq;
 
     using Newtonsoft.Json;
 
     using OfaSchlupfer.Freezable;
     using OfaSchlupfer.Model;
-    using OfaSchlupfer.SqlAccess;
 
     /// <summary>
     /// column
@@ -111,6 +109,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             return result;
         }
 
+        [JsonIgnore]
         public IModelSqlObjectWithColumns Owner {
             get => this._Owner;
             set => this.SetOwnerWithChildren(ref this._Owner, value, (owner) => owner.Columns);
@@ -190,15 +189,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <returns>the named object or null.</returns>
         public object ResolveObject(SqlName name, IScopeNameResolverContext context) {
             return null;
-        }
-
-        /// <summary>
-        /// Add this to its parent.
-        /// </summary>
-        /// <returns>this</returns>
-        public ModelSqlColumn AddToParent() {
-            this._Owner.AddColumn(this);
-            return this;
         }
 
         /// <summary>

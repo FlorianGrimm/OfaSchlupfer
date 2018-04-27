@@ -18,6 +18,7 @@
         , IEquatable<ModelSqlTableType>
         , IScopeNameResolver
         , IModelSqlObjectWithColumns {
+
         public static ModelSqlTableType Ensure(ModelSqlSchema modelSqlSchema, string name) {
             var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Object);
             return modelSqlSchema.TableTypes.GetValueOrDefault(sqlName)
@@ -26,6 +27,10 @@
 
         [JsonIgnore]
         private readonly FreezeableOwnedKeyedCollection<ModelSqlTableType, SqlName, ModelSqlColumn> _Columns;
+
+
+        [JsonIgnore]
+        private readonly FreezeableOwnedKeyedCollection<ModelSqlTableType, SqlName, ModelSqlIndex> _Indexes;
 
         [JsonIgnore]
         private SqlScope _Scope;
@@ -40,13 +45,19 @@
                 SqlNameEqualityComparer.Level1,
                 (owner, item) => item.Owner = owner
                 );
+            this._Indexes = new FreezeableOwnedKeyedCollection<ModelSqlTableType, SqlName, ModelSqlIndex>(
+                this,
+                (item) => item.Name,
+                SqlNameEqualityComparer.Level1,
+                (owner, item) => item.Owner = owner
+                );
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlTableType"/> class.
         /// </summary>
         /// <param name="scopeSchema">the scope of the owner - schema</param>
-        public ModelSqlTableType(SqlScope scopeSchema) {
+        public ModelSqlTableType(SqlScope scopeSchema) : this() {
             this._Scope = (scopeSchema?.CreateChildScope(this)) ?? (new SqlScope(null, this));
         }
 
@@ -66,7 +77,7 @@
         /// </summary>
         /// <param name="src">Copy source</param>
         public ModelSqlTableType(ModelSqlTableType src)
-            : base() {
+            : this() {
             this.Name = src.Name;
             this.Columns.AddRange(src.Columns);
         }
@@ -95,14 +106,12 @@
         [JsonIgnore]
         IFreezeableOwnedKeyedCollection<SqlName, ModelSqlColumn> IModelSqlObjectWithColumns.Columns => this._Columns;
 
-#if weichei
-        /// <summary>
-        /// Add this to the parent
-        /// </summary>
-        public override void AddToParent() {
-            this._Schema.AddTableType(this);
-        }
-#endif
+
+        [JsonProperty]
+        public FreezeableOwnedKeyedCollection<ModelSqlTableType, SqlName, ModelSqlIndex> Indexes => this._Indexes;
+
+        [JsonIgnore]
+        IFreezeableOwnedKeyedCollection<SqlName, ModelSqlIndex> IModelSqlObjectWithColumns.Indexes => this._Indexes;
 
         /// <summary>
         /// Get the current scope
@@ -147,31 +156,6 @@
 
         /// <inheritdoc/>
         public override string ToString() => this.Name.ToString();
-
-        /// <summary>
-        /// Add the column
-        /// </summary>
-        /// <param name="modelSqlColumn">the column to add</param>
-        public void AddColumn(ModelSqlColumn modelSqlColumn) {
-            if (modelSqlColumn != null) {
-                this.Columns.Add(modelSqlColumn);
-            }
-        }
-
-        /// <summary>
-        /// Get the column by name
-        /// </summary>
-        /// <param name="name">the name to find</param>
-        /// <returns>the column or null.</returns>
-        public ModelSqlColumn GetColumnByName(SqlName name) {
-            for (int idx = 0; idx < this.Columns.Count; idx++) {
-                var column = this.Columns[idx];
-                if (column.Name.Equals(name)) {
-                    return column;
-                }
-            }
-            return null;
-        }
 
         public override ModelSematicScalarType GetScalarType() => null;
     }

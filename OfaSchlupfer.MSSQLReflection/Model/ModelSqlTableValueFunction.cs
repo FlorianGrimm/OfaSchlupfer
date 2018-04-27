@@ -37,12 +37,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
-#if weichei
-        public override void AddToParent() {
-            throw new NotImplementedException();
-        }
-#endif
-
         /// <summary>
         /// a equals b
         /// </summary>

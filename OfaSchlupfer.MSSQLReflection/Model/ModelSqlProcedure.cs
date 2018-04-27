@@ -84,15 +84,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
-#if weichei
-        /// <summary>
-        /// Add this to the parent
-        /// </summary>
-        public override void AddToParent() {
-            this._Schema.AddProcedure(this);
-        }
-#endif
-
         /// <summary>
         /// Resolve the name.
         /// </summary>

@@ -58,15 +58,6 @@
             set => this.SetOwnerWithChildren(ref this._Database, value, (owner) => owner.Views);
         }
 
-#if weichei
-        /// <summary>
-        /// Add this to the parent
-        /// </summary>
-        public override void AddToParent() {
-            this._Schema.AddView(this);
-        }
-#endif
-
         /// <summary>
         /// Resolve the name.
         /// </summary>
