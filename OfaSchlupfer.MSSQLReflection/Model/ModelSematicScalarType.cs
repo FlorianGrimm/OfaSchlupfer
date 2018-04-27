@@ -9,7 +9,8 @@
     /// the scalar type of sql
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{Name}-{SystemDataType}")]
-    public sealed class ModelSematicScalarType : ModelSematicType {
+    public sealed class ModelSematicScalarType 
+        : ModelSematicType {
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSematicScalarType"/> class.
         /// </summary>

@@ -32,34 +32,34 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         private IModelSqlObjectWithColumns _Owner;
 
         [JsonIgnore]
-        private int _ColumnId;
+        private int? _ColumnId;
 
         [JsonIgnore]
-        private short _system_type_id;
+        private short? _system_type_id;
 
         [JsonIgnore]
-        private int _user_type_id;
+        private int? _user_type_id;
 
         [JsonIgnore]
-        private short _MaxLength;
+        private short? _MaxLength;
 
         [JsonIgnore]
-        private byte _Precision;
+        private byte? _Precision;
 
         [JsonIgnore]
-        private byte _Scale;
+        private byte? _Scale;
 
         [JsonIgnore]
         private string _CollationName;
 
         [JsonIgnore]
-        private bool _Nullable;
+        private bool? _Nullable;
 
         [JsonIgnore]
-        private bool _FixedLength;
+        private bool? _FixedLength;
 
         [JsonIgnore]
-        private bool _Unicode;
+        private bool? _Unicode;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlColumn"/> class.
@@ -121,36 +121,36 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 #pragma warning disable IDE1006 // Naming Styles
 
         [JsonProperty]
-        public int ColumnId { get => this._ColumnId; set => this.SetValueProperty(ref this._ColumnId, value); }
+        public int? ColumnId { get => this._ColumnId; set => this.SetValueProperty(ref this._ColumnId, value); }
 
-        [JsonProperty]
-        public short system_type_id { get => this._system_type_id; set => this.SetValueProperty(ref this._system_type_id, value); }
+        [JsonIgnore]
+        public short? system_type_id { get => this._system_type_id; set => this.SetValueProperty(ref this._system_type_id, value); }
 
-        [JsonProperty]
-        public int user_type_id { get => this._user_type_id; set => this.SetValueProperty(ref this._user_type_id, value); }
+        [JsonIgnore]
+        public int? user_type_id { get => this._user_type_id; set => this.SetValueProperty(ref this._user_type_id, value); }
 
-        [JsonProperty]
-        public short MaxLength { get => this._MaxLength; set => this.SetValueProperty(ref this._MaxLength, value); }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public short? MaxLength { get => this._MaxLength; set => this.SetValueProperty(ref this._MaxLength, value); }
 
-        [JsonProperty]
-        public byte Precision { get => this._Precision; set => this.SetValueProperty(ref this._Precision, value); }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public byte? Precision { get => this._Precision; set => this.SetValueProperty(ref this._Precision, value); }
 
-        [JsonProperty]
-        public byte Scale { get => this._Scale; set => this.SetValueProperty(ref this._Scale, value); }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public byte? Scale { get => this._Scale; set => this.SetValueProperty(ref this._Scale, value); }
 
-        [JsonProperty]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string CollationName { get => this._CollationName; set => this.SetStringProperty(ref this._CollationName, value); }
 
         [JsonProperty]
-        public bool Nullable { get => this._Nullable; set => this.SetValueProperty(ref this._Nullable, value); }
+        public bool? Nullable { get => this._Nullable; set => this.SetValueProperty(ref this._Nullable, value); }
 
         /// <summary>
         /// Gets or sets the reference to the SqlType
         /// </summary>
-#warning [JsonIgnore]
-        [JsonIgnore]
+        [JsonProperty(ItemIsReference = false)]
         public ModelSqlType SqlType { get; set; }
 
+#warning TODO SOON
         public IModelScalarTypeFacade ItemType {
             get {
                 return null;
@@ -162,23 +162,23 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         }
 
         [JsonIgnore]
-        public bool Collection {
+        public bool? Collection {
             get {
                 return false;
             }
 
             set {
-                if (value) {
+                if (value.GetValueOrDefault()) {
                     throw new NotSupportedException();
                 }
             }
         }
 
-        [JsonProperty]
-        public bool FixedLength { get => this._FixedLength; set => this.SetValueProperty(ref this._FixedLength, value); }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public bool? FixedLength { get => this._FixedLength; set => this.SetValueProperty(ref this._FixedLength, value); }
 
-        [JsonProperty]
-        public bool Unicode { get => this._Unicode; set => this.SetValueProperty(ref this._Unicode, value); }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public bool? Unicode { get => this._Unicode; set => this.SetValueProperty(ref this._Unicode, value); }
 
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 

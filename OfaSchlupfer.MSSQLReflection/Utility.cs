@@ -1,6 +1,7 @@
 ﻿#pragma warning disable SA1123 // Do not place regions within elements
 
 namespace OfaSchlupfer.MSSQLReflection {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using OfaSchlupfer.Elementary;
@@ -186,6 +187,36 @@ namespace OfaSchlupfer.MSSQLReflection {
                             }
                         }
 
+                        if (!(srcTable.Indexes is null)) {
+                            foreach (var index in srcTable.Indexes) {
+                                if (index.is_primary_key) {
+                                    var indexColumns = index.IndexColumns;
+                                    if (!(indexColumns is null)) {
+                                        
+                                        foreach (var indexColumn in indexColumns.OrderBy(_ => _.key_ordinal)) {
+                                            if (indexColumn.is_included_column) {
+                                                throw new NotImplementedException("is_included_column");
+                                            } else {
+                                                var sqlColumn = srcTable_Columns[indexColumn.column_id];
+                                                var dstColumn = dstTable.GetColumnByName(new SqlName(null, sqlColumn.name, ObjectLevel.Child));
+                                                dstColumn.Nullable = false;
+                                                dstTable.Name
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    //var type_desc = index.type_desc;
+                                    //if (string.Equals(type_desc, "HEAP", StringComparison.Ordinal)) {
+                                    //} else if (string.Equals(type_desc, "CLUSTERED", StringComparison.Ordinal)) {
+                                    //} else if (string.Equals(type_desc, "", StringComparison.Ordinal)) {
+                                    //} else {
+                                    //    throw new NotImplementedException($"Index Type: {type_desc}");
+                                    //}
+                                }
+                            }
+                        }
+
+                        //srcTable.ForeignKeys
                         objectById[srcTable.object_id] = dstTable;
                     }
                 }

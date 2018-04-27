@@ -8,12 +8,15 @@
         , IList<TValue>
         where TKey : IEquatable<TKey>
         where TValue : class {
+
         void AddRange(IEnumerable<TValue> items);
+
         List<TValue> FindByKey(TKey key);
 
         TValue GetValueOrDefault(TKey key, TValue defaultValue = default(TValue));
     }
 
+    [System.Diagnostics.DebuggerDisplay("{Count}")]
     public sealed class FreezeableOwnedKeyedCollection<TOwner, TKey, TValue>
         : IFreezeable
         , IList<TValue>

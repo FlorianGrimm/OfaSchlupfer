@@ -37,7 +37,8 @@
         /// Convert a <see cref="ModelSqlType"/> to a ModelSystemDataType
         /// </summary>
         /// <param name="modelSqlType">the instance to convert.</param>
-        public static explicit operator ModelSematicType(ModelSqlType modelSqlType) {
+        //public static explicit operator ModelSematicType(ModelSqlType modelSqlType) {
+        public static ModelSematicType Create(ModelSqlType modelSqlType) {
             if (modelSqlType == null) { return null; }
             ModelSystemDataType dataType = ModelSystemDataType.None;
             if (!(modelSqlType.BaseOnType is null)) {

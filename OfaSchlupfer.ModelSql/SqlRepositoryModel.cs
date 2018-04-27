@@ -12,6 +12,8 @@
     using OfaSchlupfer.HttpAccess;
     using OfaSchlupfer.Model;
     using OfaSchlupfer.MSSQLReflection.Model;
+    using OfaSchlupfer.TextTemplate;
+    using OfaSchlupfer.TextTemplate.Runtime;
 
     public class SqlRepositoryModelType : ExternalRepositoryModelType {
         public const string TypeName = "SQL";
@@ -35,7 +37,7 @@
     public abstract class SqlRepositoryModel : ExternalRepositoryModelBase {
         protected SqlRepositoryModel() {
         }
-        
+
         public virtual ModelSchema ReadSQLSchema(
             MetaModelBuilder metaModelBuilder,
             ModelErrors errors
@@ -51,6 +53,11 @@
         public override IEntity CreateEntityByExternalTypeName(string externalTypeName) {
 #warning TODO
             throw new NotImplementedException();
+        }
+        public virtual void UpdateTargetSchema(ModelErrors errors) {
+        }
+
+        public virtual void GenerateUpdateSchemaSQL(ModelErrors errors, Action<string, string> generatedString) {
         }
     }
 
@@ -99,6 +106,42 @@
                 }
             }
             return result;
+        }
+
+        public override void UpdateTargetSchema(ModelErrors errors) {
+            if (this.ModelDatabase is null) {
+                errors.AddErrorOrThrow("ModelDatabase is null", this.ModelSchema.Name);
+                return;
+            }
+            this.GenerateUpdateSchemaSQL(errors, (name, sql) => {
+                // TODO call sql
+            });
+        }
+
+        public override void GenerateUpdateSchemaSQL(ModelErrors errors, Action<string, string> generatedString) {
+            foreach (var table in this.ModelDatabase.Tables) {
+                var templateContext = new TemplateContext();
+
+
+                var template = OfaSchlupfer.TextTemplate.Template.Parse(@"
+CREATE TABLE {{QName}} (
+    {{ for column in Columns }}
+    {{ if for.first }} {{ else }},{{end}} {{ column.QName }} {{ column.SqlType.QName }} {{ if column.SqlType.Nullable }}NULL{{else}}NOT NULL{{end}}
+    {{- end }}
+);
+");
+                
+
+                var scriptObject = new ScriptObject();
+
+                scriptObject.Import(table, null, templateContext.MemberRenamer);
+                //var x = table.Columns[0].SqlType.QName;
+                templateContext.EnableRelaxedMemberAccess = true;
+                templateContext.PushGlobal(scriptObject);
+                var result = template.Render(templateContext);
+                generatedString($"Table {table.QName}", result);
+                templateContext.PopGlobal();
+            }
         }
     }
 }

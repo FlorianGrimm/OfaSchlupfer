@@ -102,11 +102,11 @@
             string propertyExternalName,
             string scalarTypeName,
             ModelScalarType suggestedType,
-            short maxLentgth,
-            bool fixedLength,
-            bool nullable,
-            byte precision,
-            byte scale,
+            short? maxLentgth,
+            bool? fixedLength,
+            bool? nullable,
+            byte? precision,
+            byte? scale,
             ModelErrors errors
             ) {
             if (suggestedType != null) {

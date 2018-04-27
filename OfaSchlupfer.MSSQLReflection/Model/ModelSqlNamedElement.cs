@@ -35,6 +35,9 @@
         [JsonIgnore]
         public SqlName Name { get { return this._Name; } set { this.ThrowIfFrozen(); this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Child); } }
 
+        [JsonIgnore]
+        public string QName => this.Name.GetQName();
+
         [JsonProperty]
         public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this.ThrowIfFrozen(); this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
 
@@ -44,7 +47,7 @@
         /// Gets or sets the type
         /// </summary>
 #warning kill this?
-        [JsonIgnore]
-        public ModelSqlElementType Type { get; set; }
+        //[JsonIgnore]
+        //public ModelSqlElementType Type { get; set; }
     }
 }

@@ -96,7 +96,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public ModelSqlSchema(ModelSqlDatabase database, string name)
             : this(database.GetScope()) {
             this.Name = database.Name.Child(name, ObjectLevel.Schema);
-            this._Database = database;
+            this.Database = database;
         }
 
         /// <summary>
@@ -111,14 +111,14 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public ModelSqlDatabase Database { get => this._Database; set => this.SetOwnerWithChildren(ref this._Database, value, (owner) => owner.Schemas); }
 
 
-        /// <summary>
-        /// Add this to the parent
-        /// </summary>
-        /// <returns>this.</returns>
-        public ModelSqlSchema AddToParent() {
-            this._Database.AddSchema(this);
-            return this;
-        }
+        ///// <summary>
+        ///// Add this to the parent
+        ///// </summary>
+        ///// <returns>this.</returns>
+        //public ModelSqlSchema AddToParent() {
+        //    this._Database.AddSchema(this);
+        //    return this;
+        //}
 
         public void AddType(ModelSqlType modelSqlType) {
             // this._Types[modelSqlType.Name] = modelSqlType;

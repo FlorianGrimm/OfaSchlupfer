@@ -122,50 +122,54 @@
 
         /// <summary>
         /// Gets the schemas.
-        /// </summary>
-        //[JsonIgnore]
+        /// </summary>        
         [JsonProperty(ItemIsReference = true)]
         public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSchema> Schemas => this._Schemas;
 
         /// <summary>
         /// Gets the types.
         /// </summary>
+        [JsonIgnore]
         public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlType> Types => this._Types;
 
         /// <summary>
         /// Gets the tables.
         /// </summary>
-        [JsonProperty(ItemIsReference = true)]
+        [JsonIgnore]
         public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTable> Tables => this._Tables;
 
         /// <summary>
         /// Gets the tables.
         /// </summary>
+        [JsonIgnore]
         public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTableType> TableTypes => this._TableTypes;
 
         /// <summary>
         /// Gets the views.
         /// </summary>
+        [JsonIgnore]
         public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlView> Views => this._Views;
 
         /// <summary>
         /// Gets the procedures.
         /// </summary>
+        [JsonIgnore]
         public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlProcedure> Procedures => this._Procedures;
 
         /// <summary>
         /// Gets the Synonyms
         /// </summary>
+        [JsonIgnore]
         public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSynonym> Synonyms => this._Synonyms;
 
-        /// <summary>
-        /// Add this to parent.
-        /// </summary>
-        /// <returns>this</returns>
-        public ModelSqlDatabase AddToParent() {
-            this._SqlServer.AddDatabase(this);
-            return this;
-        }
+        ///// <summary>
+        ///// Add this to parent.
+        ///// </summary>
+        ///// <returns>this</returns>
+        //public ModelSqlDatabase AddToParent() {
+        //    this._SqlServer.AddDatabase(this);
+        //    return this;
+        //}
 
         /// <summary>
         /// Resolve the name.

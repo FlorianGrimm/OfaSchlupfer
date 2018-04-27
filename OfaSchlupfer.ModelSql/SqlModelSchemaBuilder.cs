@@ -93,20 +93,84 @@
                     var sqlTableNameTarget = SqlName.Parse(tableNameTarget, ObjectLevel.Object);
                     var tableTarget = ModelSqlTable.Ensure(modelDatabase, sqlTableNameTarget);
 
-                    foreach(var property in modelEntityTypeSource.Properties) {
-                        var column = ModelSqlColumn.Ensure(tableTarget, property.ExternalName ?? property.Name);
-#warning HERE HERE add type
-                    }
+                    foreach (var property in modelEntityTypeSource.Properties) {
+                        var sqlColumnNameTarget = SqlName.Parse(property.ExternalName ?? property.Name, ObjectLevel.Object);
+                        ModelSqlColumn column = ModelSqlColumn.Ensure(tableTarget, sqlColumnNameTarget.Name);
+                        if (property.Type is ModelScalarType propertyScalarType) {
+                            var clrTypeSource = property.GetClrType();
+                            var typeName = propertyScalarType.Name;
+#warning TODO SOON better Scalar Type Handling this is ugly
+                            if (!(clrTypeSource is null)) {
+                                var innerNullableClrTypeSource = ((clrTypeSource.IsValueType) ? Nullable.GetUnderlyingType(clrTypeSource) : null) ?? clrTypeSource;
+                                if (!(column.SqlType is null)) {
+                                    var clrScalarTypeTarget = column.SqlType.GetScalarType()?.GetClrType();
+                                    var innerNullableClrScalarTypeTarget = ((clrScalarTypeTarget.IsValueType) ? Nullable.GetUnderlyingType(clrScalarTypeTarget) : null) ?? clrScalarTypeTarget;
+                                    if (!(clrScalarTypeTarget is null) && (clrScalarTypeTarget.IsAssignableFrom(innerNullableClrScalarTypeTarget))) {
+                                        // ok 
+                                    } else {
+                                        column.SqlType = null;
+                                    }
+                                }
+                            }
+                            if (column.SqlType is null) {
+                                var sqlTypeTarget = modelDatabase.Types.GetValueOrDefault(SqlName.Parse(typeName, ObjectLevel.Object));
+                                if (!(sqlTypeTarget is null)) {
+                                    column.SqlType = sqlTypeTarget;
+                                } else {
+                                    if (!(clrTypeSource is null)) {
+                                        var innerNullableClrTypeSource = ((clrTypeSource.IsValueType) ? Nullable.GetUnderlyingType(clrTypeSource) : null) ?? clrTypeSource;
+                                        var lstTypes = new List<ModelSqlType>();
+                                        foreach (var type in modelDatabase.Types) {
+                                            var clrScalarTypeTarget = type.GetScalarType()?.GetClrType();
+                                            if (clrScalarTypeTarget is null) {
+                                                continue;
+                                            }
+                                            var innerNullableClrScalarTypeTarget = ((clrScalarTypeTarget.IsValueType) ? Nullable.GetUnderlyingType(clrScalarTypeTarget) : null) ?? clrScalarTypeTarget;
+                                            if (innerNullableClrTypeSource.Equals(innerNullableClrScalarTypeTarget)) {
+                                                lstTypes.Add(type);
+                                            } else if (innerNullableClrTypeSource.IsAssignableFrom(innerNullableClrScalarTypeTarget)) {
+                                                lstTypes.Add(type);
+                                            }
+                                        }
+                                        if (lstTypes.Count == 1) {
+                                            sqlTypeTarget = lstTypes[0];
+                                            column.SqlType = sqlTypeTarget;
+                                        } else if (lstTypes.Count > 1) {
+                                            sqlTypeTarget = null;
+                                            if (clrTypeSource == typeof(string)) {
+                                                sqlTypeTarget = modelDatabase.Types.GetValueOrDefault(SqlName.Parse("[sys].[nvarchar]", ObjectLevel.Object));
+                                            } else if (clrTypeSource == typeof(DateTime)) {
+                                                sqlTypeTarget = modelDatabase.Types.GetValueOrDefault(SqlName.Parse("[sys].[datetime2]", ObjectLevel.Object));
+                                            } else if (clrTypeSource == typeof(DateTime?)) {
+                                                sqlTypeTarget = modelDatabase.Types.GetValueOrDefault(SqlName.Parse("[sys].[datetime2]", ObjectLevel.Object));
+                                            }
+                                            if (sqlTypeTarget is null) {
+                                                sqlTypeTarget = lstTypes[0];
+                                            }
+                                            column.SqlType = sqlTypeTarget;
+                                        } else {
+                                            errors.Add(new ModelErrorInfo($"Unknown mapping for {typeName} - {clrTypeSource}.", column.NameSql));
+                                            sqlTypeTarget = modelDatabase.Types.GetValueOrDefault(SqlName.Parse("[sys].[nvarchar]", ObjectLevel.Object));
+                                            column.SqlType = sqlTypeTarget;
+                                        }
+                                    }
+                                }
+                                sqlTypeTarget = column.SqlType;
+                                if (sqlTypeTarget is null) {
+                                    errors.Add(new ModelErrorInfo($"column.SqlType is null.", column.NameSql));
+                                } else {
+                                    sqlTypeTarget.Nullable = propertyScalarType.Nullable.GetValueOrDefault(true);
+                                    sqlTypeTarget.MaxLength = propertyScalarType.MaxLength;
+                                }
+                            } // if (column.SqlType is null)
+                        }
+                    } // foreach modelEntityTypeSource.Properties
 
-                    //var tableTarget = modelDatabase.Tables.GetValueOrDefault(sqlTableNameTarget);
-                    //if (tableTarget is null) {
-                    //    tableTarget = new ModelSqlTable {
-                    //        Name = sqlTableNameTarget
-                    //    };
-                    //    modelDatabase.AddTable(tableTarget);
-                    //} else {
-                    //    // found
-                    //}
+                    if (modelEntityTypeSource.Keys.Count == 0) {
+                        errors.Add(new ModelErrorInfo($"no keys defined.", modelEntityTypeSource.Name));
+                    }
+                    foreach (var key in modelEntityTypeSource.Keys) {
+                    }
                 }
             }
         }

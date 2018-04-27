@@ -58,6 +58,9 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         [JsonIgnore]
         public SqlName Name { get { return this._Name; } set { this.ThrowIfFrozen(); this._Name = SqlName.AtObjectLevel(value, ObjectLevel.Object); } }
 
+        [JsonIgnore]
+        public string QName { get => this.Name.GetQFullName("[", 2); }
+
         [JsonProperty]
         public string NameSql { get { return SqlNameJsonConverter.ConvertToValue(this.Name); } set { this.ThrowIfFrozen(); this._Name = SqlNameJsonConverter.ConvertFromValue(value); } }
 

@@ -202,7 +202,11 @@ namespace OfaSchlupfer.TextTemplate.Runtime {
 
                 if ((flags & ScriptMemberImportFlags.Property) != 0) {
                     foreach (var property in typeInfo.GetDeclaredProperties()) {
-                        if (!property.CanRead || !property.GetGetMethod().IsPublic) {
+                        var methodInfoReadProperty = property.GetGetMethod();
+                        if (methodInfoReadProperty is null) {
+                            continue;
+                        }
+                        if (!property.CanRead || !methodInfoReadProperty.IsPublic) {
                             continue;
                         }
 
@@ -211,7 +215,7 @@ namespace OfaSchlupfer.TextTemplate.Runtime {
                         }
 
                         var keep = property.GetCustomAttribute<ScriptMemberIgnoreAttribute>() == null;
-                        if (keep && (((property.GetGetMethod().IsStatic && useStatic) || useInstance))) {
+                        if (keep && (((methodInfoReadProperty.IsStatic && useStatic) || useInstance))) {
                             var newPropertyName = renamer(property);
                             if (String.IsNullOrEmpty(newPropertyName)) {
                                 newPropertyName = property.Name;

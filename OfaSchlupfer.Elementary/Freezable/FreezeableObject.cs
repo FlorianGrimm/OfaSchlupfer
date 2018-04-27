@@ -38,6 +38,14 @@
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        protected bool SetValueProperty<TProperty>(ref Nullable<TProperty> thisProperty, Nullable<TProperty> value)
+            where TProperty : struct {
+            this.ThrowIfFrozen();
+            thisProperty = value;
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         protected bool SetStringProperty(ref string thisProperty, string value) {
             if (value == string.Empty) { value = null; }
             if (ReferenceEquals(thisProperty, value)) { return false; }

@@ -7,7 +7,9 @@ namespace OfaSchlupfer.TextTemplate.Runtime {
     /// The standard rename make a camel/pascalcase name changed by `_` and lowercase. e.g `ThisIsAnExample` becomes `this_is_an_example`.
     /// </summary>
     public sealed class StandardMemberRenamer {
-        public static readonly MemberRenamerDelegate Default = Rename;
+        public static readonly MemberRenamerDelegate Default = Noop;
+
+        public static string Noop(MemberInfo member) => member.Name;
 
         /// <summary>
         /// Renames a camel/pascalcase member to a lowercase and `_` name. e.g `ThisIsAnExample` becomes `this_is_an_example`.
@@ -26,8 +28,7 @@ namespace OfaSchlupfer.TextTemplate.Runtime {
                     }
                     builder.Append(char.ToLowerInvariant(c));
                     previousUpper = true;
-                }
-                else {
+                } else {
                     builder.Append(c);
                     previousUpper = false;
                 }

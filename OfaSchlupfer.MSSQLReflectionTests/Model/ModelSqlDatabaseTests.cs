@@ -9,16 +9,14 @@
 
             var serverScope = modelSqlServer.GetScope();
 
-            var result = new ModelSqlDatabase(modelSqlServer, "OfaSchlupfer").AddToParent();
+            var result = new ModelSqlDatabase(modelSqlServer, "OfaSchlupfer");
             result.Name = new SqlName(null, "OfaSchlupfer", ObjectLevel.Database);
 
             ModelSqlSchema schema = new ModelSqlSchema(result, "dbo");
-            schema.AddToParent();
 
             ModelSqlTable table = new ModelSqlTable(schema, "name");
-            table.AddToParent();
 
-            (new ModelSqlColumn(table, "key")).AddToParent();
+            var col = (new ModelSqlColumn(table, "key"));
             return result;
         }
 

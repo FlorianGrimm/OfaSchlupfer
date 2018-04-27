@@ -95,7 +95,7 @@
 
         public ModelScalarType SuggestType(IModelScalarTypeFacade modelScalarTypeFacade) {
             var result = new ModelScalarType();
-            if (modelScalarTypeFacade.Nullable) {
+            if (modelScalarTypeFacade.Nullable.GetValueOrDefault(true)) {
                 if (this.Type.IsValueType) {
                     result.Type = typeof(Nullable<>).MakeGenericType(new Type[] { this.Type });
                 } else {

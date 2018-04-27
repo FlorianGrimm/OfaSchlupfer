@@ -375,7 +375,7 @@
                 .Where(_ => string.Equals(_.type, "TT", StringComparison.Ordinal))
                 .ToList();
         }
-
+        
         // TODO: add types
         // C = CHECK constraint
         // D = DEFAULT(constraint or stand-alone)

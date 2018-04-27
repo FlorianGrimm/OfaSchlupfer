@@ -6,33 +6,43 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
     using Newtonsoft.Json;
 
     using OfaSchlupfer.Freezable;
+    using OfaSchlupfer.Model;
 
     /// <summary>
     /// ModelSqlType
     /// </summary>
-    [JsonObject]
+    [JsonObject(IsReference = false)]
     public sealed class ModelSqlType
         : ModelSqlElementType
-        , IEquatable<ModelSqlType> {
+        , IEquatable<ModelSqlType>
+        , OfaSchlupfer.Model.IModelScalarTypeFacade {
         public static ModelSqlType Ensure(ModelSqlSchema modelSqlSchema, string name) {
             var sqlName = modelSqlSchema.Name.Child(name, ObjectLevel.Object);
             return modelSqlSchema.Types.GetValueOrDefault(sqlName)
                 ?? new ModelSqlType(modelSqlSchema, name);
         }
-        
+
         [JsonIgnore]
-        private short _MaxLength;
+        private short? _MaxLength;
         [JsonIgnore]
-        private byte _Precision;
+        private byte? _Precision;
         [JsonIgnore]
-        private byte _Scale;
+        private byte? _Scale;
         [JsonIgnore]
         private string _CollationName;
         [JsonIgnore]
-        private bool _Nullable;
+        private bool? _Nullable;
+        [JsonIgnore]
+        private ModelSqlType _BaseOnType;
 
         [JsonIgnore]
         private ModelSematicScalarType _ScalarType;
+
+        [JsonIgnore]
+        private bool? _FixedLength;
+
+        [JsonIgnore]
+        private bool? _Unicode;
 
         public ModelSqlType() { }
 
@@ -85,31 +95,67 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <summary>
         /// Gets or sets the MaxLength of char types.
         /// </summary>
-        public short MaxLength { get { return this._MaxLength; } set { this.SetValueProperty(ref this._MaxLength, value); } }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public short? MaxLength { get { return this._MaxLength; } set { this.SetValueProperty(ref this._MaxLength, value); } }
 
         /// <summary>
         /// Gets or sets the Precision of float types.
         /// </summary>
-        public byte Precision { get { return this._Precision; } set { this.SetValueProperty(ref this._Precision, value); } }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public byte? Precision { get { return this._Precision; } set { this.SetValueProperty(ref this._Precision, value); } }
 
         /// <summary>
         /// Gets or sets the Scale of float types..
         /// </summary>
-        public byte Scale { get { return this._Scale; } set { this.SetValueProperty(ref this._Scale, value); } }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public byte? Scale { get { return this._Scale; } set { this.SetValueProperty(ref this._Scale, value); } }
 
         /// <summary>
         /// Gets or sets the collation of the type - can be null.
         /// </summary>
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string CollationName { get { return this._CollationName; } set { this.SetStringProperty(ref this._CollationName, value); } }
 
         /// <summary>
         /// Gets or sets a value indicating whether gets or sets the type is null-able.
         /// </summary>
-        public bool Nullable { get { return this._Nullable; } set { this.SetValueProperty(ref this._Nullable, value); } }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public bool? Nullable { get { return this._Nullable; } set { this.SetValueProperty(ref this._Nullable, value); } }
 
-        public ModelSqlType BaseOnType { get; set; }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, IsReference = true)]
+        public ModelSqlType BaseOnType { get { return this._BaseOnType; } set { this.SetRefProperty(ref this._BaseOnType, value); } }
 
+#warning thinkof
+        [JsonProperty]
+        public ModelSematicScalarType ScalarType {
+            get { return this._ScalarType; }
+            set { this.SetRefProperty(ref this._ScalarType, value); }
+        }
 
+        public IModelScalarTypeFacade ItemType {
+            get {
+                return null;
+            }
+
+            set {
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool? Collection {
+            get {
+                return null;
+            }
+
+            set {
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool? FixedLength { get { return this._FixedLength; } set { this.SetValueProperty(ref this._FixedLength, value); } }
+
+        public bool? Unicode { get { return this._Unicode; } set { this.SetValueProperty(ref this._Unicode, value); } }
+        
 #pragma warning restore SA1107 // Code must not contain multiple statements on one line
 
 #if weichei
@@ -120,20 +166,25 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             this._Schema.AddType(this);
         }
 #endif
-    
+
         /// <summary>
         /// Get the scalar type.
         /// </summary>
         /// <returns>The scalartype or null</returns>
         public override ModelSematicScalarType GetScalarType() {
 #warning TODO respect BaseOnType
-            var modelType = (ModelSematicType)this;
+            if (!(this._ScalarType is null)) {
+                return this._ScalarType;
+            }
+            var modelType = ModelSematicType.Create(this);
             if (modelType is ModelSematicScalarType modelTypeScalar) {
+                if (this.IsFrozen()) {
+                    this._ScalarType = modelTypeScalar;
+                }
                 return modelTypeScalar;
             }
-#warning TODO NOW respect Freeze
-            //return this._ScalarType ?? (this._ScalarType = new ModelTypeScalar() {
-            return new ModelSematicScalarType() {
+#warning TODO doublicate value handling
+            var result= new ModelSematicScalarType() {
                 Name = this.Name,
                 SystemDataType = this.GetSystemDataType(),
                 MaxLength = this.MaxLength,
@@ -142,6 +193,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
                 CollationName = this.CollationName,
                 IsNullable = this.Nullable
             };
+            if (this.IsFrozen()) {
+                this._ScalarType = result;
+            }
+            return result;
         }
 
         /// <summary>

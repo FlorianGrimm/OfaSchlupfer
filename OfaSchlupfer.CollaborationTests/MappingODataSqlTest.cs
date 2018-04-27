@@ -2,7 +2,7 @@ namespace OfaSchlupfer.CollaborationTests {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
+    using System.Text;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Rest.Azure;
@@ -74,13 +74,13 @@ namespace OfaSchlupfer.CollaborationTests {
                     var errors = new ModelErrors();
                     var modelSchemaTarget = modelRepositoryTarget.GetModelSchema(metaModelBuilder, errors);
                     Assert.NotNull(modelSchemaTarget);
-                    
+
                     if (errors.HasErrors()) { this.output.WriteLine(errors.ToString()); }
                     Assert.False(errors.HasErrors());
 
                     Assert.True(sqlRepositoryTarget.ModelDatabase.Tables.Count > 0);
                     foreach (var table in sqlRepositoryTarget.ModelDatabase.Tables) {
-                        Assert.True(table.Columns.Count>0);
+                        Assert.True(table.Columns.Count > 0);
                     }
 
                     Assert.NotNull(modelSchemaTarget);
@@ -94,13 +94,36 @@ namespace OfaSchlupfer.CollaborationTests {
 
                     foreach (var modelComplexTypesTarget in modelRepositoryTarget.ModelSchema.ComplexTypes) {
                         if (modelComplexTypesTarget.Properties.Count == 0) {
-                            var message = $"{modelComplexTypesTarget.Name} has no properties";
+                            var message = $"{modelComplexTypesTarget.Name} has no properties.";
+                            this.output.WriteLine(message);
+                            Assert.Equal("Error", message);
+                        }
+                        if (modelComplexTypesTarget.Keys.Count == 0) {
+                            var message = $"{modelComplexTypesTarget.Name} has no keys.";
                             this.output.WriteLine(message);
                             Assert.Equal("Error", message);
                         }
                     }
                 }
-                
+                {
+                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings();
+                    serializeSettings.TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple;
+                    serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects;
+                    serializeSettings.Converters.Add(new OfaSchlupfer.MSSQLReflection.Model.SqlNameJsonConverter());
+                    //serializeSettings.Converters.Add(new OfaSchlupfer.MSSQLReflection.Model.ModelSqlTableJsonConverter());
+                    //serializeSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+                    //serializeSettings.TraceWriter = new XunitTraceWriter(output);
+                    try {
+                        var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(sqlRepositoryTarget.ModelDatabase, Newtonsoft.Json.Formatting.Indented, serializeSettings);
+                        string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\Mapping_OData_SQL_ProjectOnlinemetadata_Test-target-ModelDatabase-Before.json");
+                        System.IO.File.WriteAllText(outputPath, schemaAsJson);
+                    } catch (Exception error) {
+                        this.output.WriteLine(error.ToString());
+                        throw;
+                    }
+                }
+
+
                 {
                     var mappingModelRepositorySourceTarget = modelRoot.CreateMapping("SourceTarget", modelRepositorySource, modelRepositoryTarget);
                     var mappingModelSchema = mappingModelRepositorySourceTarget.CreateMappingModelSchema("SourceTarget", modelRepositorySource.ModelSchema, modelRepositoryTarget.ModelSchema, true, false, "");
@@ -179,7 +202,7 @@ namespace OfaSchlupfer.CollaborationTests {
                     }
                 }
 
-                
+
                 {
                     var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings();
                     serializeSettings.TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple;
@@ -190,12 +213,28 @@ namespace OfaSchlupfer.CollaborationTests {
                     //serializeSettings.TraceWriter = new XunitTraceWriter(output);
                     try {
                         var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(sqlRepositoryTarget.ModelDatabase, Newtonsoft.Json.Formatting.Indented, serializeSettings);
-                        string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\Mapping_OData_SQL_ProjectOnlinemetadata_Test-target-ModelDatabase.json");
+                        string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\Mapping_OData_SQL_ProjectOnlinemetadata_Test-target-ModelDatabase-After.json");
                         System.IO.File.WriteAllText(outputPath, schemaAsJson);
                     } catch (Exception error) {
                         this.output.WriteLine(error.ToString());
                         throw;
                     }
+                }
+
+                {
+                    var errors = new ModelErrors();
+                    //sqlRepositoryTarget.UpdateTargetSchema(errors);
+                    var sqlScript = new StringBuilder();
+
+                    sqlRepositoryTarget.GenerateUpdateSchemaSQL(errors, (name, sql) => {
+                        sqlScript.Append($"-- start{name}\r\n{sql}\r\nGO\r\n-- endof:{name}\r\n\r\n");
+                    });
+
+
+                    if (errors.HasErrors()) { this.output.WriteLine(errors.ToString()); }
+                    Assert.False(errors.HasErrors());
+                    string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\Mapping_OData_SQL_ProjectOnlinemetadata_Test.sql");
+                    System.IO.File.WriteAllText(outputPath, sqlScript.ToString());
                 }
             }
         }

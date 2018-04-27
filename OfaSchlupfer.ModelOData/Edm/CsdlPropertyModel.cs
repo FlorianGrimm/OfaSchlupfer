@@ -20,7 +20,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
         private CsdlScalarTypeModel _ScalarType;
 
         [JsonIgnore]
-        private bool _Collection;
+        private bool? _Collection;
 
         [JsonIgnore]
         private string _ItemTypeName;
@@ -32,22 +32,22 @@ namespace OfaSchlupfer.ModelOData.Edm {
         private string _Name;
         
         [JsonIgnore]
-        private bool _Nullable;
+        private bool? _Nullable;
 
         [JsonIgnore]
-        private short _MaxLength;
+        private short? _MaxLength;
 
         [JsonIgnore]
-        private bool _FixedLength;
+        private bool? _FixedLength;
 
         [JsonIgnore]
-        private byte _Precision;
+        private byte? _Precision;
 
         [JsonIgnore]
-        private byte _Scale;
+        private byte? _Scale;
 
         [JsonIgnore]
-        private bool _Unicode;
+        private bool? _Unicode;
 
         [JsonIgnore]
         private string _Collation;
@@ -105,127 +105,80 @@ namespace OfaSchlupfer.ModelOData.Edm {
         }
 
         [JsonProperty]
-        public bool Collection {
-            get {
-                return this._Collection;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Collection = value;
-            }
+        public bool? Collection {
+            get => this._Collection;
+            set => this.SetValueProperty(ref this._Collection, value);
+
         }
 
 
         [JsonProperty]
-        public bool Nullable {
-            get {
-                return this._Nullable;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Nullable = value;
-            }
+        public bool? Nullable {
+            get => this._Nullable;
+            set => this.SetValueProperty(ref this._Nullable, value);
+
         }
 
         [JsonProperty]
-        public short MaxLength {
-            get {
-                return this._MaxLength;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._MaxLength = value;
-            }
+        public short? MaxLength {
+            get => this._MaxLength;
+            set => this.SetValueProperty(ref this._MaxLength, value);
+
         }
 
         [JsonProperty]
-        public bool FixedLength {
-            get {
-                return this._FixedLength;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._FixedLength = value;
-            }
+        public bool? FixedLength {
+            get => this._FixedLength;
+            set => this.SetValueProperty(ref this._FixedLength, value);
         }
 
         [JsonProperty]
-        public byte Precision {
-            get {
-                return this._Precision;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Precision = value;
-            }
+        public byte? Precision {
+            get => this._Precision;
+            set => this.SetValueProperty(ref this._Precision, value);
         }
 
         [JsonProperty]
-        public byte Scale {
-            get {
-                return this._Scale;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Scale = value;
-            }
+        public byte? Scale {
+            get => this._Scale;
+            set => this.SetValueProperty(ref this._Scale, value);
+
         }
 
         [JsonProperty]
-        public bool Unicode {
-            get {
-                return this._Unicode;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Unicode = value;
-            }
+        public bool? Unicode {
+            get => this._Unicode;
+            set => this.SetValueProperty(ref this._Unicode, value);
+
         }
-
-
+        
         [JsonProperty]
         public string Collation {
-            get {
-                return this._Collation;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._Collation = value;
-            }
+            get => this._Collation;
+            set => this.SetStringProperty(ref this._Collation, value);
+
         }
 
         [JsonProperty]
         public string SRID {
-            get {
-                return this._SRID;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._SRID = value;
-            }
+            get => this._SRID;
+            set => this.SetStringProperty(ref this._SRID, value);
+
         }
 
 
         [JsonProperty]
         public string DefaultValue {
-            get {
-                return this._DefaultValue;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._DefaultValue = value;
-            }
+            get => this._DefaultValue;
+            set => this.SetStringProperty(ref this._DefaultValue, value);
+
         }
 
         [JsonProperty]
         public string ConcurrencyMode {
-            get {
-                return this._ConcurrencyMode;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._ConcurrencyMode = value;
-            }
+            get => this._ConcurrencyMode;
+            set => this.SetStringProperty(ref this._ConcurrencyMode, value);
+
         }
 
         // TODO: Collection(Edm.DateTime)
