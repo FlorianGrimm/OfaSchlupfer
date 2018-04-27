@@ -40,8 +40,9 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         [Fact]
         public void SqlName_IsRootTest() {
-            Assert.True(SqlName.Parse("a", ObjectLevel.Child).Parent.IsRoot);
-            Assert.False(SqlName.Parse("a", ObjectLevel.Child).IsRoot);
+            Assert.True(SqlName.Parse("a", ObjectLevel.Child).Parent.IsRoot());
+            Assert.True(SqlName.Parse("a", ObjectLevel.Child).IsRoot());
+            Assert.False(SqlName.Parse("a.b", ObjectLevel.Child).IsRoot());
         }
 
         [Fact]

@@ -10,6 +10,7 @@
         [JsonIgnore]
         private int _IsFrozen;
 
+        [System.Diagnostics.DebuggerStepThrough]
         public FreezeableObject() { }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]

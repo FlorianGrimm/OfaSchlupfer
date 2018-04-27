@@ -292,8 +292,8 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         /// <param name="objectLevel">the level.</param>
         /// <returns>an old or new child.</returns>
         public SqlName ChildWellkown(string name, ObjectLevel objectLevel) {
-            if (this.IsRoot) { return new SqlName(this, name, objectLevel); }
-            if (this._Wellknown == null) { this._Wellknown = new Dictionary<NameLevel, SqlName>(nameLevelComparer); }
+            //if (this.IsRoot) { return new SqlName(this, name, objectLevel); }
+            if (this._Wellknown is null) { this._Wellknown = new Dictionary<NameLevel, SqlName>(nameLevelComparer); }
             SqlName result;
             var key = new NameLevel { Name = name, ObjectLevel = objectLevel };
             if (this._Wellknown.TryGetValue(key, out result)) {
@@ -335,11 +335,6 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         }
 
         /// <summary>
-        /// Gets a value indicating whether this is the root
-        /// </summary>
-        public bool IsRoot => ReferenceEquals(this.Parent, null) || ReferenceEquals(this.Parent, this);
-
-        /// <summary>
         /// test if equal
         /// </summary>
         /// <param name="a">one instance</param>
@@ -371,14 +366,13 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public bool Equals(SqlName other) {
             if (other is null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
-            var tpn = ((object)this.Parent == null);
-            var opn = ((object)other.Parent == null);
-            if (tpn && opn) { return true; }
-            if (tpn || opn) { return false; }
+            
             if (!stringComparer.Equals(this.Name, other.Name)) {
                 return false;
             }
-            return (ReferenceEquals(this.Parent, other.Parent)) || (this.Parent.Equals(other.Parent));
+
+            return (ReferenceEquals(this.Parent, other.Parent)) 
+                || ((!(this.Parent is null)) && (this.Parent.Equals(other.Parent)));
         }
 
         /// <inheritdoc/>
@@ -444,7 +438,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
                 var currentLevel = (levels <= 0 || this_Level < levels) ? this_Level : levels;
                 var items = new string[currentLevel];
                 var current = this;
-                while ((!ReferenceEquals(current, null)) && (!ReferenceEquals(current, current.Parent))) {
+                while (!(current is null)) {
                     currentLevel--;
                     items[currentLevel] = current.GetQName(mode);
                     current = current.Parent;
@@ -461,5 +455,12 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
             public int GetHashCode(NameLevel obj) => stringComparer.GetHashCode(obj.Name);
         }
+    }
+
+    public static class SqlNameExtension {
+        /// <summary>
+        /// Gets a value indicating whether this is the root
+        /// </summary>
+        public static bool IsRoot(this SqlName that) => (that is null) || (that.Parent is null);
     }
 }

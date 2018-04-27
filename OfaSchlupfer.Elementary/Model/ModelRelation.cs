@@ -60,14 +60,14 @@
                 this._MasterName = null;
             }
         }
-        
-        public string MasterNavigationPropertyName { get; set; }
-        public ModelNavigationProperty MasterNavigationProperty { get; set; }
-
-        public string ForeignNavigationPropertyName { get; set; }
-        public ModelNavigationProperty ForeignNavigationProperty { get; set; }
 
         [JsonProperty(Order = 3)]
+        public string MasterNavigationPropertyName { get; set; }
+
+        [JsonIgnore]
+        public ModelNavigationProperty MasterNavigationProperty { get; set; }
+
+        [JsonProperty(Order = 4)]
         public string ForeignName {
             get {
                 if ((object)this._ForeignEntity != null) {
@@ -97,6 +97,13 @@
                 this._ForeignName = null;
             }
         }
+
+
+        [JsonProperty(Order = 5)]
+        public string ForeignNavigationPropertyName { get; set; }
+
+        [JsonIgnore]
+        public ModelNavigationProperty ForeignNavigationProperty { get; set; }
 
         private void ResolveNames(ModelErrors errors) {
             this.ResolveNamesMasterEntity(errors);
