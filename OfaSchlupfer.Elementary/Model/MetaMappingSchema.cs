@@ -5,7 +5,7 @@
     using OfaSchlupfer.Freezable;
 
     public class MetaMappingSchema 
-        : FreezeableObject {
+        : FreezableObject {
         public MetaMappingSchema() {
 
         }

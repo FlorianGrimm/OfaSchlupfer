@@ -47,7 +47,7 @@
     }
 
     public abstract class ExternalRepositoryModelBase
-        : FreezeableObject
+        : FreezableObject
         , IExternalRepositoryModel {
         [JsonIgnore]
         protected ModelRepository _Owner;

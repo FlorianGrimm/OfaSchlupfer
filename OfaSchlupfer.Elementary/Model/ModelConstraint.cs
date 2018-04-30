@@ -19,10 +19,10 @@
         private ModelEntity _Owner;
 
         [JsonIgnore]
-        private readonly FreezeableCollection<ModelProperty> _Properties;
+        private readonly FreezableCollection<ModelProperty> _Properties;
 
         public ModelConstraint() {
-            this._Properties = new FreezeableCollection<ModelProperty>();
+            this._Properties = new FreezableCollection<ModelProperty>();
         }
 
 #warning owner missong
@@ -45,13 +45,13 @@
         }
 
         [JsonProperty]
-        public FreezeableCollection<ModelProperty> Properties => this._Properties;
+        public FreezableCollection<ModelProperty> Properties => this._Properties;
 
 
         [JsonIgnore]
         public ModelEntity Owner {
             get => this._Owner;
-            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.Constraints);
+            set => this.SetOwnerWithChildren(ref this._Owner, value, (owner) => owner.Constraints);
         }
 
         public override bool Freeze() {

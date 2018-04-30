@@ -11,19 +11,19 @@
     public class MappingModelEntity
         : MappingObjectString<MappingModelSchema, ModelEntity> {
         [JsonIgnore]
-        private readonly FreezeableOwnedCollection<MappingModelEntity, MappingModelConstraint> _ConstraintMappings;
+        private readonly FreezableOwnedCollection<MappingModelEntity, MappingModelConstraint> _ConstraintMappings;
 
         public MappingModelEntity() {
-            this._ConstraintMappings = new FreezeableOwnedCollection<MappingModelEntity, MappingModelConstraint>(this, (owner, item) => { item.Owner = owner; });
+            this._ConstraintMappings = new FreezableOwnedCollection<MappingModelEntity, MappingModelConstraint>(this, (owner, item) => { item.Owner = owner; });
         }
 
         [JsonIgnore]
         public override MappingModelSchema Owner {
             get => this._Owner;
-            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.EntityMappings);
+            set => this.SetOwnerWithChildren(ref this._Owner, value, (owner) => owner.EntityMappings);
         }
 
-        public FreezeableOwnedCollection<MappingModelEntity, MappingModelConstraint> ConstraintMappings => this._ConstraintMappings;
+        public FreezableOwnedCollection<MappingModelEntity, MappingModelConstraint> ConstraintMappings => this._ConstraintMappings;
 
         public override void ResolveNameSource(ModelErrors errors) => this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Source.Entities.FindByKey(name), errors);
 

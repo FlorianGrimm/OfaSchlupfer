@@ -14,15 +14,15 @@
     /// </summary>
 #warning TODO    [JsonObject]
     public class MetaEntityProjection
-        : FreezeableObject
+        : FreezableObject
         , IMetaEntity {
-        private FreezeableDictionary<string, MetaPropertyProjection> _PropertyByName;
+        private readonly FreezableDictionary<string, MetaPropertyProjection> _PropertyByName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MetaEntityProjection"/> class.
         /// </summary>
         public MetaEntityProjection() {
-            this._PropertyByName = new FreezeableDictionary<string, MetaPropertyProjection>();
+            this._PropertyByName = new FreezableDictionary<string, MetaPropertyProjection>();
         }
 
         /// <summary>

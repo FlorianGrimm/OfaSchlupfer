@@ -7,7 +7,7 @@
     /// Property for projection
     /// </summary>
     public class MetaPropertyProjection
-        : FreezeableObject
+        : FreezableObject
         , IMetaProperty {
         private readonly IMetaProperty _MetaProperty;
         private IMetaEntity _MetaEntity;

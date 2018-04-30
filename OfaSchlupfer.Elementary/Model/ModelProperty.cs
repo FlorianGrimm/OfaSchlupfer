@@ -17,7 +17,7 @@
         [JsonIgnore]
         public override ModelComplexType Owner {
             get => this._Owner;
-            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.Properties);
+            set => this.SetOwnerWithChildren(ref this._Owner, value, (owner) => owner.Properties);
         }
 
         [JsonProperty]
@@ -45,7 +45,7 @@
     }
 
     public class ModelPropertyMetaProperty
-        : FreezeableObject
+        : FreezableObject
         , IMetaProperty
         , IMetaIndexedProperty {
         private IMetaEntity _MetaEntity;

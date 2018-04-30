@@ -28,7 +28,7 @@
     [JsonConverter(typeof(ModelEntityNameConverter))]
     [JsonObject]
     public sealed class ModelEntityName
-        : FreezeableObject
+        : FreezableObject
         //, IMappingNamedObject<string>
         , IEquatable<ModelEntityName> {
         [JsonIgnore]

@@ -14,10 +14,10 @@
     public sealed class MappingModelRepository
         : MappingObjectString<ModelRoot, ModelRepository> {
         [JsonIgnore]
-        private readonly FreezeableOwnedCollection<MappingModelRepository, MappingModelSchema> _ModelSchemaMappings;
+        private readonly FreezableOwnedCollection<MappingModelRepository, MappingModelSchema> _ModelSchemaMappings;
 
         public MappingModelRepository() {
-            this._ModelSchemaMappings = new FreezeableOwnedCollection<MappingModelRepository, MappingModelSchema>(this, (owner, item) => { item.Owner = owner; });
+            this._ModelSchemaMappings = new FreezableOwnedCollection<MappingModelRepository, MappingModelSchema>(this, (owner, item) => { item.Owner = owner; });
         }
               
         [JsonIgnore]
@@ -27,7 +27,7 @@
         }
 
         [JsonProperty]
-        public FreezeableOwnedCollection<MappingModelRepository, MappingModelSchema> ModelSchemaMappings => _ModelSchemaMappings;
+        public FreezableOwnedCollection<MappingModelRepository, MappingModelSchema> ModelSchemaMappings => _ModelSchemaMappings;
 
 
         public void ResolveName(ModelErrors errors) {

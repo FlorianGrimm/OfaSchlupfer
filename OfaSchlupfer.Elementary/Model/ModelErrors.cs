@@ -46,8 +46,9 @@
             this.Errors?.Add(item);
         }
 
-        private static ModelErrors _Ignorance;
+        [System.Diagnostics.DebuggerStepThrough]
         public static ModelErrors GetIgnorance() => (_Ignorance ?? (_Ignorance = new ModelErrors(true)));
+        private static ModelErrors _Ignorance;
 
         private ModelErrors(SerializationInfo info, StreamingContext context) {
             try {

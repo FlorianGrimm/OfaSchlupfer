@@ -4,29 +4,20 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class FreezeableOwnedDictionary<TOwner, TKey, TValue>
-        : IFreezeable, IDictionary<TKey, TValue> 
-        where TValue : class{
-        private readonly TOwner _Owner;
-        private readonly Action<TOwner, TValue> _ActionOnInsertSet;
+    public sealed class FreezableDictionary<TKey, TValue>
+        : IFreezeable, IDictionary<TKey, TValue> {
         private readonly Dictionary<TKey, TValue> _Items;
         private int _IsFrozen;
 
-        public FreezeableOwnedDictionary(TOwner owner, Action<TOwner, TValue> actionOnInsertSet) {
-            this._Owner = owner;
-            this._ActionOnInsertSet = actionOnInsertSet;
+        public FreezableDictionary() {
             this._Items = new Dictionary<TKey, TValue>();
         }
 
-        public FreezeableOwnedDictionary(TOwner owner, Action<TOwner, TValue> actionOnInsertSet, IEqualityComparer<TKey> comparer) {
-            this._Owner = owner;
-            this._ActionOnInsertSet = actionOnInsertSet;
+        public FreezableDictionary(IEqualityComparer<TKey> comparer) {
             this._Items = new Dictionary<TKey, TValue>(comparer);
         }
 
-        public FreezeableOwnedDictionary(TOwner owner, Action<TOwner, TValue> actionOnInsertSet, IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) {
-            this._Owner = owner;
-            this._ActionOnInsertSet = actionOnInsertSet;
+        public FreezableDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) {
             this._Items = new Dictionary<TKey, TValue>(dictionary, comparer);
         }
 
@@ -37,9 +28,7 @@
 
             set {
                 this.ThrowIfFrozen();
-                if (value is null) { throw new ArgumentNullException("Items"); }
                 this._Items[key] = value;
-                this._ActionOnInsertSet?.Invoke(this._Owner, value);
             }
         }
 
@@ -53,13 +42,12 @@
 
         public void Add(TKey key, TValue value) {
             this.ThrowIfFrozen();
-            if (value is null) { throw new ArgumentNullException("Items"); }
             this._Items.Add(key, value);
-            this._ActionOnInsertSet?.Invoke(this._Owner, value);
         }
 
         public void Add(KeyValuePair<TKey, TValue> item) {
-            this.Add(item.Key, item.Value);
+            this.ThrowIfFrozen();
+            ((IDictionary<TKey, TValue>)this._Items).Add(item);
         }
 
         public void Clear() {

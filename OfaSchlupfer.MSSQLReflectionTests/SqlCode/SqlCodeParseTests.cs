@@ -12,7 +12,7 @@
     using Xunit.Abstractions;
 
     public class SqlCodeParseTests {
-        private ITestOutputHelper output;
+        private readonly ITestOutputHelper output;
 
         public SqlCodeParseTests(ITestOutputHelper output) {
             this.output = output;

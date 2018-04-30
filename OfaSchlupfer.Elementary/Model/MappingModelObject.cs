@@ -10,8 +10,9 @@
 
     [JsonObject]
     public abstract class MappingModelObject<TThisKey, TMappingKey, TMappingValue>
-        : FreezeableObject
+        : FreezableObject
         , IMappingNamedObject<TThisKey>
+        , IContainerNamedReferences
         where TMappingKey : class
         where TMappingValue : class, IMappingNamedObject<TMappingKey> {
 
@@ -168,7 +169,7 @@
         protected abstract bool AreThisNamesEqual(TThisKey thisName, ref TThisKey value);
 
         public TThisKey GetName() => this._Name;
-
+        
         [JsonProperty(Order = 2)]
         public bool Enabled {
             get => this._Enabled;
@@ -191,6 +192,11 @@
         public string Comment {
             get => this._Comment;
             set => this.SetStringProperty(ref this._Comment, value);
+        }
+        
+        public virtual void ResolveNamedReferences(ModelErrors errors) {
+            this.ResolveNameSource(errors);
+            this.ResolveNameTarget(errors);
         }
     }
 

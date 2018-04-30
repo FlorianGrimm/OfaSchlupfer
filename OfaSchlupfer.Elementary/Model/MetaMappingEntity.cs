@@ -5,7 +5,7 @@
     using OfaSchlupfer.Freezable;
 
     public class MetaMappingEntity 
-        : FreezeableObject {
+        : FreezableObject {
         private MetaMappingComplexType _ComplexType;
 
         public MetaMappingComplexType ComplexType {

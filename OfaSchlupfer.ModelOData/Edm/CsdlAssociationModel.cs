@@ -15,18 +15,18 @@
         private string _Name;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<CsdlAssociationModel, string, CsdlAssociationEndModel> _AssociationEnd;
+        private readonly FreezableOwnedKeyedCollection<CsdlAssociationModel, string, CsdlAssociationEndModel> _AssociationEnd;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedCollection<CsdlAssociationModel, CsdlReferentialConstraintV3Model> _ReferentialConstraint;
+        private readonly FreezableOwnedCollection<CsdlAssociationModel, CsdlReferentialConstraintV3Model> _ReferentialConstraint;
 
         public CsdlAssociationModel() {
-            this._AssociationEnd = new FreezeableOwnedKeyedCollection<CsdlAssociationModel, string, CsdlAssociationEndModel>(
+            this._AssociationEnd = new FreezableOwnedKeyedCollection<CsdlAssociationModel, string, CsdlAssociationEndModel>(
                 this,
                 (item) => item.RoleName,
                 StringComparer.OrdinalIgnoreCase,
                 (owner, item) => { item.Owner = owner; });
-            this._ReferentialConstraint = new FreezeableOwnedCollection<CsdlAssociationModel, CsdlReferentialConstraintV3Model>(
+            this._ReferentialConstraint = new FreezableOwnedCollection<CsdlAssociationModel, CsdlReferentialConstraintV3Model>(
                 this,
                 (owner, item) => { item.Owner = owner; });
         }
@@ -54,10 +54,10 @@
         }
         
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<CsdlAssociationModel, string, CsdlAssociationEndModel> AssociationEnd => this._AssociationEnd;
+        public FreezableOwnedKeyedCollection<CsdlAssociationModel, string, CsdlAssociationEndModel> AssociationEnd => this._AssociationEnd;
 
         [JsonProperty]
-        public FreezeableOwnedCollection<CsdlAssociationModel, CsdlReferentialConstraintV3Model> ReferentialConstraint => this._ReferentialConstraint;
+        public FreezableOwnedCollection<CsdlAssociationModel, CsdlReferentialConstraintV3Model> ReferentialConstraint => this._ReferentialConstraint;
 
         public List<CsdlAssociationEndModel> FindAssociationEnd(string roleName) => this._AssociationEnd.FindByKey(roleName);
 

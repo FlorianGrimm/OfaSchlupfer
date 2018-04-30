@@ -19,10 +19,10 @@
         private bool _IsPrimaryKey;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlIndex, SqlName, ModelSqlIndexColumn> _Columns;
+        private readonly FreezableOwnedKeyedCollection<ModelSqlIndex, SqlName, ModelSqlIndexColumn> _Columns;
 
         public ModelSqlIndex() {
-            this._Columns = new FreezeableOwnedKeyedCollection<ModelSqlIndex, SqlName, ModelSqlIndexColumn>(
+            this._Columns = new FreezableOwnedKeyedCollection<ModelSqlIndex, SqlName, ModelSqlIndexColumn>(
                 this,
                 (item) => item.Name,
                 SqlNameEqualityComparer.Level1,
@@ -38,7 +38,7 @@
 
 
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<ModelSqlIndex, SqlName, ModelSqlIndexColumn> Columns => this._Columns;
+        public FreezableOwnedKeyedCollection<ModelSqlIndex, SqlName, ModelSqlIndexColumn> Columns => this._Columns;
 
 #warning index properties
 

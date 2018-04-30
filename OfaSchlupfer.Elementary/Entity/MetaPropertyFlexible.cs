@@ -7,7 +7,7 @@
 
     [JsonObject(ItemIsReference = true)]
     public class MetaPropertyFlexible
-       : FreezeableObject
+       : FreezableObject
        , IMetaIndexedProperty {
         private IMetaEntity _MetaEntity;
         private string _Name;
@@ -90,7 +90,7 @@
     /// </summary>
     [JsonObject(ItemIsReference = true)]
     public class MetaPropertyFlexibleChained
-        : FreezeableObject
+        : FreezableObject
         , IMetaIndexedProperty {
 
         private IMetaEntity _MetaEntity;

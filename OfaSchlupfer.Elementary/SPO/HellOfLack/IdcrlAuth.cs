@@ -51,9 +51,9 @@ namespace OfaSchlupfer.SPO {
         private class FederationProviderInfoCache {
             private const int CacheLifetimeMinutes = 30;
 
-            private object m_lock = new object();
+            private readonly object m_lock = new object();
 
-            private Dictionary<string, FederationProviderInfoCacheEntry> m_cache = new Dictionary<string, FederationProviderInfoCacheEntry>(StringComparer.OrdinalIgnoreCase);
+            private readonly Dictionary<string, FederationProviderInfoCacheEntry> m_cache = new Dictionary<string, FederationProviderInfoCacheEntry>(StringComparer.OrdinalIgnoreCase);
 
             public bool TryGetValue(string domainname, out FederationProviderInfo value) {
                 lock (this.m_lock) {
@@ -76,7 +76,7 @@ namespace OfaSchlupfer.SPO {
             }
         }
 
-        private ILogger _Logger;
+        private readonly ILogger _Logger;
 #if UseRegistry
         private IdcrlEnvironment m_env;
 #endif
@@ -84,7 +84,7 @@ namespace OfaSchlupfer.SPO {
         private string m_securityTokenServiceUrl;
         private string m_federationTokenIssuer;
 
-        private EventHandler<WebRequestEventArgs> m_executingWebRequest;
+        private readonly EventHandler<WebRequestEventArgs> m_executingWebRequest;
 
         private static Dictionary<string, int> s_partnerSoapErrorMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
         {
@@ -215,8 +215,9 @@ namespace OfaSchlupfer.SPO {
                     this._Logger?.LogError("Unknown namespace type for user {0}", login);
                     throw IdcrlAuth.CreateIdcrlException(-2147186539);
                 }
-                UserRealmInfo userRealmInfo = new UserRealmInfo();
-                userRealmInfo.IsFederated = (0 == string.Compare(xElement.Value, "Federated", StringComparison.OrdinalIgnoreCase));
+                UserRealmInfo userRealmInfo = new UserRealmInfo {
+                    IsFederated = (0 == string.Compare(xElement.Value, "Federated", StringComparison.OrdinalIgnoreCase))
+                };
                 xElement = xDocument.Root.Element("STSAuthURL");
                 if (xElement != null) {
                     userRealmInfo.STSAuthUrl = xElement.Value;
@@ -306,9 +307,7 @@ namespace OfaSchlupfer.SPO {
             httpWebRequest.Method = "POST";
             httpWebRequest.ContentType = contentType;
             this._Logger?.LogDebug("Sending POST request to {0}", url);
-            if (this.m_executingWebRequest != null) {
-                this.m_executingWebRequest(this, new WebRequestEventArgs(httpWebRequest));
-            }
+            this.m_executingWebRequest?.Invoke(this, new WebRequestEventArgs(httpWebRequest));
             using (Stream stream = httpWebRequest.GetRequestStream()) {
                 if (body != null) {
                     byte[] bytes = Encoding.UTF8.GetBytes(body);
@@ -519,9 +518,8 @@ namespace OfaSchlupfer.SPO {
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest.Method = "GET";
             this._Logger?.LogDebug("Sending GET request to {0}", url);
-            if (this.m_executingWebRequest != null) {
-                this.m_executingWebRequest(this, new WebRequestEventArgs(httpWebRequest));
-            }
+            this.m_executingWebRequest?.Invoke(this, new WebRequestEventArgs(httpWebRequest));
+#pragma warning disable IDE0019 // Use pattern matching
             var httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
             if (httpWebResponse == null) {
                 this._Logger?.LogError("Unexpected response for GET request to URL {0}", url);

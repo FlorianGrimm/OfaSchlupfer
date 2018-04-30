@@ -6,12 +6,12 @@
     /// <summary>
     /// base implementation for <see cref="IFreezeable"/>
     /// </summary>
-    public class FreezeableObject : IFreezeable {
+    public class FreezableObject : IFreezeable {
         [JsonIgnore]
         private int _IsFrozen;
 
         [System.Diagnostics.DebuggerStepThrough]
-        public FreezeableObject() { }
+        public FreezableObject() { }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public virtual bool Freeze() {

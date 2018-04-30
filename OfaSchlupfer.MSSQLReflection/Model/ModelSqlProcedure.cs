@@ -20,7 +20,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
                 ?? new ModelSqlProcedure(modelSqlSchema, name);
         }
 
-        private SqlScope _Scope;
+        private readonly SqlScope _Scope;
         private string _Definition;
 
         /// <summary>

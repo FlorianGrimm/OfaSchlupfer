@@ -9,22 +9,22 @@
 
     [JsonObject]
     public class MappingModelComplexType
-         : MappingObjectString<MappingModelSchema, ModelComplexType> {
+        : MappingObjectString<MappingModelSchema, ModelComplexType> {
         [JsonIgnore]
-        private readonly FreezeableOwnedCollection<MappingModelComplexType, MappingModelProperty> _PropertyMappings;
+        private readonly FreezableOwnedCollection<MappingModelComplexType, MappingModelProperty> _PropertyMappings;
 
         public MappingModelComplexType() {
-            this._PropertyMappings = new FreezeableOwnedCollection<MappingModelComplexType, MappingModelProperty>(this, (owner, item) => { item.Owner = owner; });
+            this._PropertyMappings = new FreezableOwnedCollection<MappingModelComplexType, MappingModelProperty>(this, (owner, item) => { item.Owner = owner; });
 
         }
 
         [JsonIgnore]
         public override MappingModelSchema Owner {
             get => this._Owner;
-            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.ComplexTypeMappings);
+            set => this.SetOwnerWithChildren(ref this._Owner, value, (owner) => owner.ComplexTypeMappings);
         }
 
-        public FreezeableOwnedCollection<MappingModelComplexType, MappingModelProperty> PropertyMappings => this._PropertyMappings;
+        public FreezableOwnedCollection<MappingModelComplexType, MappingModelProperty> PropertyMappings => this._PropertyMappings;
 
         public override void ResolveNameSource(ModelErrors errors) => this.ResolveNameSourceHelper(this.Owner, (owner, name) => owner.Source.ComplexTypes.FindByKey(name), errors);
 
@@ -34,10 +34,11 @@
             string name,
             ModelProperty source,
             ModelProperty target) {
-            var result = new MappingModelProperty();
-            result.Name = name;
-            result.Source = source;
-            result.Target = target;
+            var result = new MappingModelProperty {
+                Name = name,
+                Source = source,
+                Target = target
+            };
             this.PropertyMappings.Add(result);
             return result;
         }

@@ -13,13 +13,13 @@
         [JsonIgnore]
         private EdmxModel _EdmxModel;
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlScalarTypeModel> _ScalarTypeModel;
+        private readonly FreezableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlScalarTypeModel> _ScalarTypeModel;
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityTypeModel> _EntityType;
+        private readonly FreezableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityTypeModel> _EntityType;
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityContainerModel> _EntityContainer;
+        private readonly FreezableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityContainerModel> _EntityContainer;
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlAssociationModel> _Association;
+        private readonly FreezableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlAssociationModel> _Association;
 
         [JsonIgnore]
         private string _Namespace;
@@ -48,34 +48,34 @@
 
 
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlScalarTypeModel> ScalarTypeModel => this._ScalarTypeModel;
+        public FreezableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlScalarTypeModel> ScalarTypeModel => this._ScalarTypeModel;
 
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityTypeModel> EntityType => this._EntityType;
+        public FreezableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityTypeModel> EntityType => this._EntityType;
 
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityContainerModel> EntityContainer => this._EntityContainer;
+        public FreezableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityContainerModel> EntityContainer => this._EntityContainer;
 
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlAssociationModel> Association => this._Association;
+        public FreezableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlAssociationModel> Association => this._Association;
 
         public CsdlSchemaModel() {
-            this._ScalarTypeModel = new FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlScalarTypeModel>(
+            this._ScalarTypeModel = new FreezableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlScalarTypeModel>(
                 this,
                 (item) => item.Name,
                 StringComparer.OrdinalIgnoreCase,
                 (owner, item) => { item.Owner = owner; });
-            this._EntityType = new FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityTypeModel>(
+            this._EntityType = new FreezableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityTypeModel>(
                 this,
                 (item) => item.Name,
                 StringComparer.OrdinalIgnoreCase,
                 (owner, item) => { item.Owner = owner; });
-            this._EntityContainer = new FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityContainerModel>(
+            this._EntityContainer = new FreezableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlEntityContainerModel>(
                 this,
                 (item) => item.Name,
                 StringComparer.OrdinalIgnoreCase,
                 (owner, item) => { item.Owner = owner; });
-            this._Association = new FreezeableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlAssociationModel>(
+            this._Association = new FreezableOwnedKeyedCollection<CsdlSchemaModel, string, CsdlAssociationModel>(
                 this,
                 (item) => item.Name,
                 StringComparer.OrdinalIgnoreCase,

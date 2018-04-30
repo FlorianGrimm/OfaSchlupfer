@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public sealed class FreezeableOwned2KeyedCollection<TOwner, TKey1, TKey2, TValue>
+    public sealed class FreezableOwned2KeyedCollection<TOwner, TKey1, TKey2, TValue>
         : IFreezeable
         , IList<TValue>
         where TKey1 : class, IEquatable<TKey1>
@@ -21,7 +21,7 @@
         private Dictionary<TKey1, TValue> _ItemsByKey1;
         private Dictionary<TKey2, TValue> _ItemsByKey2;
 
-        public FreezeableOwned2KeyedCollection(
+        public FreezableOwned2KeyedCollection(
             TOwner owner,
             Func<TValue, TKey1> getKey1,
             IEqualityComparer<TKey1> keyComparer1,
@@ -156,6 +156,60 @@
                         }
                     }
                     return result;
+                }
+            }
+        }
+
+        public TValue GetValueOrDefault1(TKey1 key, TValue defaultValue = default(TValue)) {
+            if (this._IsFrozen == 0) {
+                if ((object)key != null) {
+                    var items = this._Items.ToArray();
+                    foreach (var item in items) {
+                        var itemKey = this._GetKey1(item);
+                        if (this._KeyComparer1.Equals(itemKey, key)) {
+                            return (item);
+                        }
+                    }
+                }
+                return defaultValue;
+            } else {
+                if ((object)this._ItemsByKey1 == null) {
+                    BuildDictionaries();
+                }
+                {
+                    if ((object)key != null) {
+                        if (this._ItemsByKey1.TryGetValue(key, out var item)) {
+                            return (item);
+                        }
+                    }
+                    return defaultValue;
+                }
+            }
+        }
+
+        public TValue GetValueOrDefault2(TKey2 key, TValue defaultValue = default(TValue)) {
+            if (this._IsFrozen == 0) {
+                if ((object)key != null) {
+                    var items = this._Items.ToArray();
+                    foreach (var item in items) {
+                        var itemKey = this._GetKey2(item);
+                        if (this._KeyComparer2.Equals(itemKey, key)) {
+                            return (item);
+                        }
+                    }
+                }
+                return defaultValue;
+            } else {
+                if ((object)this._ItemsByKey2 == null) {
+                    BuildDictionaries();
+                }
+                {
+                    if ((object)key != null) {
+                        if (this._ItemsByKey2.TryGetValue(key, out var item)) {
+                            return (item);
+                        }
+                    }
+                    return defaultValue;
                 }
             }
         }

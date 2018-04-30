@@ -10,9 +10,8 @@
     /// </summary>
     [JsonObject]
     public sealed class ModelDefinition
-        : FreezeableObject 
-        , IObjectWithOwner<ModelRepository>
-        {
+        : FreezableObject
+        , IObjectWithOwner<ModelRepository> {
         [JsonIgnore]
         private ModelRepository _Owner;
 
@@ -27,31 +26,19 @@
         [JsonIgnore]
         public ModelRepository Owner {
             get => this._Owner;
-            set => this.SetOwner(ref _Owner, value);
+            set => this.SetOwner(ref this._Owner, value);
         }
 
         [JsonProperty(Order = 1)]
         public string RepositoryTypeName {
-            get {
-                return this._RepositoryType;
-            }
-            set {
-                if (value == string.Empty) { value = null; }
-                if (string.Equals(this._RepositoryType, value, StringComparison.Ordinal)) { return; }
-                this.ThrowIfFrozen();
-                this._RepositoryType = value;
-            }
+            get => this._RepositoryType;
+            set => this.SetStringProperty(ref this._RepositoryType, value);
         }
 
         [JsonProperty(Order = 2)]
         public string MetaData {
-            get {
-                return this._MetaData;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._MetaData = value;
-            }
-        }    
+            get => this._MetaData;
+            set => this.SetStringProperty(ref this._MetaData, value);
+        }
     }
 }

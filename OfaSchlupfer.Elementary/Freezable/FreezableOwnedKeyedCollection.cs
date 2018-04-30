@@ -17,7 +17,7 @@
     }
 
     [System.Diagnostics.DebuggerDisplay("{Count}")]
-    public sealed class FreezeableOwnedKeyedCollection<TOwner, TKey, TValue>
+    public sealed class FreezableOwnedKeyedCollection<TOwner, TKey, TValue>
         : IFreezeable
         , IList<TValue>
         , IFreezeableOwnedKeyedCollection<TKey, TValue>
@@ -31,7 +31,7 @@
         private int _IsFrozen;
         private Dictionary<TKey, TValue> _ItemsByKey;
 
-        public FreezeableOwnedKeyedCollection(
+        public FreezableOwnedKeyedCollection(
             TOwner owner,
             Func<TValue, TKey> getKey,
             IEqualityComparer<TKey> keyComparer,

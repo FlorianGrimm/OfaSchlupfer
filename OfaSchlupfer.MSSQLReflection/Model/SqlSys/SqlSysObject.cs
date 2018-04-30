@@ -62,6 +62,8 @@ WHERE (o.object_id>0) AND (o.is_ms_shipped=0)
         }
 
 #pragma warning disable SA1101 // Prefix local calls with this
+#pragma warning disable IDE0009 // Member access should be qualified.
+#pragma warning disable IDE1006 // Naming Styles
         /// <summary>
         /// Gets the Object name.
         /// </summary>

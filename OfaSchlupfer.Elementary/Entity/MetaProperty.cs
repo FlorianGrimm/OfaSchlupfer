@@ -11,7 +11,7 @@
     /// </summary>
     [JsonObject(ItemIsReference = true)]
     public class MetaProperty
-        : FreezeableObject
+        : FreezableObject
         , IMetaProperty {
         private IMetaEntity _MetaEntity;
         private string _Name;

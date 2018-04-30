@@ -18,16 +18,16 @@
         private string _RootEntityName;
 
         [JsonIgnore]
-        private readonly FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelScalarType> _ScalarTypes;
+        private readonly FreezableOwned2KeyedCollection<ModelSchema, string, string, ModelScalarType> _ScalarTypes;
 
         [JsonIgnore]
-        private readonly FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelComplexType> _ComplexTypes;
+        private readonly FreezableOwned2KeyedCollection<ModelSchema, string, string, ModelComplexType> _ComplexTypes;
 
         [JsonIgnore]
-        private readonly FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelEntity> _Entities;
+        private readonly FreezableOwned2KeyedCollection<ModelSchema, string, string, ModelEntity> _Entities;
 
         [JsonIgnore]
-        private readonly FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelRelation> _Relations;
+        private readonly FreezableOwned2KeyedCollection<ModelSchema, string, string, ModelRelation> _Relations;
 
         [JsonProperty(Order = 3)]
         public string RootEntityName {
@@ -42,40 +42,40 @@
 
 
         [JsonProperty(Order = 4)]
-        public FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelScalarType> ScalarTypes => this._ScalarTypes;
+        public FreezableOwned2KeyedCollection<ModelSchema, string, string, ModelScalarType> ScalarTypes => this._ScalarTypes;
 
         [JsonProperty(Order = 5)]
-        public FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelComplexType> ComplexTypes => this._ComplexTypes;
+        public FreezableOwned2KeyedCollection<ModelSchema, string, string, ModelComplexType> ComplexTypes => this._ComplexTypes;
 
         [JsonProperty(Order = 6)]
-        public FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelEntity> Entities => this._Entities;
+        public FreezableOwned2KeyedCollection<ModelSchema, string, string, ModelEntity> Entities => this._Entities;
 
         [JsonProperty(Order = 7)]
-        public FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelRelation> Relations => this._Relations;
+        public FreezableOwned2KeyedCollection<ModelSchema, string, string, ModelRelation> Relations => this._Relations;
 
         public ModelSchema() {
-            this._ScalarTypes = new FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelScalarType>(
+            this._ScalarTypes = new FreezableOwned2KeyedCollection<ModelSchema, string, string, ModelScalarType>(
                 this,
                 (item) => item.Name,
                 ModelUtility.Instance.StringComparer,
                 (item) => item.ExternalName,
                 ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
-            this._ComplexTypes = new FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelComplexType>(
+            this._ComplexTypes = new FreezableOwned2KeyedCollection<ModelSchema, string, string, ModelComplexType>(
                 this,
                 (item) => item.Name,
                 ModelUtility.Instance.StringComparer,
                 (item) => item.ExternalName,
                 ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
-            this._Entities = new FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelEntity>(
+            this._Entities = new FreezableOwned2KeyedCollection<ModelSchema, string, string, ModelEntity>(
                 this,
                 (item) => item.Name,
                 ModelUtility.Instance.StringComparer,
                 (item) => item.ExternalName,
                 ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
-            this._Relations = new FreezeableOwned2KeyedCollection<ModelSchema, string, string, ModelRelation>(this,
+            this._Relations = new FreezableOwned2KeyedCollection<ModelSchema, string, string, ModelRelation>(this,
                 (item) => item.Name,
                 ModelUtility.Instance.StringComparer,
                 (item) => item.ExternalName,
@@ -86,7 +86,7 @@
         [JsonIgnore]
         public override ModelRepository Owner {
             get => this._Owner;
-            set => this.SetOwnerAndProperty(ref _Owner, value, (owner)=>owner.ModelSchema, (owner, newValue) => owner.ModelSchema = newValue);
+            set => this.SetOwnerAndProperty(ref this._Owner, value, (owner)=>owner.ModelSchema, (owner, newValue) => owner.ModelSchema = newValue);
         }
 
         [JsonProperty(Order = 1, DefaultValueHandling = DefaultValueHandling.Ignore)]
@@ -126,7 +126,6 @@
             }
         }
 
-
         public override bool Freeze() {
             var result = base.Freeze();
             if (result) {
@@ -155,19 +154,21 @@
         }
 
         public ModelEntity CreateEntity(string name, string externalName, string entityTypeName) {
-            var result = new ModelEntity();
-            result.Kind = ModelEntityKind.EntitySet;
-            result.Name = name;
-            result.ExternalName = externalName ?? name;
-            result.EntityTypeName = entityTypeName;
+            var result = new ModelEntity {
+                Kind = ModelEntityKind.EntitySet,
+                Name = name,
+                ExternalName = externalName ?? name,
+                EntityTypeName = entityTypeName
+            };
             this.Entities.Add(result);
             return result;
         }
 
         public ModelComplexType CreateComplexType(string name, string externalName) {
-            var result = new ModelComplexType();
-            result.Name = name;
-            result.ExternalName = externalName ?? name;
+            var result = new ModelComplexType {
+                Name = name,
+                ExternalName = externalName ?? name
+            };
             this.ComplexTypes.Add(result);
             return result;
         }

@@ -11,27 +11,27 @@
     public class MappingModelSchema
         : MappingObjectString<MappingModelRepository, ModelSchema> {        
         [JsonIgnore]
-        private readonly FreezeableOwnedCollection<MappingModelSchema, MappingModelComplexType> _ComplexTypeMappings;
+        private readonly FreezableOwnedCollection<MappingModelSchema, MappingModelComplexType> _ComplexTypeMappings;
            
         [JsonIgnore]
-        private readonly FreezeableOwnedCollection<MappingModelSchema, MappingModelEntity> _EntityMappings;
+        private readonly FreezableOwnedCollection<MappingModelSchema, MappingModelEntity> _EntityMappings;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedCollection<MappingModelSchema, MappingModelRelation> _RelationMappings;
+        private readonly FreezableOwnedCollection<MappingModelSchema, MappingModelRelation> _RelationMappings;
 
         [JsonProperty]
-        public FreezeableOwnedCollection<MappingModelSchema, MappingModelComplexType> ComplexTypeMappings => this._ComplexTypeMappings;
+        public FreezableOwnedCollection<MappingModelSchema, MappingModelComplexType> ComplexTypeMappings => this._ComplexTypeMappings;
 
         [JsonProperty]
-        public FreezeableOwnedCollection<MappingModelSchema, MappingModelEntity> EntityMappings => this._EntityMappings;
+        public FreezableOwnedCollection<MappingModelSchema, MappingModelEntity> EntityMappings => this._EntityMappings;
 
         [JsonProperty]
-        public FreezeableOwnedCollection<MappingModelSchema, MappingModelRelation> RelationMappings => this._RelationMappings;
+        public FreezableOwnedCollection<MappingModelSchema, MappingModelRelation> RelationMappings => this._RelationMappings;
 
         public MappingModelSchema() {
-            this._ComplexTypeMappings = new FreezeableOwnedCollection<MappingModelSchema, MappingModelComplexType>(this, (owner, item) => { item.Owner = owner; });
-            this._EntityMappings = new FreezeableOwnedCollection<MappingModelSchema, MappingModelEntity>(this, (owner, item) => { item.Owner = owner; });
-            this._RelationMappings = new FreezeableOwnedCollection<MappingModelSchema, MappingModelRelation>(this, (owner, item) => { item.Owner = owner; });
+            this._ComplexTypeMappings = new FreezableOwnedCollection<MappingModelSchema, MappingModelComplexType>(this, (owner, item) => { item.Owner = owner; });
+            this._EntityMappings = new FreezableOwnedCollection<MappingModelSchema, MappingModelEntity>(this, (owner, item) => { item.Owner = owner; });
+            this._RelationMappings = new FreezableOwnedCollection<MappingModelSchema, MappingModelRelation>(this, (owner, item) => { item.Owner = owner; });
         }
 
         /*

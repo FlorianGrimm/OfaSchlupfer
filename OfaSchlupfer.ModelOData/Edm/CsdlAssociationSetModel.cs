@@ -11,7 +11,7 @@
     public class CsdlAssociationSetModel
         : CsdlAnnotationalModel {
         [JsonIgnore]
-        private readonly FreezeableOwnedCollection<CsdlAssociationSetModel, CsdlAssociationSetEndModel> _End;
+        private readonly FreezableOwnedCollection<CsdlAssociationSetModel, CsdlAssociationSetEndModel> _End;
 
         // parents
         [JsonIgnore]
@@ -27,7 +27,7 @@
         private CsdlAssociationModel _AssociationModel;
 
         public CsdlAssociationSetModel() {
-            this._End = new FreezeableOwnedCollection<CsdlAssociationSetModel, CsdlAssociationSetEndModel>(
+            this._End = new FreezableOwnedCollection<CsdlAssociationSetModel, CsdlAssociationSetEndModel>(
                 this,
                 (owner, item) => { item.Owner = owner; });
         }
@@ -94,7 +94,7 @@
         }
 
         [JsonProperty]
-        public FreezeableOwnedCollection<CsdlAssociationSetModel, CsdlAssociationSetEndModel> End => this._End;
+        public FreezableOwnedCollection<CsdlAssociationSetModel, CsdlAssociationSetEndModel> End => this._End;
 
         //public List<CsdlAssociationSetEndModel> FindEnd(string endLocalName) => this._End.FindByKey(endLocalName);
 

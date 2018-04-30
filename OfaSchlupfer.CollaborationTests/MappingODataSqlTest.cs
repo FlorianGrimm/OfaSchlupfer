@@ -106,9 +106,10 @@ namespace OfaSchlupfer.CollaborationTests {
                     }
                 }
                 {
-                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings();
-                    serializeSettings.TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple;
-                    serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects;
+                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings {
+                        TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple,
+                        TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects
+                    };
                     serializeSettings.Converters.Add(new OfaSchlupfer.MSSQLReflection.Model.SqlNameJsonConverter());
                     //serializeSettings.Converters.Add(new OfaSchlupfer.MSSQLReflection.Model.ModelSqlTableJsonConverter());
                     //serializeSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
@@ -128,8 +129,9 @@ namespace OfaSchlupfer.CollaborationTests {
                     var mappingModelRepositorySourceTarget = modelRoot.CreateMapping("SourceTarget", modelRepositorySource, modelRepositoryTarget);
                     var mappingModelSchema = mappingModelRepositorySourceTarget.CreateMappingModelSchema("SourceTarget", modelRepositorySource.ModelSchema, modelRepositoryTarget.ModelSchema, true, false, "");
 
-                    var mappingModelBuilder = new MappingModelBuilder();
-                    mappingModelBuilder.MappingModelRepository = mappingModelRepositorySourceTarget;
+                    var mappingModelBuilder = new MappingModelBuilder {
+                        MappingModelRepository = mappingModelRepositorySourceTarget
+                    };
 
                     var errors = new ModelErrors();
                     mappingModelBuilder.EnabledForCreatedMappings = true;
@@ -168,8 +170,9 @@ namespace OfaSchlupfer.CollaborationTests {
                     Assert.False(errors.HasErrors());
                 }
                 var cred = new SharePointOnlineServiceClientCredentials(repCSProjectServer, null);
-                var oDataClient = new ODataServiceClient(new Uri(repCSProjectServer.GetUrlNormalized()), cred, null);
-                oDataClient.ModelRepository = modelRepositorySource;
+                var oDataClient = new ODataServiceClient(new Uri(repCSProjectServer.GetUrlNormalized()), cred, null) {
+                    ModelRepository = modelRepositorySource
+                };
 
                 var oDataRequest = oDataClient.Query("Projects");
                 // oDataClient.ConnectionString = repCSProjectServer;
@@ -178,9 +181,10 @@ namespace OfaSchlupfer.CollaborationTests {
                 var srcPathData = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\ProjectOnlineData-Projects.json");
                 var responceContentString = System.IO.File.ReadAllText(srcPathData);
 
-                var operationResponse = new AzureOperationResponse<ODataRequest>();
-                operationResponse.Request = new System.Net.Http.HttpRequestMessage();
-                operationResponse.Response = new System.Net.Http.HttpResponseMessage() { Content = new System.Net.Http.StringContent(responceContentString) };
+                var operationResponse = new AzureOperationResponse<ODataRequest> {
+                    Request = new System.Net.Http.HttpRequestMessage(),
+                    Response = new System.Net.Http.HttpResponseMessage() { Content = new System.Net.Http.StringContent(responceContentString) }
+                };
 
                 ODataDeserializtion d = new ODataDeserializtion(oDataRequest, oDataClient);
                 var deserializeResult = d.Deserialize(responceContentString);
@@ -190,9 +194,10 @@ namespace OfaSchlupfer.CollaborationTests {
                 Assert.Equal(60, lstEntity.Count);
 
                 {
-                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings();
-                    serializeSettings.TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple;
-                    serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings {
+                        TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple,
+                        TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto
+                    };
                     var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(modelRoot, Newtonsoft.Json.Formatting.Indented, serializeSettings);
                     try {
                         string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\Mapping_OData_SQL_ProjectOnlinemetadata_Test-root.json");
@@ -204,9 +209,10 @@ namespace OfaSchlupfer.CollaborationTests {
 
 
                 {
-                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings();
-                    serializeSettings.TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple;
-                    serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects;
+                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings {
+                        TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple,
+                        TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects
+                    };
                     serializeSettings.Converters.Add(new OfaSchlupfer.MSSQLReflection.Model.SqlNameJsonConverter());
                     //serializeSettings.Converters.Add(new OfaSchlupfer.MSSQLReflection.Model.ModelSqlTableJsonConverter());
                     //serializeSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();

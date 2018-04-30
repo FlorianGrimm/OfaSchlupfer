@@ -12,7 +12,7 @@
     /// </summary>
     [JsonObject]
     public class CsdlAnnotationalModel
-        : FreezeableObject {
+        : FreezableObject {
         private Dictionary<string, string> _Annotations;
 
         public CsdlAnnotationalModel() { }

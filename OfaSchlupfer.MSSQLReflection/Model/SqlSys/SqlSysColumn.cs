@@ -33,6 +33,8 @@ namespace OfaSchlupfer.MSSQLReflection.Model.SqlSys {
             : base(metaData, values) { }
 
 #pragma warning disable SA1101 // Prefix local calls with this
+#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable IDE0009 // Member access should be qualified.
         /// <summary>
         /// Gets the object_id related object
         /// </summary>

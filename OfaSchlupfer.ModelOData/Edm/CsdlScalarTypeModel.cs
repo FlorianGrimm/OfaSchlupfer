@@ -8,7 +8,7 @@
 
     [JsonObject]
     public class CsdlScalarTypeModel
-        : FreezeableObject
+        : FreezableObject
         , ICsdlTypeModel {
         [JsonIgnore]
         private CsdlSchemaModel _Owner;

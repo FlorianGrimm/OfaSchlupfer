@@ -12,10 +12,10 @@
     public class EdmxModel
         : CsdlAnnotationalModel {
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<EdmxModel, string, CsdlSchemaModel> _DataServices;
+        private readonly FreezableOwnedKeyedCollection<EdmxModel, string, CsdlSchemaModel> _DataServices;
 
         public EdmxModel() {
-            this._DataServices = new FreezeableOwnedKeyedCollection<EdmxModel, string, CsdlSchemaModel>(
+            this._DataServices = new FreezableOwnedKeyedCollection<EdmxModel, string, CsdlSchemaModel>(
                 this,
                 (item) => item.Namespace,
                 StringComparer.OrdinalIgnoreCase,
@@ -29,7 +29,7 @@
 
         public string DataServiceVersion;
 
-        public FreezeableOwnedKeyedCollection<EdmxModel, string, CsdlSchemaModel> DataServices => this._DataServices;
+        public FreezableOwnedKeyedCollection<EdmxModel, string, CsdlSchemaModel> DataServices => this._DataServices;
 
         public void AddCoreSchemaIfNeeded(ModelErrors errors) {
             if (this.FindDataServices("Edm").Count == 0) {

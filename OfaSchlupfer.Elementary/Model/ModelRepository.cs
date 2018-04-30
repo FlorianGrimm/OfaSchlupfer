@@ -36,7 +36,7 @@
 
         public override ModelRoot Owner {
             get => this._Owner;
-            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.Repositories);
+            set => this.SetOwnerWithChildren(ref this._Owner, value, (owner) => owner.Repositories);
         }
 
         [JsonProperty(Order = 4)]
@@ -81,8 +81,9 @@
         }
 
         public ModelSchema CreateModelSchema(string name) {
-            var result = new ModelSchema();
-            result.Name = name ?? this.Name;
+            var result = new ModelSchema {
+                Name = name ?? this.Name
+            };
             this.ModelSchema = result;
             return result;
         }
@@ -172,8 +173,9 @@
                     repositoryType = this.RepositoryTypeName;
                 }
             }
-            var result = new ModelDefinition();
-            result.RepositoryTypeName = repositoryType;
+            var result = new ModelDefinition {
+                RepositoryTypeName = repositoryType
+            };
             this.ModelDefinition = result;
             return result;
         }

@@ -11,38 +11,38 @@
     [JsonObject]
     public class ModelComplexType : ModelType {
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelPrimaryKey> _Keys;
+        private readonly FreezableOwnedKeyedCollection<ModelComplexType, string, ModelPrimaryKey> _Keys;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelProperty> _Properties;
+        private readonly FreezableOwnedKeyedCollection<ModelComplexType, string, ModelProperty> _Properties;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelNavigationProperty> _NavigationProperty;
+        private readonly FreezableOwnedKeyedCollection<ModelComplexType, string, ModelNavigationProperty> _NavigationProperty;
 
         [JsonIgnore]
         private ModelComplexTypeMetaEntity _GetMetaEntity;
 
         [JsonProperty(Order = 3)]
-        public FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelPrimaryKey> Keys => this._Keys;
+        public FreezableOwnedKeyedCollection<ModelComplexType, string, ModelPrimaryKey> Keys => this._Keys;
 
         [JsonProperty(Order = 4)]
-        public FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelProperty> Properties => this._Properties;
+        public FreezableOwnedKeyedCollection<ModelComplexType, string, ModelProperty> Properties => this._Properties;
 
         [JsonProperty(Order = 5)]
-        public FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelNavigationProperty> NavigationProperty => this._NavigationProperty;
+        public FreezableOwnedKeyedCollection<ModelComplexType, string, ModelNavigationProperty> NavigationProperty => this._NavigationProperty;
 
         public ModelComplexType() {
-            this._Keys = new FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelPrimaryKey>(
+            this._Keys = new FreezableOwnedKeyedCollection<ModelComplexType, string, ModelPrimaryKey>(
                 this,
                 (key) => key.Name,
                 ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
-            this._Properties = new FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelProperty>(
+            this._Properties = new FreezableOwnedKeyedCollection<ModelComplexType, string, ModelProperty>(
                 this,
                 (property) => property.Name,
                 ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
-            this._NavigationProperty = new FreezeableOwnedKeyedCollection<ModelComplexType, string, ModelNavigationProperty>(
+            this._NavigationProperty = new FreezableOwnedKeyedCollection<ModelComplexType, string, ModelNavigationProperty>(
                 this,
                 (property) => property.Name,
                 ModelUtility.Instance.StringComparer,
@@ -52,7 +52,7 @@
         [JsonIgnore]
         public override ModelSchema Owner {
             get => this._Owner;
-            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.ComplexTypes);
+            set => this.SetOwnerWithChildren(ref this._Owner, value, (owner) => owner.ComplexTypes);
         }
 
         public IMetaEntityFlexible GetMetaEntity()
@@ -83,9 +83,10 @@
                 string name,
                 string externalName
             ) {
-            var result = new ModelProperty();
-            result.Name = name;
-            result.ExternalName = externalName ?? name;
+            var result = new ModelProperty {
+                Name = name,
+                ExternalName = externalName ?? name
+            };
             this.Properties.Add(result);
             return result;
         }
@@ -97,12 +98,13 @@
                 bool isOptional,
                 bool isCollection
             ) {
-            var result = new ModelNavigationProperty();
-            result.Name = name;
-            result.ExternalName = externalName ?? name;
-            result.IsCollection = isCollection;
-            result.IsOptional = isOptional;
-            result.ItemType = toComplexType;
+            var result = new ModelNavigationProperty {
+                Name = name,
+                ExternalName = externalName ?? name,
+                IsCollection = isCollection,
+                IsOptional = isOptional,
+                ItemType = toComplexType
+            };
             this.NavigationProperty.Add(result);
             return result;
         }
@@ -110,17 +112,17 @@
 
     [JsonObject]
     public class ModelComplexTypeMetaEntity
-        : FreezeableObject
+        : FreezableObject
         , IMetaEntity
         , IMetaEntityFlexible {
         [JsonIgnore]
         private readonly ModelComplexType _ModelComplexType;
 
         [JsonIgnore]
-        private FreezeableCollection<IMetaIndexedProperty> _PropertyByIndex;
+        private FreezableCollection<IMetaIndexedProperty> _PropertyByIndex;
 
         [JsonIgnore]
-        private FreezeableDictionary<string, IMetaIndexedProperty> _PropertyByName;
+        private readonly FreezableDictionary<string, IMetaIndexedProperty> _PropertyByName;
 
         // cache
         private FreezedList<IMetaProperty> _GetProperties;
@@ -129,8 +131,8 @@
         public ModelComplexTypeMetaEntity(ModelComplexType modelComplexType) {
             this.EntityTypeName = modelComplexType.ExternalName ?? modelComplexType.Name;
             this._ModelComplexType = modelComplexType;
-            this._PropertyByIndex = new FreezeableCollection<IMetaIndexedProperty>();
-            this._PropertyByName = new FreezeableDictionary<string, IMetaIndexedProperty>();
+            this._PropertyByIndex = new FreezableCollection<IMetaIndexedProperty>();
+            this._PropertyByName = new FreezableDictionary<string, IMetaIndexedProperty>();
             int index = 0;
             foreach (var property in modelComplexType.Properties) {
                 var metaProperty = property.GetMetaProperty(index);
@@ -220,8 +222,7 @@
         /// <returns>the property or null</returns>
         public IMetaProperty GetProperty(string name) {
             if (name is null) { throw new ArgumentNullException(nameof(name)); }
-            IMetaIndexedProperty result = null;
-            if (this._PropertyByName.TryGetValue(name, out result)) {
+            if (this._PropertyByName.TryGetValue(name, out var result)) {
                 return result;
             } else {
                 return null;

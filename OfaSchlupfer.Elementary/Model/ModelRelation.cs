@@ -27,38 +27,19 @@
         [JsonIgnore]
         public override ModelSchema Owner {
             get => this._Owner;
-            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.Relations);
+            set => this.SetOwnerWithChildren(ref this._Owner, value, (owner) => owner.Relations);
         }
 
         [JsonProperty(Order = 2)]
         public string MasterName {
-            get {
-                if ((object)this._MasterEntity != null) {
-                    return this._MasterEntity.Name;
-                } else {
-                    return this._MasterName;
-                }
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._MasterName = value;
-            }
+            get => this.GetPairNameProperty(ref this._MasterName, ref this._MasterEntity, (item)=>item.Name); 
+            set => this.SetPairNameProperty(ref this._MasterName, ref this._MasterEntity, value, (that, n)=> that.ResolveNamesMasterEntity(ModelErrors.GetIgnorance()));
         }
 
         [JsonIgnore]
         public ModelEntity MasterEntity {
-            get {
-                if (((object)this._MasterEntity == null)
-                    && ((object)this._MasterName != null)) {
-                    this.ResolveNamesMasterEntity(ModelErrors.GetIgnorance());
-                }
-                return this._MasterEntity;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._MasterEntity = value;
-                this._MasterName = null;
-            }
+            get => this.GetPairRefProperty(ref this._MasterName, ref this._MasterEntity, (that, n) => that.ResolveNamesMasterEntity(ModelErrors.GetIgnorance()));
+            set => this.SetPairRefProperty(ref this._MasterName, ref this._MasterEntity, value, (item) => item.Name);
         }
 
         [JsonProperty(Order = 3)]
@@ -69,35 +50,15 @@
 
         [JsonProperty(Order = 4)]
         public string ForeignName {
-            get {
-                if ((object)this._ForeignEntity != null) {
-                    return this._ForeignEntity.Name;
-                } else {
-                    return this._ForeignName;
-                }
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._ForeignName = value;
-            }
+            get => this.GetPairNameProperty(ref this._ForeignName, ref this._ForeignEntity, (item) => item.Name);
+            set => this.SetPairNameProperty(ref this._ForeignName, ref this._ForeignEntity, value, (that, n) => that.ResolveNamesForeignEntity(ModelErrors.GetIgnorance()));
         }
 
         [JsonIgnore]
         public ModelEntity ForeignEntity {
-            get {
-                if (((object)this._ForeignEntity == null)
-                   && ((object)this._ForeignName != null)) {
-                    this.ResolveNamesForeignEntity(ModelErrors.GetIgnorance());
-                }
-                return this._ForeignEntity;
-            }
-            set {
-                this.ThrowIfFrozen();
-                this._ForeignEntity = value;
-                this._ForeignName = null;
-            }
+            get => this.GetPairRefProperty(ref this._ForeignName, ref this._ForeignEntity, (that, n) => that.ResolveNamesForeignEntity(ModelErrors.GetIgnorance()));
+            set => this.SetPairRefProperty(ref this._ForeignName, ref this._ForeignEntity, value, (item) => item.Name);
         }
-
 
         [JsonProperty(Order = 5)]
         public string ForeignNavigationPropertyName { get; set; }
@@ -105,38 +66,13 @@
         [JsonIgnore]
         public ModelNavigationProperty ForeignNavigationProperty { get; set; }
 
-        private void ResolveNames(ModelErrors errors) {
+        private ModelEntity ResolveNamesForeignEntity(ModelErrors errors) => this.ResolveNameHelper(this._Owner, this.Name, ref this._ForeignName, ref this._ForeignEntity, (o, n) => o.FindEntity(n), errors);
+        private ModelEntity ResolveNamesMasterEntity(ModelErrors errors) => this.ResolveNameHelper(this._Owner, this.Name, ref this._MasterName, ref this._MasterEntity, (o, n) => o.FindEntity(n), errors);
+
+        public override void ResolveNamedReferences(ModelErrors errors) {
+            //base.ResolveNamedReferences(errors);
             this.ResolveNamesMasterEntity(errors);
             this.ResolveNamesForeignEntity(errors);
-        }
-
-        private void ResolveNamesMasterEntity(ModelErrors errors) {
-            if (((object)this._Owner != null) && ((object)this._MasterEntity == null) && ((object)this._MasterName != null)) {
-                var lst = this.Owner.FindEntity(this.MasterName);
-                if (lst.Count == 1) {
-                    this._MasterEntity = lst[0];
-                    this._MasterName = null;
-                } else if (lst.Count == 0) {
-                    errors.AddErrorOrThrow($"Master {this.MasterName} in {this.Owner?.Name} not found.", this.Owner?.Name, ResolveNameNotFoundException.Factory);
-                } else {
-                    errors.AddErrorOrThrow($"Master {this.MasterName} in {this.Owner?.Name} found #{lst.Count} times.", this.Owner?.Name, ResolveNameNotUniqueException.Factory);
-                }
-            }
-        }
-
-
-        private void ResolveNamesForeignEntity(ModelErrors errors) {
-            if (((object)this._Owner != null) && ((object)this._ForeignEntity == null) && ((object)this._ForeignName != null)) {
-                var lst = this.Owner.FindEntity(this.ForeignName);
-                if (lst.Count == 1) {
-                    this._ForeignEntity = lst[0];
-                    this._ForeignName = null;
-                } else if (lst.Count == 0) {
-                    errors.AddErrorOrThrow($"Foreign {this.ForeignName} in {this.Owner?.Name} not found.", this.Owner?.Name, ResolveNameNotFoundException.Factory);
-                } else {
-                    errors.AddErrorOrThrow($"Foreign {this.ForeignName} in {this.Owner?.Name} found #{lst.Count} times.", this.Owner?.Name, ResolveNameNotUniqueException.Factory);
-                }
-            }
         }
 
         public override bool Freeze() {

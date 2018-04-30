@@ -14,7 +14,7 @@
     /// </summary>
     [JsonObject]
     public class ModelRoot
-        : FreezeableObject {
+        : FreezableObject {
         [JsonIgnore]
         IServiceProvider _ServiceProvider;
 
@@ -22,17 +22,17 @@
         private string _Name;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelRoot, string, ModelRepository> _Repositories;
+        private readonly FreezableOwnedKeyedCollection<ModelRoot, string, ModelRepository> _Repositories;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelRoot, string, MappingModelRepository> _RepositoryMappings;
+        private readonly FreezableOwnedKeyedCollection<ModelRoot, string, MappingModelRepository> _RepositoryMappings;
 
         public ModelRoot() {
-            this._Repositories = new FreezeableOwnedKeyedCollection<ModelRoot, string, ModelRepository>(
+            this._Repositories = new FreezableOwnedKeyedCollection<ModelRoot, string, ModelRepository>(
                 this, (item) => item.Name,
                 ModelUtility.Instance.StringComparer,
                 (that, item) => { item.Owner = that; });
-            this._RepositoryMappings = new FreezeableOwnedKeyedCollection<ModelRoot, string, MappingModelRepository>(
+            this._RepositoryMappings = new FreezableOwnedKeyedCollection<ModelRoot, string, MappingModelRepository>(
                 this, (item) => item.Name,
                 ModelUtility.Instance.StringComparer,
                 (that, item) => { item.Owner = that; });
@@ -66,9 +66,10 @@
         }
 
         public ModelRepository CreateRepository(string name, string repositoryType) {
-            var result = new ModelRepository();
-            result.Name = name;
-            result.RepositoryTypeName = repositoryType;
+            var result = new ModelRepository {
+                Name = name,
+                RepositoryTypeName = repositoryType
+            };
             this.Repositories.Add(result);
             return result;
         }
@@ -86,10 +87,10 @@
         }
 
         [JsonProperty(Order = 2)]
-        public FreezeableOwnedKeyedCollection<ModelRoot, string, ModelRepository> Repositories => this._Repositories;
+        public FreezableOwnedKeyedCollection<ModelRoot, string, ModelRepository> Repositories => this._Repositories;
 
         [JsonProperty(Order = 3)]
-        public FreezeableOwnedKeyedCollection<ModelRoot, string, MappingModelRepository> RepositoryMappings => this._RepositoryMappings;
+        public FreezableOwnedKeyedCollection<ModelRoot, string, MappingModelRepository> RepositoryMappings => this._RepositoryMappings;
 
         /// <summary>
         /// 

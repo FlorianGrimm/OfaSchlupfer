@@ -13,9 +13,9 @@
     /// </summary>
     [JsonObject]
     public class ModelSqlServer
-        : FreezeableObject
+        : FreezableObject
         , IScopeNameResolver {
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlServer, SqlName, ModelSqlDatabase> _Database;
+        private readonly FreezableOwnedKeyedCollection<ModelSqlServer, SqlName, ModelSqlDatabase> _Database;
         private SqlScope _Scope;
         private SqlName _Name;
 
@@ -23,7 +23,7 @@
         /// Initializes a new instance of the <see cref="ModelSqlServer"/> class.
         /// </summary>
         public ModelSqlServer() {
-            this._Database = new FreezeableOwnedKeyedCollection<ModelSqlServer, SqlName, ModelSqlDatabase>(
+            this._Database = new FreezableOwnedKeyedCollection<ModelSqlServer, SqlName, ModelSqlDatabase>(
                 this,
                 (item) => item.Name,
                 SqlNameEqualityComparer.Level1,
@@ -44,7 +44,7 @@
         /// <summary>
         /// Gets the databases.
         /// </summary>
-        public FreezeableOwnedKeyedCollection<ModelSqlServer, SqlName, ModelSqlDatabase> Database => this._Database;
+        public FreezableOwnedKeyedCollection<ModelSqlServer, SqlName, ModelSqlDatabase> Database => this._Database;
 
         /// <summary>
         /// Gets the type by its's name

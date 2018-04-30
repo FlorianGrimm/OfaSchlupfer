@@ -11,7 +11,7 @@
     /// </summary>
     [JsonObject()]
     public class EntityFlexible
-        : FreezeableObject
+        : FreezableObject
         , IEntity
         , IEntityFlexible {
         /// <summary>

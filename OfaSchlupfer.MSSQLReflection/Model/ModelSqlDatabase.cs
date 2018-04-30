@@ -5,28 +5,30 @@
     using Newtonsoft.Json;
 
     using OfaSchlupfer.Freezable;
+    using OfaSchlupfer.Model;
 
     /// <summary>
     /// the database
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public sealed class ModelSqlDatabase
-        : FreezeableObject
+        : FreezableObject
+        , IContainerNamedReferences
         , IScopeNameResolver {
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSchema> _Schemas;
+        private readonly FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSchema> _Schemas;
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlType> _Types;
+        private readonly FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlType> _Types;
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTable> _Tables;
+        private readonly FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTable> _Tables;
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTableType> _TableTypes;
+        private readonly FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTableType> _TableTypes;
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlView> _Views;
+        private readonly FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlView> _Views;
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlProcedure> _Procedures;
+        private readonly FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlProcedure> _Procedures;
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSynonym> _Synonyms;
+        private readonly FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSynonym> _Synonyms;
 
         [JsonIgnore]
         private SqlScope _Scope;
@@ -39,44 +41,44 @@
         /// Initializes a new instance of the <see cref="ModelSqlDatabase"/> class.
         /// </summary>
         public ModelSqlDatabase() {
-            this._Schemas = new FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSchema>(
+            this._Schemas = new FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSchema>(
                 this,
                 (item) => item.Name,
                 SqlNameEqualityComparer.Level1,
                 (owner, item) => item.Database = owner
                 );
 
-            this._Types = new FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlType>(
+            this._Types = new FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlType>(
                 this,
                 (item) => item.Name,
                 SqlNameEqualityComparer.Level2,
                 (owner, item) => item.Database = owner
                 );
-            this._Tables = new FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTable>(
+            this._Tables = new FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTable>(
                 this,
                 (item) => item.Name,
                 SqlNameEqualityComparer.Level2,
                 (owner, item) => item.Database = owner
                 );
-            this._TableTypes = new FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTableType>(
+            this._TableTypes = new FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTableType>(
                 this,
                 (item) => item.Name,
                 SqlNameEqualityComparer.Level2,
                 (owner, item) => item.Database = owner
                 );
-            this._Views = new FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlView>(
+            this._Views = new FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlView>(
                 this,
                 (item) => item.Name,
                 SqlNameEqualityComparer.Level2,
                 (owner, item) => item.Database = owner
                 );
-            this._Procedures = new FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlProcedure>(
+            this._Procedures = new FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlProcedure>(
                 this,
                 (item) => item.Name,
                 SqlNameEqualityComparer.Level2,
                 (owner, item) => item.Database = owner
                 );
-            this._Synonyms = new FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSynonym>(
+            this._Synonyms = new FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSynonym>(
                 this,
                 (item) => item.Name,
                 SqlNameEqualityComparer.Level2,
@@ -124,43 +126,43 @@
         /// Gets the schemas.
         /// </summary>        
         [JsonProperty(ItemIsReference = true)]
-        public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSchema> Schemas => this._Schemas;
+        public FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSchema> Schemas => this._Schemas;
 
         /// <summary>
         /// Gets the types.
         /// </summary>
         [JsonIgnore]
-        public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlType> Types => this._Types;
+        public FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlType> Types => this._Types;
 
         /// <summary>
         /// Gets the tables.
         /// </summary>
         [JsonIgnore]
-        public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTable> Tables => this._Tables;
+        public FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTable> Tables => this._Tables;
 
         /// <summary>
         /// Gets the tables.
         /// </summary>
         [JsonIgnore]
-        public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTableType> TableTypes => this._TableTypes;
+        public FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlTableType> TableTypes => this._TableTypes;
 
         /// <summary>
         /// Gets the views.
         /// </summary>
         [JsonIgnore]
-        public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlView> Views => this._Views;
+        public FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlView> Views => this._Views;
 
         /// <summary>
         /// Gets the procedures.
         /// </summary>
         [JsonIgnore]
-        public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlProcedure> Procedures => this._Procedures;
+        public FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlProcedure> Procedures => this._Procedures;
 
         /// <summary>
         /// Gets the Synonyms
         /// </summary>
         [JsonIgnore]
-        public FreezeableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSynonym> Synonyms => this._Synonyms;
+        public FreezableOwnedKeyedCollection<ModelSqlDatabase, SqlName, ModelSqlSynonym> Synonyms => this._Synonyms;
 
         /// <summary>
         /// Resolve the name.
@@ -277,6 +279,10 @@
                 */
             }
             return result;
+        }
+
+        public void ResolveNamedReferences(ModelErrors errors) {
+#warning  public virtual void ResolveNamedReferences(ModelErrors errors) {
         }
     }
 }

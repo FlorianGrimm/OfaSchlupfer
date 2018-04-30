@@ -4,15 +4,15 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public sealed class FreezeableCollection<T>
+    public sealed class FreezableCollection<T>
         : IFreezeable, IList<T> {
         private readonly List<T> _Items;
         private int _IsFrozen;
-        public FreezeableCollection() {
+        public FreezableCollection() {
             this._Items = new List<T>();
         }
 
-        public FreezeableCollection(IEnumerable<T> items) : this() {
+        public FreezableCollection(IEnumerable<T> items) : this() {
             if ((object)items != null) {
                 this._Items.AddRange(items);
             }

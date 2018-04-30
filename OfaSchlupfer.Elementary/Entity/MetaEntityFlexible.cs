@@ -12,13 +12,13 @@
     /// </summary>
     [JsonObject]
     public class MetaEntityFlexible
-        : FreezeableObject
+        : FreezableObject
         , IMetaEntity
         , IMetaEntityFlexible {
         [JsonIgnore]
-        private FreezeableCollection<IMetaIndexedProperty> _PropertyByIndex;
+        private readonly FreezableCollection<IMetaIndexedProperty> _PropertyByIndex;
         [JsonIgnore]
-        private FreezeableDictionary<string, IMetaIndexedProperty> _PropertyByName;
+        private readonly FreezableDictionary<string, IMetaIndexedProperty> _PropertyByName;
 
         // cache
         [JsonIgnore]
@@ -30,8 +30,8 @@
         /// Initializes a new instance of the <see cref="MetaEntityFlexible"/> class.
         /// </summary>
         public MetaEntityFlexible() {
-            this._PropertyByIndex = new FreezeableCollection<IMetaIndexedProperty>();
-            this._PropertyByName = new FreezeableDictionary<string, IMetaIndexedProperty>();
+            this._PropertyByIndex = new FreezableCollection<IMetaIndexedProperty>();
+            this._PropertyByName = new FreezableDictionary<string, IMetaIndexedProperty>();
         }
 
         /// <summary>

@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public sealed class FreezeableOwnedCollection<TOwner, TValue>
+    public sealed class FreezableOwnedCollection<TOwner, TValue>
         : IFreezeable
         , IList<TValue>
         where TValue : class {
@@ -13,7 +13,7 @@
         private readonly List<TValue> _Items;
         private int _IsFrozen;
 
-        public FreezeableOwnedCollection(TOwner owner, Action<TOwner, TValue> actionOnInsertSet) {
+        public FreezableOwnedCollection(TOwner owner, Action<TOwner, TValue> actionOnInsertSet) {
             this._Items = new List<TValue>();
             this._Owner = owner;
             this._ActionOnInsertSet = actionOnInsertSet;

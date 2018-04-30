@@ -25,7 +25,7 @@
         [JsonIgnore]
         public virtual TOwner Owner {
             get => this._Owner;
-            set => this.SetOwner(ref _Owner, value);
+            set => this.SetOwner(ref this._Owner, value);
         }
     }
 }

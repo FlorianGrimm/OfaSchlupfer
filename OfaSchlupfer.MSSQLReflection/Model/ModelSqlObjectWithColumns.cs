@@ -19,22 +19,22 @@
         /// the columns
         /// </summary>
         [JsonIgnore]
-        protected FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlColumn> _Columns;
+        protected FreezableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlColumn> _Columns;
 
         [JsonIgnore]
-        protected FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlIndex> _Indexes;
+        protected FreezableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlIndex> _Indexes;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlObjectWithColumns"/> class.
         /// </summary>
         public ModelSqlObjectWithColumns() {
-            this._Columns = new FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlColumn>(
+            this._Columns = new FreezableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlColumn>(
                 this,
                 (item) => item.Name,
                 SqlNameEqualityComparer.Level1,
                 (owner, item) => item.Owner = owner
                 );
-            this._Indexes = new FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlIndex>(
+            this._Indexes = new FreezableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlIndex>(
                 this,
                 (item) => item.Name,
                 SqlNameEqualityComparer.Level1,
@@ -64,13 +64,13 @@
         /// Gets the columns
         /// </summary>
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlColumn> Columns => this._Columns;
+        public FreezableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlColumn> Columns => this._Columns;
 
         [JsonIgnore]
         IFreezeableOwnedKeyedCollection<SqlName, ModelSqlColumn> IModelSqlObjectWithColumns.Columns => this._Columns;
 
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlIndex> Indexes => this._Indexes;
+        public FreezableOwnedKeyedCollection<ModelSqlObjectWithColumns, SqlName, ModelSqlIndex> Indexes => this._Indexes;
 
         [JsonIgnore]
         IFreezeableOwnedKeyedCollection<SqlName, ModelSqlIndex> IModelSqlObjectWithColumns.Indexes => this._Indexes;

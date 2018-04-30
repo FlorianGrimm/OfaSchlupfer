@@ -17,7 +17,7 @@
         }
 
         private SqlName _For;
-        private SqlScope _Scope;
+        private readonly SqlScope _Scope;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelSqlSynonym"/> class.

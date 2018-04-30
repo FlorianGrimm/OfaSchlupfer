@@ -1,13 +1,16 @@
-﻿using Newtonsoft.Json;
-using OfaSchlupfer.Freezable;
+﻿namespace OfaSchlupfer.MSSQLReflection.Model {
+    using Newtonsoft.Json;
 
-namespace OfaSchlupfer.MSSQLReflection.Model {
+    using OfaSchlupfer.Freezable;
+    using OfaSchlupfer.Model;
+
     /// <summary>
     /// a child of a schema.
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public abstract class ModelSqlSchemaChild
-        : FreezeableObject {
+        : FreezableObject
+        , IContainerNamedReferences {
         /// <summary>
         /// the name.
         /// </summary>
@@ -71,5 +74,9 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         /// <inheritdoc/>
         public override string ToString() => this.Name.ToString();
+
+        public virtual void ResolveNamedReferences(ModelErrors errors) {
+#warning  public virtual void ResolveNamedReferences(ModelErrors errors) {
+        }
     }
 }

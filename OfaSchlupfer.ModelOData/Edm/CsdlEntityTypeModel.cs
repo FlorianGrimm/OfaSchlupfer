@@ -27,26 +27,26 @@
         private bool _HasStream;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPropertyModel> _Property;
+        private readonly FreezableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPropertyModel> _Property;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlNavigationPropertyModel> _NavigationProperty;
+        private readonly FreezableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlNavigationPropertyModel> _NavigationProperty;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPrimaryKeyModel> _Keys;
+        private readonly FreezableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPrimaryKeyModel> _Keys;
 
         public CsdlEntityTypeModel() {
-            this._Property = new FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPropertyModel>(
+            this._Property = new FreezableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPropertyModel>(
                 this,
                 (item) => item.Name,
                 StringComparer.OrdinalIgnoreCase,
                 (owner, item) => { item.Owner = owner; });
-            this._NavigationProperty = new FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlNavigationPropertyModel>(
+            this._NavigationProperty = new FreezableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlNavigationPropertyModel>(
                 this,
                 (item) => item.Name,
                 StringComparer.OrdinalIgnoreCase,
                 (owner, item) => { item.Owner = owner; });
-            this._Keys = new FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPrimaryKeyModel>(
+            this._Keys = new FreezableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPrimaryKeyModel>(
                 this,
                 (item) => item.Name,
                 StringComparer.OrdinalIgnoreCase,
@@ -122,9 +122,9 @@
 
         public string FullName => (this.Owner?.Namespace ?? string.Empty) + "." + (this.Name ?? string.Empty);
 
-        public FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPropertyModel> Property => this._Property;
-        public FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlNavigationPropertyModel> NavigationProperty => this._NavigationProperty;
-        public FreezeableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPrimaryKeyModel> Keys => this._Keys;
+        public FreezableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPropertyModel> Property => this._Property;
+        public FreezableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlNavigationPropertyModel> NavigationProperty => this._NavigationProperty;
+        public FreezableOwnedKeyedCollection<CsdlEntityTypeModel, string, CsdlPrimaryKeyModel> Keys => this._Keys;
 
         CsdlEntityTypeModel ICsdlTypeModel.GetEntityTypeModel() => this;
 

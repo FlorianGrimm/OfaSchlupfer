@@ -9,7 +9,7 @@
     [JsonObject]
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public class CsdlNavigationPropertyModel
-        : FreezeableObject {
+        : FreezableObject {
         // parents
         [JsonIgnore]
         private CsdlEntityTypeModel _Owner;
@@ -45,10 +45,10 @@
         private CsdlNavigationPropertyModel _PartnerModel;
 
         [JsonIgnore]
-        private FreezeableOwnedCollection<CsdlNavigationPropertyModel, CsdlReferentialConstraintV4Model> _ReferentialConstraint;
+        private FreezableOwnedCollection<CsdlNavigationPropertyModel, CsdlReferentialConstraintV4Model> _ReferentialConstraint;
 
         public CsdlNavigationPropertyModel() {
-            this._ReferentialConstraint = new FreezeableOwnedCollection<CsdlNavigationPropertyModel, CsdlReferentialConstraintV4Model>(
+            this._ReferentialConstraint = new FreezableOwnedCollection<CsdlNavigationPropertyModel, CsdlReferentialConstraintV4Model>(
                 this,
                 (owner, item) => { item.Owner = owner; });
         }
@@ -286,7 +286,7 @@
         }
 
         [JsonProperty]
-        public FreezeableOwnedCollection<CsdlNavigationPropertyModel, CsdlReferentialConstraintV4Model> ReferentialConstraint => this._ReferentialConstraint;
+        public FreezableOwnedCollection<CsdlNavigationPropertyModel, CsdlReferentialConstraintV4Model> ReferentialConstraint => this._ReferentialConstraint;
 
         public void ResolveNames(ModelErrors errors) {
             this.ResolveNamesRelationship(errors);

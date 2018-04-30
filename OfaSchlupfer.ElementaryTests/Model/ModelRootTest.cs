@@ -14,10 +14,12 @@ namespace OfaSchlupfer.Model {
     public class ModelRootTest {
         [Fact]
         public void ModelRoot_1_Test() {
-            var modelRoot = new ModelRoot();
-            modelRoot.Name = "Hugo";
-            var modelRepository = new ModelRepository();
-            modelRepository.Name = "PWA";
+            var modelRoot = new ModelRoot {
+                Name = "Hugo"
+            };
+            var modelRepository = new ModelRepository {
+                Name = "PWA"
+            };
             modelRoot.Repositories.Add(modelRepository);
             //modelRepository.ReferenceRepositoryModel
         }
@@ -42,8 +44,9 @@ namespace OfaSchlupfer.Model {
                     var modelRepository = modelRoot.CreateRepository("Hugo", null);
                     Assert.Equal(1, modelRoot.Repositories.Count);
 
-                    var settings = new JsonSerializerSettings();
-                    settings.Formatting = Formatting.Indented;
+                    var settings = new JsonSerializerSettings {
+                        Formatting = Formatting.Indented
+                    };
                     jsonModelRoot = modelRoot.SerializeToJson(settings);
                     Assert.Contains("Gna", jsonModelRoot);
                     Assert.Contains("Hugo", jsonModelRoot);
@@ -69,6 +72,32 @@ namespace OfaSchlupfer.Model {
 
             // to ensure scoping works
             Assert.NotSame(modelRoot1, modelRoot2);
+        }
+
+        [Fact]
+        public void ModelRoot_Renaming1_Test() {
+            var modelRoot = new ModelRoot {
+                Name = "Hugo"
+            };
+            var repo = modelRoot.CreateRepository("one", null);
+            var schema = repo.CreateModelSchema("two");
+            var complexType = schema.CreateComplexType("three", "four");
+            var entity = schema.CreateEntity("five", "six", "three");
+            Assert.NotNull(entity.EntityType);
+            complexType.Name = "seven";
+            Assert.NotNull(entity.EntityType);
+        }
+        [Fact]
+        public void ModelRoot_Renaming2_Test() {
+            var modelRoot = new ModelRoot {
+                Name = "Hugo"
+            };
+            var repo = modelRoot.CreateRepository("one", null);
+            var schema = repo.CreateModelSchema("two");
+            var complexType = schema.CreateComplexType("three", "four");
+            var entity = schema.CreateEntity("five", "six", "three");
+            complexType.Name = "seven";
+            Assert.NotNull(entity.EntityType);
         }
     }
 }

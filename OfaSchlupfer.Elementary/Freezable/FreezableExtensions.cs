@@ -123,7 +123,7 @@
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public static bool SetOwnerWithChildren<TThis, TOwner>(this TThis that, ref TOwner thisPropertyOwner, TOwner value, Func<TOwner, IList<TThis>> getChildren)
-            where TThis : class, IFreezeable
+            where TThis : class, IFreezeable, IContainerNamedReferences
             where TOwner : class {
             if (ReferenceEquals(thisPropertyOwner, value)) {
                 return false;
@@ -140,22 +140,80 @@
             if (!(value is null)) {
                 var lst = getChildren(value);
                 var cnt = lst.Count;
-                if (cnt > 0) {
-                    if (ReferenceEquals(lst[cnt - 1], that)) {
-                        // already added
-                        return true;
+                if (cnt == 0) {
+                    lst.Add(that);
+                } else {
+                    if (cnt > 0) {
+                        if (ReferenceEquals(lst[cnt - 1], that)) {
+                            // already added
+                        } else {
+                            var pos = lst.IndexOf(that);
+                            if (pos < 0) {
+                                lst.Add(that);
+                            }
+                        }
                     }
                 }
-                var pos = lst.IndexOf(that);
-                if (pos < 0) {
-                    lst.Add(that);
-                }
+                that.ResolveNamedReferences(ModelErrors.GetIgnorance());
             }
             return true;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        public static void ResolveNameHelper<TOwner, TName, TMappingKey, TMappingValue>(
+        public static TKey GetPairNameProperty<TThis, TKey, TValue>(this TThis @this, ref TKey thisKey, ref TValue thisValue, Func<TValue, TKey> getName)
+            where TThis : class, IFreezeable
+            //where TKey : class
+            where TValue : class {
+            if ((object)thisValue is null) {
+                return thisKey;
+            } else {
+                return getName(thisValue);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public static bool SetPairNameProperty<TThis, TKey, TValue>(this TThis @this, ref TKey thisKey, ref TValue thisValue, TKey value, Func<TThis, TKey, TValue> resolve)
+            where TThis : class, IFreezeable
+            //where TKey : class
+            where TValue : class {
+            @this.ThrowIfFrozen();
+            thisKey = value;
+            if ((object)value is null) {
+                thisValue = default(TValue);
+            } else {
+                thisValue = resolve(@this, value);
+            }
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public static TValue GetPairRefProperty<TThis, TKey, TValue>(this TThis @this, ref TKey thisKey, ref TValue thisValue, Func<TThis, TKey, TValue> resolve)
+            where TThis : class, IFreezeable
+            where TKey : class
+            where TValue : class {
+            if (thisValue is null) {
+                thisValue = resolve(@this, thisKey);
+            }
+            return thisValue;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public static bool SetPairRefProperty<TThis, TKey, TValue>(this TThis @this, ref TKey thisKey, ref TValue thisValue, TValue value, Func<TValue, TKey> getName)
+            where TThis : class, IFreezeable
+            where TKey : class
+            where TValue : class {
+            @this.ThrowIfFrozen();
+            thisValue = value;
+            if (value is null) {
+                thisKey = default(TKey);
+            } else {
+                thisKey = getName(value);
+            }
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public static TMappingValue ResolveNameHelper<TOwner, TName, TMappingKey, TMappingValue>(
             this IFreezeable freezeable,
             TOwner owner,
             TName name,
@@ -166,17 +224,22 @@
             where TOwner : class
             where TMappingKey : class
             where TMappingValue : class {
-            if (owner is null) { return; }
+            if (owner is null) { return default(TMappingValue); }
             if ((thisPropertyValue is null) && !(thisPropertyName is null)) {
                 var lstFound = findByKey(owner, thisPropertyName);
                 if (lstFound.Count == 1) {
                     thisPropertyValue = lstFound[0];
                     thisPropertyName = null;
+                    return lstFound[0];
                 } else if (lstFound.Count == 0) {
-                    errors.AddErrorOrThrow($"Source {thisPropertyName} not found", name?.ToString(), ResolveNameNotFoundException.Factory);
+                    errors.AddErrorOrThrow($"Entity named {thisPropertyName} not found", name?.ToString(), ResolveNameNotFoundException.Factory);
+                    return default(TMappingValue);
                 } else {
-                    errors.AddErrorOrThrow($"Source {thisPropertyName} found #{lstFound.Count} times.", name?.ToString(), ResolveNameNotUniqueException.Factory);
+                    errors.AddErrorOrThrow($"Entity named {thisPropertyName} found #{lstFound.Count} times.", name?.ToString(), ResolveNameNotUniqueException.Factory);
+                    return default(TMappingValue);
                 }
+            } else {
+                return default(TMappingValue);
             }
         }
     }

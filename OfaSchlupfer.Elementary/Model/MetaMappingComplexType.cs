@@ -5,6 +5,6 @@
     using OfaSchlupfer.Freezable;
 
     public class MetaMappingComplexType
-        : FreezeableObject {
+        : FreezableObject {
     }
 }

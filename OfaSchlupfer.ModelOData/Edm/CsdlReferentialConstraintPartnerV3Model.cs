@@ -8,13 +8,13 @@
     [System.Diagnostics.DebuggerDisplay("{Role}")]
     [JsonObject]
     public class CsdlReferentialConstraintPartnerV3Model : CsdlAnnotationalModel {
-        private readonly FreezeableOwnedKeyedCollection<CsdlReferentialConstraintPartnerV3Model, string, CsdlPropertyRefModel> _PropertyRef;
+        private readonly FreezableOwnedKeyedCollection<CsdlReferentialConstraintPartnerV3Model, string, CsdlPropertyRefModel> _PropertyRef;
         private CsdlReferentialConstraintV3Model _Owner;
         private string _RoleName;
         private CsdlAssociationEndModel _RoleEnd;
 
         public CsdlReferentialConstraintPartnerV3Model() {
-            this._PropertyRef = new FreezeableOwnedKeyedCollection<CsdlReferentialConstraintPartnerV3Model, string, CsdlPropertyRefModel>(
+            this._PropertyRef = new FreezableOwnedKeyedCollection<CsdlReferentialConstraintPartnerV3Model, string, CsdlPropertyRefModel>(
                 this,
                 (item) => item.PropertyName,
                 StringComparer.OrdinalIgnoreCase,
@@ -57,7 +57,7 @@
         }
 
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<CsdlReferentialConstraintPartnerV3Model, string, CsdlPropertyRefModel> PropertyRef => this._PropertyRef;
+        public FreezableOwnedKeyedCollection<CsdlReferentialConstraintPartnerV3Model, string, CsdlPropertyRefModel> PropertyRef => this._PropertyRef;
 
         public List<CsdlPropertyRefModel> FindPropertyRef(string propertyName) => this._PropertyRef.FindByKey(propertyName);
 

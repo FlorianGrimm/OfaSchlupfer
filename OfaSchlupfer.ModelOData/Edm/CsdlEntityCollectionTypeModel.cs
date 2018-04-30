@@ -9,7 +9,7 @@
 
     [JsonObject]
     public class CsdlEntityCollectionTypeModel
-        : FreezeableObject
+        : FreezableObject
         , ICsdlTypeModel {
         private static Regex regexIsCollection;
 

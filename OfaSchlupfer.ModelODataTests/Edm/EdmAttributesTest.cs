@@ -99,11 +99,11 @@
 
                             if (propertyType.FullName.Contains("FreezeableOwnedCollection")) {
                                 if (
-                                    (propertyType.GetGenericTypeDefinition() == typeof(FreezeableCollection<>))
-                                    || (propertyType.GetGenericTypeDefinition() == typeof(FreezeableDictionary<,>))
-                                    || (propertyType.GetGenericTypeDefinition() == typeof(FreezeableOwnedCollection<,>))
-                                    || (propertyType.GetGenericTypeDefinition() == typeof(FreezeableOwnedDictionary<,,>))
-                                    || (propertyType.GetGenericTypeDefinition() == typeof(FreezeableOwnedKeyedCollection<,,>))
+                                    (propertyType.GetGenericTypeDefinition() == typeof(FreezableCollection<>))
+                                    || (propertyType.GetGenericTypeDefinition() == typeof(FreezableDictionary<,>))
+                                    || (propertyType.GetGenericTypeDefinition() == typeof(FreezableOwnedCollection<,>))
+                                    || (propertyType.GetGenericTypeDefinition() == typeof(FreezableOwnedDictionary<,,>))
+                                    || (propertyType.GetGenericTypeDefinition() == typeof(FreezableOwnedKeyedCollection<,,>))
                                 ) {
                                     if (modelType.GetMethod("Freeze").DeclaringType != modelType) {
                                         Assert.Equal("Error Freeze missing", modelType.Name);

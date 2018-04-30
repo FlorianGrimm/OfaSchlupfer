@@ -8,7 +8,7 @@
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{TypeName}")]
     public class ModelSematicType
-        : FreezeableObject {
+        : FreezableObject {
         private SqlName _Name;
 
         /// <summary>

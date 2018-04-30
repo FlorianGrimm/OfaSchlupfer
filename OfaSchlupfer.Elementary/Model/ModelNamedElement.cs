@@ -5,8 +5,9 @@
 
     [JsonObject]
     public class ModelNamedElement
-        : FreezeableObject
-        , IMappingNamedObject<string> {
+        : FreezableObject
+        , IMappingNamedObject<string>
+        , IContainerNamedReferences {
         [JsonIgnore]
         protected string _Name;
 
@@ -25,6 +26,9 @@
         public virtual string ExternalName {
             get => this._ExternalName;
             set => this.SetStringProperty(ref this._ExternalName, value);
+        }
+
+        public virtual void ResolveNamedReferences(ModelErrors errors) {
         }
 
         public override string ToString() {

@@ -18,18 +18,18 @@
         private bool _IsDefaultEntityContainer;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlEntitySetModel> _EntitySet;
+        private readonly FreezableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlEntitySetModel> _EntitySet;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlAssociationSetModel> _AssociationSet;
+        private readonly FreezableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlAssociationSetModel> _AssociationSet;
 
         public CsdlEntityContainerModel() {
-            this._EntitySet = new FreezeableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlEntitySetModel>(
+            this._EntitySet = new FreezableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlEntitySetModel>(
                 this,
                 (item) => item.Name,
                 StringComparer.OrdinalIgnoreCase,
                 (owner, item) => { item.Owner = owner; });
-            this._AssociationSet = new FreezeableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlAssociationSetModel>(
+            this._AssociationSet = new FreezableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlAssociationSetModel>(
                 this,
                 (item) => item.Name,
                 StringComparer.OrdinalIgnoreCase,
@@ -66,9 +66,9 @@
             internal set => this.SetOwner(ref _Owner, value);
         }
 
-        public FreezeableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlAssociationSetModel> AssociationSet => this._AssociationSet;
+        public FreezableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlAssociationSetModel> AssociationSet => this._AssociationSet;
 
-        public FreezeableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlEntitySetModel> EntitySet => this._EntitySet;
+        public FreezableOwnedKeyedCollection<CsdlEntityContainerModel, string, CsdlEntitySetModel> EntitySet => this._EntitySet;
 
         public List<CsdlAssociationSetModel> FindAssociationSet(string name) => this._AssociationSet.FindByKey(name);
 

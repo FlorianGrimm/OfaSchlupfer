@@ -18,9 +18,9 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         ItemConverterType = typeof(SqlNameJsonConverter),
         MemberSerialization = MemberSerialization.OptIn)]
     public sealed class SqlName
-        : FreezeableObject
+        : FreezableObject
         , IEquatable<SqlName> {
-        private static IEqualityComparer<NameLevel> nameLevelComparer = new NameLevelEqualityComparer();
+        private static readonly IEqualityComparer<NameLevel> nameLevelComparer = new NameLevelEqualityComparer();
         private static IEqualityComparer<string> stringComparer = StringComparer.OrdinalIgnoreCase;
 
         /// <summary>
@@ -294,9 +294,8 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         public SqlName ChildWellkown(string name, ObjectLevel objectLevel) {
             //if (this.IsRoot) { return new SqlName(this, name, objectLevel); }
             if (this._Wellknown is null) { this._Wellknown = new Dictionary<NameLevel, SqlName>(nameLevelComparer); }
-            SqlName result;
             var key = new NameLevel { Name = name, ObjectLevel = objectLevel };
-            if (this._Wellknown.TryGetValue(key, out result)) {
+            if (this._Wellknown.TryGetValue(key, out var result)) {
                 return result;
             } else {
                 result = new SqlName(this, name, objectLevel);

@@ -2,21 +2,18 @@
 
 namespace OfaSchlupfer.MSSQLReflection.Model {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     using Newtonsoft.Json;
 
     using OfaSchlupfer.Freezable;
-    using OfaSchlupfer.SqlAccess;
+    using OfaSchlupfer.Model;
 
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public sealed class ModelSqlSchema
-        : FreezeableObject
+        : FreezableObject
         , IEquatable<ModelSqlSchema>
-        , IScopeNameResolver {
+        , IScopeNameResolver
+        , IContainerNamedReferences {
         /// <summary>
         /// Get or Create the schema
         /// </summary>
@@ -28,50 +25,50 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             return database.Schemas.GetValueOrDefault(sqlName)
                 ?? new ModelSqlSchema(database, name);
         }
-        
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlType> _Types;
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTable> _Tables;
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTableType> _TableTypes;
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlView> _Views;
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlProcedure> _Procedures;
-        private readonly FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlSynonym> _Synonyms;
+
+        private readonly FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlType> _Types;
+        private readonly FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTable> _Tables;
+        private readonly FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTableType> _TableTypes;
+        private readonly FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlView> _Views;
+        private readonly FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlProcedure> _Procedures;
+        private readonly FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlSynonym> _Synonyms;
         private SqlName _Name;
         private SqlScope _Scope;
         private ModelSqlDatabase _Database;
 
         public ModelSqlSchema() {
             var keyComparer = SqlNameEqualityComparer.Level2;
-            this._Types = new FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlType>(
+            this._Types = new FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlType>(
                 this,
                 (item) => item.Name,
                 keyComparer,
                 (owner, item) => item.Schema = owner
                 );
-            this._Tables = new FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTable>(
+            this._Tables = new FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTable>(
                 this,
                 (item) => item.Name,
                 keyComparer,
                 (owner, item) => item.Schema = owner
                 );
-            this._TableTypes = new FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTableType>(
+            this._TableTypes = new FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTableType>(
                 this,
                 (item) => item.Name,
                 keyComparer,
                 (owner, item) => item.Schema = owner
                 );
-            this._Views = new FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlView>(
+            this._Views = new FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlView>(
                 this,
                 (item) => item.Name,
                 keyComparer,
                 (owner, item) => item.Schema = owner
                 );
-            this._Procedures = new FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlProcedure>(
+            this._Procedures = new FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlProcedure>(
                 this,
                 (item) => item.Name,
                 keyComparer,
                 (owner, item) => item.Schema = owner
                 );
-            this._Synonyms = new FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlSynonym>(
+            this._Synonyms = new FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlSynonym>(
                 this,
                 (item) => item.Name,
                 keyComparer,
@@ -110,12 +107,14 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
 
         public ModelSqlDatabase Database { get => this._Database; set => this.SetOwnerWithChildren(ref this._Database, value, (owner) => owner.Schemas); }
 
+#warning weichei
+        /*
         public void AddType(ModelSqlType modelSqlType) {
             // this._Types[modelSqlType.Name] = modelSqlType;
             this._Types.Add(modelSqlType);
             this._Database.Types.Add(modelSqlType);
         }
-        
+
         public void AddTable(ModelSqlTable modelSqlTable) {
             // this._Tables[modelSqlTable.Name] = modelSqlTable;
             this._Tables.Add(modelSqlTable);
@@ -145,6 +144,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             this._TableTypes.Add(modelSqlTableType);
             this._Database.TableTypes.Add(modelSqlTableType);
         }
+        */
 
 #pragma warning disable SA1107 // Code must not contain multiple statements on one line
 
@@ -179,22 +179,22 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
         }
 
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlType> Types => this._Types;
+        public FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlType> Types => this._Types;
 
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTable> Tables => this._Tables;
+        public FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTable> Tables => this._Tables;
 
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTableType> TableTypes => this._TableTypes;
+        public FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlTableType> TableTypes => this._TableTypes;
 
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlView> Views => this._Views;
+        public FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlView> Views => this._Views;
 
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlProcedure> Procedures => this._Procedures;
+        public FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlProcedure> Procedures => this._Procedures;
 
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlSynonym> Synonyms => this._Synonyms;
+        public FreezableOwnedKeyedCollection<ModelSqlSchema, SqlName, ModelSqlSynonym> Synonyms => this._Synonyms;
 
 
 #warning weichei
@@ -266,6 +266,10 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
                 this._Synonyms.Freeze();
             }
             return result;
+        }
+
+        public void ResolveNamedReferences(ModelErrors errors) {
+#warning  public virtual void ResolveNamedReferences(ModelErrors errors) {
         }
     }
 }

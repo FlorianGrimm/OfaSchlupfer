@@ -8,13 +8,15 @@
     using Newtonsoft.Json;
 
     using OfaSchlupfer.Freezable;
+    using OfaSchlupfer.Model;
 
     /// <summary>
     /// a element with an name
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public class ModelSqlNamedElement
-        : FreezeableObject {
+        : FreezableObject
+        , IContainerNamedReferences {
         /// <summary>
         /// backfield for Name
         /// </summary>
@@ -49,5 +51,8 @@
 #warning kill this?
         //[JsonIgnore]
         //public ModelSqlElementType Type { get; set; }
+
+        public virtual void ResolveNamedReferences(ModelErrors errors) {
+        }
     }
 }

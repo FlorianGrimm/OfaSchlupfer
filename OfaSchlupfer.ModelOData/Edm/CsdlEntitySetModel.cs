@@ -24,10 +24,10 @@ namespace OfaSchlupfer.ModelOData.Edm {
         private CsdlEntityTypeModel _EntityTypeModel;
 
         [JsonIgnore]
-        private readonly FreezeableOwnedKeyedCollection<CsdlEntitySetModel, string, CsdlNavigationPropertyBindingModel> _NavigationPropertyBinding;
+        private readonly FreezableOwnedKeyedCollection<CsdlEntitySetModel, string, CsdlNavigationPropertyBindingModel> _NavigationPropertyBinding;
 
         public CsdlEntitySetModel() {
-            this._NavigationPropertyBinding = new FreezeableOwnedKeyedCollection<CsdlEntitySetModel, string, CsdlNavigationPropertyBindingModel>(
+            this._NavigationPropertyBinding = new FreezableOwnedKeyedCollection<CsdlEntitySetModel, string, CsdlNavigationPropertyBindingModel>(
                 this,
                 (item) => item.PathName,
                 StringComparer.OrdinalIgnoreCase,
@@ -92,7 +92,7 @@ namespace OfaSchlupfer.ModelOData.Edm {
         }
 
         [JsonProperty]
-        public FreezeableOwnedKeyedCollection<CsdlEntitySetModel, string, CsdlNavigationPropertyBindingModel> NavigationPropertyBinding => this._NavigationPropertyBinding;
+        public FreezableOwnedKeyedCollection<CsdlEntitySetModel, string, CsdlNavigationPropertyBindingModel> NavigationPropertyBinding => this._NavigationPropertyBinding;
 
         public List<CsdlNavigationPropertyBindingModel> FindNavigationPropertyBinding(string name) => this._NavigationPropertyBinding.FindByKey(name);
 
