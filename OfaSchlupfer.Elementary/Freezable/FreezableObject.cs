@@ -4,9 +4,9 @@
     using Newtonsoft.Json;
 
     /// <summary>
-    /// base implementation for <see cref="IFreezeable"/>
+    /// base implementation for <see cref="IFreezable"/>
     /// </summary>
-    public class FreezableObject : IFreezeable {
+    public class FreezableObject : IFreezable {
         [JsonIgnore]
         private int _IsFrozen;
 

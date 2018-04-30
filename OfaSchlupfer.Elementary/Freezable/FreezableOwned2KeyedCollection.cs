@@ -5,8 +5,9 @@
     using System.Text;
 
     public sealed class FreezableOwned2KeyedCollection<TOwner, TKey1, TKey2, TValue>
-        : IFreezeable
+        : IFreezable
         , IList<TValue>
+        , IFreezableOwned2KeyedCollection<TKey1, TKey2, TValue>
         where TKey1 : class, IEquatable<TKey1>
         where TKey2 : class, IEquatable<TKey2>
         where TValue : class {
@@ -56,6 +57,17 @@
         public int Count => this._Items.Count;
 
         public bool IsReadOnly => (this._IsFrozen == 1);
+
+        public void AddRange(IEnumerable<TValue> items) {
+            this.ThrowIfFrozen();
+            if (!(items is null)) {
+                foreach (var item in items) {
+                    if (item is null) { throw new ArgumentNullException(nameof(item)); }
+                    this._Items.Add(item);
+                    this._ActionOnInsertSet?.Invoke(this._Owner, item);
+                }
+            }
+        }
 
         public void Add(TValue item) {
             this.ThrowIfFrozen();
@@ -160,7 +172,7 @@
             }
         }
 
-        public TValue GetValueOrDefault1(TKey1 key, TValue defaultValue = default(TValue)) {
+        public TValue GetValueOrDefault(TKey1 key, TValue defaultValue = default(TValue)) {
             if (this._IsFrozen == 0) {
                 if ((object)key != null) {
                     var items = this._Items.ToArray();
@@ -235,7 +247,7 @@
         public bool Freeze() {
             if (System.Threading.Interlocked.CompareExchange(ref this._IsFrozen, 1, 0) == 0) {
                 foreach (var item in this._Items) {
-                    if (item is IFreezeable freezeable) {
+                    if (item is IFreezable freezeable) {
                         freezeable.Freeze();
                     }
                 }

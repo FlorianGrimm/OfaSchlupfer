@@ -5,7 +5,7 @@
     using System.Text;
 
     public sealed class FreezableOwnedCollection<TOwner, TValue>
-        : IFreezeable
+        : IFreezable
         , IList<TValue>
         where TValue : class {
         private readonly TOwner _Owner;
@@ -84,7 +84,7 @@
         public bool Freeze() {
             if (System.Threading.Interlocked.CompareExchange(ref this._IsFrozen, 1, 0) == 0) {
                 foreach (var item in this._Items) {
-                    if (item is IFreezeable freezeable) {
+                    if (item is IFreezable freezeable) {
                         freezeable.Freeze();
                     }
                 }

@@ -29,11 +29,13 @@
 
         public ModelRoot() {
             this._Repositories = new FreezableOwnedKeyedCollection<ModelRoot, string, ModelRepository>(
-                this, (item) => item.Name,
+                this,
+                ModelRepository.GetName,
                 ModelUtility.Instance.StringComparer,
                 (that, item) => { item.Owner = that; });
             this._RepositoryMappings = new FreezableOwnedKeyedCollection<ModelRoot, string, MappingModelRepository>(
-                this, (item) => item.Name,
+                this,
+                MappingModelRepository.GetName,
                 ModelUtility.Instance.StringComparer,
                 (that, item) => { item.Owner = that; });
         }

@@ -52,11 +52,12 @@
             var typeExceptions = new HashSet<Type>();
             //typeExceptions.Add(typeof(ModelEntityName));
 
-            var propertyExceptions = new HashSet<string>();
-            propertyExceptions.Add("CsdlPropertyModel - ScalarType - CsdlScalarTypeModel");
-            propertyExceptions.Add("CsdlReferentialConstraintV3Model - Principal - CsdlReferentialConstraintPartnerV3Model");
-            propertyExceptions.Add("CsdlReferentialConstraintV3Model - Dependent - CsdlReferentialConstraintPartnerV3Model");
-            propertyExceptions.Add("CsdlPropertyModel - ScalarTypePersitent - CsdlScalarTypeModel");
+            var propertyExceptions = new HashSet<string> {
+                "CsdlPropertyModel - ScalarType - CsdlScalarTypeModel",
+                "CsdlReferentialConstraintV3Model - Principal - CsdlReferentialConstraintPartnerV3Model",
+                "CsdlReferentialConstraintV3Model - Dependent - CsdlReferentialConstraintPartnerV3Model",
+                "CsdlPropertyModel - ScalarTypePersitent - CsdlScalarTypeModel"
+            };
 
             foreach (var modelType in modelTypes) {
                 if (modelType.IsClass) {
@@ -74,7 +75,7 @@
 
                                         var propertyInfo = $"{modelType.Name} - {property.Name} - {property.PropertyType.Name}";
                                         if (propertyExceptions.Contains(propertyInfo)) { continue; }
-                                        output.WriteLine(propertyInfo);
+                                        this.output.WriteLine(propertyInfo);
                                         // Assert.Equal("Error JsonIgnore", propertyInfo);
                                         throw new Xunit.Sdk.XunitException(propertyInfo);
                                     }
@@ -92,7 +93,7 @@
             var modelTypes = type.Assembly.GetExportedTypes();
             foreach (var modelType in modelTypes) {
                 if (modelType.IsClass) {
-                    if (modelType.GetInterfaces().Contains(typeof(OfaSchlupfer.Freezable.IFreezeable))) {
+                    if (modelType.GetInterfaces().Contains(typeof(OfaSchlupfer.Freezable.IFreezable))) {
                         var properties = modelType.GetProperties();
                         foreach (var property in properties) {
                             var propertyType = property.PropertyType;

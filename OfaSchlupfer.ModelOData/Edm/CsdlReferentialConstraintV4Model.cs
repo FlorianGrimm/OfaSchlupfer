@@ -27,13 +27,13 @@
         [JsonIgnore]
         public CsdlNavigationPropertyModel Owner {
             get => this._Owner;
-            internal set => this.SetOwner(ref _Owner, value);
+            internal set => this.SetOwner(ref this._Owner, value);
         }
 
         [JsonProperty]
         public string PropertyName {
             get {
-                if (_PropertyModel != null) {
+                if (this._PropertyModel != null) {
                     return this._PropertyModel.Name;
                 } else {
                     return this._PropertyName;

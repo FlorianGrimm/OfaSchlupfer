@@ -72,7 +72,7 @@
         /// </summary>
         public string Name {
             get => this._Name;
-            set => this.SetRefProperty(ref this._Name, value);
+            set => this.SetStringProperty(ref this._Name, value);
         }
 
         public Type PropertyType {

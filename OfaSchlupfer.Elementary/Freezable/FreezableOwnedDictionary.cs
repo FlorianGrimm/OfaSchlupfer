@@ -5,7 +5,7 @@
     using System.Text;
 
     public class FreezableOwnedDictionary<TOwner, TKey, TValue>
-        : IFreezeable, IDictionary<TKey, TValue> 
+        : IFreezable, IDictionary<TKey, TValue> 
         where TValue : class{
         private readonly TOwner _Owner;
         private readonly Action<TOwner, TValue> _ActionOnInsertSet;
@@ -104,7 +104,7 @@
         public bool Freeze() {
             if (System.Threading.Interlocked.CompareExchange(ref this._IsFrozen, 1, 0) == 0) {
                 foreach (var item in this._Items.Values) {
-                    if (item is IFreezeable freezeable) {
+                    if (item is IFreezable freezeable) {
                         freezeable.Freeze();
                     }
                 }

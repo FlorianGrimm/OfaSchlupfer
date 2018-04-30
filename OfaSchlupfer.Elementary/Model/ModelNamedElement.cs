@@ -8,6 +8,9 @@
         : FreezableObject
         , IMappingNamedObject<string>
         , IContainerNamedReferences {
+        public static string GetName(ModelNamedElement that) => that.Name;
+        public static string GetExternalNameOrName(ModelNamedElement that) => that.ExternalName ?? that.Name;
+
         [JsonIgnore]
         protected string _Name;
 

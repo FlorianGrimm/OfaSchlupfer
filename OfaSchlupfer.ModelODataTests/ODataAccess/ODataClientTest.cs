@@ -56,8 +56,9 @@
 
                 var cachedMetadataResolver = new CachedMetadataResolver();
                 cachedMetadataResolver.SetDynamicResolution((location) => new System.IO.StreamReader(location));
-                var edmReader = new EdmReader();
-                edmReader.MetadataResolver = cachedMetadataResolver;
+                var edmReader = new EdmReader {
+                    MetadataResolver = cachedMetadataResolver
+                };
                 var edmxModel = edmReader.Read(srcPath, true, null);
 
                 EdmxModelSchemaBuilder edmxModelBuilder = new EdmxModelSchemaBuilder();
@@ -68,9 +69,9 @@
                 //oDataClient.EdmxModel = edmxModel;
 
                 var cred = new SharePointOnlineServiceClientCredentials(repCSProjectServer, null);
-                var oDataClient = new ODataServiceClient(new Uri(repCSProjectServer.GetUrlNormalized()), cred, null);
-
-                oDataClient.ModelRepository = modelRepository;
+                var oDataClient = new ODataServiceClient(new Uri(repCSProjectServer.GetUrlNormalized()), cred, null) {
+                    ModelRepository = modelRepository
+                };
                 //var builder = new ModelBuilder();
                 //oDataClient.EdmxModel = edmxModel;
 
@@ -122,9 +123,10 @@
                     Assert.IsType<List<IEntity>>(reDeserializeResult);
                 }
                 {
-                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings();
-                    serializeSettings.TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple;
-                    serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects;
+                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings {
+                        TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple,
+                        TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects
+                    };
                     var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(modelRepository.ModelSchema, Newtonsoft.Json.Formatting.Indented, serializeSettings);
                     try {
                         string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\ODataClient_1_ReadFromPO_Test_ModelSchema.json");
@@ -134,9 +136,10 @@
                     }
                 }
                 {
-                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings();
-                    serializeSettings.TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple;
-                    serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings {
+                        TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple,
+                        TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto
+                    };
                     var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(entitySchema, Newtonsoft.Json.Formatting.Indented, serializeSettings);
                     try {
                         string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\ODataClient_1_ReadFromPO_Test_EntitySchema.json");
@@ -166,8 +169,9 @@
             var srcPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\ProjectOnlinemetadata.xml");
             var cachedMetadataResolver = new CachedMetadataResolver();
             cachedMetadataResolver.SetDynamicResolution((location) => new System.IO.StreamReader(location));
-            var edmReader = new EdmReader();
-            edmReader.MetadataResolver = cachedMetadataResolver;
+            var edmReader = new EdmReader {
+                MetadataResolver = cachedMetadataResolver
+            };
             var edmxModel = edmReader.Read(srcPath, true, null);
 
             using (var scope = serviceProvider.CreateScope()) {
@@ -182,8 +186,9 @@
                 Assert.NotNull(modelRepository.GetModelSchema(null, null));
 
                 var cred = new SharePointOnlineServiceClientCredentials(repCSProjectServer, null);
-                var oDataClient = new ODataServiceClient(new Uri(repCSProjectServer.GetUrlNormalized()), cred, null);
-                oDataClient.ModelRepository = modelRepository;
+                var oDataClient = new ODataServiceClient(new Uri(repCSProjectServer.GetUrlNormalized()), cred, null) {
+                    ModelRepository = modelRepository
+                };
 
                 var oDataRequest = oDataClient.Query("Projects");
                 // oDataClient.ConnectionString = repCSProjectServer;
@@ -192,9 +197,10 @@
                 var srcPathData = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\ProjectOnlineData-Projects.json");
                 var responceContentString = System.IO.File.ReadAllText(srcPathData);
 
-                var operationResponse = new AzureOperationResponse<ODataRequest>();
-                operationResponse.Request = new System.Net.Http.HttpRequestMessage();
-                operationResponse.Response = new System.Net.Http.HttpResponseMessage() { Content = new System.Net.Http.StringContent(responceContentString) };
+                var operationResponse = new AzureOperationResponse<ODataRequest> {
+                    Request = new System.Net.Http.HttpRequestMessage(),
+                    Response = new System.Net.Http.HttpResponseMessage() { Content = new System.Net.Http.StringContent(responceContentString) }
+                };
 
                 ODataDeserializtion d = new ODataDeserializtion(oDataRequest, oDataClient);
                 var deserializeResult = d.Deserialize(responceContentString);
@@ -228,9 +234,10 @@
                     Assert.IsType<List<IEntity>>(reDeserializeResult);
                 }
                 {
-                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings();
-                    serializeSettings.TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple;
-                    serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects;
+                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings {
+                        TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple,
+                        TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects
+                    };
                     var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(modelRepository.ModelSchema, Newtonsoft.Json.Formatting.Indented, serializeSettings);
                     try {
                         string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\ODataClient_2_Translate_Test_ModelSchema.json");
@@ -240,9 +247,10 @@
                     }
                 }
                 {
-                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings();
-                    serializeSettings.TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple;
-                    serializeSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+                    var serializeSettings = new Newtonsoft.Json.JsonSerializerSettings {
+                        TypeNameAssemblyFormatHandling = Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple,
+                        TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto
+                    };
                     var schemaAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(entitySchema, Newtonsoft.Json.Formatting.Indented, serializeSettings);
                     try {
                         string outputPath = System.IO.Path.Combine(testCfg.SolutionFolder, @"test\temp\ODataClient_2_Translate_Test_EntitySchema.json");

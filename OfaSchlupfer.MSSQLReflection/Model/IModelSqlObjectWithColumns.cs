@@ -17,8 +17,8 @@
         /// <summary>
         /// Gets the columns
         /// </summary>
-        IFreezeableOwnedKeyedCollection<SqlName, ModelSqlColumn> Columns { get; }
+        IFreezableOwnedKeyedCollection<SqlName, ModelSqlColumn> Columns { get; }
 
-        IFreezeableOwnedKeyedCollection<SqlName, ModelSqlIndex> Indexes { get; }
+        IFreezableOwnedKeyedCollection<SqlName, ModelSqlIndex> Indexes { get; }
     }
 }

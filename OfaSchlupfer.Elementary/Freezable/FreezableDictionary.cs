@@ -4,8 +4,13 @@
     using System.Collections.Generic;
     using System.Text;
 
+    /// <summary>
+    /// a implementation of <see cref="IDictionary{TKey, TValue}"/>
+    /// </summary>
+    /// <typeparam name="TKey">the key type.</typeparam>
+    /// <typeparam name="TValue">the value type.</typeparam>
     public sealed class FreezableDictionary<TKey, TValue>
-        : IFreezeable, IDictionary<TKey, TValue> {
+        : IFreezable, IDictionary<TKey, TValue> {
         private readonly Dictionary<TKey, TValue> _Items;
         private int _IsFrozen;
 
@@ -92,7 +97,7 @@
         public bool Freeze() {
             if (System.Threading.Interlocked.CompareExchange(ref this._IsFrozen, 1, 0) == 0) {
                 foreach (var item in this._Items.Values) {
-                    if (item is IFreezeable freezeable) {
+                    if (item is IFreezable freezeable) {
                         freezeable.Freeze();
                     }
                 }

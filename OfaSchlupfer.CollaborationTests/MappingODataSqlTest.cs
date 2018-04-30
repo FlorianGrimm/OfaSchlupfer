@@ -98,8 +98,8 @@ namespace OfaSchlupfer.CollaborationTests {
                             this.output.WriteLine(message);
                             Assert.Equal("Error", message);
                         }
-                        if (modelComplexTypesTarget.Keys.Count == 0) {
-                            var message = $"{modelComplexTypesTarget.Name} has no keys.";
+                        if (modelComplexTypesTarget.Indexes.Count == 0) {
+                            var message = $"{modelComplexTypesTarget.Name} has no indexes.";
                             this.output.WriteLine(message);
                             Assert.Equal("Error", message);
                         }

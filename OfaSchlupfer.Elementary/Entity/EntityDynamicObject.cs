@@ -9,7 +9,7 @@
 
     public class EntityDynamicObject
         : System.Dynamic.DynamicObject
-        , IFreezeable
+        , IFreezable
         , IEntity
         , IEntityFlexible {
         [JsonIgnore]
@@ -48,10 +48,10 @@
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        bool IFreezeable.IsFrozen() => (this._IsFrozen == 1);
+        bool IFreezable.IsFrozen() => (this._IsFrozen == 1);
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        bool IFreezeable.Freeze() => (System.Threading.Interlocked.CompareExchange(ref this._IsFrozen, 1, 0) == 0);
+        bool IFreezable.Freeze() => (System.Threading.Interlocked.CompareExchange(ref this._IsFrozen, 1, 0) == 0);
 
 
         //public IMetaEntity MetaData {

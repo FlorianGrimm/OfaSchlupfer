@@ -24,7 +24,7 @@
         [JsonIgnore]
         public CsdlReferentialConstraintV3Model Owner {
             get => this._Owner;
-            internal set => this.SetOwner(ref _Owner, value);
+            internal set => this.SetOwner(ref this._Owner, value);
         }
 
         [JsonProperty]

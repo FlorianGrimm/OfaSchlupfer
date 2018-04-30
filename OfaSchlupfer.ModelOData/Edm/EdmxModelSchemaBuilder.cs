@@ -157,17 +157,33 @@
                     modelComplexType.Properties.Add(modelProperty);
                 }
             }
-            foreach (var keyModel in entityTypeModel.Keys) {
-                var modelKey = metaModelBuilder.CreateModelPrimaryKey(
+            var primaryKey = entityTypeModel.Keys;
+            if (primaryKey.Count > 0) {
+                var modelIndex = metaModelBuilder.CreateModelIndex(
                     entityTypeModelName,
                     entityTypeModelFullName,
-                    keyModel.Name,
+                    "PrimaryKey",
                     null,
-                    //keyModel.Property,
                     errors
-                   );
-                if (modelKey.Owner == null) {
-                    modelComplexType.Keys.Add(modelKey);
+                    );
+                modelIndex.IsPrimaryKey = true;
+                if (modelIndex.Owner == null) {
+                    modelComplexType.Indexes.Add(modelIndex);
+                }
+                foreach (var keyModel in entityTypeModel.Keys) {
+                    var modelIndexProperty = metaModelBuilder.CreateModelIndexProperty(
+                        entityTypeModelName,
+                        entityTypeModelFullName,
+                        modelIndex.Name,
+                        modelIndex.ExternalName,
+                        keyModel.Name,
+                        null,
+                        //keyModel.Property,
+                        errors
+                       );
+                    if (modelIndexProperty.Owner == null) {
+                        modelIndex.Properties.Add(modelIndexProperty);
+                    }
                 }
             }
 
@@ -253,9 +269,10 @@
 #warning  BuildScalarType - when does this happen?
             var name = scalarTypeModel.Name;
             var fullName = scalarTypeModel.FullName;
-            ModelScalarType result = new ModelScalarType();
-            result.Name = name;
-            result.ExternalName = fullName;
+            ModelScalarType result = new ModelScalarType {
+                Name = name,
+                ExternalName = fullName
+            };
             modelSchema.ScalarTypes.Add(result);
             return result;
         }

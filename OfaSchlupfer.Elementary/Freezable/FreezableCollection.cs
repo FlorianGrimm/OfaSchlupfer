@@ -4,8 +4,12 @@
     using System.Collections.Generic;
     using System.Text;
 
+    /// <summary>
+    /// a implementation of <see cref="IList{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">the item type.</typeparam>
     public sealed class FreezableCollection<T>
-        : IFreezeable, IList<T> {
+        : IFreezable, IList<T> {
         private readonly List<T> _Items;
         private int _IsFrozen;
         public FreezableCollection() {
@@ -89,7 +93,7 @@
         public bool Freeze() {
             if (System.Threading.Interlocked.CompareExchange(ref this._IsFrozen, 1, 0) == 0) {
                 foreach (var item in this._Items) {
-                    if (item is IFreezeable freezeable) {
+                    if (item is IFreezable freezeable) {
                         freezeable.Freeze();
                     }
                 }

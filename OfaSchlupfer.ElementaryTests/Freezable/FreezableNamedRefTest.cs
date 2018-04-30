@@ -40,7 +40,7 @@
 
 //            public M Owner {
 //                get => this._Owner;
-//                set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.S);
+//                set => this.SetOwnerWithChildren(ref this._Owner, value, (owner) => owner.S);
 //            }
 //        }
 

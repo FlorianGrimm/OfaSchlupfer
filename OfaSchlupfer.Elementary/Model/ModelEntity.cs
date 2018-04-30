@@ -48,14 +48,14 @@
 
         [JsonProperty(Order = 3)]
         public string EntityTypeName {
-            get => this.GetPairNameProperty(ref this._EntityTypeName, ref this._EntityType, (item) => item.Name);
+            get => this.GetPairNameProperty(ref this._EntityTypeName, ref this._EntityType, GetName);
             set => this.SetPairNameProperty(ref this._EntityTypeName, ref this._EntityType, value, (that, n) => that.ResolveNameEntityType(ModelErrors.GetIgnorance()));
         }
 
         [JsonIgnore]
         public ModelComplexType EntityType {
             get =>this.GetPairRefProperty(ref this._EntityTypeName, ref this._EntityType, (that, n) => that.ResolveNameEntityType(ModelErrors.GetIgnorance()));
-            set => this.SetPairRefProperty(ref this._EntityTypeName, ref this._EntityType, value, (item) => item.Name); 
+            set => this.SetPairRefProperty(ref this._EntityTypeName, ref this._EntityType, value, GetName); 
         }
 
         public override void ResolveNamedReferences(ModelErrors errors) {

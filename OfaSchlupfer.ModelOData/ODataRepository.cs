@@ -49,7 +49,7 @@
         [System.Diagnostics.DebuggerStepThrough]
         public override string GetRepositoryTypeName() => ODataRepositoryModelType.ModelTypeName;
 
-        public RepositoryConnectionString ConnectionString { get; set; }
+        //public RepositoryConnectionString ConnectionString { get; set; }
 
         public EdmxModel EdmxModel {
             get {

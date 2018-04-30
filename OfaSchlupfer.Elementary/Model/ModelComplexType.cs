@@ -11,40 +11,46 @@
     [JsonObject]
     public class ModelComplexType : ModelType {
         [JsonIgnore]
-        private readonly FreezableOwnedKeyedCollection<ModelComplexType, string, ModelPrimaryKey> _Keys;
+        private readonly FreezableOwned2KeyedCollection<ModelComplexType, string, string, ModelIndex> _Indexes;
 
         [JsonIgnore]
-        private readonly FreezableOwnedKeyedCollection<ModelComplexType, string, ModelProperty> _Properties;
+        private readonly FreezableOwned2KeyedCollection<ModelComplexType, string, string, ModelProperty> _Properties;
 
         [JsonIgnore]
-        private readonly FreezableOwnedKeyedCollection<ModelComplexType, string, ModelNavigationProperty> _NavigationProperty;
+        private readonly FreezableOwned2KeyedCollection<ModelComplexType, string, string, ModelNavigationProperty> _NavigationProperty;
 
         [JsonIgnore]
         private ModelComplexTypeMetaEntity _GetMetaEntity;
 
         [JsonProperty(Order = 3)]
-        public FreezableOwnedKeyedCollection<ModelComplexType, string, ModelPrimaryKey> Keys => this._Keys;
+        public FreezableOwned2KeyedCollection<ModelComplexType, string, string, ModelIndex> Indexes => this._Indexes;
 
         [JsonProperty(Order = 4)]
-        public FreezableOwnedKeyedCollection<ModelComplexType, string, ModelProperty> Properties => this._Properties;
+        public FreezableOwned2KeyedCollection<ModelComplexType, string, string, ModelProperty> Properties => this._Properties;
 
         [JsonProperty(Order = 5)]
-        public FreezableOwnedKeyedCollection<ModelComplexType, string, ModelNavigationProperty> NavigationProperty => this._NavigationProperty;
+        public FreezableOwned2KeyedCollection<ModelComplexType, string, string, ModelNavigationProperty> NavigationProperty => this._NavigationProperty;
 
         public ModelComplexType() {
-            this._Keys = new FreezableOwnedKeyedCollection<ModelComplexType, string, ModelPrimaryKey>(
+            this._Indexes = new FreezableOwned2KeyedCollection<ModelComplexType, string, string, ModelIndex>(
                 this,
-                (key) => key.Name,
+                GetName,
+                ModelUtility.Instance.StringComparer,
+                GetExternalNameOrName,
                 ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
-            this._Properties = new FreezableOwnedKeyedCollection<ModelComplexType, string, ModelProperty>(
+            this._Properties = new FreezableOwned2KeyedCollection<ModelComplexType, string, string, ModelProperty>(
                 this,
-                (property) => property.Name,
+                GetName,
+                ModelUtility.Instance.StringComparer,
+                GetExternalNameOrName,
                 ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
-            this._NavigationProperty = new FreezableOwnedKeyedCollection<ModelComplexType, string, ModelNavigationProperty>(
+            this._NavigationProperty = new FreezableOwned2KeyedCollection<ModelComplexType, string, string, ModelNavigationProperty>(
                 this,
-                (property) => property.Name,
+                GetName,
+                ModelUtility.Instance.StringComparer,
+                GetExternalNameOrName,
                 ModelUtility.Instance.StringComparer,
                 (owner, item) => { item.Owner = owner; });
         }
@@ -106,6 +112,18 @@
                 ItemType = toComplexType
             };
             this.NavigationProperty.Add(result);
+            return result;
+        }
+
+        public ModelIndex CreateIndex(
+                string name,
+                string externalName
+            ) {
+            var result = new ModelIndex {
+                Name = name,
+                ExternalName = externalName ?? name
+            };
+            this.Indexes.Add(result);
             return result;
         }
     }

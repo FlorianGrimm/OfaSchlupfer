@@ -29,7 +29,7 @@
         /*
          [JsonIgnore]
             get => this._Owner;
-            set => this.SetOwner(ref _Owner, value, (owner) => owner.);
+            set => this.SetOwner(ref this._Owner, value, (owner) => owner.);
         }
              */
 

@@ -2,7 +2,7 @@
     /// <summary>
     /// freeze to (observable) immutablitiy
     /// </summary>
-    public interface IFreezeable {
+    public interface IFreezable {
         /// <summary>
         /// Freeze the object
         /// </summary>

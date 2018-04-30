@@ -8,13 +8,13 @@
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static T AsFrozen<T>(this T that)
-            where T : IFreezeable {
+            where T : IFreezable {
             that.Freeze();
             return that;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void ThrowIfFrozen(this IFreezeable that, string name = null) {
+        public static void ThrowIfFrozen(this IFreezable that, string name = null) {
             if ((object)that != null) {
                 if (that.IsFrozen()) {
                     if (name is null) {
@@ -27,7 +27,7 @@
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void ThrowIfNotFrozen(this IFreezeable that, string name = null) {
+        public static void ThrowIfNotFrozen(this IFreezable that, string name = null) {
             if ((object)that != null) {
                 if (!(that.IsFrozen())) {
                     if (name is null) {
@@ -40,7 +40,7 @@
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void SetOrThrowIfFrozen<T>(this IFreezeable that, ref T target, T value, string name = null) {
+        public static void SetOrThrowIfFrozen<T>(this IFreezable that, ref T target, T value, string name = null) {
             if ((object)that != null) {
                 if (that.IsFrozen()) {
                     if (name is null) {
@@ -64,7 +64,7 @@
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public static bool SetPropertyAndOwner<TThis, TProperty>(this TThis that, ref TProperty thisProperty, TProperty value)
-            where TThis : class, IFreezeable
+            where TThis : class, IFreezable
             where TProperty : class, IObjectWithOwner<TThis> {
             if (ReferenceEquals(thisProperty, value)) { return false; }
             that.ThrowIfFrozen();
@@ -94,7 +94,7 @@
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public static bool SetOwnerAndProperty<TThis, TOwner>(this TThis that, ref TOwner thisProperty, TOwner value, Func<TOwner, TThis> getChildPropertyofOwner, Action<TOwner, TThis> setChildPropertyofOwner)
-            where TThis : class, IFreezeable
+            where TThis : class, IFreezable
             where TOwner : class {
             if (ReferenceEquals(thisProperty, value)) { return false; }
             if (!(thisProperty is null)) { that.ThrowIfFrozen(); }
@@ -123,7 +123,7 @@
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public static bool SetOwnerWithChildren<TThis, TOwner>(this TThis that, ref TOwner thisPropertyOwner, TOwner value, Func<TOwner, IList<TThis>> getChildren)
-            where TThis : class, IFreezeable, IContainerNamedReferences
+            where TThis : class, IFreezable, IContainerNamedReferences
             where TOwner : class {
             if (ReferenceEquals(thisPropertyOwner, value)) {
                 return false;
@@ -161,7 +161,7 @@
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public static TKey GetPairNameProperty<TThis, TKey, TValue>(this TThis @this, ref TKey thisKey, ref TValue thisValue, Func<TValue, TKey> getName)
-            where TThis : class, IFreezeable
+            where TThis : class, IFreezable
             //where TKey : class
             where TValue : class {
             if ((object)thisValue is null) {
@@ -173,7 +173,7 @@
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public static bool SetPairNameProperty<TThis, TKey, TValue>(this TThis @this, ref TKey thisKey, ref TValue thisValue, TKey value, Func<TThis, TKey, TValue> resolve)
-            where TThis : class, IFreezeable
+            where TThis : class, IFreezable
             //where TKey : class
             where TValue : class {
             @this.ThrowIfFrozen();
@@ -188,7 +188,7 @@
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public static TValue GetPairRefProperty<TThis, TKey, TValue>(this TThis @this, ref TKey thisKey, ref TValue thisValue, Func<TThis, TKey, TValue> resolve)
-            where TThis : class, IFreezeable
+            where TThis : class, IFreezable
             where TKey : class
             where TValue : class {
             if (thisValue is null) {
@@ -199,7 +199,7 @@
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public static bool SetPairRefProperty<TThis, TKey, TValue>(this TThis @this, ref TKey thisKey, ref TValue thisValue, TValue value, Func<TValue, TKey> getName)
-            where TThis : class, IFreezeable
+            where TThis : class, IFreezable
             where TKey : class
             where TValue : class {
             @this.ThrowIfFrozen();
@@ -214,7 +214,7 @@
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public static TMappingValue ResolveNameHelper<TOwner, TName, TMappingKey, TMappingValue>(
-            this IFreezeable freezeable,
+            this IFreezable freezeable,
             TOwner owner,
             TName name,
             ref TMappingKey thisPropertyName,

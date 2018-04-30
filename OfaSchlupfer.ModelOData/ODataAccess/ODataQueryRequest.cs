@@ -21,7 +21,7 @@
 
 
         public override HttpRequestMessage CreateHttpRequest(string requestUri) {
-            var url = requestUri + "/" + Path;
+            var url = requestUri + "/" + this.Path;
             HttpRequestMessage result = new HttpRequestMessage(HttpMethod.Get, url);
 
             if (string.IsNullOrEmpty(this.HeaderAccept)) {

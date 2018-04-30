@@ -46,6 +46,8 @@
         /// </summary>
         /// <param name="source"></param>
         public ModelScalarType(ModelScalarType source) {
+            this._Name = source._Name;
+            this._ExternalName = source._ExternalName;
             this._Collection = source._Collection;
             this._FixedLength = source._FixedLength;
             this._MaxLength = source._MaxLength;

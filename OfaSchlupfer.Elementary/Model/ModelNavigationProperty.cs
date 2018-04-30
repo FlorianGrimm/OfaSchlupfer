@@ -26,14 +26,14 @@
 
         [JsonProperty(Order = 3)]
         public string ItemTypeName {
-            get => this.GetPairNameProperty(ref this._ItemTypeName, ref this._ItemType, (item)=>item.Name);
+            get => this.GetPairNameProperty(ref this._ItemTypeName, ref this._ItemType, GetName);
             set => this.SetPairNameProperty(ref this._ItemTypeName, ref this._ItemType, value, (that, n) => that.ResolveNamedItemType(ModelErrors.GetIgnorance()));
         }
 
         [JsonIgnore]
         public ModelComplexType ItemType {
             get => this.GetPairRefProperty(ref this._ItemTypeName, ref this._ItemType, (that, n) => that.ResolveNamedItemType(ModelErrors.GetIgnorance()));
-            set => this.SetPairRefProperty(ref this._ItemTypeName, ref this._ItemType, value, (item) => item.Name);
+            set => this.SetPairRefProperty(ref this._ItemTypeName, ref this._ItemType, value, GetName);
         }
 
         public override void ResolveNamedReferences(ModelErrors errors) {

@@ -178,18 +178,31 @@ namespace OfaSchlupfer.MSSQLReflection {
                         }
 
                         if (!(srcTable.Indexes is null)) {
-                            foreach (var index in srcTable.Indexes) {
-                                if (index.is_primary_key) {
-                                    var indexColumns = index.IndexColumns;
-                                    if (!(indexColumns is null)) {
-                                        
-                                        foreach (var indexColumn in indexColumns.OrderBy(_ => _.key_ordinal)) {
-                                            if (indexColumn.is_included_column) {
+                            foreach (var srcIndex in srcTable.Indexes) {
+                                var dstSqlIndex=new ModelSqlIndex() {
+                                    Name = new SqlName(null, srcIndex.name, ObjectLevel.Child),
+                                    IsPrimaryKey = srcIndex.is_primary_key
+                                };
+#warning does indexes have schemas?
+                                dstTable.Indexes.Add(dstSqlIndex);
+
+                                if (srcIndex.is_primary_key) {
+                                    var indexColumns = srcIndex.IndexColumns;
+                                    if (!(indexColumns is null)) {                                        
+                                        foreach (var srcIndexColumn in indexColumns.OrderBy(_ => _.key_ordinal)) {
+                                            if (srcIndexColumn.is_included_column) {
                                                 throw new NotImplementedException("is_included_column");
                                             } else {
-                                                var sqlColumn = srcTable_Columns[indexColumn.column_id];
+                                                var sqlColumn = srcTable_Columns[srcIndexColumn.column_id];
                                                 var dstColumn = dstTable.Columns.GetValueOrDefault(new SqlName(null, sqlColumn.name, ObjectLevel.Child));
                                                 dstColumn.Nullable = false;
+
+                                                dstSqlIndex.Columns.Add(
+                                                    new ModelSqlIndexColumn() {
+                                                        Column = dstColumn,
+                                                        Ascending = !srcIndexColumn.is_descending_key
+                                                    }
+                                                    );
                                                 //dstTable.Name
                                             }
                                         }

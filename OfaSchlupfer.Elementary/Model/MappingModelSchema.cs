@@ -38,7 +38,7 @@
         [JsonIgnore]
         public override MappingModelRepository Owner {
             get => this._Owner;
-            set => this.SetOwner(ref _Owner, value, (owner) => owner.r);
+            set => this.SetOwner(ref this._Owner, value, (owner) => owner.r);
         }
         */
 
@@ -68,48 +68,52 @@
         }
 
         public MappingModelEntity CreateEntityMapping(string name, ModelEntity source, ModelEntity target, bool enabled, bool generated, string comment) {
-            var result = new MappingModelEntity();
-            result.Name = name;
-            result.Source = source;
-            result.Target = target;
-            result.Enabled = enabled;
-            result.Generated = generated;
-            result.Comment = comment;
+            var result = new MappingModelEntity {
+                Name = name,
+                Source = source,
+                Target = target,
+                Enabled = enabled,
+                Generated = generated,
+                Comment = comment
+            };
             this.EntityMappings.Add(result);
             return result;
         }
 
         public MappingModelEntity CreateEntityMapping(string name, string sourceName, string targetName, bool enabled, bool generated, string comment) {
-            var result = new MappingModelEntity();
-            result.Name = name;
-            result.SourceName = sourceName;
-            result.TargetName = targetName;
-            result.Enabled = enabled;
-            result.Generated = generated;
-            result.Comment = comment;
+            var result = new MappingModelEntity {
+                Name = name,
+                SourceName = sourceName,
+                TargetName = targetName,
+                Enabled = enabled,
+                Generated = generated,
+                Comment = comment
+            };
             this.EntityMappings.Add(result);
             return result;
         }
 
         public MappingModelComplexType CreateComplexTypeMapping(string name, ModelComplexType source, ModelComplexType target, bool enabled, bool generated, string comment) {
-            var result = new MappingModelComplexType();
-            result.Name = name;
-            result.Source = source;
-            result.Target = target;
-            result.Enabled = enabled;
-            result.Generated = generated;
-            result.Comment = comment;
+            var result = new MappingModelComplexType {
+                Name = name,
+                Source = source,
+                Target = target,
+                Enabled = enabled,
+                Generated = generated,
+                Comment = comment
+            };
             this.ComplexTypeMappings.Add(result);
             return result;
         }
         public MappingModelComplexType CreateComplexTypeMapping(string name, string sourceName, string targetName, bool enabled, bool generated, string comment) {
-            var result = new MappingModelComplexType();
-            result.Name = name;
-            result.SourceName = sourceName;
-            result.TargetName = targetName;
-            result.Enabled = enabled;
-            result.Generated = generated;
-            result.Comment = comment;
+            var result = new MappingModelComplexType {
+                Name = name,
+                SourceName = sourceName,
+                TargetName = targetName,
+                Enabled = enabled,
+                Generated = generated,
+                Comment = comment
+            };
             this.ComplexTypeMappings.Add(result);
             return result;
         }

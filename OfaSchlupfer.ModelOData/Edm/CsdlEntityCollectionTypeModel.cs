@@ -31,9 +31,10 @@
         public static CsdlEntityCollectionTypeModel Create(string collection, CsdlEntityTypeModel ownerEntityTypeModel) {
             var entityTypeName = GetCollectionItemTypeName(collection);
             if (entityTypeName != null) {
-                var result = new CsdlEntityCollectionTypeModel();
-                result.Owner = ownerEntityTypeModel;
-                result.EntityTypeName = entityTypeName;
+                var result = new CsdlEntityCollectionTypeModel {
+                    Owner = ownerEntityTypeModel,
+                    EntityTypeName = entityTypeName
+                };
                 return result;
             }
             return null;
@@ -51,7 +52,7 @@
         [JsonIgnore]
         public CsdlEntityTypeModel Owner {
             get => this._Owner;
-            internal set => this.SetOwner(ref _Owner, value);
+            internal set => this.SetOwner(ref this._Owner, value);
         }
 
         [JsonIgnore]

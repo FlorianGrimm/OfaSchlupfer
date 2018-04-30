@@ -15,7 +15,7 @@
         [JsonIgnore]
         public override MappingModelEntity Owner {
             get => this._Owner;
-            set => this.SetOwnerWithChildren(ref _Owner, value, (owner) => owner.ConstraintMappings);
+            set => this.SetOwnerWithChildren(ref this._Owner, value, (owner) => owner.ConstraintMappings);
         }
 
         public override void ResolveNameSource(ModelErrors errors) {

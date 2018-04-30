@@ -379,7 +379,7 @@ namespace OfaSchlupfer.MSSQLReflection.Model {
             if (this._HashCode == 0) {
                 unchecked {
                     var hashCode =
-                        ((ReferenceEquals(this.Parent, this) || ReferenceEquals(this.Parent, null))
+                        ((ReferenceEquals(this.Parent, this) || this.Parent is null)
                             ? 0
                             : this.Parent.GetHashCode() << 7)
                         ^ stringComparer.GetHashCode(this.Name ?? string.Empty);

@@ -45,7 +45,7 @@
         private CsdlNavigationPropertyModel _PartnerModel;
 
         [JsonIgnore]
-        private FreezableOwnedCollection<CsdlNavigationPropertyModel, CsdlReferentialConstraintV4Model> _ReferentialConstraint;
+        private readonly FreezableOwnedCollection<CsdlNavigationPropertyModel, CsdlReferentialConstraintV4Model> _ReferentialConstraint;
 
         public CsdlNavigationPropertyModel() {
             this._ReferentialConstraint = new FreezableOwnedCollection<CsdlNavigationPropertyModel, CsdlReferentialConstraintV4Model>(
@@ -282,7 +282,7 @@
         [JsonIgnore]
         public CsdlEntityTypeModel Owner {
             get => this._Owner;
-            internal set => this.SetOwner(ref _Owner, value);
+            internal set => this.SetOwner(ref this._Owner, value);
         }
 
         [JsonProperty]

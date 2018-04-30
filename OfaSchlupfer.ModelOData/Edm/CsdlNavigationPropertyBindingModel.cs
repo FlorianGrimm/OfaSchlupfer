@@ -29,7 +29,7 @@
         [JsonIgnore]
         public CsdlEntitySetModel Owner {
             get => this._Owner;
-            internal set => this.SetOwner(ref _Owner, value);
+            internal set => this.SetOwner(ref this._Owner, value);
         }
 
 
@@ -65,7 +65,7 @@
         [JsonIgnore]
         public CsdlNavigationPropertyModel PathModel {
             get {
-                if (this._PathModel == null && _PathName != null) {
+                if (this._PathModel == null && this._PathName != null) {
                     this.ResolveNames(ModelErrors.GetIgnorance());
                 }
                 return this._PathModel;

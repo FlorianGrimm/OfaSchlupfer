@@ -104,14 +104,14 @@
         public FreezableOwnedKeyedCollection<ModelSqlTableType, SqlName, ModelSqlColumn> Columns => this._Columns;
 
         [JsonIgnore]
-        IFreezeableOwnedKeyedCollection<SqlName, ModelSqlColumn> IModelSqlObjectWithColumns.Columns => this._Columns;
+        IFreezableOwnedKeyedCollection<SqlName, ModelSqlColumn> IModelSqlObjectWithColumns.Columns => this._Columns;
 
 
         [JsonProperty]
         public FreezableOwnedKeyedCollection<ModelSqlTableType, SqlName, ModelSqlIndex> Indexes => this._Indexes;
 
         [JsonIgnore]
-        IFreezeableOwnedKeyedCollection<SqlName, ModelSqlIndex> IModelSqlObjectWithColumns.Indexes => this._Indexes;
+        IFreezableOwnedKeyedCollection<SqlName, ModelSqlIndex> IModelSqlObjectWithColumns.Indexes => this._Indexes;
 
         /// <summary>
         /// Get the current scope

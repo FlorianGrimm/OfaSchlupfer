@@ -2,25 +2,12 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Text;
-    public interface IFreezeableOwnedKeyedCollection<TKey, TValue>
-        : IFreezeable
-        , IList<TValue>
-        where TKey : IEquatable<TKey>
-        where TValue : class {
-
-        void AddRange(IEnumerable<TValue> items);
-
-        List<TValue> FindByKey(TKey key);
-
-        TValue GetValueOrDefault(TKey key, TValue defaultValue = default(TValue));
-    }
 
     [System.Diagnostics.DebuggerDisplay("{Count}")]
     public sealed class FreezableOwnedKeyedCollection<TOwner, TKey, TValue>
-        : IFreezeable
+        : IFreezable
         , IList<TValue>
-        , IFreezeableOwnedKeyedCollection<TKey, TValue>
+        , IFreezableOwnedKeyedCollection<TKey, TValue>
         where TKey : IEquatable<TKey>
         where TValue : class {
         private readonly TOwner _Owner;
@@ -186,7 +173,7 @@
         public bool Freeze() {
             if (System.Threading.Interlocked.CompareExchange(ref this._IsFrozen, 1, 0) == 0) {
                 foreach (var item in this._Items) {
-                    if (item is IFreezeable freezeable) {
+                    if (item is IFreezable freezeable) {
                         freezeable.Freeze();
                     }
                 }

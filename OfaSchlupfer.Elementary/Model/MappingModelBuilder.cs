@@ -158,10 +158,11 @@
                             if (complexTypeMapping.Target is null) {
                                 modelSchemaTarget.CreateComplexType(complexTypeMapping.TargetName ?? typeName, typeExternalName);
                             }
-                            if (    (!(complexTypeMapping.Source is null))
+                            if ((!(complexTypeMapping.Source is null))
                                 && (!(complexTypeMapping.Target is null))
                                 ) {
                                 this.BuildComplexTypeProperties(complexTypeMapping, errors);
+                                this.BuildComplexTypeIndexes(complexTypeMapping, errors);
                             } else {
                                 if (complexTypeMapping.Source is null) {
                                     errors.AddErrorOrThrow($"complexTypeMapping.Source {complexTypeMapping.SourceName} is null", $"complexTypeMapping.Name: {complexTypeMapping.Name}");
@@ -252,12 +253,14 @@
                         && (!(complexTypeMapping.Target is null))
                         ) {
                         this.BuildComplexTypeProperties(complexTypeMapping, errors);
+                        this.BuildComplexTypeIndexes(complexTypeMapping, errors);
                     }
                 }
             }
 
             return;
 #warning SOON this is the old Logic -> copy from this.BuildEntities
+#if weichei
 
             var mappingByNameSource = mappingModelSchema.ComplexTypeMappings.ToDictionary(_ => _.SourceName, StringComparer.OrdinalIgnoreCase);
             foreach (var complexTypeSource in modelSchemaSource.ComplexTypes) {
@@ -307,6 +310,7 @@
                     this.BuildComplexTypeProperties(complexTypeMapping, errors);
                 }
             }
+#endif
 #if weichei
 
             //foreach (var entityMapping in mappingModelSchema.EntityMappings) {
@@ -412,6 +416,87 @@
                     // ??
                 }
             }
+        }
+        public void BuildComplexTypeIndexes(MappingModelComplexType complexTypeMapping, ModelErrors errors) {
+            ModelComplexType complexTypeSource = complexTypeMapping.Source;
+            ModelComplexType complexTypeTarget = complexTypeMapping.Target;
+            var mappingByNameSource = complexTypeMapping.IndexMappings.ToDictionary(_ => _.SourceName, StringComparer.OrdinalIgnoreCase);
+
+            foreach (var indexMapping in complexTypeMapping.IndexMappings.Where(_ => _.Enabled)) {
+                if (!(indexMapping.Source is null) && (indexMapping.Target is null) && !(indexMapping.TargetName is null)) {
+                    complexTypeTarget.CreateIndex(indexMapping.TargetName, null);
+#warning here
+                    this.BuildComplexTypeIndexProperties(indexMapping, errors);
+                    //complexTypeMapping.CreatePropertyMapping(null, null, null);
+                    //complexTypeTarget.Indexes.Add
+                    //complexTypeMapping
+                }
+            }
+
+
+            foreach (var indexSource in complexTypeSource.Indexes) {
+                var indexMapping = mappingByNameSource.GetValueOrDefault(indexSource.Name);
+                if (!(indexMapping is null) && indexMapping.Enabled) { continue; }
+
+                var indexExternalNameTarget = indexSource.Name;
+#warning magic needed here
+                var indexNameTarget = indexExternalNameTarget;
+
+                if (indexMapping is null || indexMapping.Target is null) {
+                    var lstFound = complexTypeTarget.Indexes.FindByKey(indexNameTarget);
+                    if (lstFound.Count == 0) {
+                        var indexTarget = complexTypeTarget.CreateIndex(indexNameTarget, indexExternalNameTarget);
+                        if (indexMapping is null) {
+                            indexMapping = complexTypeMapping.CreateIndexMapping(null, indexSource, indexTarget);
+                        } else {
+                            indexMapping.Target = indexTarget;
+                        }
+                    } else if (lstFound.Count == 1) {
+                        var indexTarget = lstFound[0];
+                        if (indexMapping is null) {
+                            indexMapping = complexTypeMapping.CreateIndexMapping(null, indexSource, indexTarget);
+                        } else {
+                            indexMapping.Target = indexTarget;
+                        }
+                    } else {
+                        throw new NotImplementedException(" rule feedback any idea?? error???");
+                    }
+                } else {
+                    // ??
+                }
+                if (!(indexMapping is null)) {
+                    this.BuildComplexTypeIndexProperties(indexMapping, errors);
+                }
+            }
+
+        }
+
+        public void BuildComplexTypeIndexProperties(MappingModelIndex indexMapping, ModelErrors errors) {
+            var indexMappingSource = indexMapping.Source;
+            var indexMappingTarget = indexMapping.Target;
+
+            var mappingPropertySource = indexMapping.Owner.PropertyMappings.Where(_ => _.Enabled).ToDictionary(_ => _.SourceName, StringComparer.OrdinalIgnoreCase);
+            foreach (var indexPropertySource in indexMappingSource.Properties) {
+                var mappingProperty = mappingPropertySource.GetValueOrDefault(indexPropertySource.Name);
+                if (!(mappingProperty is null) && !(mappingProperty.Target is null)) {
+                    var lstFound = indexMappingTarget.Properties.FindByKey(mappingProperty.TargetName);
+                    if (lstFound.Count == 0) {
+                        indexMappingTarget.Properties.Add(new ModelIndexProperty() {
+                            Property = mappingProperty.Target,
+                            Ascending = indexPropertySource.Ascending,
+                        });
+                    }
+                }
+            }
+            //var mappingSource = indexMapping.IndexColumnMappings.ToDictionary(_ => _.SourceName, StringComparer.OrdinalIgnoreCase);
+            //foreach (var indexPropertySource in indexMappingSource.Properties) {
+            //var indexPropertyMapping = mappingSource.GetValueOrDefault(indexPropertySource.Name);
+            //if (indexPropertyMapping is null || indexPropertyMapping.Target is null) {
+            //    var lstFound = indexMappingTarget.Properties.FindByKey(in)
+            //    var indexPropertyTarget
+            //    indexPropertyMapping = indexMapping.CreateIndexColumnMapping(null, indexPropertySource, null);
+            //}
+            //}
         }
 
         private ModelType BuildScalarType(ModelType type) {

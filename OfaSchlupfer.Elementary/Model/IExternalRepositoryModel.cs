@@ -14,7 +14,7 @@
     using OfaSchlupfer.Elementary;
 
     public interface IExternalRepositoryModel
-        : IFreezeable
+        : IFreezable
         , IObjectWithOwner<ModelRepository> {
         string GetRepositoryTypeName();
         

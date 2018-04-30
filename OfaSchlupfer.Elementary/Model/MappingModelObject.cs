@@ -16,6 +16,8 @@
         where TMappingKey : class
         where TMappingValue : class, IMappingNamedObject<TMappingKey> {
 
+        public static TThisKey GetName(MappingModelObject<TThisKey, TMappingKey, TMappingValue> that) => that.Name;
+
         [JsonIgnore]
         protected TMappingKey _SourceName;
 
